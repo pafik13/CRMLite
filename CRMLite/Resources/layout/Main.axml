@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:minWidth="25px"
+    android:minHeight="64px"
+    android:background="@color/Grey_300">
+    <RelativeLayout
+        android:id="@+id/maUpPanelRL"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="25px"
+        android:minHeight="64px"
+        android:background="@drawable/bottomline">
+        <TextView
+            android:text="ИНФОРМАЦИЯ"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/maInfoText"
+            android:gravity="center"
+            android:textColor="#03A9F4"
+            android:height="64dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp" />
+        <ImageView
+            android:src="@drawable/ic_exit_to_app_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/maInfoText"
+            android:id="@+id/maLogOut"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginLeft="18dp" />
+        <ImageView
+            android:src="@drawable/ic_add_circle_outline_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/maAdd"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginRight="10dp" />
+        <ImageView
+            android:src="@drawable/ic_local_library_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/maLibrary"
+            android:layout_toLeftOf="@id/maAdd"
+            android:layout_marginRight="18dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp" />
+        <ImageView
+            android:src="@drawable/ic_sync_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/maSync"
+            android:layout_toLeftOf="@id/maLibrary"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginRight="18dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_below="@id/maUpPanelRL"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:id="@+id/maPharmacyTable" />
+        <RelativeLayout
+            android:id="@+id/maBottomPanelRL"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:background="@drawable/bottomline">
+            <TextView
+                android:text="СТРАНИЦА : "
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/maPageText"
+                android:gravity="center"
+                android:textColor="#03A9F4"
+                android:height="56dp"
+                android:paddingRight="32dp"
+                android:paddingLeft="24dp"
+                android:layout_toLeftOf="@+id/maPrevImage" />
+            <ImageView
+                android:src="@drawable/ic_navigate_before_black_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/maPrevImage"
+                android:paddingRight="24dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/maNextImage"
+                android:minHeight="56dp" />
+            <ImageView
+                android:src="@drawable/ic_navigate_next_black_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/maNextImage"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingRight="14dp"
+                android:minHeight="56dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="54dp"
+    android:background="@drawable/bottomline"
+    android:weightSum="100">
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ptiNameTV"
+        android:layout_weight="24"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:height="54dp" />
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ptiAddressTV"
+        android:layout_weight="36"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <Button
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ptiLastAttendanceDateB"
+        android:layout_weight="10"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <Button
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ptiNextAttendanceB"
+        android:layout_weight="10"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <ImageView
+        android:src="@drawable/ic_description_black_36dp"
+        android:layout_marginTop="9dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/ptiContractIV"
+        android:layout_weight="5" />
+    <ImageView
+        android:src="@drawable/ic_history_black_36dp"
+        android:layout_marginTop="9dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/ptiHistoryIV"
+        android:layout_weight="5" />
+    <ImageView
+        android:src="@drawable/ic_local_hospital_black_36dp"
+        android:layout_marginTop="9dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/ptiHospitalIV"
+        android:layout_weight="5" />
+    <ImageView
+        android:src="@drawable/ic_face_black_36dp"
+        android:layout_marginTop="9dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/ptiEmploeeIV"
+        android:layout_weight="5" />
+</LinearLayout>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<component format="1" id="realm">
+  <name>Realm</name>
+  <publisher>Realm</publisher>
+  <publisher-url>https://www.realm.io</publisher-url>
+  <version>0.74.1</version>
+  <summary>Realm is a mobile database, an alternative to SQLite and key-value stores</summary>
+  <packages>
+    <package id="Realm" version="0.74.1" framework="android" />
+    <package id="Realm" version="0.74.1" framework="ios-unified" />
+  </packages>
+  <samples>
+    <sample id="Simple">
+      <name>Simple</name>
+      <summary>Simple</summary>
+    </sample>
+    <sample id="ListView">
+      <name>Xamarin.Forms ListView</name>
+      <summary>Xamarin.Forms ListView</summary>
+    </sample>
+    <sample id="Tasky">
+      <name>Tasky</name>
+      <summary>Tasky</summary>
+    </sample>
+  </samples>
+</component>

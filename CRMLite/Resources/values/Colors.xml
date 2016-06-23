@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+	
+  <color name="Grey_300">#FFE0E0E0</color>
+  <color name="Grey_500">#FF9E9E9E</color>
+
+  <color name="Deep_Orange_500">#FFFF5722</color>
+  <color name="Light_Green_500">#FF8BC34A</color>
+  <color name="Light_Blue_500">#FF03A9F4</color>
+
+  
+  <color name="pressed_color">#f0f</color>
+  <color name="focused_color">#ff0</color>
+  <color name="default_color">#000</color>
+
+  <color name="white_bg">#40FFFFFF</color>
+
+  <color name="sign_in_sign_button">#4CAF50</color>
+  <color name="sign_in_skip_button">#F44336</color>
+
+</resources>

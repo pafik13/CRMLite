@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="25px"
+    android:minHeight="64px"
+    android:background="@color/Grey_300">
+    <RelativeLayout
+        android:id="@+id/paUpPanelRL"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="25px"
+        android:minHeight="64px"
+        android:background="@drawable/bottomline">
+        <TextView
+            android:text="СОТРУДНИКИ АПТЕКИ {0}"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/paInfoTV"
+            android:gravity="center"
+            android:textColor="@color/Light_Blue_500"
+            android:height="64dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp" />
+        <Button
+            android:text="ЗАКРЫТЬ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:id="@+id/paCloseB"
+            android:background="@color/Deep_Orange_500"
+            android:typeface="monospace"
+            android:width="150dp"
+            android:height="62dp"
+            android:textColor="@android:color/white"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            android:minHeight="62dp"
+            android:layout_marginBottom="2dp" />
+        <ImageView
+            android:src="@drawable/ic_add_circle_outline_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/maAdd"
+            android:layout_toLeftOf="@+id/paCloseB"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginRight="10dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/paUpPanelRL"
+        android:background="@color/Grey_300">
+        <LinearLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="#E0E0E0"
+            android:weightSum="100">
+            <LinearLayout
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="20" />
+            <ScrollView
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/paMainSV"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="60">
+                <LinearLayout
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" />
+            </ScrollView>
+            <LinearLayout
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="20" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>
