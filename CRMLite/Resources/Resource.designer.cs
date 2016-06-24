@@ -1786,29 +1786,44 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c0006
 			public const int progress_horizontal = 2131492870;
 			
-			// aapt resource value: 0x7f0c008a
-			public const int ptiAddressTV = 2131493002;
-			
 			// aapt resource value: 0x7f0c008d
-			public const int ptiContractIV = 2131493005;
+			public const int pthAddInfoTV = 2131493005;
 			
-			// aapt resource value: 0x7f0c0090
-			public const int ptiEmploeeIV = 2131493008;
-			
-			// aapt resource value: 0x7f0c008e
-			public const int ptiHistoryIV = 2131493006;
-			
-			// aapt resource value: 0x7f0c008f
-			public const int ptiHospitalIV = 2131493007;
+			// aapt resource value: 0x7f0c008a
+			public const int pthAddressTV = 2131493002;
 			
 			// aapt resource value: 0x7f0c008b
-			public const int ptiLastAttendanceDateB = 2131493003;
+			public const int pthLastAttendanceDateTV = 2131493003;
 			
 			// aapt resource value: 0x7f0c0089
-			public const int ptiNameTV = 2131493001;
+			public const int pthNameTV = 2131493001;
 			
 			// aapt resource value: 0x7f0c008c
-			public const int ptiNextAttendanceB = 2131493004;
+			public const int pthNextAttendanceTV = 2131493004;
+			
+			// aapt resource value: 0x7f0c008f
+			public const int ptiAddressTV = 2131493007;
+			
+			// aapt resource value: 0x7f0c0092
+			public const int ptiContractIV = 2131493010;
+			
+			// aapt resource value: 0x7f0c0095
+			public const int ptiEmploeeIV = 2131493013;
+			
+			// aapt resource value: 0x7f0c0093
+			public const int ptiHistoryIV = 2131493011;
+			
+			// aapt resource value: 0x7f0c0094
+			public const int ptiHospitalIV = 2131493012;
+			
+			// aapt resource value: 0x7f0c0090
+			public const int ptiLastAttendanceDateB = 2131493008;
+			
+			// aapt resource value: 0x7f0c008e
+			public const int ptiNameTV = 2131493006;
+			
+			// aapt resource value: 0x7f0c0091
+			public const int ptiNextAttendanceB = 2131493009;
 			
 			// aapt resource value: 0x7f0c003b
 			public const int radio = 2131492923;
@@ -2083,19 +2098,22 @@ namespace CRMLite
 			public const int Pharmacy = 2130968611;
 			
 			// aapt resource value: 0x7f040024
-			public const int PharmacyTableItem = 2130968612;
+			public const int PharmacyTableHeader = 2130968612;
 			
 			// aapt resource value: 0x7f040025
-			public const int select_dialog_item_material = 2130968613;
+			public const int PharmacyTableItem = 2130968613;
 			
 			// aapt resource value: 0x7f040026
-			public const int select_dialog_multichoice_material = 2130968614;
+			public const int select_dialog_item_material = 2130968614;
 			
 			// aapt resource value: 0x7f040027
-			public const int select_dialog_singlechoice_material = 2130968615;
+			public const int select_dialog_multichoice_material = 2130968615;
 			
 			// aapt resource value: 0x7f040028
-			public const int support_simple_spinner_dropdown_item = 2130968616;
+			public const int select_dialog_singlechoice_material = 2130968616;
+			
+			// aapt resource value: 0x7f040029
+			public const int support_simple_spinner_dropdown_item = 2130968617;
 			
 			static Layout()
 			{
@@ -3137,6 +3155,9 @@ namespace CRMLite
 			
 			// aapt resource value: 0x7f090135
 			public const int form_control_static = 2131296565;
+			
+			// aapt resource value: 0x7f090138
+			public const int headerTextForPharmacy = 2131296568;
 			
 			// aapt resource value: 0x7f090137
 			public const int rowTextForPharmacy = 2131296567;

@@ -53,6 +53,9 @@
     <Reference Include="Realm">
       <HintPath>..\packages\Realm.0.76.1\lib\MonoAndroid44\Realm.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\MonoAndroid10\RestSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -62,6 +65,7 @@
     <Compile Include="PharmacyActivity.cs" />
     <Compile Include="Lib\Entities\Pharmacy.cs" />
     <Compile Include="Lib\Adapters\PharmacyAdapter.cs" />
+    <Compile Include="Lib\Services\SyncService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -148,6 +152,7 @@
     <AndroidResource Include="Resources\drawable-xhdpi\ic_local_hospital_black_36dp.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_local_hospital_black_36dp.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_local_hospital_black_36dp.png" />
+    <AndroidResource Include="Resources\layout\PharmacyTableHeader.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />
@@ -160,10 +165,15 @@
     <Folder Include="Lib\" />
     <Folder Include="Lib\Entities\" />
     <Folder Include="Lib\Adapters\" />
+    <Folder Include="Lib\Services\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="realm">
       <Version>0.74.1</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="restsharp">
+      <Version>105.2.3</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

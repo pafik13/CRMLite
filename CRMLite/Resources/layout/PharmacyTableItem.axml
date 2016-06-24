@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="54dp"
-    android:background="@drawable/bottomline"
+    android:layout_height="50dp"
+    android:background="@android:color/white"
     android:weightSum="100">
     <TextView
         android:text="Text"
@@ -12,8 +12,7 @@
         android:id="@+id/ptiNameTV"
         android:layout_weight="24"
         android:gravity="center"
-        android:textAppearance="@style/rowTextForPharmacy"
-        android:height="54dp" />
+        android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Text"
         android:layout_width="0dp"
@@ -25,7 +24,7 @@
     <Button
         android:text="Text"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/ptiLastAttendanceDateB"
         android:layout_weight="10"
         android:gravity="center"
@@ -33,7 +32,7 @@
     <Button
         android:text="Text"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/ptiNextAttendanceB"
         android:layout_weight="10"
         android:gravity="center"

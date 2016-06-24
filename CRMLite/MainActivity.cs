@@ -37,7 +37,8 @@ namespace CRMLite
 			SetContentView(Resource.Layout.Main);
 
 			listView = FindViewById<ListView>(Resource.Id.maPharmacyTable);
-
+			View header = LayoutInflater.Inflate(Resource.Layout.PharmacyTableHeader, listView, false);
+			listView.AddHeaderView(header);
 			var add = FindViewById<ImageView>(Resource.Id.maAdd);
 			add.Click += delegate {
 				StartActivity(new Intent(this, typeof(PharmacyActivity)));
@@ -49,6 +50,7 @@ namespace CRMLite
 			base.OnResume();
 
 			realm = Realm.GetInstance();
+
 			pharmacies = realm.All<Pharmacy>().ToList();
 
 			adapter = new PharmacyAdapter(this, pharmacies);
@@ -59,6 +61,17 @@ namespace CRMLite
 		protected override void OnPause()
 		{
 			base.OnPause();
+
+			//listView.Adapter = null;
+			//adapter = null;
+			//pharmacies = null;
+
+			//realm.Dispose();
+		}
+
+		protected override void OnStop()
+		{
+			base.OnStop();
 
 			listView.Adapter = null;
 			adapter = null;

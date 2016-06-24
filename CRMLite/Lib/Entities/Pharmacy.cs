@@ -69,13 +69,13 @@ namespace CRMLite.Entities
 		/// Дата последнего визита. Сохраняется значение Attendance.Date. Необходимо для сортировки.
 		/// </summary>
 		/// <value>The last attendance date.</value>
-		//public DateTime LastAttendanceDate { get; set; }
+		//public DateTimeOffset LastAttendanceDate { get; set; }
 
 		/// <summary>
 		/// Дата последующего визита. Вычисляется как LastAttendanceDate + Project.DaysToNextAttendance.
 		/// </summary>
 		/// <value>The next attendance date.</value>
-		//public DateTime NextAttendanceDate { get; set; }
+		//public DateTimeOffset NextAttendanceDate { get; set; }
 
 
 		public string phone { get; set; }

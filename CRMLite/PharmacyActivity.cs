@@ -14,6 +14,7 @@ using Android.Widget;
 using Realms;
 
 using CRMLite.Entities;
+using CRMLite.Services;
 
 namespace CRMLite
 {
@@ -32,6 +33,8 @@ namespace CRMLite
 
 			var close = FindViewById<Button>(Resource.Id.paCloseB);
 			close.Click += delegate {
+				Intent service = new Intent("com.xamarin.SyncService");
+				StartService(service);
 				Finish();
 			};
 
@@ -50,7 +53,8 @@ namespace CRMLite
 						pharmacy.LegalName = FindViewById<EditText>(Resource.Id.paLegalNameET).Text;
 						pharmacy.Address = FindViewById<EditText>(Resource.Id.paAddressET).Text;
 						pharmacy.Subway = FindViewById<EditText>(Resource.Id.paSubwayET).Text;
-
+						//pharmacy.LastAttendanceDate = DateTimeOffset.Now;
+						//pharmacy.NextAttendanceDate = DateTimeOffset.UtcNow;
 						transaction.Commit();
 					}
 				}

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="58dp"
+    android:background="@android:color/white"
+    android:weightSum="100">
+    <TextView
+        android:text="Аптека"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/pthNameTV"
+        android:layout_weight="24"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Адрес"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/pthAddressTV"
+        android:layout_weight="36"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Посл. визит"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/pthLastAttendanceDateTV"
+        android:layout_weight="10"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="След. визит"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/pthNextAttendanceTV"
+        android:layout_weight="10"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Дополнительная информация"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/pthAddInfoTV"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+</LinearLayout>
