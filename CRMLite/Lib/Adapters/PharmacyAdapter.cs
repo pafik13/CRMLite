@@ -45,10 +45,13 @@ namespace CRMLite.Adapters
 								parent,
 								false)) as LinearLayout;
 			
-			view.FindViewById<TextView>(Resource.Id.ptiNameTV).Text = string.IsNullOrEmpty(item.Name) ? "<unknow name>" : item.Name;
+			view.FindViewById<TextView>(Resource.Id.ptiNameTV).Text = string.IsNullOrEmpty(item.LegalName) ? "<unknow name>" : item.LegalName;
 			view.FindViewById<TextView>(Resource.Id.ptiAddressTV).Text = string.IsNullOrEmpty(item.Address) ? "<unknow address>" : item.Address;
-
 			//Finally return the view
+			view.FindViewById<Button>(Resource.Id.ptiLastAttendanceDateB).Click += delegate {
+				Toast.MakeText(context, "Нажали на кнопку!", ToastLength.Short).Show();
+			};
+
 			return view;
 		}
 	}

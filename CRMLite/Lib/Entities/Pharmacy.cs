@@ -77,8 +77,12 @@ namespace CRMLite.Entities
 		/// <value>The next attendance date.</value>
 		//public DateTimeOffset NextAttendanceDate { get; set; }
 
+		public DateTimeOffset? CreatedAt { get; set; }
 
-		public string phone { get; set; }
+		public SyncResult LastSyncResult { get; set; }
+
+		public string Phone { get; set; }
+
 		public string email { get; set; }
 	}
 

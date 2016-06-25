@@ -21,10 +21,9 @@ namespace CRMLite
 	public class MainActivity : Activity
 	{
 
-		List<Pharmacy> pharmacies = new List<Pharmacy>();
+		IList<Pharmacy> pharmacies = new List<Pharmacy>();
 		ListView listView;
 		PharmacyAdapter adapter;
-		Realm realm;
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
@@ -33,25 +32,42 @@ namespace CRMLite
 			RequestWindowFeature(WindowFeatures.NoTitle);
 			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
 
+			//Realm.DeleteRealm(RealmConfiguration.DefaultConfiguration);
+
+			//Realm.DeleteRealm
+
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
 
 			listView = FindViewById<ListView>(Resource.Id.maPharmacyTable);
 			View header = LayoutInflater.Inflate(Resource.Layout.PharmacyTableHeader, listView, false);
 			listView.AddHeaderView(header);
+			listView.Clickable = true;
+			listView.ItemClick += OnListItemClick;
+
 			var add = FindViewById<ImageView>(Resource.Id.maAdd);
 			add.Click += delegate {
 				StartActivity(new Intent(this, typeof(PharmacyActivity)));
 			};
 		}
 
+		void OnListItemClick(object sender, AdapterView.ItemClickEventArgs e)
+		{
+			if (e.Position > 0)
+			{
+				var showPharmacy = new Intent(this, typeof(PharmacyActivity));
+				showPharmacy.PutExtra(@"UUID", pharmacies[e.Position - 1].UUID);
+				StartActivity(showPharmacy);
+			}
+		}
+
 		protected override void OnResume()
 		{
 			base.OnResume();
 
-			realm = Realm.GetInstance();
+			//realm = Realm.GetInstance();
 
-			pharmacies = realm.All<Pharmacy>().ToList();
+			pharmacies = MainDatabase.GetPharmacies();//realm.All<Pharmacy>().ToList();
 
 			adapter = new PharmacyAdapter(this, pharmacies);
 
@@ -77,7 +93,7 @@ namespace CRMLite
 			adapter = null;
 			pharmacies = null;
 
-			realm.Dispose();
+			//realm.Dispose();
 		}
 	}
 }

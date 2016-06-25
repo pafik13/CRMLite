@@ -56,6 +56,9 @@
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.105.2.3\lib\MonoAndroid10\RestSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -66,6 +69,12 @@
     <Compile Include="Lib\Entities\Pharmacy.cs" />
     <Compile Include="Lib\Adapters\PharmacyAdapter.cs" />
     <Compile Include="Lib\Services\SyncService.cs" />
+    <Compile Include="Lib\Entities\SyncItem.cs" />
+    <Compile Include="Lib\MainDatabase.cs" />
+    <Compile Include="Lib\FixedSizedQueue.cs" />
+    <Compile Include="Lib\Suggestions\SuggestClient.cs" />
+    <Compile Include="Lib\Suggestions\SuggestModel.cs" />
+    <Compile Include="Lib\Secret.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -153,6 +162,7 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_local_hospital_black_36dp.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_local_hospital_black_36dp.png" />
     <AndroidResource Include="Resources\layout\PharmacyTableHeader.axml" />
+    <AndroidResource Include="Resources\values\Arrays.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />
@@ -166,6 +176,7 @@
     <Folder Include="Lib\Entities\" />
     <Folder Include="Lib\Adapters\" />
     <Folder Include="Lib\Services\" />
+    <Folder Include="Lib\Suggestions\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="realm">
@@ -174,6 +185,10 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="restsharp">
       <Version>105.2.3</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="json.net">
+      <Version>7.0.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

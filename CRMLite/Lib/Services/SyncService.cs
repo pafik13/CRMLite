@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading;
+using System.Net;
 using Android.App;
 using Android.Content;
 
@@ -23,18 +23,34 @@ namespace CRMLite.Services
 		{
 			Console.WriteLine("perform some long running work");
 
-			using (var realm = Realm.GetInstance())
+			if (MainDatabase.GetQueueSize() > 0)
 			{
-				foreach (var item in realm.All<Pharmacy>())
+				var client = new RestClient(@"http://demo-project-pafik13.c9users.io:8080/");
+
+				foreach (var item in MainDatabase.GetQueue())
 				{
-					Console.WriteLine(item.UUID);
-					RestClient client = new RestClient(@"http://demo-project-pafik13.c9users.io:8080/");
-					var request = new RestRequest(@"Pharmacy", Method.POST);
-					request.AddJsonBody(item);
-					var response = client.Execute(request);
-					Console.WriteLine(response.StatusDescription);
+					if (!item.Value.IsSynced)
+					{
+						var request = new RestRequest(item.Value.Path, Method.POST);
+						item.Value.TrySyncAt = DateTimeOffset.Now;
+						request.AddParameter("body", item.Value.JSON, "application/json", ParameterType.RequestBody);
+						//var response = client.Execute<Entities.SyncResult>(request);
+						//request.AddJsonBody(item.Value);
+						var response = client.Execute<Entities.SyncResult>(request);
+						switch (response.StatusCode)
+						{
+							case HttpStatusCode.OK:
+							case HttpStatusCode.Created:
+								item.Value.IsSynced = true;
+								MainDatabase.SaveSyncResult(item.Value.ObjectUUID, response.Data);
+								break;
+						}
+						Console.WriteLine(response.StatusDescription);
+					}
 				}
 			}
+
+			MainDatabase.ManageQueue();
 
 			Console.WriteLine("work complete");
 		}

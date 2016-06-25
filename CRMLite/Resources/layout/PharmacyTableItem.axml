@@ -8,19 +8,23 @@
     <TextView
         android:text="Text"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/ptiNameTV"
         android:layout_weight="24"
         android:gravity="center"
-        android:textAppearance="@style/rowTextForPharmacy" />
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
     <TextView
         android:text="Text"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/ptiAddressTV"
         android:layout_weight="36"
         android:gravity="center"
-        android:textAppearance="@style/rowTextForPharmacy" />
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
     <Button
         android:text="Text"
         android:layout_width="0dp"
@@ -28,7 +32,9 @@
         android:id="@+id/ptiLastAttendanceDateB"
         android:layout_weight="10"
         android:gravity="center"
-        android:textAppearance="@style/rowTextForPharmacy" />
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
     <Button
         android:text="Text"
         android:layout_width="0dp"
@@ -36,7 +42,9 @@
         android:id="@+id/ptiNextAttendanceB"
         android:layout_weight="10"
         android:gravity="center"
-        android:textAppearance="@style/rowTextForPharmacy" />
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
     <ImageView
         android:src="@drawable/ic_description_black_36dp"
         android:layout_marginTop="9dp"
