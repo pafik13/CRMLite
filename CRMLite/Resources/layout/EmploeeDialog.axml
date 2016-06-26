@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <ScrollView
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/edMainSV"
+        android:layout_centerHorizontal="true">
+        <TableLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/edMainTL"
+            android:background="#FFFFFF">
+            <TableRow
+                android:id="@+id/edHeaderTR"
+                android:visibility="gone">
+                <TextView
+                    android:layout_column="0"
+                    android:id="@+id/textView1"
+                    android:width="300dp"
+                    android:layout_marginRight="24dp" />
+                <TextView
+                    android:layout_column="1"
+                    android:id="@+id/textView2"
+                    android:width="300dp" />
+            </TableRow>
+            <TableRow
+                android:id="@+id/b1fRow1">
+                <TextView
+                    android:text="UUID"
+                    android:layout_column="0"
+                    android:background="@android:color/background_light"
+                    android:layout_gravity="center_vertical"
+                    style="@style/control_label" />
+                <TextView
+                    android:text="UUID"
+                    android:layout_column="1"
+                    android:id="@+id/edUUIDTV"
+                    android:layout_gravity="center_vertical"
+                    style="@style/fcs_block1" />
+            </TableRow>
+            <TableRow
+                android:id="@+id/b1fRow2">
+                <TextView
+                    android:text="Name"
+                    android:layout_column="0"
+                    android:background="@android:color/background_light"
+                    android:layout_gravity="center_vertical"
+                    style="@style/control_label" />
+                <EditText
+                    android:textCursorDrawable="@null"
+                    android:layout_column="1"
+                    android:id="@+id/edNameET"
+                    android:background="@drawable/bottomline"
+                    android:textColorHint="@color/Grey_300"
+                    android:textColor="@android:color/black"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:hint="ФИО"
+                    android:enabled="true"
+                    android:layout_marginRight="24dp"
+                    android:inputType="textCapWords" />
+            </TableRow>
+            <TableRow
+                android:id="@+id/b1fRow3">
+                <TextView
+                    android:text="Position"
+                    android:layout_column="0"
+                    android:background="@android:color/background_light"
+                    android:layout_gravity="center_vertical"
+                    style="@style/control_label" />
+                <EditText
+                    android:textCursorDrawable="@null"
+                    android:layout_column="1"
+                    android:id="@+id/edPositionET"
+                    android:background="@drawable/bottomline"
+                    android:textColorHint="@color/Grey_300"
+                    android:textColor="@android:color/black"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:hint="Должность"
+                    android:enabled="true"
+                    android:layout_marginRight="24dp"
+                    android:inputType="textCapCharacters" />
+            </TableRow>
+        <!--            <TableRow
+                android:id="@+id/b1fRow4">
+                <TextView
+                    android:text="BirthDate"
+                    android:layout_column="0"
+                    android:background="@android:color/background_light"
+                    android:layout_gravity="center_vertical"
+                    style="@style/control_label" />
+                <DatePicker
+                    android:layout_column="1"
+                    android:id="@+id/edBirthDateDP"
+                    android:hint="Дата рождения"
+                    android:enabled="true"
+                    android:layout_marginRight="24dp" />
+            </TableRow>-->
+            <TableRow
+                android:id="@+id/b1fRow100">
+                <TextView
+                    android:text="Телефон"
+                    android:layout_column="0"
+                    android:background="@android:color/background_light"
+                    android:layout_gravity="center_vertical"
+                    style="@style/control_label" />
+                <EditText
+                    android:textCursorDrawable="@null"
+                    android:layout_column="1"
+                    android:id="@+id/edPhoneET"
+                    android:background="@drawable/bottomline"
+                    android:textColorHint="#E0E0E0"
+                    android:textColor="#000000"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:hint="Телефон"
+                    android:phoneNumber="true"
+                    android:layout_marginRight="24dp"
+                    android:inputType="phone" />
+            </TableRow>
+            <TableRow
+                android:id="@+id/b1fRow5">
+                <TextView
+                    android:text="Loyalty"
+                    android:layout_column="0"
+                    android:background="@android:color/background_light"
+                    android:layout_gravity="center_vertical"
+                    style="@style/control_label" />
+                <EditText
+                    android:textCursorDrawable="@null"
+                    android:layout_column="1"
+                    android:id="@+id/edLoyaltyET"
+                    android:background="@drawable/bottomline"
+                    android:textColorHint="@color/Grey_300"
+                    android:textColor="@android:color/black"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:hint="Лояльность"
+                    android:enabled="true"
+                    android:layout_marginRight="24dp"
+                    android:inputType="textCapWords" />
+            </TableRow>
+            <TableRow
+                android:id="@+id/b1fRow6">
+                <TextView
+                    android:text="Является заказчиком?"
+                    android:layout_column="0"
+                    android:background="@android:color/background_light"
+                    android:layout_gravity="center_vertical"
+                    style="@style/control_label" />
+                <CheckBox
+                    android:layout_column="1"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/edIsCustomerCB"
+                    android:enabled="true"
+                    android:layout_gravity="center" />
+            </TableRow>
+            <TableRow
+                android:id="@+id/b1fRow11">
+                <Button
+                    android:text="ЗАКРЫТЬ"
+                    android:layout_column="0"
+                    android:layout_height="56dp"
+                    android:layout_width="match_parent"
+                    android:id="@+id/edCloseB"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/Deep_Orange_500"
+                    android:typeface="monospace"
+                    android:textColor="@android:color/white"
+                    android:textSize="24dp"
+                    android:textStyle="bold" />
+                <Button
+                    android:text="СОХРАНИТЬ"
+                    android:layout_column="1"
+                    android:layout_height="56dp"
+                    android:layout_width="match_parent"
+                    android:id="@+id/edSaveB"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/Light_Green_500"
+                    android:typeface="monospace"
+                    android:textColor="@android:color/white"
+                    android:textSize="24dp"
+                    android:textStyle="bold" />
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
+</LinearLayout>

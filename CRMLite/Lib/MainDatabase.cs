@@ -65,6 +65,19 @@ namespace CRMLite
 			return Me.SyncDictionary.Count();
 		}
 
+		public static Employee CreateEmploee(string pharmacyUUID)
+		{
+			var emploee = Me.DB.CreateObject<Employee>();
+			emploee.UUID = Guid.NewGuid().ToString();
+			emploee.Pharmacy = pharmacyUUID;
+			return emploee;
+		}
+
+		public static void DeleteEmploee(Employee emploee)
+		{
+			Me.DB.Remove(emploee);
+		}
+
 		public static void ManageQueue()
 		{
 			SyncItem item;
@@ -103,6 +116,12 @@ namespace CRMLite
 		{
 			return Me.DB.All<Pharmacy>().ToList();
 		}
+
+		public static IList<Employee> GetEmployees(string pharmacyUUID)
+		{
+			return Me.DB.All<Employee>().Where(item => item.Pharmacy == pharmacyUUID).ToList();
+		}
+
 
 		public static IList<Pharmacy> GetPharmacies(int count)
 		{

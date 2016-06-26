@@ -34,8 +34,6 @@ namespace CRMLite
 
 			//Realm.DeleteRealm(RealmConfiguration.DefaultConfiguration);
 
-			//Realm.DeleteRealm
-
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
 

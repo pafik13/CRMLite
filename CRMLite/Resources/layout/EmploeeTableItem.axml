@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@android:color/white"
+    android:weightSum="100">
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/etiNameTV"
+        android:layout_weight="30"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/etiPositionTV"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/etiBirthDateTV"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/etiLoyaltyTV"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <CheckBox
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/etiIsCustomerCB"
+        android:layout_weight="10"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+</LinearLayout>

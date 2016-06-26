@@ -65,7 +65,7 @@ namespace CRMLite
 				}
 			}
 
-			 
+			FindViewById<TextView>(Resource.Id.paUUIDTV).Text = pharmacy.UUID;
 			FindViewById<TextView>(Resource.Id.paInfoTV).Text = caption;
 			FindViewById<EditText>(Resource.Id.paNameET).Text = pharmacy.Name;
 			FindViewById<EditText>(Resource.Id.paLegalNameET).Text = pharmacy.LegalName;

@@ -75,6 +75,9 @@
     <Compile Include="Lib\Suggestions\SuggestClient.cs" />
     <Compile Include="Lib\Suggestions\SuggestModel.cs" />
     <Compile Include="Lib\Secret.cs" />
+    <Compile Include="EmploeeActivity.cs" />
+    <Compile Include="Lib\Adapters\EmploeeAdapter.cs" />
+    <Compile Include="Lib\Dialogs\EmploeeDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -163,6 +166,8 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_local_hospital_black_36dp.png" />
     <AndroidResource Include="Resources\layout\PharmacyTableHeader.axml" />
     <AndroidResource Include="Resources\values\Arrays.xml" />
+    <AndroidResource Include="Resources\layout\EmploeeTableItem.axml" />
+    <AndroidResource Include="Resources\layout\EmploeeDialog.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />
@@ -177,6 +182,7 @@
     <Folder Include="Lib\Adapters\" />
     <Folder Include="Lib\Services\" />
     <Folder Include="Lib\Suggestions\" />
+    <Folder Include="Lib\Dialogs\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="realm">

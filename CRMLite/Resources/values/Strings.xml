@@ -2,4 +2,8 @@
 <resources>
 	<string name="hello">Hello World, Click Me!</string>
 	<string name="app_name">CRMLite</string>
+	<string name="error_caption">Ошибка!</string>
+
+	<string name="PharmacyUUID">PharmacyUUID</string>
+
 </resources>

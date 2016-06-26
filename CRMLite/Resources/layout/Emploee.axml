@@ -19,7 +19,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/paInfoTV"
+            android:id="@+id/eaInfoTV"
             android:gravity="center"
             android:textColor="@color/Light_Blue_500"
             android:height="64dp"
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:id="@+id/paCloseB"
+            android:id="@+id/eaCloseB"
             android:background="@color/Deep_Orange_500"
             android:typeface="monospace"
             android:width="150dp"
@@ -44,8 +44,8 @@
             android:src="@drawable/ic_add_circle_outline_black_48dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/maAdd"
-            android:layout_toLeftOf="@+id/paCloseB"
+            android:id="@+id/eaAdd"
+            android:layout_toLeftOf="@+id/eaCloseB"
             android:layout_marginTop="7dp"
             android:layout_marginBottom="9dp"
             android:layout_marginRight="10dp" />
@@ -63,8 +63,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:background="#E0E0E0"
+            android:background="@color/Grey_300"
             android:weightSum="100">
+        <!--	Левый отступ	-->
             <LinearLayout
                 android:minWidth="25px"
                 android:minHeight="25px"
@@ -72,7 +73,19 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:layout_weight="20" />
-            <ScrollView
+        <!--	Таблица сотрудников		-->
+            <ListView
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:orientation="vertical"
+                android:divider="@color/Grey_300"
+                android:dividerHeight="2dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:id="@+id/eaEmploeeTable"
+                android:layout_weight="60" />
+        <!--            <ScrollView
                 android:minWidth="25px"
                 android:minHeight="25px"
                 android:layout_width="0dp"
@@ -86,7 +99,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical" />
-            </ScrollView>
+            </ScrollView>-->
+        <!--	Правый отступ	-->
             <LinearLayout
                 android:minWidth="25px"
                 android:minHeight="25px"

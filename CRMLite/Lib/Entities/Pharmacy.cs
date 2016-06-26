@@ -69,13 +69,13 @@ namespace CRMLite.Entities
 		/// Дата последнего визита. Сохраняется значение Attendance.Date. Необходимо для сортировки.
 		/// </summary>
 		/// <value>The last attendance date.</value>
-		//public DateTimeOffset LastAttendanceDate { get; set; }
+		public DateTimeOffset? LastAttendanceDate { get; set; }
 
 		/// <summary>
 		/// Дата последующего визита. Вычисляется как LastAttendanceDate + Project.DaysToNextAttendance.
 		/// </summary>
 		/// <value>The next attendance date.</value>
-		//public DateTimeOffset NextAttendanceDate { get; set; }
+		public DateTimeOffset? NextAttendanceDate { get; set; }
 
 		public DateTimeOffset? CreatedAt { get; set; }
 
@@ -83,7 +83,7 @@ namespace CRMLite.Entities
 
 		public string Phone { get; set; }
 
-		public string email { get; set; }
+		public string Email { get; set; }
 	}
 
 	/// <summary>
@@ -97,6 +97,13 @@ namespace CRMLite.Entities
 		/// <value>The UUID.</value>
 		[ObjectId]
 		public string UUID { get; set; }
+
+		/// <summary>
+		/// Ссылка на аптеку. UUID класса Pharmacy.
+		/// </summary>
+		/// <value>The pharmacy.</value>
+		[Indexed]
+		public string Pharmacy { get; set; }
 
 		/// <summary>
 		/// ФИО работника аптеки.
@@ -120,7 +127,7 @@ namespace CRMLite.Entities
 		/// Дата рождения работника аптеки.
 		/// </summary>
 		/// <value>The birth date.</value>
-		//public DateTime BirthDate { get; set; }
+		public DateTimeOffset? BirthDate { get; set; }
 
 		/// <summary>
 		/// Контактный телефон работника аптеки.
@@ -145,6 +152,8 @@ namespace CRMLite.Entities
 		/// </summary>
 		/// <value>Is customer?</value>
 		public bool IsCustomer { get; set; }
+
+		public DateTimeOffset? CreatedAt { get; set; }
 	}
 
 	/// <summary>

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using Android.App;
+using Android.Content;
 using Android.Views;
 using Android.Widget;
 
@@ -47,12 +48,29 @@ namespace CRMLite.Adapters
 			
 			view.FindViewById<TextView>(Resource.Id.ptiNameTV).Text = string.IsNullOrEmpty(item.LegalName) ? "<unknow name>" : item.LegalName;
 			view.FindViewById<TextView>(Resource.Id.ptiAddressTV).Text = string.IsNullOrEmpty(item.Address) ? "<unknow address>" : item.Address;
-			//Finally return the view
-			view.FindViewById<Button>(Resource.Id.ptiLastAttendanceDateB).Click += delegate {
-				Toast.MakeText(context, "Нажали на кнопку!", ToastLength.Short).Show();
-			};
 
+			//view.FindViewById<Button>(Resource.Id.ptiLastAttendanceDateB).Click += delegate {
+			//	Toast.MakeText(context, "Нажали на кнопку!", ToastLength.Short).Show();
+			//};
+
+			var showEmploee = view.FindViewById<ImageView>(Resource.Id.ptiEmploeeIV);
+			showEmploee.SetTag(Resource.String.PharmacyUUID, item.UUID);
+			showEmploee.Click -= ShowEmploeeClickEventHandler;
+			showEmploee.Click += ShowEmploeeClickEventHandler;
+
+			//Finally return the view
 			return view;
+		}
+
+		void ShowEmploeeClickEventHandler(object sender, System.EventArgs e)
+		{
+			if (sender is ImageView)
+			{
+				var pharmacyUUID = ((ImageView)sender).GetTag(Resource.String.PharmacyUUID).ToString();
+				var emploeeAcivity = new Intent(context, typeof(EmploeeActivity));
+				emploeeAcivity.PutExtra(@"UUID", pharmacyUUID);
+				context.StartActivity(emploeeAcivity);
+			}
 		}
 	}
 }
