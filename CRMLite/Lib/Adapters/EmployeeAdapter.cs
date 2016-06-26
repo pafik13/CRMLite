@@ -8,12 +8,12 @@ using CRMLite.Entities;
 
 namespace CRMLite.Adapters
 {
-	public class EmploeeAdapter : BaseAdapter<Employee>
+	public class EmployeeAdapter : BaseAdapter<Employee>
 	{
 		Activity context = null;
 		readonly IList<Employee> employees = new List<Employee>();
 
-		public EmploeeAdapter(Activity context, IList<Employee> employees) : base()
+		public EmployeeAdapter(Activity context, IList<Employee> employees) : base()
 		{
 			this.context = context;
 			this.employees = employees;
@@ -41,14 +41,14 @@ namespace CRMLite.Adapters
 
 			var view = (convertView ??
 								context.LayoutInflater.Inflate(
-				            	Resource.Layout.EmploeeTableItem,
+				            	Resource.Layout.EmployeeTableItem,
 								parent,
 								false)) as LinearLayout;
 
-			view.FindViewById<TextView>(Resource.Id.etiNameTV).Text = string.IsNullOrEmpty(item.Name) ? "<unknow name>" : item.Name;
-			view.FindViewById<TextView>(Resource.Id.etiPositionTV).Text = string.IsNullOrEmpty(item.Position) ? "<unknow Position>" : item.Position;
-			view.FindViewById<TextView>(Resource.Id.etiBirthDateTV).Text = item.BirthDate == null ? "<unknow birthdate>" : item.BirthDate.Value.ToString("dd.MM.yyyy");
-			view.FindViewById<TextView>(Resource.Id.etiLoyaltyTV).Text = string.IsNullOrEmpty(item.Loyalty) ? "<unknow address>" : item.Loyalty;
+			view.FindViewById<TextView>(Resource.Id.etiNameTV).Text = string.IsNullOrEmpty(item.Name) ? "<пусто>" : item.Name;
+			view.FindViewById<TextView>(Resource.Id.etiPositionTV).Text = string.IsNullOrEmpty(item.Position) ? "<пусто>" : item.Position;
+			view.FindViewById<TextView>(Resource.Id.etiBirthDateTV).Text = item.BirthDate == null ? "<пусто>" : item.BirthDate.Value.ToString("dd.MM.yyyy");
+			view.FindViewById<TextView>(Resource.Id.etiLoyaltyTV).Text = string.IsNullOrEmpty(item.Loyalty) ? "<пусто>" : item.Loyalty;
 			view.FindViewById<CheckBox>(Resource.Id.etiIsCustomerCB).Checked = item.IsCustomer;
 
 			return view;

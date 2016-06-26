@@ -75,9 +75,13 @@
     <Compile Include="Lib\Suggestions\SuggestClient.cs" />
     <Compile Include="Lib\Suggestions\SuggestModel.cs" />
     <Compile Include="Lib\Secret.cs" />
-    <Compile Include="EmploeeActivity.cs" />
-    <Compile Include="Lib\Adapters\EmploeeAdapter.cs" />
-    <Compile Include="Lib\Dialogs\EmploeeDialog.cs" />
+    <Compile Include="EmployeeActivity.cs" />
+    <Compile Include="Lib\Adapters\EmployeeAdapter.cs" />
+    <Compile Include="Lib\Dialogs\EmployeeDialog.cs" />
+    <Compile Include="Lib\Entities\Hospital.cs" />
+    <Compile Include="Lib\Adapters\HospitalAdapter.cs" />
+    <Compile Include="Lib\Dialogs\HospitalDialog.cs" />
+    <Compile Include="HospitalActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -142,7 +146,7 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_navigate_before_black_24dp.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_navigate_next_black_24dp.png" />
     <AndroidResource Include="Resources\layout\Pharmacy.axml" />
-    <AndroidResource Include="Resources\layout\Emploee.axml" />
+    <AndroidResource Include="Resources\layout\Employee.axml" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_description_black_36dp.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_face_black_36dp.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_history_black_36dp.png" />
@@ -166,8 +170,11 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_local_hospital_black_36dp.png" />
     <AndroidResource Include="Resources\layout\PharmacyTableHeader.axml" />
     <AndroidResource Include="Resources\values\Arrays.xml" />
-    <AndroidResource Include="Resources\layout\EmploeeTableItem.axml" />
-    <AndroidResource Include="Resources\layout\EmploeeDialog.axml" />
+    <AndroidResource Include="Resources\layout\EmployeeTableItem.axml" />
+    <AndroidResource Include="Resources\layout\EmployeeDialog.axml" />
+    <AndroidResource Include="Resources\layout\HospitalTableItem.axml" />
+    <AndroidResource Include="Resources\layout\Hospital.axml" />
+    <AndroidResource Include="Resources\layout\HospitalDialog.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

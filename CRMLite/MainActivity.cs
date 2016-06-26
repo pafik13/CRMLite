@@ -1,8 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using Android.App;
 using Android.Widget;
@@ -32,7 +28,9 @@ namespace CRMLite
 			RequestWindowFeature(WindowFeatures.NoTitle);
 			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
 
-			//Realm.DeleteRealm(RealmConfiguration.DefaultConfiguration);
+			if (Secret.IsNeedReCreateDB) {
+				Realm.DeleteRealm(RealmConfiguration.DefaultConfiguration);
+			}
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);

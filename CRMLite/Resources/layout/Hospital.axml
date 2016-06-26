@@ -7,7 +7,7 @@
     android:minHeight="64px"
     android:background="@color/Grey_300">
     <RelativeLayout
-        android:id="@+id/paUpPanelRL"
+        android:id="@+id/haUpPanelRL"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,11 +15,11 @@
         android:minHeight="64px"
         android:background="@drawable/bottomline">
         <TextView
-            android:text="СОТРУДНИКИ АПТЕКИ {0}"
+            android:text="ЛПУ БЛИЗКИЕ К АПТЕКЕ {0}"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/eaInfoTV"
+            android:id="@+id/haInfoTV"
             android:gravity="center"
             android:textColor="@color/Light_Blue_500"
             android:height="64dp"
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:id="@+id/eaCloseB"
+            android:id="@+id/haCloseB"
             android:background="@color/Deep_Orange_500"
             android:typeface="monospace"
             android:width="150dp"
@@ -44,8 +44,8 @@
             android:src="@drawable/ic_add_circle_outline_black_48dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/eaAdd"
-            android:layout_toLeftOf="@+id/eaCloseB"
+            android:id="@+id/haAdd"
+            android:layout_toLeftOf="@+id/haCloseB"
             android:layout_marginTop="7dp"
             android:layout_marginBottom="9dp"
             android:layout_marginRight="10dp" />
@@ -55,7 +55,7 @@
         android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/paUpPanelRL"
+        android:layout_below="@id/haUpPanelRL"
         android:background="@color/Grey_300">
         <LinearLayout
             android:minWidth="25px"
@@ -83,23 +83,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:id="@+id/eaEmploeeTable"
+                android:id="@+id/haHospitalTable"
                 android:layout_weight="60" />
-        <!--            <ScrollView
-                android:minWidth="25px"
-                android:minHeight="25px"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/paMainSV"
-                android:layout_centerHorizontal="true"
-                android:layout_weight="60">
-                <LinearLayout
-                    android:minWidth="25px"
-                    android:minHeight="25px"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical" />
-            </ScrollView>-->
         <!--	Правый отступ	-->
             <LinearLayout
                 android:minWidth="25px"

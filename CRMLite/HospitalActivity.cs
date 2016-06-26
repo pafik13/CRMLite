@@ -11,19 +11,21 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
+using Realms;
+
 using CRMLite.Entities;
 using CRMLite.Adapters;
 using CRMLite.Dialogs;
 
 namespace CRMLite
 {
-	[Activity(Label = "EmploeeActivity")]
-	public class EmploeeActivity : Activity
+	[Activity(Label = "HospitalActivity")]
+	public class HospitalActivity : Activity
 	{
 		Pharmacy pharmacy = null;
-		IList<Employee> employees = new List<Employee>();
+		IList<Hospital> hospitals = new List<Hospital>();
 		ListView listView = null;
-		EmploeeAdapter adapter = null;
+		HospitalAdapter adapter = null;
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
@@ -33,54 +35,50 @@ namespace CRMLite
 			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
 
 			// Create your application here
-			SetContentView(Resource.Layout.Emploee);
+			SetContentView(Resource.Layout.Hospital);
 
 			var pharmacyUUID = Intent.GetStringExtra("UUID");
-			if (!string.IsNullOrEmpty(pharmacyUUID)) {
+			if (!string.IsNullOrEmpty(pharmacyUUID))
+			{
 				pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
-				FindViewById<TextView>(Resource.Id.eaInfoTV).Text = "СОТРУДНИКИ АПТЕКИ : " + pharmacy.LegalName;
+				FindViewById<TextView>(Resource.Id.haInfoTV).Text = "ЛПУ БЛИЗКИЕ К АПТЕКЕ : " + pharmacy.LegalName;
 			}
 
-			listView = FindViewById<ListView>(Resource.Id.eaEmploeeTable);
+			listView = FindViewById<ListView>(Resource.Id.haHospitalTable);
 
 			listView.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
 			{
 				FragmentTransaction fragmentTransaction = FragmentManager.BeginTransaction();
-				EmploeeDialog emploeeDialog = new EmploeeDialog(this, pharmacy, employees[e.Position]);
-				emploeeDialog.Show(fragmentTransaction, "EmploeeDialog");
-				emploeeDialog.AfterSaved += delegate 
+				HospitalDialog hospitalDialog = new HospitalDialog(this, pharmacy, hospitals[e.Position]);
+				hospitalDialog.Show(fragmentTransaction, "HospitalDialog");
+				hospitalDialog.AfterSaved += delegate
 				{
 					Console.WriteLine("Event {0} was called", "AfterSaved");
-					//employees = MainDatabase.GetEmployees(pharmacy.UUID);
-
-					//adapter = new EmploeeAdapter(this, employees);
-
-					//listView.Adapter = adapter;
-
-					if (listView.Adapter is EmploeeAdapter)
+						if (listView.Adapter is HospitalAdapter)
 					{
-						((EmploeeAdapter)listView.Adapter).NotifyDataSetChanged();
+						((HospitalAdapter)listView.Adapter).NotifyDataSetChanged();
 					}
 				};
 			};
 
-			FindViewById<Button>(Resource.Id.eaCloseB).Click += delegate {
+			FindViewById<Button>(Resource.Id.haCloseB).Click += delegate
+			{
 				Finish();
 			};
 
-			FindViewById<ImageView>(Resource.Id.eaAdd).Click += delegate
+			FindViewById<ImageView>(Resource.Id.haAdd).Click += delegate
 			{
 				//Toast.MakeText(this, "ADD BUTTON CLICKED", ToastLength.Short).Show();
-				Console.WriteLine("Event {0} was called", "eaAdd_Click");
+				Console.WriteLine("Event {0} was called", "haAdd_Click");
 				FragmentTransaction fragmentTransaction = FragmentManager.BeginTransaction();
-				EmploeeDialog emploeeDialog = new EmploeeDialog(this, pharmacy);
-				emploeeDialog.Show(fragmentTransaction, "EmploeeDialog");
-				emploeeDialog.AfterSaved += (object sender, EventArgs e) =>
+				HospitalDialog hospitalDialog = new HospitalDialog(this, pharmacy);
+				hospitalDialog.Show(fragmentTransaction, "HospitalDialog");
+				hospitalDialog.AfterSaved += (object sender, EventArgs e) =>
 				{
 					Console.WriteLine("Event {0} was called", "AfterSaved");
-					employees = MainDatabase.GetEmployees(pharmacy.UUID);
+					hospitals = MainDatabase.GetHospitals(pharmacy.UUID);
 
-					adapter = new EmploeeAdapter(this, employees);
+					adapter = new HospitalAdapter(this, hospitals);
 
 					listView.Adapter = adapter;
 				};
@@ -109,9 +107,18 @@ namespace CRMLite
 			}
 			else {
 
-				employees = MainDatabase.GetEmployees(pharmacy.UUID);
+				Transaction transaction = MainDatabase.BeginTransaction();
 
-				adapter = new EmploeeAdapter(this, employees);
+				hospitals = MainDatabase.GetHospitals(pharmacy.UUID);
+
+				foreach (var item in hospitals)
+				{
+					item.LastSyncResult = MainDatabase.GetSyncResult(item.UUID);
+				}
+
+				transaction.Commit();
+
+				adapter = new HospitalAdapter(this, hospitals);
 
 				listView.Adapter = adapter;
 			}
@@ -135,4 +142,5 @@ namespace CRMLite
 		}
 	}
 }
+
 

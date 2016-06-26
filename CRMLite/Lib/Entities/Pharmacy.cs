@@ -154,6 +154,8 @@ namespace CRMLite.Entities
 		public bool IsCustomer { get; set; }
 
 		public DateTimeOffset? CreatedAt { get; set; }
+
+		public SyncResult LastSyncResult { get; set; }
 	}
 
 	/// <summary>

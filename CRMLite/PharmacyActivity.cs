@@ -1,13 +1,9 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
 
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
@@ -16,7 +12,6 @@ using Realms;
 using Newtonsoft.Json;
 
 using CRMLite.Entities;
-using CRMLite.Services;
 using CRMLite.Suggestions;
 
 namespace CRMLite

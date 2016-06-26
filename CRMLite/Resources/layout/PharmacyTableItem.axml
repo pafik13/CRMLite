@@ -71,6 +71,6 @@
         android:layout_marginTop="9dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/ptiEmploeeIV"
+        android:id="@+id/ptiEmployeeIV"
         android:layout_weight="5" />
 </LinearLayout>

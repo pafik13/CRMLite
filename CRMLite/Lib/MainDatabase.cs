@@ -37,6 +37,7 @@ namespace CRMLite
 			ResultDictionary = new ConcurrentDictionary<string, SyncResult>();
 		}
 
+		#region Sync
 		public static void AddToQueue(SyncItem item)
 		{
 			Me.SyncDictionary[item] = item;
@@ -50,10 +51,9 @@ namespace CRMLite
 		public static SyncResult GetSyncResult(string objectUUID)
 		{
 			SyncResult result;
-			Me.ResultDictionary.TryGetValue(objectUUID, out result);
+			Me.ResultDictionary.TryRemove(objectUUID, out result);
 			return result;
 		}
-
 
 		public static ConcurrentDictionary<SyncItem, SyncItem> GetQueue()
 		{
@@ -64,19 +64,47 @@ namespace CRMLite
 		{
 			return Me.SyncDictionary.Count();
 		}
+		#endregion
 
-		public static Employee CreateEmploee(string pharmacyUUID)
+		#region Employee
+		public static Employee CreateEmployee(string pharmacyUUID)
 		{
-			var emploee = Me.DB.CreateObject<Employee>();
-			emploee.UUID = Guid.NewGuid().ToString();
-			emploee.Pharmacy = pharmacyUUID;
-			return emploee;
+			var employee = Me.DB.CreateObject<Employee>();
+			employee.UUID = Guid.NewGuid().ToString();
+			employee.Pharmacy = pharmacyUUID;
+			return employee;
 		}
 
-		public static void DeleteEmploee(Employee emploee)
+		public static void DeleteEmployee(Employee employee)
 		{
-			Me.DB.Remove(emploee);
+			Me.DB.Remove(employee);
 		}
+
+		public static IList<Employee> GetEmployees(string pharmacyUUID)
+		{
+			return Me.DB.All<Employee>().Where(item => item.Pharmacy == pharmacyUUID).ToList();
+		}
+		#endregion
+
+		#region Hospital
+		public static Hospital CreateHospital(string pharmacyUUID)
+		{
+			var hospital = Me.DB.CreateObject<Hospital>();
+			hospital.UUID = Guid.NewGuid().ToString();
+			hospital.Pharmacy = pharmacyUUID;
+			return hospital;
+		}
+
+		public static void DeleteHospital(Hospital hospital)
+		{
+			Me.DB.Remove(hospital);
+		}
+
+		public static IList<Hospital> GetHospitals(string pharmacyUUID)
+		{
+			return Me.DB.All<Hospital>().Where(item => item.Pharmacy == pharmacyUUID).ToList();
+		}
+		#endregion
 
 		public static void ManageQueue()
 		{
@@ -95,6 +123,7 @@ namespace CRMLite
 			return Me.DB.BeginWrite();
 		}
 
+		#region Pharmacy
 		public static Pharmacy CreatePharmacy()
 		{
 			var pharmacy = Me.DB.CreateObject<Pharmacy>();
@@ -102,24 +131,19 @@ namespace CRMLite
 			return pharmacy;
 		}
 
-		public static Pharmacy GetPharmacy(string UUID)
-		{
-			return Me.DB.All<Pharmacy>().Single(item => item.UUID == UUID);
-		}
-
 		public static void DeletePharmacy(Pharmacy pharmacy)
 		{
 			Me.DB.Remove(pharmacy);
 		}
 
+		public static Pharmacy GetPharmacy(string UUID)
+		{
+			return Me.DB.All<Pharmacy>().Single(item => item.UUID == UUID);
+		}
+
 		public static IList<Pharmacy> GetPharmacies()
 		{
 			return Me.DB.All<Pharmacy>().ToList();
-		}
-
-		public static IList<Employee> GetEmployees(string pharmacyUUID)
-		{
-			return Me.DB.All<Employee>().Where(item => item.Pharmacy == pharmacyUUID).ToList();
 		}
 
 
@@ -137,6 +161,7 @@ namespace CRMLite
 				     .Take(count)
 				     .ToList();
 		}
+		#endregion
 	}
 }
 

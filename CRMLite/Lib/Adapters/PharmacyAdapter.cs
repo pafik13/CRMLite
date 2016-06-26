@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Android.App;
 using Android.Content;
@@ -53,23 +54,39 @@ namespace CRMLite.Adapters
 			//	Toast.MakeText(context, "Нажали на кнопку!", ToastLength.Short).Show();
 			//};
 
-			var showEmploee = view.FindViewById<ImageView>(Resource.Id.ptiEmploeeIV);
-			showEmploee.SetTag(Resource.String.PharmacyUUID, item.UUID);
-			showEmploee.Click -= ShowEmploeeClickEventHandler;
-			showEmploee.Click += ShowEmploeeClickEventHandler;
+			var showHospital = view.FindViewById<ImageView>(Resource.Id.ptiHospitalIV);
+			showHospital.SetTag(Resource.String.PharmacyUUID, item.UUID);
+			showHospital.Click -= ShowHospitalClickEventHandler;
+			showHospital.Click += ShowHospitalClickEventHandler;
+
+			var showEmployee = view.FindViewById<ImageView>(Resource.Id.ptiEmployeeIV);
+			showEmployee.SetTag(Resource.String.PharmacyUUID, item.UUID);
+			showEmployee.Click -= ShowEmployeeClickEventHandler;
+			showEmployee.Click += ShowEmployeeClickEventHandler;
 
 			//Finally return the view
 			return view;
 		}
 
-		void ShowEmploeeClickEventHandler(object sender, System.EventArgs e)
+		void ShowHospitalClickEventHandler(object sender, EventArgs e)
 		{
 			if (sender is ImageView)
 			{
 				var pharmacyUUID = ((ImageView)sender).GetTag(Resource.String.PharmacyUUID).ToString();
-				var emploeeAcivity = new Intent(context, typeof(EmploeeActivity));
-				emploeeAcivity.PutExtra(@"UUID", pharmacyUUID);
-				context.StartActivity(emploeeAcivity);
+				var hospitalAcivity = new Intent(context, typeof(HospitalActivity));
+				hospitalAcivity.PutExtra(@"UUID", pharmacyUUID);
+				context.StartActivity(hospitalAcivity);
+			}
+		}
+
+		void ShowEmployeeClickEventHandler(object sender, System.EventArgs e)
+		{
+			if (sender is ImageView)
+			{
+				var pharmacyUUID = ((ImageView)sender).GetTag(Resource.String.PharmacyUUID).ToString();
+				var employeeAcivity = new Intent(context, typeof(EmployeeActivity));
+				employeeAcivity.PutExtra(@"UUID", pharmacyUUID);
+				context.StartActivity(employeeAcivity);
 			}
 		}
 	}
