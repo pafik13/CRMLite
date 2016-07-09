@@ -25,7 +25,8 @@ namespace CRMLite.Services
 
 			if (MainDatabase.GetQueueSize() > 0)
 			{
-				var client = new RestClient(@"http://demo-project-pafik13.c9users.io:8080/");
+				//var client = new RestClient(@"http://demo-project-pafik13.c9users.io:8080/");
+				var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
 
 				foreach (var item in MainDatabase.GetQueue())
 				{
@@ -42,6 +43,7 @@ namespace CRMLite.Services
 							case HttpStatusCode.OK:
 							case HttpStatusCode.Created:
 								item.Value.IsSynced = true;
+								//TODO: Rename to CacheData
 								MainDatabase.SaveSyncResult(item.Value.ObjectUUID, response.Data);
 								break;
 						}

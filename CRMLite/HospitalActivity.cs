@@ -41,7 +41,7 @@ namespace CRMLite
 			if (!string.IsNullOrEmpty(pharmacyUUID))
 			{
 				pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
-				FindViewById<TextView>(Resource.Id.haInfoTV).Text = "ЛПУ БЛИЗКИЕ К АПТЕКЕ : " + pharmacy.LegalName;
+				FindViewById<TextView>(Resource.Id.haInfoTV).Text = "ЛПУ БЛИЗКИЕ К АПТЕКЕ : " + pharmacy.GetName();
 			}
 
 			listView = FindViewById<ListView>(Resource.Id.haHospitalTable);

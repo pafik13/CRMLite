@@ -46,8 +46,8 @@ namespace CRMLite.Adapters
 				            	Resource.Layout.PharmacyTableItem,
 								parent,
 								false)) as LinearLayout;
-			
-			view.FindViewById<TextView>(Resource.Id.ptiNameTV).Text = string.IsNullOrEmpty(item.LegalName) ? "<unknow name>" : item.LegalName;
+
+			view.FindViewById<TextView>(Resource.Id.ptiNameTV).Text = item.GetName(); //string.IsNullOrEmpty(item.LegalName) ? "<unknow name>" : item.LegalName;
 			view.FindViewById<TextView>(Resource.Id.ptiAddressTV).Text = string.IsNullOrEmpty(item.Address) ? "<unknow address>" : item.Address;
 
 			//view.FindViewById<Button>(Resource.Id.ptiLastAttendanceDateB).Click += delegate {

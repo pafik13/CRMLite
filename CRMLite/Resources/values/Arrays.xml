@@ -217,4 +217,137 @@
 		<item>Улица Горчакова</item>
 		<item>Бунинская аллея</item>
     </string-array>
+	<string-array name="moscow_regions">
+		<item>Академический</item>
+		<item>Алексеевский</item>
+		<item>Алтуфьевский</item>
+		<item>Арбат</item>
+		<item>Аэропорт</item>
+		<item>Бабушкинский</item>
+		<item>Басманный</item>
+		<item>Беговой</item>
+		<item>Бескудниковский</item>
+		<item>Бибирево</item>
+		<item>Бирюлёво Восточное</item>
+		<item>Бирюлёво Западное</item>
+		<item>Богородское</item>
+		<item>Братеево</item>
+		<item>Бутово Северное</item>
+		<item>Бутово Южное</item>
+		<item>Бутырский</item>
+		<item>Вешняки</item>
+		<item>Внуково</item>
+		<item>Войковский</item>
+		<item>Восточный</item>
+		<item>Выхино-Жулебино</item>
+		<item>Гагаринский</item>
+		<item>Головинский</item>
+		<item>Гольяново</item>
+		<item>Даниловский</item>
+		<item>Дегунино Восточное</item>
+		<item>Дегунино Западное</item>
+		<item>Дмитровский</item>
+		<item>Донской</item>
+		<item>Дорогомилово</item>
+		<item>Замоскворечье</item>
+		<item>Зюзино</item>
+		<item>Зябликово</item>
+		<item>Ивановское</item>
+		<item>Измайлово Восточное</item>
+		<item>Измайлово</item>
+		<item>Измайлово Северное</item>
+		<item>Капотня</item>
+		<item>Коньково</item>
+		<item>Коптево</item>
+		<item>Косино-Ухтомский</item>
+		<item>Котловка</item>
+		<item>Красносельский</item>
+		<item>Крылатское</item>
+		<item>Крюково</item>
+		<item>Кузьминки</item>
+		<item>Кунцево</item>
+		<item>Куркино</item>
+		<item>Левобережный</item>
+		<item>Лефортово</item>
+		<item>Лианозово</item>
+		<item>Ломоносовский</item>
+		<item>Лосиноостровский</item>
+		<item>Люблино</item>
+		<item>Марфино</item>
+		<item>Марьина роща</item>
+		<item>Марьино</item>
+		<item>Матушкино</item>
+		<item>Медведково Северное</item>
+		<item>Медведково Южное</item>
+		<item>Метрогородок</item>
+		<item>Мещанский</item>
+		<item>Митино</item>
+		<item>Можайский</item>
+		<item>Молжаниновский</item>
+		<item>Москворечье-Сабурово</item>
+		<item>Нагатино-Садовники</item>
+		<item>Нагатинский затон</item>
+		<item>Нагорный</item>
+		<item>Некрасовка</item>
+		<item>Нижегородский</item>
+		<item>Ново-Переделкино</item>
+		<item>Новогиреево</item>
+		<item>Новокосино</item>
+		<item>Обручевский</item>
+		<item>Орехово-Борисово Северное</item>
+		<item>Орехово-Борисово Южное</item>
+		<item>Останкинский</item>
+		<item>Отрадное</item>
+		<item>Очаково-Матвеевское</item>
+		<item>Перово</item>
+		<item>Печатники</item>
+		<item>Покровское-Стрешнево</item>
+		<item>Преображенское</item>
+		<item>Пресненский</item>
+		<item>Проспект Вернадского</item>
+		<item>Раменки</item>
+		<item>Ростокино</item>
+		<item>Рязанский</item>
+		<item>Савёлки</item>
+		<item>Савёловский</item>
+		<item>Свиблово</item>
+		<item>Северный</item>
+		<item>Силино</item>
+		<item>Сокол</item>
+		<item>Соколиная гора</item>
+		<item>Сокольники</item>
+		<item>Солнцево</item>
+		<item>Старое Крюково</item>
+		<item>Строгино</item>
+		<item>Таганский</item>
+		<item>Тверской</item>
+		<item>Текстильщики</item>
+		<item>Тёплый Стан</item>
+		<item>Тимирязевский</item>
+		<item>Тропарёво-Никулино</item>
+		<item>Тушино Северное</item>
+		<item>Тушино Южное</item>
+		<item>Филёвский парк</item>
+		<item>Фили-Давыдково</item>
+		<item>Хамовники</item>
+		<item>Ховрино</item>
+		<item>Хорошёво-Мневники</item>
+		<item>Хорошёвский</item>
+		<item>Царицыно</item>
+		<item>Черёмушки</item>
+		<item>Чертаново Северное</item>
+		<item>Чертаново Центральное</item>
+		<item>Чертаново Южное</item>
+		<item>Щукино</item>
+		<item>Южнопортовый</item>
+		<item>Якиманка</item>
+		<item>Ярославский</item>
+		<item>Ясенево</item>
+    </string-array>
+	<string-array name="pharmacy_places">
+		<item>В магазине</item>
+		<item>Отдельное здание</item>
+		<item>Торговый центр</item>
+		<item>Бизнес-центр</item>
+	</string-array>
 </resources>

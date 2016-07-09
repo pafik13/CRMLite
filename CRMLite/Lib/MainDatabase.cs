@@ -18,7 +18,7 @@ namespace CRMLite
 
 		ConcurrentDictionary<string, SyncResult> ResultDictionary = null;
 
-		int QueueMaxSize = 20;
+		//int QueueMaxSize = 20;
 
 		protected static MainDatabase Me;
 
@@ -35,6 +35,83 @@ namespace CRMLite
 			SyncDictionary = new ConcurrentDictionary<SyncItem, SyncItem>();
 
 			ResultDictionary = new ConcurrentDictionary<string, SyncResult>();
+		}
+
+		#region Net
+		public static List<Net> GetNets()
+		{
+			var list = new List<Net>();
+			list.Add(new Net { uuid = Guid.NewGuid().ToString(), name = @"Аптека" });
+			list.Add(new Net { uuid = Guid.NewGuid().ToString(), name = @"Планета Здоровья" });
+			list.Add(new Net { uuid = Guid.NewGuid().ToString(), name = @"Самсон Фарма" });
+
+			return list;
+		}
+		#endregion
+
+		public static IList<string> GetStates()
+		{
+			var list = new List<string>();
+			list.Add("Активна");
+			list.Add("В резерве");
+			list.Add("Закрыта");
+
+			return list;
+		}
+
+
+		public static List<Subway> GetSubways()
+		{
+			return Me.DB.All<Subway>().ToList();
+		}
+
+		public static void SaveSubways(List<Subway> subways)
+		{
+			using (var trans = Me.DB.BeginWrite())
+			{
+				foreach (var item in subways)
+				{
+					Me.DB.Manage(item);
+				}
+				trans.Commit();
+			}
+		}
+
+		public static List<Region> GetRegions()
+		{
+			return Me.DB.All<Region>().ToList();
+		}
+
+		public static void SaveRegions(List<Region> regions)
+		{
+			using (var trans = Me.DB.BeginWrite())
+			{
+				foreach (var item in regions)
+				{
+					Me.DB.Manage(item);
+				}
+				trans.Commit();
+			}
+		}
+
+		public static Place GetPlace(string uuid)
+		{
+			return Me.DB.All<Place>().Single(item => item.uuid == uuid);
+		}
+
+		public static List<Place> GetPlaces()
+		{
+			return Me.DB.All<Place>().ToList();
+		}
+
+		public static void SavePlaces(List<Place> places)
+		{
+			using (var trans = Me.DB.BeginWrite()) {
+				foreach (var item in places) {
+					Me.DB.Manage(item);
+				}
+				trans.Commit();
+			}
 		}
 
 		#region Sync
@@ -74,6 +151,7 @@ namespace CRMLite
 			employee.Pharmacy = pharmacyUUID;
 			return employee;
 		}
+
 
 		public static void DeleteEmployee(Employee employee)
 		{
@@ -128,6 +206,7 @@ namespace CRMLite
 		{
 			var pharmacy = Me.DB.CreateObject<Pharmacy>();
 			pharmacy.UUID = Guid.NewGuid().ToString();
+			pharmacy.SetState(PharmacyState.psActive);
 			return pharmacy;
 		}
 
@@ -161,7 +240,8 @@ namespace CRMLite
 				     .Take(count)
 				     .ToList();
 		}
-		#endregion
+
+	#endregion
 	}
 }
 

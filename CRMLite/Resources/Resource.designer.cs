@@ -74,8 +74,14 @@ namespace CRMLite
 		public partial class Array
 		{
 			
+			// aapt resource value: 0x7f0d0001
+			public const int moscow_regions = 2131558401;
+			
 			// aapt resource value: 0x7f0d0000
 			public const int moscow_stations = 2131558400;
+			
+			// aapt resource value: 0x7f0d0002
+			public const int pharmacy_places = 2131558402;
 			
 			static Array()
 			{
@@ -1568,23 +1574,14 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c001b
 			public const int always = 2131492891;
 			
-			// aapt resource value: 0x7f0c00a8
-			public const int b1fCategoryNetSpinner = 2131493032;
-			
 			// aapt resource value: 0x7f0c005a
 			public const int b1fRow1 = 2131492954;
-			
-			// aapt resource value: 0x7f0c00a9
-			public const int b1fRow10 = 2131493033;
 			
 			// aapt resource value: 0x7f0c0060
 			public const int b1fRow100 = 2131492960;
 			
 			// aapt resource value: 0x7f0c0066
 			public const int b1fRow11 = 2131492966;
-			
-			// aapt resource value: 0x7f0c00ac
-			public const int b1fRow12 = 2131493036;
 			
 			// aapt resource value: 0x7f0c005c
 			public const int b1fRow2 = 2131492956;
@@ -1601,14 +1598,8 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c0064
 			public const int b1fRow6 = 2131492964;
 			
-			// aapt resource value: 0x7f0c00a3
-			public const int b1fRow7 = 2131493027;
-			
-			// aapt resource value: 0x7f0c00a5
-			public const int b1fRow8 = 2131493029;
-			
-			// aapt resource value: 0x7f0c00a7
-			public const int b1fRow9 = 2131493031;
+			// aapt resource value: 0x7f0c00ae
+			public const int b1fRowPhone = 2131493038;
 			
 			// aapt resource value: 0x7f0c0018
 			public const int beginning = 2131492888;
@@ -1847,11 +1838,20 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c000a
 			public const int normal = 2131492874;
 			
-			// aapt resource value: 0x7f0c009f
-			public const int paAddressACTV = 2131493023;
+			// aapt resource value: 0x7f0c00a9
+			public const int paAddressACTV = 2131493033;
+			
+			// aapt resource value: 0x7f0c00b3
+			public const int paCategoryByNetACTV = 2131493043;
+			
+			// aapt resource value: 0x7f0c00b5
+			public const int paCategoryBySellACTV = 2131493045;
 			
 			// aapt resource value: 0x7f0c0097
 			public const int paCloseB = 2131493015;
+			
+			// aapt resource value: 0x7f0c00bb
+			public const int paCommentET = 2131493051;
 			
 			// aapt resource value: 0x7f0c009b
 			public const int paHeaderTR = 2131493019;
@@ -1859,14 +1859,11 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c0096
 			public const int paInfoTV = 2131493014;
 			
-			// aapt resource value: 0x7f0c00ab
-			public const int paLastAttendanceDateTV = 2131493035;
+			// aapt resource value: 0x7f0c00b7
+			public const int paLastAttendanceTV = 2131493047;
 			
-			// aapt resource value: 0x7f0c00aa
-			public const int paLastAttendanceTV = 2131493034;
-			
-			// aapt resource value: 0x7f0c009e
-			public const int paLegalNameET = 2131493022;
+			// aapt resource value: 0x7f0c00a5
+			public const int paLegalAddressACTV = 2131493029;
 			
 			// aapt resource value: 0x7f0c0099
 			public const int paMainSV = 2131493017;
@@ -1874,29 +1871,83 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c009a
 			public const int paMainTL = 2131493018;
 			
-			// aapt resource value: 0x7f0c009d
-			public const int paNameET = 2131493021;
+			// aapt resource value: 0x7f0c00a1
+			public const int paNameET = 2131493025;
 			
-			// aapt resource value: 0x7f0c00a6
-			public const int paNetS = 2131493030;
+			// aapt resource value: 0x7f0c00a3
+			public const int paNameInNetET = 2131493027;
+			
+			// aapt resource value: 0x7f0c00a7
+			public const int paNetS = 2131493031;
+			
+			// aapt resource value: 0x7f0c00b9
+			public const int paNextAttendanceDateTV = 2131493049;
+			
+			// aapt resource value: 0x7f0c00af
+			public const int paPhoneET = 2131493039;
+			
+			// aapt resource value: 0x7f0c00b1
+			public const int paPlaceACTV = 2131493041;
 			
 			// aapt resource value: 0x7f0c00ad
-			public const int paNextAttendanceDateTV = 2131493037;
+			public const int paRegionACTV = 2131493037;
+			
+			// aapt resource value: 0x7f0c00a8
+			public const int paRowAddress = 2131493032;
+			
+			// aapt resource value: 0x7f0c00b2
+			public const int paRowCategoryByNet = 2131493042;
+			
+			// aapt resource value: 0x7f0c00b4
+			public const int paRowCategoryBySell = 2131493044;
+			
+			// aapt resource value: 0x7f0c00ba
+			public const int paRowComment = 2131493050;
+			
+			// aapt resource value: 0x7f0c00b6
+			public const int paRowLastAttendance = 2131493046;
+			
+			// aapt resource value: 0x7f0c00a4
+			public const int paRowLegalAddress = 2131493028;
 			
 			// aapt resource value: 0x7f0c00a0
-			public const int paPhoneET = 2131493024;
+			public const int paRowName = 2131493024;
 			
 			// aapt resource value: 0x7f0c00a2
-			public const int paRegionET = 2131493026;
+			public const int paRowNameInNet = 2131493026;
+			
+			// aapt resource value: 0x7f0c00a6
+			public const int paRowNet = 2131493030;
+			
+			// aapt resource value: 0x7f0c00b8
+			public const int paRowNextAttendanceDate = 2131493048;
+			
+			// aapt resource value: 0x7f0c00b0
+			public const int paRowPlace = 2131493040;
+			
+			// aapt resource value: 0x7f0c00ac
+			public const int paRowRegion = 2131493036;
+			
+			// aapt resource value: 0x7f0c009e
+			public const int paRowState = 2131493022;
+			
+			// aapt resource value: 0x7f0c00aa
+			public const int paRowSubway = 2131493034;
+			
+			// aapt resource value: 0x7f0c009c
+			public const int paRowUUID = 2131493020;
 			
 			// aapt resource value: 0x7f0c0098
 			public const int paSaveB = 2131493016;
 			
-			// aapt resource value: 0x7f0c00a1
-			public const int paSubwayACTV = 2131493025;
+			// aapt resource value: 0x7f0c009f
+			public const int paStateS = 2131493023;
 			
-			// aapt resource value: 0x7f0c009c
-			public const int paUUIDTV = 2131493020;
+			// aapt resource value: 0x7f0c00ab
+			public const int paSubwayACTV = 2131493035;
+			
+			// aapt resource value: 0x7f0c009d
+			public const int paUUIDTV = 2131493021;
 			
 			// aapt resource value: 0x7f0c0095
 			public const int paUpPanelRL = 2131493013;
@@ -1904,56 +1955,56 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c002d
 			public const int parentPanel = 2131492909;
 			
-			// aapt resource value: 0x7f0c00a4
-			public const int paСategoryET = 2131493028;
-			
 			// aapt resource value: 0x7f0c0005
 			public const int progress_circular = 2131492869;
 			
 			// aapt resource value: 0x7f0c0006
 			public const int progress_horizontal = 2131492870;
 			
-			// aapt resource value: 0x7f0c00b2
-			public const int pthAddInfoTV = 2131493042;
+			// aapt resource value: 0x7f0c00c0
+			public const int pthAddInfoTV = 2131493056;
 			
-			// aapt resource value: 0x7f0c00af
-			public const int pthAddressTV = 2131493039;
+			// aapt resource value: 0x7f0c00bd
+			public const int pthAddressTV = 2131493053;
 			
-			// aapt resource value: 0x7f0c00b0
-			public const int pthLastAttendanceDateTV = 2131493040;
+			// aapt resource value: 0x7f0c00be
+			public const int pthLastAttendanceDateTV = 2131493054;
 			
-			// aapt resource value: 0x7f0c00ae
-			public const int pthNameTV = 2131493038;
+			// aapt resource value: 0x7f0c00bc
+			public const int pthNameTV = 2131493052;
 			
-			// aapt resource value: 0x7f0c00b1
-			public const int pthNextAttendanceTV = 2131493041;
+			// aapt resource value: 0x7f0c00bf
+			public const int pthNextAttendanceTV = 2131493055;
 			
-			// aapt resource value: 0x7f0c00b4
-			public const int ptiAddressTV = 2131493044;
+			// aapt resource value: 0x7f0c00c2
+			public const int ptiAddressTV = 2131493058;
 			
-			// aapt resource value: 0x7f0c00b7
-			public const int ptiContractIV = 2131493047;
+			// aapt resource value: 0x7f0c00c5
+			public const int ptiContractIV = 2131493061;
 			
-			// aapt resource value: 0x7f0c00ba
-			public const int ptiEmployeeIV = 2131493050;
+			// aapt resource value: 0x7f0c00c8
+			public const int ptiEmployeeIV = 2131493064;
 			
-			// aapt resource value: 0x7f0c00b8
-			public const int ptiHistoryIV = 2131493048;
+			// aapt resource value: 0x7f0c00c6
+			public const int ptiHistoryIV = 2131493062;
 			
-			// aapt resource value: 0x7f0c00b9
-			public const int ptiHospitalIV = 2131493049;
+			// aapt resource value: 0x7f0c00c7
+			public const int ptiHospitalIV = 2131493063;
 			
-			// aapt resource value: 0x7f0c00b5
-			public const int ptiLastAttendanceDateB = 2131493045;
+			// aapt resource value: 0x7f0c00c3
+			public const int ptiLastAttendanceDateB = 2131493059;
 			
-			// aapt resource value: 0x7f0c00b3
-			public const int ptiNameTV = 2131493043;
+			// aapt resource value: 0x7f0c00c1
+			public const int ptiNameTV = 2131493057;
 			
-			// aapt resource value: 0x7f0c00b6
-			public const int ptiNextAttendanceB = 2131493046;
+			// aapt resource value: 0x7f0c00c4
+			public const int ptiNextAttendanceB = 2131493060;
 			
 			// aapt resource value: 0x7f0c003b
 			public const int radio = 2131492923;
+			
+			// aapt resource value: 0x7f0c00c9
+			public const int saGetDataB = 2131493065;
 			
 			// aapt resource value: 0x7f0c0014
 			public const int screen = 2131492884;
@@ -2256,6 +2307,9 @@ namespace CRMLite
 			
 			// aapt resource value: 0x7f04002e
 			public const int support_simple_spinner_dropdown_item = 2130968622;
+			
+			// aapt resource value: 0x7f04002f
+			public const int Sync = 2130968623;
 			
 			static Layout()
 			{

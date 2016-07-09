@@ -45,6 +45,11 @@ namespace CRMLite
 			add.Click += delegate {
 				StartActivity(new Intent(this, typeof(PharmacyActivity)));
 			};
+
+			var sync = FindViewById<ImageView>(Resource.Id.maSync);
+			sync.Click += delegate {
+				StartActivity(new Intent(this, typeof(SyncActivity)));
+			};
 		}
 
 		void OnListItemClick(object sender, AdapterView.ItemClickEventArgs e)
