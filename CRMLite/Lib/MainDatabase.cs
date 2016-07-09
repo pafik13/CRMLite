@@ -59,6 +59,10 @@ namespace CRMLite
 			return list;
 		}
 
+		public static Subway GetSubway(string uuid)
+		{
+			return Me.DB.All<Subway>().Single(item => item.uuid == uuid);
+		}
 
 		public static List<Subway> GetSubways()
 		{
@@ -75,6 +79,11 @@ namespace CRMLite
 				}
 				trans.Commit();
 			}
+		}
+
+		public static Region GetRegion(string uuid)
+		{
+			return Me.DB.All<Region>().Single(item => item.uuid == uuid);
 		}
 
 		public static List<Region> GetRegions()
