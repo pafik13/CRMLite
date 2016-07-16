@@ -31,6 +31,12 @@ namespace CRMLite.Entities
 		public string Pharmacy { get; set; }
 
 		/// <summary>
+		/// ФИО работника аптеки.
+		/// </summary>
+		/// <value>The name.</value>
+		public string Name { get; set; }
+
+		/// <summary>
 		/// Пол работника аптеки. Необходимо использовать SetSex и GetSex.
 		/// </summary>
 		/// <value>The sex.</value>
@@ -39,12 +45,6 @@ namespace CRMLite.Entities
 		public void SetSex(Sex newSex) { Sex = newSex.ToString("G"); }
 
 		public Sex GetSex() { return (Sex)Enum.Parse(typeof(Sex), Sex, true); }
-
-		/// <summary>
-		/// ФИО работника аптеки.
-		/// </summary>
-		/// <value>The name.</value>
-		public string Name { get; set; }
 
 		/// <summary>
 		/// Должность работника аптеки.

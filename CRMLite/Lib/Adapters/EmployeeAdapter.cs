@@ -46,9 +46,9 @@ namespace CRMLite.Adapters
 								false)) as LinearLayout;
 
 			view.FindViewById<TextView>(Resource.Id.etiNameTV).Text = string.IsNullOrEmpty(item.Name) ? "<пусто>" : item.Name;
-			view.FindViewById<TextView>(Resource.Id.etiPositionTV).Text = string.IsNullOrEmpty(item.Position) ? "<пусто>" : item.Position;
+			view.FindViewById<TextView>(Resource.Id.etiPositionTV).Text = string.IsNullOrEmpty(item.Position) ? "<пусто>" : MainDatabase.GetPosition(item.Position).name;
 			view.FindViewById<TextView>(Resource.Id.etiBirthDateTV).Text = item.BirthDate == null ? "<пусто>" : item.BirthDate.Value.ToString("dd.MM.yyyy");
-			//view.FindViewById<TextView>(Resource.Id.etiLoyaltyTV).Text = string.IsNullOrEmpty(item.Loyalty) ? "<пусто>" : item.Loyalty;
+			view.FindViewById<TextView>(Resource.Id.etiPhoneTV).Text = string.IsNullOrEmpty(item.Phone) ? "<пусто>" : item.Phone;
 			view.FindViewById<CheckBox>(Resource.Id.etiIsCustomerCB).Checked = item.IsCustomer;
 
 			return view;

@@ -33,11 +33,23 @@ namespace CRMLite
 		{
 			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
 
+			LoadPositions(client);
 			LoadNets(client);
 			LoadSubways(client);
 			LoadRegions(client);
 			LoadPlaces(client);
 			LoadCategories(client);
+		}
+
+		void LoadPositions(RestClient client)
+		{
+			var request = new RestRequest(@"Position?limit=300", Method.GET);
+			var response = client.Execute<List<Position>>(request);
+			if (response.StatusCode == System.Net.HttpStatusCode.OK)
+			{
+				SD.Debug.WriteLine(response.Data.Count);
+				MainDatabase.SavePositions(response.Data);
+			}
 		}
 
 		void LoadNets(RestClient client)

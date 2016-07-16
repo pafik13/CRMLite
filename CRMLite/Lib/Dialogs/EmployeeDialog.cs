@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Android.App;
 using Android.Content;
@@ -10,6 +12,7 @@ using CRMLite.Entities;
 
 using Realms;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace CRMLite.Dialogs
 {
@@ -18,11 +21,13 @@ namespace CRMLite.Dialogs
 
 		public event EventHandler AfterSaved;
 
-		Activity context = null;
-		Pharmacy pharmacy = null;
-		//ListView listView = null;
-		Transaction transaction = null;
-		Employee employee = null;
+		Activity context;
+		Pharmacy pharmacy;
+		Transaction transaction;
+		Employee employee;
+
+		Spinner Position;
+		List<Position> positions;
 
 		protected virtual void OnAfterSaved(EventArgs e)
 		{
@@ -32,17 +37,20 @@ namespace CRMLite.Dialogs
 			}
 		}
 
-		public EmployeeDialog(Activity context, Pharmacy pharmacy, /*ListView listView, */ Employee employee = null)
+		public EmployeeDialog(Activity context, Pharmacy pharmacy, Employee employee = null)
 		{
-			if (context == null || pharmacy == null /*|| listView == null*/)
+			if (context == null)
 			{
-				throw new ArgumentNullException();
+				throw new ArgumentNullException(nameof(context));
+			}
+			if (pharmacy == null)
+			{
+				throw new ArgumentNullException(nameof(pharmacy));
 			}
 
 			this.context = context;
 			this.pharmacy = pharmacy;
 			this.employee = employee;
-			//this.listView = listView;
 		}
 
 		public override void OnCreate(Bundle savedInstanceState)
@@ -83,16 +91,37 @@ namespace CRMLite.Dialogs
 
 			View view = inflater.Inflate(Resource.Layout.EmployeeDialog, container, false);
 
+			view.FindViewById<TextView>(Resource.Id.edUUIDTV).Text = employee.UUID;
 			view.FindViewById<EditText>(Resource.Id.edNameET).Text = employee.Name;
-			view.FindViewById<EditText>(Resource.Id.edPositionET).Text = employee.Position;
+
+			#region Position
+			Position = view.FindViewById<Spinner>(Resource.Id.edPositionS);
+			positions = MainDatabase.GetPositions();
+			ArrayAdapter positionAdapter = new ArrayAdapter(context, Android.Resource.Layout.SimpleSpinnerItem, positions.Select(x => x.name).ToArray());
+			//stateAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
+			Position.Adapter = positionAdapter;
+			Position.ItemSelected += (object sender, AdapterView.ItemSelectedEventArgs e) =>
+			{
+				employee.Position = positions[e.Position].uuid;
+			};
+			// SetValue
+			if (!string.IsNullOrEmpty(employee.Position))
+			{
+				Position.SetSelection(positions.FindIndex(item => string.Compare(item.uuid, employee.Position) == 0));
+			};
+			#endregion
+
+			view.FindViewById<CheckBox>(Resource.Id.edIsCustomerCB).Checked = employee.IsCustomer;
+
 			//if (employee.BirthDate != null)
 			//{
 			//	view.FindViewById<DatePicker>(Resource.Id.edBirthDateDP).DateTime = employee.BirthDate.Value.DateTime;
 			//}
-			view.FindViewById<EditText>(Resource.Id.edPhoneET).Text = employee.Phone;
-			//view.FindViewById<EditText>(Resource.Id.edLoyaltyET).Text = employee.Loyalty;
-			view.FindViewById<CheckBox>(Resource.Id.edIsCustomerCB).Checked = employee.IsCustomer;
 
+			view.FindViewById<EditText>(Resource.Id.edPhoneET).Text = employee.Phone;
+			view.FindViewById<EditText>(Resource.Id.edEmailET).Text = employee.Email;
+			view.FindViewById<CheckBox>(Resource.Id.edCanParticipateCB).Checked = employee.CanParticipate;
+			view.FindViewById<EditText>(Resource.Id.edCommentET).Text = employee.Comment;
 
 			view.FindViewById<Button>(Resource.Id.edCloseB).Click += delegate {
 				if (employee.CreatedAt == null)
@@ -109,14 +138,19 @@ namespace CRMLite.Dialogs
 				//Toast.MakeText(context, "SAVE BUTTON CLICKED", ToastLength.Short).Show();
 				employee.CreatedAt = DateTimeOffset.Now;
 				employee.Name = view.FindViewById<EditText>(Resource.Id.edNameET).Text;
-				employee.Position = view.FindViewById<EditText>(Resource.Id.edPositionET).Text;
-				//if (view.FindViewById<DatePicker>(Resource.Id.edBirthDateDP).DateTime != DateTime.MinValue)
-				//{
-				//	employee.BirthDate = view.FindViewById<DatePicker>(Resource.Id.edBirthDateDP).DateTime;
-				//}
-				employee.Phone = view.FindViewById<EditText>(Resource.Id.edPhoneET).Text;
-				//employee.Loyalty = view.FindViewById<EditText>(Resource.Id.edLoyaltyET).Text;
 				employee.IsCustomer = view.FindViewById<CheckBox>(Resource.Id.edIsCustomerCB).Checked;
+
+				string birthDate = view.FindViewById<EditText>(Resource.Id.edBirthDateET).Text;
+				DateTimeFormatInfo fmt = new CultureInfo("ru-RU").DateTimeFormat;
+				if (!string.IsNullOrEmpty(birthDate))
+				{
+					employee.BirthDate = DateTimeOffset.Parse(birthDate, fmt);
+				}
+
+				employee.Phone = view.FindViewById<EditText>(Resource.Id.edPhoneET).Text;
+				employee.Email = view.FindViewById<EditText>(Resource.Id.edEmailET).Text;
+				employee.CanParticipate = view.FindViewById<CheckBox>(Resource.Id.edCanParticipateCB).Checked;
+				employee.Comment = view.FindViewById<EditText>(Resource.Id.edCommentET).Text;
 
 				transaction.Commit();
 
@@ -142,10 +176,9 @@ namespace CRMLite.Dialogs
 		public override void OnDestroyView()
 		{
 			base.OnDestroyView();
-			this.context = null;
-			this.pharmacy = null;
-			this.employee = null;
-			//this.listView = null;
+			context = null;
+			pharmacy = null;
+			employee = null;
 		}
 	}
 }

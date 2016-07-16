@@ -59,16 +59,30 @@ namespace CRMLite
 				trans.Commit();
 			}
 		}
-		//public static List<Net> GetNets()
-		//{
-		//	var list = new List<Net>();
-		//	list.Add(new Net { uuid = Guid.NewGuid().ToString(), name = @"Аптека" });
-		//	list.Add(new Net { uuid = Guid.NewGuid().ToString(), name = @"Планета Здоровья" });
-		//	list.Add(new Net { uuid = Guid.NewGuid().ToString(), name = @"Самсон Фарма" });
+		#endregion
 
-		//	return list;
-		//}
+		#region Position
+		public static Position GetPosition(string uuid)
+		{
+			return Me.DB.All<Position>().Single(item => item.uuid == uuid);
+		}
 
+		public static List<Position> GetPositions()
+		{
+			return Me.DB.All<Position>().ToList();
+		}
+
+		public static void SavePositions(List<Position> positions)
+		{
+			using (var trans = Me.DB.BeginWrite())
+			{
+				foreach (var item in positions)
+				{
+					Me.DB.Manage(item);
+				}
+				trans.Commit();
+			}
+		}
 		#endregion
 
 		public static IList<string> GetStates()
