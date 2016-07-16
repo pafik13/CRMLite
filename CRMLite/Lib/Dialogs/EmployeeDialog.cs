@@ -90,7 +90,7 @@ namespace CRMLite.Dialogs
 			//	view.FindViewById<DatePicker>(Resource.Id.edBirthDateDP).DateTime = employee.BirthDate.Value.DateTime;
 			//}
 			view.FindViewById<EditText>(Resource.Id.edPhoneET).Text = employee.Phone;
-			view.FindViewById<EditText>(Resource.Id.edLoyaltyET).Text = employee.Loyalty;
+			//view.FindViewById<EditText>(Resource.Id.edLoyaltyET).Text = employee.Loyalty;
 			view.FindViewById<CheckBox>(Resource.Id.edIsCustomerCB).Checked = employee.IsCustomer;
 
 
@@ -115,7 +115,7 @@ namespace CRMLite.Dialogs
 				//	employee.BirthDate = view.FindViewById<DatePicker>(Resource.Id.edBirthDateDP).DateTime;
 				//}
 				employee.Phone = view.FindViewById<EditText>(Resource.Id.edPhoneET).Text;
-				employee.Loyalty = view.FindViewById<EditText>(Resource.Id.edLoyaltyET).Text;
+				//employee.Loyalty = view.FindViewById<EditText>(Resource.Id.edLoyaltyET).Text;
 				employee.IsCustomer = view.FindViewById<CheckBox>(Resource.Id.edIsCustomerCB).Checked;
 
 				transaction.Commit();

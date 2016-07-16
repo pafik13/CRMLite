@@ -38,15 +38,37 @@ namespace CRMLite
 		}
 
 		#region Net
+		public static Net GetNet(string uuid)
+		{
+			return Me.DB.All<Net>().Single(item => item.uuid == uuid);
+		}
+
 		public static List<Net> GetNets()
 		{
-			var list = new List<Net>();
-			list.Add(new Net { uuid = Guid.NewGuid().ToString(), name = @"Аптека" });
-			list.Add(new Net { uuid = Guid.NewGuid().ToString(), name = @"Планета Здоровья" });
-			list.Add(new Net { uuid = Guid.NewGuid().ToString(), name = @"Самсон Фарма" });
-
-			return list;
+			return Me.DB.All<Net>().ToList();
 		}
+
+		public static void SaveNets(List<Net> nets)
+		{
+			using (var trans = Me.DB.BeginWrite())
+			{
+				foreach (var item in nets)
+				{
+					Me.DB.Manage(item);
+				}
+				trans.Commit();
+			}
+		}
+		//public static List<Net> GetNets()
+		//{
+		//	var list = new List<Net>();
+		//	list.Add(new Net { uuid = Guid.NewGuid().ToString(), name = @"Аптека" });
+		//	list.Add(new Net { uuid = Guid.NewGuid().ToString(), name = @"Планета Здоровья" });
+		//	list.Add(new Net { uuid = Guid.NewGuid().ToString(), name = @"Самсон Фарма" });
+
+		//	return list;
+		//}
+
 		#endregion
 
 		public static IList<string> GetStates()
@@ -96,6 +118,38 @@ namespace CRMLite
 			using (var trans = Me.DB.BeginWrite())
 			{
 				foreach (var item in regions)
+				{
+					Me.DB.Manage(item);
+				}
+				trans.Commit();
+			}
+		}
+
+		public static Category GetCategory(string uuid)
+		{
+			return Me.DB.All<Category>().Single(item => item.uuid == uuid);
+		}
+
+		public static List<Category> GetCategories(string type)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			if ((type != "net") && (type != "sell"))
+			{
+				throw new ArgumentException("Illegal value for parameter", nameof(type));
+			}
+
+			return Me.DB.All<Category>().Where(item => item.type == type).ToList();
+		}
+
+		public static void SaveCategories(List<Category> categories)
+		{
+			using (var trans = Me.DB.BeginWrite())
+			{
+				foreach (var item in categories)
 				{
 					Me.DB.Manage(item);
 				}

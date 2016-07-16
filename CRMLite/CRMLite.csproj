@@ -87,6 +87,9 @@
     <Compile Include="Lib\Entities\Subway.cs" />
     <Compile Include="Lib\Entities\Place.cs" />
     <Compile Include="SyncActivity.cs" />
+    <Compile Include="Lib\Entities\Employee.cs" />
+    <Compile Include="Lib\Entities\Position.cs" />
+    <Compile Include="Lib\Entities\Category.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

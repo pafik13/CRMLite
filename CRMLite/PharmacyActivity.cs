@@ -32,6 +32,9 @@ namespace CRMLite
 		List<Subway> subways;
 		List<Region> regions;
 		List<Place> places;
+		List<Category> byNet;
+		List<Category> bySell;
+
 
 		SuggestClient Api;
 
@@ -195,8 +198,28 @@ namespace CRMLite
 			};
 			#endregion
 
-			FindViewById<EditText>(Resource.Id.paCategoryByNetACTV).Text = pharmacy.CategoryByNet;
-			FindViewById<EditText>(Resource.Id.paCategoryBySellACTV).Text = pharmacy.CategoryBySell;
+			#region CategoryByNet
+			AutoCompleteTextView byNetACTV = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryByNetACTV);
+			byNetACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryByNet) ? pharmacy.CategoryByNet : MainDatabase.GetCategory(pharmacy.CategoryByNet).name;
+			byNet = MainDatabase.GetCategories("net");
+			byNetACTV.Adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleDropDownItem1Line, byNet.Select(x => x.name).ToArray());
+			byNetACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
+			{
+				pharmacy.CategoryByNet = byNet[e.Position].uuid;
+			};
+			#endregion
+
+			#region CategoryBySell
+			AutoCompleteTextView bySellACTV = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryBySellACTV);
+			bySellACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryBySell) ? pharmacy.CategoryBySell : MainDatabase.GetCategory(pharmacy.CategoryBySell).name;
+			bySell = MainDatabase.GetCategories("sell");
+			bySellACTV.Adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleDropDownItem1Line, bySell.Select(x => x.name).ToArray());
+			bySellACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
+			{
+				pharmacy.CategoryBySell = bySell[e.Position].uuid;
+			};
+			#endregion
+
 
 			FindViewById<EditText>(Resource.Id.paCommentET).Text = pharmacy.Comment;
 
@@ -223,8 +246,8 @@ namespace CRMLite
 				//pharmacy.Region = FindViewById<AutoCompleteTextView>(Resource.Id.paRegionACTV).Text;
 				pharmacy.Phone = FindViewById<EditText>(Resource.Id.paPhoneET).Text;
 				//pharmacy.Place = FindViewById<AutoCompleteTextView>(Resource.Id.paPlaceACTV).Text;
-				pharmacy.CategoryByNet = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryByNetACTV).Text;
-				pharmacy.CategoryBySell = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryBySellACTV).Text;
+				//pharmacy.CategoryByNet = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryByNetACTV).Text;
+				//pharmacy.CategoryBySell = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryBySellACTV).Text;
 				pharmacy.Comment = FindViewById<EditText>(Resource.Id.paCommentET).Text;
 
 				transaction.Commit();

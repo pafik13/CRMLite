@@ -33,9 +33,22 @@ namespace CRMLite
 		{
 			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
 
+			LoadNets(client);
 			LoadSubways(client);
 			LoadRegions(client);
 			LoadPlaces(client);
+			LoadCategories(client);
+		}
+
+		void LoadNets(RestClient client)
+		{
+			var request = new RestRequest(@"Net?limit=300", Method.GET);
+			var response = client.Execute<List<Net>>(request);
+			if (response.StatusCode == System.Net.HttpStatusCode.OK)
+			{
+				SD.Debug.WriteLine(response.Data.Count);
+				MainDatabase.SaveNets(response.Data);
+			}
 		}
 
 		void LoadSubways(RestClient client)
@@ -68,6 +81,17 @@ namespace CRMLite
 			{
 				SD.Debug.WriteLine(response.Data.Count);
 				MainDatabase.SavePlaces(response.Data);
+			}
+		}
+
+		void LoadCategories(RestClient client)
+		{
+			var request = new RestRequest(@"Category?limit=300", Method.GET);
+			var response = client.Execute<List<Category>>(request);
+			if (response.StatusCode == System.Net.HttpStatusCode.OK)
+			{
+				SD.Debug.WriteLine(response.Data.Count);
+				MainDatabase.SaveCategories(response.Data);
 			}
 		}
 	}
