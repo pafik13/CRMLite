@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:weightSum="100">
+    <Button
+        android:text="Button"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="30"
+        android:id="@+id/ipiEmployeeForPresentationB" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_weight="20"
+        android:orientation="horizontal">
+        <AutoCompleteTextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:dropDownWidth="650dp"
+            android:textCursorDrawable="@null"
+            android:id="@+id/ipiDrugBrandForPresentationACTV"
+            android:background="@drawable/bottomline"
+            android:textColorHint="@color/Grey_300"
+            android:textColor="@android:color/black"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:hint="Бренды"
+            android:layout_weight="1"
+            android:inputType="textCapWords" />
+        <Button
+            android:id="@+id/ipiDrugBrandForPresentationB"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:text="..." />
+    </LinearLayout>
+    <EditText
+        android:textCursorDrawable="@null"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_weight="50"
+        android:background="@drawable/bottomline"
+        android:textColorHint="@color/Grey_300"
+        android:textColor="@android:color/black"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:hint="Выид работы, ..."
+        android:inputType="textCapSentences" />
+</LinearLayout>

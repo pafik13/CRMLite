@@ -85,6 +85,78 @@ namespace CRMLite
 		}
 		#endregion
 
+		#region DrugSKU
+		public static DrugSKU GetDrugSKU(string uuid)
+		{
+			return Me.DB.All<DrugSKU>().Single(item => item.uuid == uuid);
+		}
+
+		public static List<DrugSKU> GetDrugSKUs()
+		{
+			return Me.DB.All<DrugSKU>().ToList();
+		}
+
+		public static void SaveDrugSKUs(List<DrugSKU> data)
+		{
+			using (var trans = Me.DB.BeginWrite())
+			{
+				foreach (var item in data)
+				{
+					Me.DB.Manage(item);
+				}
+				trans.Commit();
+			}
+		}
+		#endregion
+
+		#region DrugBrand
+		public static DrugBrand GetDrugBrand(string uuid)
+		{
+			return Me.DB.All<DrugBrand>().Single(item => item.uuid == uuid);
+		}
+
+		public static List<DrugBrand> GetDrugBrands()
+		{
+			return Me.DB.All<DrugBrand>().ToList();
+		}
+
+		public static void SaveDrugBrands(List<DrugBrand> data)
+		{
+			using (var trans = Me.DB.BeginWrite())
+			{
+				foreach (var item in data)
+				{
+					Me.DB.Manage(item);
+				}
+				trans.Commit();
+			}
+		}
+		#endregion
+
+		#region GENERIC
+		public static T GetItem<T>(string uuid) where T : RealmObject, IEntiryFromServer
+		{
+			return Me.DB.All<T>().Single(item => item.uuid == uuid);
+		}
+
+		public static List<T> GetItems<T>() where T : RealmObject
+		{
+			return Me.DB.All<T>().ToList();
+		}
+
+		public static void SaveItems<T>(IList<T> data) where T : RealmObject
+		{
+			using (var trans = Me.DB.BeginWrite())
+			{
+				foreach (var item in data)
+				{
+					Me.DB.Manage(item);
+				}
+				trans.Commit();
+			}
+		}
+		#endregion
+
 		public static IList<string> GetStates()
 		{
 			var list = new List<string>();
@@ -220,6 +292,39 @@ namespace CRMLite
 		}
 		#endregion
 
+
+		public static PresentationData CreatePresentationData(string attendanceUUID)
+		{
+			var item = Me.DB.CreateObject<PresentationData>();
+			item.UUID = Guid.NewGuid().ToString();
+			item.Attendance = attendanceUUID;
+			return item;
+		}
+
+		public static void DeletePresentationDatas(IList<PresentationData> data)
+		{
+			foreach (var item in data)
+			{
+				Me.DB.Remove(item);
+			}
+		}
+
+		public static CoterieData CreateCoterieData(string attendanceUUID)
+		{
+			var item = Me.DB.CreateObject<CoterieData>();
+			item.UUID = Guid.NewGuid().ToString();
+			item.Attendance = attendanceUUID;
+			return item;
+		}
+
+		public static void DeleteCoterieDatas(IList<CoterieData> data)
+		{
+			foreach (var item in data)
+			{
+				Me.DB.Remove(item);
+			}
+		}
+
 		#region Employee
 		public static Employee CreateEmployee(string pharmacyUUID)
 		{
@@ -228,7 +333,6 @@ namespace CRMLite
 			employee.Pharmacy = pharmacyUUID;
 			return employee;
 		}
-
 
 		public static void DeleteEmployee(Employee employee)
 		{

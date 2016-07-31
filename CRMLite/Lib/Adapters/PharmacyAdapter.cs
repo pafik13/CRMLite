@@ -64,6 +64,12 @@ namespace CRMLite.Adapters
 			showEmployee.Click -= ShowEmployeeClickEventHandler;
 			showEmployee.Click += ShowEmployeeClickEventHandler;
 
+
+			var startAttendance = view.FindViewById<Button>(Resource.Id.ptiNextAttendanceB);
+			startAttendance.SetTag(Resource.String.PharmacyUUID, item.UUID);
+			startAttendance.Click -= StartAttendanceClickEventHandler;
+			startAttendance.Click += StartAttendanceClickEventHandler;
+
 			//Finally return the view
 			return view;
 		}
@@ -79,7 +85,7 @@ namespace CRMLite.Adapters
 			}
 		}
 
-		void ShowEmployeeClickEventHandler(object sender, System.EventArgs e)
+		void ShowEmployeeClickEventHandler(object sender, EventArgs e)
 		{
 			if (sender is ImageView)
 			{
@@ -87,6 +93,17 @@ namespace CRMLite.Adapters
 				var employeeAcivity = new Intent(context, typeof(EmployeeActivity));
 				employeeAcivity.PutExtra(@"UUID", pharmacyUUID);
 				context.StartActivity(employeeAcivity);
+			}
+		}
+
+		void StartAttendanceClickEventHandler(object sender, EventArgs e)
+		{
+			if (sender is Button)
+			{
+				var pharmacyUUID = ((Button)sender).GetTag(Resource.String.PharmacyUUID).ToString();
+				var attendanceAcivity = new Intent(context, typeof(AttendanceActivity));
+				attendanceAcivity.PutExtra(@"UUID", pharmacyUUID);
+				context.StartActivity(attendanceAcivity);
 			}
 		}
 	}

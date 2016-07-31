@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:minWidth="25px"
+    android:minHeight="64px"
+    android:background="@color/Grey_300">
+    <RelativeLayout
+        android:id="@+id/haUpPanelRL"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="25px"
+        android:minHeight="64px"
+        android:background="@drawable/bottomline">
+        <Button
+            android:text="НАЧАТЬ ВИЗИТ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/StartAttendance"
+            android:background="@color/Light_Green_500"
+            android:typeface="monospace"
+            android:width="150dp"
+            android:height="62dp"
+            android:textColor="@android:color/white"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            android:minHeight="62dp"
+            android:layout_marginBottom="2dp" />
+        <TextView
+            android:text="СОТРУДНИКИ АПТЕКИ {0}"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/Title"
+            android:gravity="center"
+            android:textColor="@color/Light_Blue_500"
+            android:height="64dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:layout_centerHorizontal="true" />
+        <Button
+            android:text="ЗАКРЫТЬ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:id="@+id/CloseOrStopAttendance"
+            android:background="@color/Deep_Orange_500"
+            android:typeface="monospace"
+            android:width="150dp"
+            android:height="62dp"
+            android:textColor="@android:color/white"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            android:minHeight="62dp"
+            android:layout_marginBottom="2dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_below="@id/haUpPanelRL"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+</RelativeLayout>

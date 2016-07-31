@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="25px"
+    android:minHeight="64px"
+    android:background="@color/Grey_300"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+    <RelativeLayout
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Grey_300">
+        <ScrollView
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pfMainSV"
+            android:layout_centerHorizontal="true">
+            <TableLayout
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/pfMainTL"
+                android:background="#FFFFFF">
+                <TableRow
+                    android:id="@+id/pfHeaderTR"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_column="0"
+                        android:id="@+id/textView1"
+                        android:width="300dp"
+                        android:layout_marginRight="24dp" />
+                    <TextView
+                        android:layout_column="1"
+                        android:id="@+id/textView2"
+                        android:width="300dp" />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/pfRowUUID">
+                    <TextView
+                        android:text="UUID"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <TextView
+                        android:text="UUID"
+                        android:layout_column="1"
+                        android:id="@+id/pfUUIDTV"
+                        android:layout_gravity="center_vertical"
+                        style="@style/fcs_block1" />
+                </TableRow>
+            <!-- Ссылка на аптечную сеть. UUID класса Net -->
+                <TableRow
+                    android:id="@+id/pfRowState">
+                    <TextView
+                        android:text="Статус аптеки"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <LinearLayout
+                        android:layout_column="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_marginRight="24dp">
+                        <AutoCompleteTextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:dropDownWidth="650dp"
+                            android:textCursorDrawable="@null"
+                            android:id="@+id/pfStateACTV"
+                            android:background="@drawable/bottomline"
+                            android:textColorHint="@color/Grey_300"
+                            android:textColor="@android:color/black"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:hint="Статус аптеки"
+                            android:layout_weight="1"
+                            android:inputType="textCapWords" />
+                        <Button
+                            android:id="@+id/pfStateB"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:text="..." />
+                    </LinearLayout>
+                <!--                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pfStateS"
+                        android:layout_marginRight="24dp" />-->
+                </TableRow>
+                <TableRow
+                    android:id="@+id/pfRowName">
+                    <TextView
+                        android:text="Название аптеки (Бренд)"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <EditText
+                        android:textCursorDrawable="@null"
+                        android:layout_column="1"
+                        android:id="@+id/pfNameET"
+                        android:background="@drawable/bottomline"
+                        android:textColorHint="@color/Grey_300"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:hint="Например, ..."
+                        android:enabled="true"
+                        android:layout_marginRight="24dp"
+                        android:inputType="textCapSentences" />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/pfRowNameInNet">
+                    <TextView
+                        android:text="Название аптеки в АС"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <EditText
+                        android:textCursorDrawable="@null"
+                        android:layout_column="1"
+                        android:id="@+id/pfNameInNetET"
+                        android:background="@drawable/bottomline"
+                        android:textColorHint="@color/Grey_300"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:hint="Например, Аптека №6"
+                        android:enabled="true"
+                        android:layout_marginRight="24dp"
+                        android:inputType="textCapSentences" />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/pfRowLegalAddress">
+                    <TextView
+                        android:text="Юридический адрес"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <AutoCompleteTextView
+                        android:dropDownWidth="650dp"
+                        android:textCursorDrawable="@null"
+                        android:layout_column="1"
+                        android:id="@+id/pfLegalAddressACTV"
+                        android:background="@drawable/bottomline"
+                        android:textColorHint="@color/Grey_300"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:hint="Юридический адрес"
+                        android:enabled="true"
+                        android:layout_marginRight="24dp"
+                        android:inputType="textCapSentences" />
+                </TableRow>
+            <!-- Ссылка на аптечную сеть. UUID класса Net -->
+                <TableRow
+                    android:id="@+id/pfRowNet">
+                    <TextView
+                        android:text="Аптечная сеть"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <LinearLayout
+                        android:layout_column="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_marginRight="24dp">
+                        <AutoCompleteTextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:dropDownWidth="650dp"
+                            android:textCursorDrawable="@null"
+                            android:id="@+id/pfNetACTV"
+                            android:background="@drawable/bottomline"
+                            android:textColorHint="@color/Grey_300"
+                            android:textColor="@android:color/black"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:hint="Аптечная сеть"
+                            android:layout_weight="1"
+                            android:inputType="textCapWords" />
+                        <Button
+                            android:id="@+id/pfNetB"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:text="..." />
+                    </LinearLayout>
+                <!--                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pfNetS"
+                        android:layout_marginRight="24dp" />-->
+                </TableRow>
+                <TableRow
+                    android:id="@+id/pfRowAddress">
+                    <TextView
+                        android:text="Фактический адрес"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <AutoCompleteTextView
+                        android:dropDownWidth="650dp"
+                        android:textCursorDrawable="@null"
+                        android:layout_column="1"
+                        android:id="@+id/pfAddressACTV"
+                        android:background="@drawable/bottomline"
+                        android:textColorHint="@color/Grey_300"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:hint="Фактический адрес"
+                        android:enabled="true"
+                        android:layout_marginRight="24dp"
+                        android:inputType="textCapSentences" />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/pfRowSubway">
+                    <TextView
+                        android:text="Метро"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <AutoCompleteTextView
+                        android:dropDownWidth="450dp"
+                        android:textCursorDrawable="@null"
+                        android:layout_column="1"
+                        android:id="@+id/pfSubwayACTV"
+                        android:background="@drawable/bottomline"
+                        android:textColorHint="@color/Grey_300"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:hint="Метро"
+                        android:enabled="true"
+                        android:layout_marginRight="24dp"
+                        android:inputType="textCapSentences" />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/pfRowRegion">
+                    <TextView
+                        android:text="Район"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <AutoCompleteTextView
+                        android:dropDownWidth="450dp"
+                        android:textCursorDrawable="@null"
+                        android:layout_column="1"
+                        android:id="@+id/pfRegionACTV"
+                        android:background="@drawable/bottomline"
+                        android:textColorHint="@color/Grey_300"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:hint="Район"
+                        android:enabled="true"
+                        android:layout_marginRight="24dp"
+                        android:inputType="textCapSentences" />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/b1fRowPhone">
+                    <TextView
+                        android:text="Телефон"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <EditText
+                        android:textCursorDrawable="@null"
+                        android:layout_column="1"
+                        android:id="@+id/pfPhoneET"
+                        android:background="@drawable/bottomline"
+                        android:textColorHint="#E0E0E0"
+                        android:textColor="#000000"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:hint="Телефон"
+                        android:phoneNumber="true"
+                        android:layout_marginRight="24dp"
+                        android:inputType="phone" />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/pfRowPlace">
+                    <TextView
+                        android:text="Место нахождения"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <AutoCompleteTextView
+                        android:dropDownWidth="450dp"
+                        android:textCursorDrawable="@null"
+                        android:layout_column="1"
+                        android:id="@+id/pfPlaceACTV"
+                        android:background="@drawable/bottomline"
+                        android:textColorHint="@color/Grey_300"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:hint="Например, в магазине"
+                        android:enabled="true"
+                        android:layout_marginRight="24dp"
+                        android:inputType="textCapSentences" />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/pfRowCategoryByNet">
+                    <TextView
+                        android:text="Категория по данным АС"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <AutoCompleteTextView
+                        android:dropDownWidth="450dp"
+                        android:textCursorDrawable="@null"
+                        android:layout_column="1"
+                        android:id="@+id/pfCategoryByNetACTV"
+                        android:background="@drawable/bottomline"
+                        android:textColorHint="@color/Grey_300"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:hint="Например, ..."
+                        android:enabled="true"
+                        android:layout_marginRight="24dp"
+                        android:inputType="textCapSentences" />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/pfRowCategoryBySell">
+                    <TextView
+                        android:text="Категория по ТО"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <AutoCompleteTextView
+                        android:dropDownWidth="450dp"
+                        android:textCursorDrawable="@null"
+                        android:layout_column="1"
+                        android:id="@+id/pfCategoryBySellACTV"
+                        android:background="@drawable/bottomline"
+                        android:textColorHint="@color/Grey_300"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:hint="Например, ..."
+                        android:enabled="true"
+                        android:layout_marginRight="24dp"
+                        android:inputType="textCapSentences" />
+                </TableRow>
+            <!-- Ссылка на последний визит в аптеку. UUID класса Attendance -->
+                <TableRow
+                    android:id="@+id/pfRowLastAttendance">
+                    <TextView
+                        android:text="Последний визит"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <TextView
+                        android:hint="Последний визит"
+                        android:layout_column="1"
+                        android:id="@+id/pfLastAttendanceTV"
+                        android:layout_gravity="center_vertical"
+                        style="@style/fcs_block1" />
+                </TableRow>
+            <!--                <TableRow
+                    android:id="@+id/b1fRow11">
+                    <TextView
+                        android:text="LastAttendanceDate"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <TextView
+                        android:text="LastAttendanceDate"
+                        android:layout_column="1"
+                        android:id="@+id/pfLastAttendanceDateTV"
+                        android:layout_gravity="center_vertical"
+                        style="@style/fcs_block1" />
+                </TableRow>-->
+                <TableRow
+                    android:id="@+id/pfRowNextAttendanceDate">
+                    <TextView
+                        android:text="Дата следующего визита"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <TextView
+                        android:hint="Дата следующего визита"
+                        android:layout_column="1"
+                        android:id="@+id/pfNextAttendanceDateTV"
+                        android:layout_gravity="center_vertical"
+                        style="@style/fcs_block1" />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/pfRowComment">
+                    <TextView
+                        android:text="Комментарий"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:layout_gravity="center_vertical"
+                        style="@style/control_label" />
+                    <EditText
+                        android:textCursorDrawable="@null"
+                        android:layout_column="1"
+                        android:id="@+id/pfCommentET"
+                        android:background="@drawable/bottomline"
+                        android:textColorHint="#E0E0E0"
+                        android:textColor="#000000"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:hint="Комментарий"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:maxWidth="450dp"
+                        android:layout_marginBottom="10dp"
+                        android:enabled="true"
+                        android:layout_marginRight="24dp"
+                        android:minWidth="300dp"
+                        android:minLines="2"
+                        android:maxLines="5" />
+                </TableRow>
+            </TableLayout>
+        </ScrollView>
+    </RelativeLayout>
+</RelativeLayout>

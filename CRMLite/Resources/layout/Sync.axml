@@ -5,6 +5,56 @@
     android:layout_height="match_parent"
     android:minWidth="25px"
     android:minHeight="25px">
+    <CheckBox
+        android:text="LoadPositions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saLoadPositionsCB" />
+    <CheckBox
+        android:text="LoadNets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saLoadNetsCB" />
+    <CheckBox
+        android:text="LoadSubways"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saLoadSubwaysCB" />
+    <CheckBox
+        android:text="LoadRegions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saLoadRegionsCB" />
+    <CheckBox
+        android:text="LoadPlaces"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saLoadPlacesCB" />
+    <CheckBox
+        android:text="LoadCategories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saLoadCategoriesCB" />
+    <CheckBox
+        android:text="LoadDrugSKUs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saLoadDrugSKUsCB" />
+    <CheckBox
+        android:text="LoadDrugBrands"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saLoadDrugBrandsCB" />
+    <CheckBox
+        android:text="LoadPromotions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saLoadPromotionsCB" />
+    <CheckBox
+        android:text="LoadMessageTypes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saLoadMessageTypesCB" />
     <Button
         android:text="Button"
         android:layout_width="match_parent"

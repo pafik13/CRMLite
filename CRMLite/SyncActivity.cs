@@ -31,14 +31,63 @@ namespace CRMLite
 
 		void GetData_Click(object sender, EventArgs e)
 		{
-			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+			//var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+			var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
 
-			LoadPositions(client);
-			LoadNets(client);
-			LoadSubways(client);
-			LoadRegions(client);
-			LoadPlaces(client);
-			LoadCategories(client);
+			if (FindViewById<CheckBox>(Resource.Id.saLoadPositionsCB).Checked) LoadPositions(client);
+			if (FindViewById<CheckBox>(Resource.Id.saLoadNetsCB).Checked) LoadNets(client);
+			if (FindViewById<CheckBox>(Resource.Id.saLoadSubwaysCB).Checked) LoadSubways(client);
+			if (FindViewById<CheckBox>(Resource.Id.saLoadRegionsCB).Checked) LoadRegions(client);
+			if (FindViewById<CheckBox>(Resource.Id.saLoadPlacesCB).Checked) LoadPlaces(client);
+			if (FindViewById<CheckBox>(Resource.Id.saLoadCategoriesCB).Checked) LoadCategories(client);
+			if (FindViewById<CheckBox>(Resource.Id.saLoadDrugSKUsCB).Checked) LoadDrugSKUs(client);
+			if (FindViewById<CheckBox>(Resource.Id.saLoadDrugBrandsCB).Checked) LoadDrugBrands(client);
+			if (FindViewById<CheckBox>(Resource.Id.saLoadPromotionsCB).Checked) LoadPromotions(client);
+			if (FindViewById<CheckBox>(Resource.Id.saLoadMessageTypesCB).Checked) LoadMessageTypes(client);
+		}
+
+		void LoadMessageTypes(RestClient client)
+		{
+			var request = new RestRequest(@"MessageType?limit=300&populate=false", Method.GET);
+			var response = client.Execute<List<MessageType>>(request);
+			if (response.StatusCode == System.Net.HttpStatusCode.OK)
+			{
+				SD.Debug.WriteLine(string.Format(@"Получено Promotion {0}", response.Data.Count));
+				MainDatabase.SaveItems(response.Data);
+			}	
+		}
+
+		void LoadPromotions(RestClient client)
+		{
+			var request = new RestRequest(@"Promotion?limit=300&populate=false", Method.GET);
+			var response = client.Execute<List<Promotion>>(request);
+			if (response.StatusCode == System.Net.HttpStatusCode.OK)
+			{
+				SD.Debug.WriteLine(string.Format(@"Получено Promotion {0}", response.Data.Count));
+				MainDatabase.SaveItems(response.Data);
+			}
+		}
+
+		void LoadDrugSKUs(RestClient client)
+		{
+			var request = new RestRequest(@"DrugSKU?limit=300&populate=false", Method.GET);
+			var response = client.Execute<List<DrugSKU>>(request);
+			if (response.StatusCode == System.Net.HttpStatusCode.OK)
+			{
+				SD.Debug.WriteLine(response.Data.Count);
+				MainDatabase.SaveDrugSKUs(response.Data);
+			}
+		}
+
+		void LoadDrugBrands(RestClient client)
+		{
+			var request = new RestRequest(@"DrugBrand?limit=300&populate=false", Method.GET);
+			var response = client.Execute<List<DrugBrand>>(request);
+			if (response.StatusCode == System.Net.HttpStatusCode.OK)
+			{
+				SD.Debug.WriteLine(response.Data.Count);
+				MainDatabase.SaveDrugBrands(response.Data);
+			}		
 		}
 
 		void LoadPositions(RestClient client)

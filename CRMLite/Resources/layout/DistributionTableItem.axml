@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@android:color/white"
+    android:weightSum="100">
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/dtiDrugSKUTV"
+        android:layout_weight="15"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="9"
+        android:background="@drawable/bottomline">
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/dtiIsExistenceCB"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+    <EditText
+        android:textCursorDrawable="@null"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="12"
+        android:id="@+id/dtiCountET"
+        android:background="@drawable/bottomline"
+        android:textColorHint="@color/Grey_300"
+        android:textColor="@android:color/black"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:hint="Количество"
+        android:inputType="textCapSentences" />
+    <EditText
+        android:textCursorDrawable="@null"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="12"
+        android:id="@+id/dtiPriceET"
+        android:background="@drawable/bottomline"
+        android:textColorHint="@color/Grey_300"
+        android:textColor="@android:color/black"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:hint="Цена"
+        android:inputType="textCapSentences" />
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="12"
+        android:background="@drawable/bottomline">
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/dtiIsPresenceCB"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+    <EditText
+        android:textCursorDrawable="@null"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="20"
+        android:id="@+id/dtiOrder"
+        android:background="@drawable/bottomline"
+        android:textColorHint="@color/Grey_300"
+        android:textColor="@android:color/black"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:hint="Заказ"
+        android:inputType="textCapSentences" />
+    <EditText
+        android:textCursorDrawable="@null"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="20"
+        android:id="@+id/dtiComment"
+        android:background="@drawable/bottomline"
+        android:textColorHint="@color/Grey_300"
+        android:textColor="@android:color/black"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:hint="Комментарий"
+        android:inputType="textCapSentences" />
+</LinearLayout>

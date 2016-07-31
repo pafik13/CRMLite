@@ -90,6 +90,23 @@
     <Compile Include="Lib\Entities\Employee.cs" />
     <Compile Include="Lib\Entities\Position.cs" />
     <Compile Include="Lib\Entities\Category.cs" />
+    <Compile Include="AttendanceActivity.cs" />
+    <Compile Include="Lib\Dialogs\LockDialog.cs" />
+    <Compile Include="Lib\Fragments\ScreenSlidePageFragment.cs" />
+    <Compile Include="Lib\Fragments\PharmacyFragment.cs" />
+    <Compile Include="Lib\Fragments\EmployeeFragment.cs" />
+    <Compile Include="Lib\Fragments\InfoFragment.cs" />
+    <Compile Include="Lib\Entities\DrugSKU.cs" />
+    <Compile Include="Lib\Entities\DrugBrand.cs" />
+    <Compile Include="Lib\IEntiryFromServer.cs" />
+    <Compile Include="Lib\Entities\Promotion.cs" />
+    <Compile Include="Lib\Entities\MessageType.cs" />
+    <Compile Include="Lib\Adapters\DistributionAdapter.cs" />
+    <Compile Include="Lib\Entities\Distribution.cs" />
+    <Compile Include="Lib\IAttendanceData.cs" />
+    <Compile Include="Lib\Entities\PresentationData.cs" />
+    <Compile Include="Lib\Entities\Attendance.cs" />
+    <Compile Include="Lib\Entities\CoterieData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -184,6 +201,16 @@
     <AndroidResource Include="Resources\layout\Hospital.axml" />
     <AndroidResource Include="Resources\layout\HospitalDialog.axml" />
     <AndroidResource Include="Resources\layout\Sync.axml" />
+    <AndroidResource Include="Resources\layout\fragment_screen_slide_page.axml" />
+    <AndroidResource Include="Resources\layout\activity_screen_slide.axml" />
+    <AndroidResource Include="Resources\layout\PharmacyFragment.axml" />
+    <AndroidResource Include="Resources\layout\EmployeeFragment.axml" />
+    <AndroidResource Include="Resources\layout\InfoFragment.axml" />
+    <AndroidResource Include="Resources\layout\DistributionTableItem.axml" />
+    <AndroidResource Include="Resources\layout\DistributionTableHeader.axml" />
+    <AndroidResource Include="Resources\layout\Divider.axml" />
+    <AndroidResource Include="Resources\layout\InfoPresentationItem.axml" />
+    <AndroidResource Include="Resources\layout\InfoCoterieItem.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />
@@ -199,6 +226,7 @@
     <Folder Include="Lib\Services\" />
     <Folder Include="Lib\Suggestions\" />
     <Folder Include="Lib\Dialogs\" />
+    <Folder Include="Lib\Fragments\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="realm">
