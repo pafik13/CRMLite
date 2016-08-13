@@ -31,8 +31,8 @@ namespace CRMLite
 
 		void GetData_Click(object sender, EventArgs e)
 		{
-			//var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
-			var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
+			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+			//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
 
 			if (FindViewById<CheckBox>(Resource.Id.saLoadPositionsCB).Checked) LoadPositions(client);
 			if (FindViewById<CheckBox>(Resource.Id.saLoadNetsCB).Checked) LoadNets(client);

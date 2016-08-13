@@ -248,16 +248,14 @@ namespace CRMLite
 							   (caller, arguments) =>
 							   {
 								   Toast.MakeText(Activity, @"Selected " + arguments.Which, ToastLength.Short).Show();
-								   if (arguments.IsChecked)
-								   {
+								   if (arguments.IsChecked) {
 									   cacheBrands.Add(Brands[arguments.Which]);
-								   }
-								   else {
+								   } else {
 									   cacheBrands.Remove(Brands[arguments.Which]);
 								   }
 							   }
 						   )
-						   .SetPositiveButton(
+						    .SetPositiveButton(
 							   @"Сохранить",
 							 	(caller, arguments) =>
 								{
@@ -274,8 +272,8 @@ namespace CRMLite
 									(caller as Android.App.Dialog).Dispose();
 								}
 							)
-							.SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Android.App.Dialog).Dispose(); })
-						   .Show();
+						    .SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Android.App.Dialog).Dispose(); })
+						    .Show();
 			};
 
 			coterieDatas.Add(newCoterieData);
