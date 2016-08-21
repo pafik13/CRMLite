@@ -11,14 +11,14 @@
         android:layout_height="match_parent"
         android:id="@+id/dtiDrugSKUTV"
         android:layout_weight="15"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
         android:focusableInTouchMode="false" />
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="9"
+        android:layout_weight="8"
         android:background="@drawable/bottomline">
         <CheckBox
             android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="12"
+        android:layout_weight="11"
         android:id="@+id/dtiCountET"
         android:background="@drawable/bottomline"
         android:textColorHint="@color/Grey_300"
@@ -38,12 +38,13 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:hint="Количество"
-        android:inputType="textCapSentences" />
+        android:inputType="textCapSentences"
+        android:gravity="center" />
     <EditText
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="12"
+        android:layout_weight="11"
         android:id="@+id/dtiPriceET"
         android:background="@drawable/bottomline"
         android:textColorHint="@color/Grey_300"
@@ -51,11 +52,12 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:hint="Цена"
-        android:inputType="textCapSentences" />
+        android:inputType="textCapSentences"
+        android:gravity="center" />
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="12"
+        android:layout_weight="8"
         android:background="@drawable/bottomline">
         <CheckBox
             android:layout_width="wrap_content"
@@ -63,11 +65,22 @@
             android:id="@+id/dtiIsPresenceCB"
             android:layout_centerInParent="true" />
     </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="8"
+        android:background="@drawable/bottomline">
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/dtiIsPOSCB"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
     <EditText
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="20"
+        android:layout_weight="19"
         android:id="@+id/dtiOrder"
         android:background="@drawable/bottomline"
         android:textColorHint="@color/Grey_300"
@@ -75,7 +88,8 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:hint="Заказ"
-        android:inputType="textCapSentences" />
+        android:inputType="textCapSentences"
+        android:layout_marginLeft="10dp" />
     <EditText
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
@@ -88,5 +102,6 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:hint="Комментарий"
-        android:inputType="textCapSentences" />
+        android:inputType="textCapSentences"
+        android:layout_marginLeft="10dp" />
 </LinearLayout>

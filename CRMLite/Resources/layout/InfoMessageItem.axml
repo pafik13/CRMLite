@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:weightSum="100">
+    <Spinner
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:id="@+id/imiMessageTypeS"
+        android:layout_weight="30"
+        android:gravity="center" />
+    <EditText
+        android:textCursorDrawable="@null"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_weight="70"
+        android:id="@+id/imiMessageTextET"
+        android:background="@drawable/bottomline"
+        android:textColorHint="@color/Grey_300"
+        android:textColor="@android:color/black"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:hint="Сообщение от аптеки"
+        android:inputType="textCapSentences" />
+</LinearLayout>

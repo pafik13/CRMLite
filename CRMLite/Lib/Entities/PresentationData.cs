@@ -5,7 +5,7 @@ namespace CRMLite.Entities
 	public class PresentationData : RealmObject, IAttendanceData
 	{
 		/// <summary>
-		/// Уникальный идентификатор работника аптеки. Используется Guid.
+		/// Уникальный идентификатор презентации. Используется Guid.
 		/// </summary>
 		/// <value>The UUID.</value>
 		[ObjectId]

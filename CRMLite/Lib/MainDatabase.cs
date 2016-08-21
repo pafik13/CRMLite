@@ -7,6 +7,7 @@ using System.IO;
 
 using CRMLite.Entities;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace CRMLite
 {
@@ -155,6 +156,14 @@ namespace CRMLite
 				trans.Commit();
 			}
 		}
+
+		public static T CreateData<T>(string attendanceUUID) where T : RealmObject, IAttendanceData, IEntity, new()
+		{
+			var item = Me.DB.CreateObject<T>();
+			item.UUID = Guid.NewGuid().ToString();
+			item.Attendance = attendanceUUID;
+			return item;
+		}
 		#endregion
 
 		public static IList<string> GetStates()
@@ -296,6 +305,14 @@ namespace CRMLite
 		public static PresentationData CreatePresentationData(string attendanceUUID)
 		{
 			var item = Me.DB.CreateObject<PresentationData>();
+			item.UUID = Guid.NewGuid().ToString();
+			item.Attendance = attendanceUUID;
+			return item;
+		}
+
+		public static MessageData CreateMessageData(string attendanceUUID)
+		{
+			var item = Me.DB.CreateObject<MessageData>();
 			item.UUID = Guid.NewGuid().ToString();
 			item.Attendance = attendanceUUID;
 			return item;

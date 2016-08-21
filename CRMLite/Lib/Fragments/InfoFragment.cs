@@ -23,6 +23,9 @@ namespace CRMLite
 		Attendance CurrentAttendance;
 		List<PresentationData> presentationDatas;
 		List<CoterieData> coterieDatas;
+		List<MessageData> messageDatas;
+		PromotionData promotionData;
+		CompetitorData competitorData;
 
 		//ListView DitributionList;
 		//DistributionAdapter Adapter;
@@ -37,6 +40,7 @@ namespace CRMLite
 
 		LinearLayout PresentationTable;
 		LinearLayout CoterieTable;
+		LinearLayout MessageTable;
 
 		public static InfoFragment create(string UUID)
 		{
@@ -78,6 +82,9 @@ namespace CRMLite
 				};
 				presentationDatas = new List<PresentationData>();
 				coterieDatas = new List<CoterieData>();
+				messageDatas = new List<MessageData>();
+				promotionData = MainDatabase.CreateData<PromotionData>(CurrentAttendance.UUID);
+				competitorData = MainDatabase.CreateData<CompetitorData>(CurrentAttendance.UUID);
 			}
 
 			//DitributionList = view.FindViewById<ListView>(Resource.Id.ifDistributionTable);
@@ -115,8 +122,6 @@ namespace CRMLite
 
 			PresentationTable = view.FindViewById<LinearLayout>(Resource.Id.ifPresentationTable);
 			AddPresentationView();
-			//var presentation = inflater.Inflate(Resource.Layout.InfoPresentationItem, PresentationTable, false);
-			//PresentationTable.AddView(presentation);
 			view.FindViewById<RelativeLayout>(Resource.Id.ifAddPresentationRL).Click += delegate
 			{
 				AddPresentationView();
@@ -129,7 +134,98 @@ namespace CRMLite
 				AddCoterieView();
 			};
 
+			var promotionText = view.FindViewById<EditText>(Resource.Id.ifPromotionET);
+			var promotions = new List<Promotion>();
+			promotions.Add(new Promotion { name = @"Выберите акцию!", uuid = Guid.Empty.ToString() });
+			promotions.AddRange(MainDatabase.GetItems<Promotion>());
+			var promotion = view.FindViewById<Spinner>(Resource.Id.ifPromotionS);
+			var promotionAdapter = new ArrayAdapter(
+				Context,
+				Android.Resource.Layout.SimpleSpinnerItem,
+				promotions.Select(x => x.name).ToArray()
+			);
+			promotionAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
+			promotion.Adapter = promotionAdapter;
+			promotion.ItemSelected += (sender, e) =>
+			{
+				if (e.Position == 0) {
+					promotionText.Text = string.Empty;
+					promotionText.Enabled = false;
+				} else {
+					promotionText.Enabled = true;
+					promotionData.Promotion = promotions[e.Position].uuid;
+				}
+			};
+
+			promotionText.AfterTextChanged += (sender, e) => {
+				promotionData.Text = e.Editable.ToString();
+			};
+
+			var competitorText = view.FindViewById<EditText>(Resource.Id.ifCompetitorET);
+			var competitor = view.FindViewById<CheckBox>(Resource.Id.ifCompetitorCB);
+			competitor.CheckedChange += (sender, e) => {
+				if (e.IsChecked) {
+					competitorText.Enabled = true;
+				}
+				else {
+					competitorText.Text = string.Empty;
+					competitorText.Enabled = false;
+				}
+			};
+
+			competitorText.AfterTextChanged += (sender, e) => {
+				competitorData.Text = e.Editable.ToString();
+			};
+
+			MessageTable = view.FindViewById<LinearLayout>(Resource.Id.ifMessageTable);
+			AddMessageView();
+			view.FindViewById<RelativeLayout>(Resource.Id.ifAddMessageRL).Click += delegate
+			{
+				AddMessageView();
+			};
+
 			return view;
+		}
+
+		void AddMessageView()
+		{
+			var newMessage = MainDatabase.CreateMessageData(CurrentAttendance.UUID);
+
+			var message = Inflater.Inflate(Resource.Layout.InfoMessageItem, MessageTable, false);
+			message.SetTag(Resource.String.MessageUUID, newMessage.UUID);
+
+			var messageText = message.FindViewById<EditText>(Resource.Id.imiMessageTextET);
+
+			var messageTypes = new List<MessageType>();
+			messageTypes.Add(new MessageType { name = @"Выберите тип сообщения!", uuid = Guid.Empty.ToString() });
+			messageTypes.AddRange(MainDatabase.GetItems<MessageType>());
+
+			var messageType = message.FindViewById<Spinner>(Resource.Id.imiMessageTypeS);
+			var messageTypeAdapter = new ArrayAdapter(
+				Context, 
+				Android.Resource.Layout.SimpleSpinnerItem, 
+				messageTypes.Select(x => x.name).ToArray()
+			);
+			messageTypeAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
+			messageType.Adapter = messageTypeAdapter;
+			messageType.ItemSelected += (sender, e) =>
+			{
+				if (e.Position == 0) {
+					messageText.Text = string.Empty;
+					messageText.Enabled = false;
+				}
+				else {
+					messageText.Enabled = true;
+					newMessage.Type = messageTypes[e.Position].uuid;
+				}
+			};
+
+			messageText.AfterTextChanged += (sender, e) => {
+				newMessage.Text = e.Editable.ToString();
+			};
+
+			messageDatas.Add(newMessage);
+			MessageTable.AddView(message);
 		}
 
 		void AddPresentationView()
@@ -306,45 +402,46 @@ namespace CRMLite
 			base.OnResume();
 
 			//realm = Realm.GetInstance();
-			Distributions = new List<Distribution>();
-			List<DrugSKU> drugSKUs = MainDatabase.GetItems<DrugSKU>();
+			//Distributions = new List<Distribution>();
+			//List<DrugSKU> drugSKUs = MainDatabase.GetItems<DrugSKU>();
 
-			foreach (var SKU in drugSKUs)
-			{
-				Distributions.Add( new Distribution {
-					UUID = Guid.NewGuid().ToString(),
-					DrugSKU = SKU.uuid,
-					IsExistence = false 
-				});
-			}
+			//foreach (var SKU in drugSKUs)
+			//{
+			//	Distributions.Add( new Distribution {
+			//		UUID = Guid.NewGuid().ToString(),
+			//		DrugSKU = SKU.uuid,
+			//		IsExistence = false 
+			//	});
+			//}
 
-			View header = Activity.LayoutInflater.Inflate(Resource.Layout.DistributionTableHeader, DistributionTable, false);
-			View divider = Activity.LayoutInflater.Inflate(Resource.Layout.Divider, DistributionTable, false);
+			//View header = Activity.LayoutInflater.Inflate(Resource.Layout.DistributionTableHeader, DistributionTable, false);
+			//View divider = Activity.LayoutInflater.Inflate(Resource.Layout.Divider, DistributionTable, false);
 
-			DistributionTable.AddView(header);
-			DistributionTable.AddView(divider);
+			//DistributionTable.AddView(header);
+			//DistributionTable.AddView(divider);
 
-			foreach (var item in Distributions)
-			{
-				var view = (Activity.LayoutInflater.Inflate(
-									Resource.Layout.DistributionTableItem,
-									DistributionTable,
-									false)) as LinearLayout;
+			//foreach (var item in Distributions)
+			//{
+			//	var view = (Activity.LayoutInflater.Inflate(
+			//						Resource.Layout.DistributionTableItem,
+			//						DistributionTable,
+			//						false)) as LinearLayout;
 
-				view.FindViewById<TextView>(Resource.Id.dtiDrugSKUTV).Text = MainDatabase.GetItem<DrugSKU>(item.DrugSKU).name;
-				view.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked = item.IsExistence;
-				view.FindViewById<EditText>(Resource.Id.dtiCountET).Text = item.Count.ToString();
-				view.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = item.Price.ToString();
-				view.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked = item.IsPresence;
-				view.FindViewById<EditText>(Resource.Id.dtiOrder).Text = item.Order;
-				view.FindViewById<EditText>(Resource.Id.dtiComment).Text = item.Comment;
+			//	view.FindViewById<TextView>(Resource.Id.dtiDrugSKUTV).Text = MainDatabase.GetItem<DrugSKU>(item.DrugSKU).name;
+			//	view.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked = item.IsExistence;
+			//	view.FindViewById<EditText>(Resource.Id.dtiCountET).Text = item.Count.ToString();
+			//	view.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = item.Price.ToString();
+			//	view.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked = item.IsPresence;
+			//	view.FindViewById<CheckBox>(Resource.Id.dtiIsPOSCB).Checked = item.IsPOS;
+			//	view.FindViewById<EditText>(Resource.Id.dtiOrder).Text = item.Order;
+			//	view.FindViewById<EditText>(Resource.Id.dtiComment).Text = item.Comment;
 
-				DistributionTable.AddView(view);
+			//	DistributionTable.AddView(view);
 
-				divider = Activity.LayoutInflater.Inflate(Resource.Layout.Divider, DistributionTable, false);
+			//	divider = Activity.LayoutInflater.Inflate(Resource.Layout.Divider, DistributionTable, false);
 
-				DistributionTable.AddView(divider);
-			}
+			//	DistributionTable.AddView(divider);
+			//}
 
 			//Adapter = new DistributionAdapter(Activity, Distributions);
 

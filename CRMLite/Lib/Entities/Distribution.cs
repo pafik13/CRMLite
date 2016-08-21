@@ -5,7 +5,7 @@ namespace CRMLite.Entities
 	public class Distribution : RealmObject
 	{
 		/// <summary>
-		/// Уникальный идентификатор работника аптеки. Используется Guid.
+		/// Уникальный идентификатор информации о дистрибуции. Используется Guid.
 		/// </summary>
 		/// <value>The UUID.</value>
 		[ObjectId]
@@ -20,6 +20,8 @@ namespace CRMLite.Entities
 		public float Price { get; set; }
 
 		public bool IsPresence { get; set; }
+
+		public bool IsPOS { get; set; }
 
 		public string Order { get; set; }
 

@@ -107,6 +107,11 @@
     <Compile Include="Lib\Entities\PresentationData.cs" />
     <Compile Include="Lib\Entities\Attendance.cs" />
     <Compile Include="Lib\Entities\CoterieData.cs" />
+    <Compile Include="Lib\Entities\MessageData.cs" />
+    <Compile Include="Lib\Entities\PromotionData.cs" />
+    <Compile Include="Lib\IEntityFromClient.cs" />
+    <Compile Include="Lib\Entities\CompetitorData.cs" />
+    <Compile Include="Lib\Entities\PhotoType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -211,6 +216,18 @@
     <AndroidResource Include="Resources\layout\Divider.axml" />
     <AndroidResource Include="Resources\layout\InfoPresentationItem.axml" />
     <AndroidResource Include="Resources\layout\InfoCoterieItem.axml" />
+    <AndroidResource Include="Resources\layout\InfoMessageItem.axml" />
+    <AndroidResource Include="Resources\drawable\bottomline.xml" />
+    <AndroidResource Include="Resources\drawable\ic_add_circle_outline_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable\ic_exit_to_app_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable\ic_keyboard_arrow_left_black_24dp.png" />
+    <AndroidResource Include="Resources\drawable\ic_keyboard_arrow_right_black_24dp.png" />
+    <AndroidResource Include="Resources\drawable\ic_local_library_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable\ic_loop_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable\splash_logo.png" />
+    <AndroidResource Include="Resources\drawable\splash_screen.xml" />
+    <AndroidResource Include="Resources\drawable\Icon.png" />
+    <AndroidResource Include="Resources\layout\SpinnerItem.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

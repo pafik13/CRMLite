@@ -5,7 +5,7 @@ namespace CRMLite.Entities
 	public class CoterieData: RealmObject, IAttendanceData
 	{
 		/// <summary>
-		/// Уникальный идентификатор работника аптеки. Используется Guid.
+		/// Уникальный идентификатор фарм-кружка. Используется Guid.
 		/// </summary>
 		/// <value>The UUID.</value>
 		[ObjectId]

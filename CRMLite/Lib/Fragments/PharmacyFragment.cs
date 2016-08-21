@@ -146,7 +146,7 @@ namespace CRMLite
 			#region Net
 			nets = MainDatabase.GetNets();
 			var net = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfNetACTV);
-			if (string.IsNullOrEmpty(pharmacy.Net))
+			if (!string.IsNullOrEmpty(pharmacy.Net))
 			{
 				net.Text = MainDatabase.GetNet(pharmacy.Net).name;
 			}
@@ -187,10 +187,10 @@ namespace CRMLite
 
 			#region Subway
 			AutoCompleteTextView subwayACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfSubwayACTV);
-			subwayACTV.Text = string.IsNullOrEmpty(pharmacy.Subway) ? pharmacy.Subway : MainDatabase.GetSubway(pharmacy.Subway).name;
+			//subwayACTV.Text = string.IsNullOrEmpty(pharmacy.Subway) ? pharmacy.Subway : MainDatabase.GetSubway(pharmacy.Subway).name;
 			//string[] stations = Resources.GetStringArray(Resource.Array.moscow_stations);
-			subways = MainDatabase.GetSubways();
-			subwayACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, subways.Select(x => x.name).ToArray());
+			//subways = MainDatabase.GetSubways();
+			//subwayACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, subways.Select(x => x.name).ToArray());
 			subwayACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
 			{
 				pharmacy.Subway = subways[e.Position].uuid;
@@ -199,10 +199,10 @@ namespace CRMLite
 
 			#region Region
 			AutoCompleteTextView regionACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfRegionACTV);
-			regionACTV.Text = string.IsNullOrEmpty(pharmacy.Region) ? pharmacy.Region : MainDatabase.GetRegion(pharmacy.Region).name;
+			//regionACTV.Text = string.IsNullOrEmpty(pharmacy.Region) ? pharmacy.Region : MainDatabase.GetRegion(pharmacy.Region).name;
 			//string[] regions = Resources.GetStringArray(Resource.Array.moscow_regions);
-			regions = MainDatabase.GetRegions();
-			regionACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, regions.Select(x => x.name).ToArray());
+			//regions = MainDatabase.GetRegions();
+			//regionACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, regions.Select(x => x.name).ToArray());
 			regionACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
 			{
 				pharmacy.Region = regions[e.Position].uuid;

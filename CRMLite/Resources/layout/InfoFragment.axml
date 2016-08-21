@@ -1,337 +1,299 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="25px"
+    android:minHeight="25px"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minWidth="25px"
-    android:minHeight="64px"
     android:background="@color/Grey_300">
-    <RelativeLayout
+    <LinearLayout
         android:minWidth="25px"
         android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Grey_300">
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+        <TextView
+            android:text="Дистрибьюция"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textSize="32sp"
+            android:textColor="@android:color/black"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+        <LinearLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ifDistributionTable" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="12dp" />
+        <TextView
+            android:text="Содержание визита"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textSize="32sp"
+            android:textColor="@android:color/black"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+        <Button
+            android:text="Сменить тип визита"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ifChangeAttendanceTypeB" />
+    <!--	Тип визита	-->
+        <ViewSwitcher
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ifAtendanceTypeContentVS">
+            <LinearLayout
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:text="Презентация"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:textSize="24sp"
+                    android:textColor="@android:color/black"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false" />
+                <LinearLayout
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:id="@+id/ifPresentationTable"
+                    android:animateLayoutChanges="true" />
+                <RelativeLayout
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Grey_500"
+                    android:id="@+id/ifAddPresentationRL">
+                    <ImageView
+                        android:src="@drawable/ic_add_circle_outline_black_48dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="4dp" />
+                </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:text="Фарм-кружок"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:textSize="24sp"
+                    android:textColor="@android:color/black"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false" />
+                <LinearLayout
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:id="@+id/ifCoterieTable"
+                    android:animateLayoutChanges="true" />
+                <RelativeLayout
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Grey_500"
+                    android:id="@+id/ifAddCoterieRL">
+                    <ImageView
+                        android:src="@drawable/ic_add_circle_outline_black_48dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="4dp" />
+                </RelativeLayout>
+            </LinearLayout>
+        </ViewSwitcher>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="12dp" />
+    <!--	Акции	-->
+        <LinearLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:weightSum="100">
+            <TextView
+                android:text="Акция"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="30"
+                android:gravity="center"
+                android:textAppearance="@style/rowTextForPharmacy"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:id="@+id/ifPromotionS"
+                android:layout_weight="20" />
+            <EditText
+                android:textCursorDrawable="@null"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="50"
+                android:id="@+id/ifPromotionET"
+                android:background="@drawable/bottomline"
+                android:textColorHint="@color/Grey_300"
+                android:textColor="@android:color/black"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:hint="Например, ..."
+                android:inputType="textCapSentences" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="12dp" />
+    <!--	Активность конкурентов	-->
+        <LinearLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:weightSum="100">
+            <TextView
+                android:text="Активность конкурентов"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="30"
+                android:gravity="center"
+                android:textAppearance="@style/rowTextForPharmacy"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
+            <RelativeLayout
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="20"
+                android:background="@drawable/bottomline">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ifCompetitorCB"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
+            <EditText
+                android:textCursorDrawable="@null"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="50"
+                android:id="@+id/ifCompetitorET"
+                android:background="@drawable/bottomline"
+                android:textColorHint="@color/Grey_300"
+                android:textColor="@android:color/black"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:hint="Например, ..."
+                android:inputType="textCapSentences" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="12dp" />
+    <!--	Сообщение от аптеки	-->
         <LinearLayout
             android:minWidth="25px"
             android:minHeight="25px"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:background="@color/Grey_300"
-            android:weightSum="100">
-        <!--	Левый отступ	-->
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:text="Сообщения от аптеки"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="24sp"
+                android:textColor="@android:color/black"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
             <LinearLayout
                 android:minWidth="25px"
                 android:minHeight="25px"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_weight="10" />
-        <!--	Данные		-->
-            <LinearLayout
+                android:id="@+id/ifMessageTable"
+                android:animateLayoutChanges="true" />
+            <RelativeLayout
                 android:minWidth="25px"
                 android:minHeight="25px"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="80">
-                <ScrollView
-                    android:minWidth="25px"
-                    android:minHeight="25px"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <LinearLayout
-                        android:minWidth="25px"
-                        android:minHeight="25px"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-                        <TextView
-                            android:text="Дистрибьюция"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="left"
-                            android:textSize="32sp"
-                            android:textColor="@android:color/black"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false" />
-                        <LinearLayout
-                            android:minWidth="25px"
-                            android:minHeight="25px"
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/ifDistributionTable" />
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="12dp" />
-                        <TextView
-                            android:text="Содержание визита"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="left"
-                            android:textSize="32sp"
-                            android:textColor="@android:color/black"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false" />
-                        <Button
-                            android:text="Поменять тип визита"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/ifChangeAttendanceTypeB" />
-                    <!--	Тип визита	-->
-                        <ViewSwitcher
-                            android:minWidth="25px"
-                            android:minHeight="25px"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/ifAtendanceTypeContentVS">
-                            <LinearLayout
-                                android:minWidth="25px"
-                                android:minHeight="25px"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:text="Презентация"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="left"
-                                    android:textSize="24sp"
-                                    android:textColor="@android:color/black"
-                                    android:focusable="false"
-                                    android:focusableInTouchMode="false" />
-                                <LinearLayout
-                                    android:minWidth="25px"
-                                    android:minHeight="25px"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:id="@+id/ifPresentationTable"
-                                    android:animateLayoutChanges="true" />
-                                <RelativeLayout
-                                    android:minWidth="25px"
-                                    android:minHeight="25px"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@color/Grey_500"
-                                    android:id="@+id/ifAddPresentationRL">
-                                    <ImageView
-                                        android:src="@drawable/ic_add_circle_outline_black_48dp"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:id="@+id/imageView1"
-                                        android:layout_centerInParent="true"
-                                        android:layout_margin="4dp" />
-                                </RelativeLayout>
-                            </LinearLayout>
-                            <LinearLayout
-                                android:minWidth="25px"
-                                android:minHeight="25px"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:text="Фарм-кружок"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="left"
-                                    android:textSize="24sp"
-                                    android:textColor="@android:color/black"
-                                    android:focusable="false"
-                                    android:focusableInTouchMode="false" />
-                                <LinearLayout
-                                    android:minWidth="25px"
-                                    android:minHeight="25px"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:id="@+id/ifCoterieTable"
-                                    android:animateLayoutChanges="true" />
-                                <RelativeLayout
-                                    android:minWidth="25px"
-                                    android:minHeight="25px"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@color/Grey_500"
-                                    android:id="@+id/ifAddCoterieRL">
-                                    <ImageView
-                                        android:src="@drawable/ic_add_circle_outline_black_48dp"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:id="@+id/imageView1"
-                                        android:layout_centerInParent="true"
-                                        android:layout_margin="10dp" />
-                                </RelativeLayout>
-                            </LinearLayout>
-                        </ViewSwitcher>
-                        <LinearLayout
-                            android:minWidth="25px"
-                            android:minHeight="25px"
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/white"
-                            android:weightSum="100">
-                            <TextView
-                                android:text="Акция"
-                                android:layout_width="0dp"
-                                android:layout_height="60dp"
-                                android:id="@+id/etiNameTV"
-                                android:layout_weight="30"
-                                android:gravity="center"
-                                android:textAppearance="@style/rowTextForPharmacy"
-                                android:focusable="false"
-                                android:focusableInTouchMode="false" />
-                            <Spinner
-                                android:layout_width="0dp"
-                                android:layout_height="60dp"
-                                android:id="@+id/ifType"
-                                android:layout_weight="20" />
-                            <EditText
-                                android:textCursorDrawable="@null"
-                                android:layout_width="0dp"
-                                android:layout_height="60dp"
-                                android:layout_weight="50"
-                                android:id="@+id/paNameET"
-                                android:background="@drawable/bottomline"
-                                android:textColorHint="@color/Grey_300"
-                                android:textColor="@android:color/black"
-                                android:paddingTop="10dp"
-                                android:paddingBottom="10dp"
-                                android:hint="Например, ..."
-                                android:inputType="textCapSentences" />
-                        </LinearLayout>
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="12dp" />
-                    <!--	Сообщение от аптеки	-->
-                        <LinearLayout
-                            android:minWidth="25px"
-                            android:minHeight="25px"
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/white"
-                            android:weightSum="100">
-                            <TextView
-                                android:text="Сообщение от аптеки"
-                                android:layout_width="0dp"
-                                android:layout_height="60dp"
-                                android:id="@+id/etiNameTV"
-                                android:layout_weight="30"
-                                android:gravity="center"
-                                android:textAppearance="@style/rowTextForPharmacy"
-                                android:focusable="false"
-                                android:focusableInTouchMode="false" />
-                            <Spinner
-                                android:layout_width="0dp"
-                                android:layout_height="60dp"
-                                android:id="@+id/ifType"
-                                android:layout_weight="20" />
-                            <EditText
-                                android:textCursorDrawable="@null"
-                                android:layout_width="0dp"
-                                android:layout_height="60dp"
-                                android:layout_weight="50"
-                                android:id="@+id/paNameET"
-                                android:background="@drawable/bottomline"
-                                android:textColorHint="@color/Grey_300"
-                                android:textColor="@android:color/black"
-                                android:paddingTop="10dp"
-                                android:paddingBottom="10dp"
-                                android:hint="Например, ..."
-                                android:inputType="textCapSentences" />
-                        </LinearLayout>
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="12dp" />
-                    <!--	Активность конкурентов	-->
-                        <LinearLayout
-                            android:minWidth="25px"
-                            android:minHeight="25px"
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/white"
-                            android:weightSum="100">
-                            <TextView
-                                android:text="Активность конкурентов"
-                                android:layout_width="0dp"
-                                android:layout_height="60dp"
-                                android:id="@+id/etiNameTV"
-                                android:layout_weight="30"
-                                android:gravity="center"
-                                android:textAppearance="@style/rowTextForPharmacy"
-                                android:focusable="false"
-                                android:focusableInTouchMode="false" />
-                            <Spinner
-                                android:layout_width="0dp"
-                                android:layout_height="60dp"
-                                android:id="@+id/ifType"
-                                android:layout_weight="20" />
-                            <EditText
-                                android:textCursorDrawable="@null"
-                                android:layout_width="0dp"
-                                android:layout_height="60dp"
-                                android:layout_weight="50"
-                                android:id="@+id/paNameET"
-                                android:background="@drawable/bottomline"
-                                android:textColorHint="@color/Grey_300"
-                                android:textColor="@android:color/black"
-                                android:paddingTop="10dp"
-                                android:paddingBottom="10dp"
-                                android:hint="Например, ..."
-                                android:inputType="textCapSentences" />
-                        </LinearLayout>
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="12dp" />
-                    <!--	Резюме визита	-->
-                        <LinearLayout
-                            android:minWidth="25px"
-                            android:minHeight="25px"
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="120dp"
-                            android:background="@android:color/white"
-                            android:weightSum="100">
-                            <TextView
-                                android:text="Резюме визита"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:id="@+id/etiNameTV"
-                                android:layout_weight="30"
-                                android:gravity="center"
-                                android:textAppearance="@style/rowTextForPharmacy"
-                                android:focusable="false"
-                                android:focusableInTouchMode="false" />
-                            <EditText
-                                android:textCursorDrawable="@null"
-                                android:layout_width="0dp"
-                                android:layout_height="60dp"
-                                android:layout_weight="70"
-                                android:id="@+id/paNameET"
-                                android:background="@drawable/bottomline"
-                                android:textColorHint="@color/Grey_300"
-                                android:textColor="@android:color/black"
-                                android:paddingTop="10dp"
-                                android:paddingBottom="10dp"
-                                android:hint="Например, ..."
-                                android:inputType="textCapSentences" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </ScrollView>
-            </LinearLayout>
-        <!--	Правый отступ	-->
-            <LinearLayout
-                android:minWidth="25px"
-                android:minHeight="25px"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="10" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/Grey_500"
+                android:id="@+id/ifAddMessageRL">
+                <ImageView
+                    android:src="@drawable/ic_add_circle_outline_black_48dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="4dp" />
+            </RelativeLayout>
         </LinearLayout>
-    </RelativeLayout>
-</RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="12dp" />
+    <!--	Резюме визита	-->
+        <LinearLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@android:color/white"
+            android:weightSum="100">
+            <TextView
+                android:text="Резюме визита"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/etiNameTV"
+                android:layout_weight="30"
+                android:gravity="center"
+                android:textAppearance="@style/rowTextForPharmacy"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
+            <EditText
+                android:textCursorDrawable="@null"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="70"
+                android:id="@+id/paNameET"
+                android:background="@drawable/bottomline"
+                android:textColorHint="@color/Grey_300"
+                android:textColor="@android:color/black"
+                android:hint="Например, ..."
+                android:inputType="textCapSentences"
+                android:layout_marginBottom="5dp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

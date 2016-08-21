@@ -52,7 +52,7 @@ namespace CRMLite
 			var response = client.Execute<List<MessageType>>(request);
 			if (response.StatusCode == System.Net.HttpStatusCode.OK)
 			{
-				SD.Debug.WriteLine(string.Format(@"Получено Promotion {0}", response.Data.Count));
+				SD.Debug.WriteLine(string.Format(@"Получено MessageType {0}", response.Data.Count));
 				MainDatabase.SaveItems(response.Data);
 			}	
 		}
