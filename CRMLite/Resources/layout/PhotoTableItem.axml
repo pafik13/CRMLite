@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:background="@drawable/bottomline_with_states"
+    android:weightSum="100">
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ptiNumTV"
+        android:layout_weight="10"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ptiTypeTV"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ptiSubTypeTV"
+        android:layout_weight="40"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ptiDateTimeTV"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <ImageView
+        android:src="@drawable/ic_visibility_black_36dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="10" />
+</LinearLayout>

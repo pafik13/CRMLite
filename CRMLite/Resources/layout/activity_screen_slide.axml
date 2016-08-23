@@ -30,7 +30,7 @@
             android:minHeight="62dp"
             android:layout_marginBottom="2dp" />
         <TextView
-            android:text="СОТРУДНИКИ АПТЕКИ {0}"
+            android:text="&lt;TITLE&gt;"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

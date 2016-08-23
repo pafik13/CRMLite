@@ -5,9 +5,11 @@ using System.Linq;
 using Android.Support.V4.App;
 using Android.OS;
 using Android.Views;
+using Android.Widget;
+
+using Realms;
 
 using CRMLite.Entities;
-using Android.Widget;
 
 namespace CRMLite
 {
@@ -35,6 +37,7 @@ namespace CRMLite
 		//TextSwitcher AttendanceType;
 		//string[] AttendanceTypes = { "Презентация", "Фарм-кружок" };
 		//int CurrentAttendanceType = 0;
+		Transaction Transaction;
 
 		ViewSwitcher AttendanceTypeContent;
 
@@ -56,6 +59,7 @@ namespace CRMLite
 			base.OnCreate(savedInstanceState);
 
 			// Create your fragment here
+			//Transaction = MainDatabase.BeginTransaction();
 		}
 
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -72,7 +76,6 @@ namespace CRMLite
 			var pharmacyUUID = Arguments.GetString(ARG_UUID);
 			if (!string.IsNullOrEmpty(pharmacyUUID))
 			{
-				MainDatabase.BeginTransaction();
 				pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
 				employees = MainDatabase.GetEmployees(pharmacy.UUID);
 				Brands = MainDatabase.GetItems<DrugBrand>();
@@ -83,8 +86,8 @@ namespace CRMLite
 				presentationDatas = new List<PresentationData>();
 				coterieDatas = new List<CoterieData>();
 				messageDatas = new List<MessageData>();
-				promotionData = MainDatabase.CreateData<PromotionData>(CurrentAttendance.UUID);
-				competitorData = MainDatabase.CreateData<CompetitorData>(CurrentAttendance.UUID);
+				promotionData = MainDatabase.Create<PromotionData>(CurrentAttendance.UUID);
+				competitorData = MainDatabase.Create<CompetitorData>(CurrentAttendance.UUID);
 			}
 
 			//DitributionList = view.FindViewById<ListView>(Resource.Id.ifDistributionTable);
@@ -122,14 +125,14 @@ namespace CRMLite
 
 			PresentationTable = view.FindViewById<LinearLayout>(Resource.Id.ifPresentationTable);
 			AddPresentationView();
-			view.FindViewById<RelativeLayout>(Resource.Id.ifAddPresentationRL).Click += delegate
+			view.FindViewById<ImageView>(Resource.Id.ifAddPresentationIV).Click += delegate
 			{
 				AddPresentationView();
 			};
 
 			CoterieTable = view.FindViewById<LinearLayout>(Resource.Id.ifCoterieTable);
 			AddCoterieView();
-			view.FindViewById<RelativeLayout>(Resource.Id.ifAddCoterieRL).Click += delegate
+			view.FindViewById<ImageView>(Resource.Id.ifAddCoterieIV).Click += delegate
 			{
 				AddCoterieView();
 			};
@@ -179,7 +182,7 @@ namespace CRMLite
 
 			MessageTable = view.FindViewById<LinearLayout>(Resource.Id.ifMessageTable);
 			AddMessageView();
-			view.FindViewById<RelativeLayout>(Resource.Id.ifAddMessageRL).Click += delegate
+			view.FindViewById<ImageView>(Resource.Id.ifAddMessageIV).Click += delegate
 			{
 				AddMessageView();
 			};
@@ -189,7 +192,7 @@ namespace CRMLite
 
 		void AddMessageView()
 		{
-			var newMessage = MainDatabase.CreateMessageData(CurrentAttendance.UUID);
+			var newMessage = new MessageData(); //MainDatabase.CreateMessageData(CurrentAttendance.UUID);
 
 			var message = Inflater.Inflate(Resource.Layout.InfoMessageItem, MessageTable, false);
 			message.SetTag(Resource.String.MessageUUID, newMessage.UUID);
@@ -230,7 +233,7 @@ namespace CRMLite
 
 		void AddPresentationView()
 		{
-			var newPresentationData = MainDatabase.CreatePresentationData(CurrentAttendance.UUID);
+			var newPresentationData = new PresentationData(); //MainDatabase.CreatePresentationData(CurrentAttendance.UUID);
 
 			var presentation = Inflater.Inflate(Resource.Layout.InfoPresentationItem, PresentationTable, false);
 			presentation.SetTag(Resource.String.PresentationDataUUID, newPresentationData.UUID);
@@ -304,7 +307,7 @@ namespace CRMLite
 
 		void AddCoterieView()
 		{
-			var newCoterieData = MainDatabase.CreateCoterieData(CurrentAttendance.UUID);
+			var newCoterieData = new CoterieData(); //MainDatabase.CreateCoterieData(CurrentAttendance.UUID);
 
 			var coterie = Inflater.Inflate(Resource.Layout.InfoCoterieItem, PresentationTable, false);
 			coterie.SetTag(Resource.String.CoterieDataUUID, newCoterieData.UUID);
@@ -401,6 +404,10 @@ namespace CRMLite
 		{
 			base.OnResume();
 
+			//if (Transaction == null) {
+			//	Transaction = MainDatabase.BeginTransaction();
+			//}
+
 			//realm = Realm.GetInstance();
 			//Distributions = new List<Distribution>();
 			//List<DrugSKU> drugSKUs = MainDatabase.GetItems<DrugSKU>();
@@ -466,9 +473,10 @@ namespace CRMLite
 			//DitributionList.Adapter = null;
 			//Adapter = null;
 			Distributions = null;
-			MainDatabase.DeletePresentationDatas(presentationDatas);
-			MainDatabase.DeleteCoterieDatas(coterieDatas);
-
+			//MainDatabase.DeletePresentationDatas(presentationDatas);
+			//MainDatabase.DeleteCoterieDatas(coterieDatas);
+			//Transaction.Commit();
+			//Transaction = null;
 			//realm.Dispose();
 		}
 	}

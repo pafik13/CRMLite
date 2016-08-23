@@ -44,6 +44,18 @@ namespace CRMLite
 			if (FindViewById<CheckBox>(Resource.Id.saLoadDrugBrandsCB).Checked) LoadDrugBrands(client);
 			if (FindViewById<CheckBox>(Resource.Id.saLoadPromotionsCB).Checked) LoadPromotions(client);
 			if (FindViewById<CheckBox>(Resource.Id.saLoadMessageTypesCB).Checked) LoadMessageTypes(client);
+			if (FindViewById<CheckBox>(Resource.Id.saLoadPhotoTypesCB).Checked) LoadPhotoTypes(client);
+
+		}
+
+		void LoadPhotoTypes(RestClient client)
+		{
+			var request = new RestRequest(@"PhotoType?limit=300&populate=false", Method.GET);
+			var response = client.Execute<List<PhotoType>>(request);
+			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+				SD.Debug.WriteLine(string.Format(@"Получено PhotoType {0}", response.Data.Count));
+				MainDatabase.SaveItems(response.Data);
+			}
 		}
 
 		void LoadMessageTypes(RestClient client)

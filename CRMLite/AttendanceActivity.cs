@@ -47,7 +47,23 @@ namespace CRMLite
 		public void OnPageSelected(int position)
 		{
 			//throw new NotImplementedException();
-			mTitle.Text = @"СТРАНИЦА " + (position + 1);
+			switch (position) {
+				case 0:
+					mTitle.Text = @"АПТЕКА";
+					break;
+				case 1:
+					mTitle.Text = @"СОТРУДНИКИ";
+					break;
+				case 2:
+					mTitle.Text = @"СОБИРАЕМАЯ ИНФОРМАЦИЯ";
+					break;
+				case 3:
+					mTitle.Text = @"ФОТО НА ВИЗИТЕ";
+					break;
+				default:
+					mTitle.Text = @"СТРАНИЦА " + (position + 1);
+					break;;
+			}
 		}
 
 		protected override void OnCreate(Bundle savedInstanceState)
@@ -67,7 +83,7 @@ namespace CRMLite
 			mIsAttendanceStart = false;
 
 			mTitle = FindViewById<TextView>(Resource.Id.Title);
-
+			mTitle.Text = @"АПТЕКА";
 			// Instantiate a ViewPager and a PagerAdapter.
 			mPager = FindViewById<ViewPager>(Resource.Id.pager);
 			mPager.AddOnPageChangeListener(this);
@@ -108,6 +124,11 @@ namespace CRMLite
 		//	lockDialog.Show(fragmentTransaction, LockDialog.TAG);
 		}
 
+		protected override void OnStop()
+		{
+			base.OnStop();
+		}
+
 		/**
 		 * A simple pager adapter that represents 5 {@link ScreenSlidePageFragment} objects, in
 		 * sequence.
@@ -138,7 +159,9 @@ namespace CRMLite
 					case 1:
 						return EmployeeFragment.create(mPharmacyUUID);
 					case 2:
-						return InfoFragment.create(mPharmacyUUID);	
+						return InfoFragment.create(mPharmacyUUID);
+					case 3:
+						return PhotoFragment.create(mPharmacyUUID);
 					default:
 						return ScreenSlidePageFragment.create(position, mIsAttendanceStart); 
 				}

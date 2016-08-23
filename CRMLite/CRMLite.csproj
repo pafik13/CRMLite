@@ -112,6 +112,9 @@
     <Compile Include="Lib\IEntityFromClient.cs" />
     <Compile Include="Lib\Entities\CompetitorData.cs" />
     <Compile Include="Lib\Entities\PhotoType.cs" />
+    <Compile Include="Lib\Fragments\PhotoFragment.cs" />
+    <Compile Include="Lib\Entities\Photo.cs" />
+    <Compile Include="HistoryActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -228,6 +231,14 @@
     <AndroidResource Include="Resources\drawable\splash_screen.xml" />
     <AndroidResource Include="Resources\drawable\Icon.png" />
     <AndroidResource Include="Resources\layout\SpinnerItem.axml" />
+    <AndroidResource Include="Resources\layout\PhotoFragment.axml" />
+    <AndroidResource Include="Resources\layout\PhotoTableItem.axml" />
+    <AndroidResource Include="Resources\drawable\bottomline_with_states.xml" />
+    <AndroidResource Include="Resources\drawable\bottomline_focused.xml" />
+    <AndroidResource Include="Resources\drawable\ic_visibility_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable\rightline.xml" />
+    <AndroidResource Include="Resources\layout\History.axml" />
+    <AndroidResource Include="Resources\layout\HistoryTableItem.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

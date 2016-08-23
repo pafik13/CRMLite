@@ -164,7 +164,23 @@ namespace CRMLite
 			item.Attendance = attendanceUUID;
 			return item;
 		}
+
+		public static T Create<T>(string attendanceUUID) where T : RealmObject, IAttendanceData, IEntity, new()
+		{
+			var item = new T();
+			item.UUID = Guid.NewGuid().ToString();
+			item.Attendance = attendanceUUID;
+			return item;
+		}
 		#endregion
+
+		public static Photo CreatePhoto()
+		{
+			var photo = Me.DB.CreateObject<Photo>();
+			photo.UUID = Guid.NewGuid().ToString();
+			photo.Stamp = DateTimeOffset.Now;
+			return photo;
+		}
 
 		public static IList<string> GetStates()
 		{

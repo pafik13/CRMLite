@@ -54,6 +54,11 @@ namespace CRMLite.Adapters
 			//	Toast.MakeText(context, "Нажали на кнопку!", ToastLength.Short).Show();
 			//};
 
+			var showHistory = view.FindViewById<ImageView>(Resource.Id.ptiHistoryIV);
+			showHistory.SetTag(Resource.String.PharmacyUUID, item.UUID);
+			showHistory.Click -= ShowHistoryClickEventHandler;
+			showHistory.Click += ShowHistoryClickEventHandler;
+
 			var showHospital = view.FindViewById<ImageView>(Resource.Id.ptiHospitalIV);
 			showHospital.SetTag(Resource.String.PharmacyUUID, item.UUID);
 			showHospital.Click -= ShowHospitalClickEventHandler;
@@ -72,6 +77,16 @@ namespace CRMLite.Adapters
 
 			//Finally return the view
 			return view;
+		}
+
+		void ShowHistoryClickEventHandler(object sender, EventArgs e)
+		{
+			if (sender is ImageView) {
+				var pharmacyUUID = ((ImageView)sender).GetTag(Resource.String.PharmacyUUID).ToString();
+				var historyAcivity = new Intent(context, typeof(HistoryActivity));
+				historyAcivity.PutExtra(@"UUID", pharmacyUUID);
+				context.StartActivity(historyAcivity);
+			}		
 		}
 
 		void ShowHospitalClickEventHandler(object sender, EventArgs e)

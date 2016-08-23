@@ -72,24 +72,18 @@
                     android:minWidth="25px"
                     android:minHeight="25px"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:id="@+id/ifPresentationTable"
                     android:animateLayoutChanges="true" />
-                <RelativeLayout
-                    android:minWidth="25px"
-                    android:minHeight="25px"
+                <ImageView
+                    android:id="@+id/ifAddPresentationIV"
+                    android:src="@drawable/ic_add_circle_outline_black_48dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/Grey_500"
-                    android:id="@+id/ifAddPresentationRL">
-                    <ImageView
-                        android:src="@drawable/ic_add_circle_outline_black_48dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_margin="4dp" />
-                </RelativeLayout>
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp" />
             </LinearLayout>
             <LinearLayout
                 android:minWidth="25px"
@@ -110,24 +104,18 @@
                     android:minWidth="25px"
                     android:minHeight="25px"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:id="@+id/ifCoterieTable"
                     android:animateLayoutChanges="true" />
-                <RelativeLayout
-                    android:minWidth="25px"
-                    android:minHeight="25px"
+                <ImageView
+                    android:id="@+id/ifAddCoterieIV"
+                    android:src="@drawable/ic_add_circle_outline_black_48dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/Grey_500"
-                    android:id="@+id/ifAddCoterieRL">
-                    <ImageView
-                        android:src="@drawable/ic_add_circle_outline_black_48dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_margin="4dp" />
-                </RelativeLayout>
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp" />
             </LinearLayout>
         </ViewSwitcher>
         <View
@@ -241,24 +229,18 @@
                 android:minWidth="25px"
                 android:minHeight="25px"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/ifMessageTable"
                 android:animateLayoutChanges="true" />
-            <RelativeLayout
-                android:minWidth="25px"
-                android:minHeight="25px"
+            <ImageView
+                android:id="@+id/ifAddMessageIV"
+                android:src="@drawable/ic_add_circle_outline_black_48dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/Grey_500"
-                android:id="@+id/ifAddMessageRL">
-                <ImageView
-                    android:src="@drawable/ic_add_circle_outline_black_48dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_margin="4dp" />
-            </RelativeLayout>
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" />
         </LinearLayout>
         <View
             android:layout_width="match_parent"

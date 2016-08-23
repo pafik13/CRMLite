@@ -2,7 +2,7 @@
 
 namespace CRMLite.Entities
 {
-	public class DrugBrand : RealmObject
+	public class DrugBrand : RealmObject, IEntiryFromServer
 	{
 		[ObjectId]
 		public string uuid { get; set; }
