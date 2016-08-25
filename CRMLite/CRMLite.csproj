@@ -115,6 +115,9 @@
     <Compile Include="Lib\Fragments\PhotoFragment.cs" />
     <Compile Include="Lib\Entities\Photo.cs" />
     <Compile Include="HistoryActivity.cs" />
+    <Compile Include="TestDataActivity.cs" />
+    <Compile Include="Lib\Entities\FinanceData.cs" />
+    <Compile Include="FinanceActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -239,6 +242,13 @@
     <AndroidResource Include="Resources\drawable\rightline.xml" />
     <AndroidResource Include="Resources\layout\History.axml" />
     <AndroidResource Include="Resources\layout\HistoryTableItem.axml" />
+    <AndroidResource Include="Resources\layout\TestData.axml" />
+    <AndroidResource Include="Resources\layout\HistoryTableSubHeader.axml" />
+    <AndroidResource Include="Resources\layout\HistoryTableHeader.axml" />
+    <AndroidResource Include="Resources\layout\Finance.axml" />
+    <AndroidResource Include="Resources\layout\FinanceTableItem.axml" />
+    <AndroidResource Include="Resources\layout\FinanceTableHeader.axml" />
+    <AndroidResource Include="Resources\layout\FinanceTableSubHeader.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

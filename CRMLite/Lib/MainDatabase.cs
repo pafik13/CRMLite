@@ -97,6 +97,13 @@ namespace CRMLite
 			return Me.DB.All<DrugSKU>().ToList();
 		}
 
+		internal static void DeleteFinanceData()
+		{
+			foreach (var item in Me.DB.All<FinanceData>().ToList()) {
+				Me.DB.Remove(item);
+			}
+		}
+
 		public static void SaveDrugSKUs(List<DrugSKU> data)
 		{
 			using (var trans = Me.DB.BeginWrite())
@@ -170,6 +177,13 @@ namespace CRMLite
 			var item = new T();
 			item.UUID = Guid.NewGuid().ToString();
 			item.Attendance = attendanceUUID;
+			return item;
+		}
+
+		public static T Create<T>() where T : RealmObject, IEntity, new()
+		{
+			var item = Me.DB.CreateObject<T>();
+			item.UUID = Guid.NewGuid().ToString();
 			return item;
 		}
 		#endregion
@@ -376,6 +390,13 @@ namespace CRMLite
 		{
 			return Me.DB.All<Employee>().Where(item => item.Pharmacy == pharmacyUUID).ToList();
 		}
+		#endregion
+
+		#region Attendance
+		public static IList<Attendance> GetAttendaces(string pharmacyUUID)
+		{
+        	return Me.DB.All<Attendance>().Where(item => item.Pharmacy == pharmacyUUID).ToList();
+        }
 		#endregion
 
 		#region Hospital

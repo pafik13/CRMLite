@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:background="@drawable/bottomline"
+    android:weightSum="100">
+    <TextView
+        android:text="DrugSKU"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ftiDrugSKUTV"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Date1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/htiDate1"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Date2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/htiDate2"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Date3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/htiDate3"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Date4"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/htiDate4"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Date5"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/htiDate5"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Date6"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/htiDate6"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Date7"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/htiDate7"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Date8"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/htiDate8"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Date9"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/htiDate9"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Date10"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/htiDate10"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+</LinearLayout>

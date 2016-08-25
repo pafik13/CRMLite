@@ -3,7 +3,7 @@ using Realms;
 
 namespace CRMLite
 {
-	public class Attendance : RealmObject
+	public class Attendance : RealmObject, IEntity
 	{
 		/// <summary>
 		/// Уникальный идентификатор работника аптеки. Используется Guid.
@@ -11,6 +11,8 @@ namespace CRMLite
 		/// <value>The UUID.</value>
 		[ObjectId]
 		public string UUID { get; set; }
+
+		public string Pharmacy { get; set; }
 
 		public DateTimeOffset When { get; set; }
 	}

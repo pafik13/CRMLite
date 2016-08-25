@@ -50,6 +50,11 @@ namespace CRMLite
 			sync.Click += delegate {
 				StartActivity(new Intent(this, typeof(SyncActivity)));
 			};
+
+			var lib = FindViewById<ImageView>(Resource.Id.maLibrary);
+			lib.Click += delegate {
+				StartActivity(new Intent(this, typeof(TestDataActivity)));
+			};
 		}
 
 		void OnListItemClick(object sender, AdapterView.ItemClickEventArgs e)

@@ -53,6 +53,10 @@ namespace CRMLite.Adapters
 			//view.FindViewById<Button>(Resource.Id.ptiLastAttendanceDateB).Click += delegate {
 			//	Toast.MakeText(context, "Нажали на кнопку!", ToastLength.Short).Show();
 			//};
+			var showFinance = view.FindViewById<ImageView>(Resource.Id.ptiContractIV);
+			showFinance.SetTag(Resource.String.PharmacyUUID, item.UUID);
+			showFinance.Click -= ShowFinanceClickEventHandler;
+			showFinance.Click += ShowFinanceClickEventHandler;
 
 			var showHistory = view.FindViewById<ImageView>(Resource.Id.ptiHistoryIV);
 			showHistory.SetTag(Resource.String.PharmacyUUID, item.UUID);
@@ -77,6 +81,16 @@ namespace CRMLite.Adapters
 
 			//Finally return the view
 			return view;
+		}
+
+		void ShowFinanceClickEventHandler(object sender, EventArgs e)
+		{
+			if (sender is ImageView) {
+				var pharmacyUUID = ((ImageView)sender).GetTag(Resource.String.PharmacyUUID).ToString();
+				var financeAcivity = new Intent(context, typeof(FinanceActivity));
+				financeAcivity.PutExtra(@"UUID", pharmacyUUID);
+				context.StartActivity(financeAcivity);
+			}
 		}
 
 		void ShowHistoryClickEventHandler(object sender, EventArgs e)
