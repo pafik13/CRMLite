@@ -12,6 +12,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
+using CRMLite.Dialogs;
 using CRMLite.Entities;
 
 namespace CRMLite
@@ -56,7 +57,23 @@ namespace CRMLite
 				//					var view = LayoutInflater.Inflate(Resource.Layout.HistoryTableItem, table, true);
 				//				}
 			}
-			TextViews = new Dictionary<string, TextView>();
+
+
+			var add = FindViewById<ImageView>(Resource.Id.faAdd);
+			add.Click += (sender, e) => {
+				//Toast.MakeText(this, "ADD BUTTON CLICKED", ToastLength.Short).Show();
+				Console.WriteLine("Event {0} was called", "faAdd_Click");
+				FragmentTransaction fragmentTransaction = FragmentManager.BeginTransaction();
+				FinanceDialog financeDialog = new FinanceDialog(this, Pharmacy);
+				financeDialog.Show(fragmentTransaction, "FinanceDialog");
+				financeDialog.AfterSaved += (object caller, EventArgs arguments) => {
+					Console.WriteLine("Event {0} was called", "AfterSaved");
+
+					Table.RemoveAllViews();
+
+					RefreshView();
+				};
+			};
 		}
 
 		protected override void OnResume()
@@ -82,6 +99,8 @@ namespace CRMLite
 
 		void RefreshView()
 		{
+			TextViews = new Dictionary<string, TextView>();
+
 			Stopwatch s1 = new Stopwatch();
 			s1.Start();
 
@@ -166,6 +185,17 @@ namespace CRMLite
 				default:
 					return @"Unknown";
 			}
+		}
+
+		void AddFinanceData(string pharmacyUUID, string skuUUID, DateTimeOffset period, float? sale, float? purchase, float? remain)
+		{
+			var financeData = MainDatabase.Create<FinanceData>();
+			financeData.Pharmacy = pharmacyUUID;
+			financeData.Period = period;
+			financeData.DrugSKU = skuUUID;
+			financeData.Sale = sale;
+			financeData.Purchase = purchase;
+			financeData.Remain = remain;
 		}
 
 		protected override void OnPause()

@@ -118,6 +118,8 @@
     <Compile Include="TestDataActivity.cs" />
     <Compile Include="Lib\Entities\FinanceData.cs" />
     <Compile Include="FinanceActivity.cs" />
+    <Compile Include="Lib\Entities\SaleData.cs" />
+    <Compile Include="Lib\Dialogs\FinanceDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -249,6 +251,7 @@
     <AndroidResource Include="Resources\layout\FinanceTableItem.axml" />
     <AndroidResource Include="Resources\layout\FinanceTableHeader.axml" />
     <AndroidResource Include="Resources\layout\FinanceTableSubHeader.axml" />
+    <AndroidResource Include="Resources\layout\FinanceDialog.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

@@ -40,6 +40,15 @@
             android:textStyle="bold"
             android:minHeight="62dp"
             android:layout_marginBottom="2dp" />
+        <ImageView
+            android:src="@drawable/ic_add_circle_outline_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/faAdd"
+            android:layout_toLeftOf="@+id/faCloseB"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginRight="10dp" />
     </RelativeLayout>
     <ScrollView
         android:minWidth="25px"
