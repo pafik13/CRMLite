@@ -36,17 +36,22 @@ namespace CRMLite
 
 		void GenerateData_Click(object sender, EventArgs e)
 		{
-			var baseDate = DateTimeOffset.Now;
 			var step = 7;
-			var visitsCount = 20;
-			var financesCount = 5;
+			var visitsCount = 10;
+			var baseDate = DateTimeOffset.Now.AddDays(-1 * visitsCount * step);
 
 			var drugSKUs = MainDatabase.GetDrugSKUs();
 			var pharmacies = MainDatabase.GetItems<Pharmacy>();
 			var transaction = MainDatabase.BeginTransaction();
+
+			MainDatabase.DeleteAttendancies();
+			MainDatabase.DeleteDistributions();
+			MainDatabase.DeleteFinanceData();
+			MainDatabase.DeleteSaleData();
+
 			foreach (var pharmacy in pharmacies) {
 				// Визиты
-				if (false) {
+				if (true) {
 					for (int i = 0; i < visitsCount; i++) {
 						var attendance = MainDatabase.Create<Attendance>();
 						attendance.Pharmacy = pharmacy.UUID;
@@ -67,8 +72,8 @@ namespace CRMLite
 					}
 				}
 
-				MainDatabase.DeleteFinanceData();
 				// Продажи
+				var financesCount = 5;
 				baseDate = DateTimeOffset.Now.AddMonths(-3);
 				for (int i = 0; i < financesCount; i++) {
 					foreach (var SKU in drugSKUs) {

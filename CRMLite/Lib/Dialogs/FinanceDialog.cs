@@ -17,9 +17,18 @@ namespace CRMLite.Dialogs
 	public class FinanceDialog : DialogFragment
 	{
 
-		public event EventHandler AfterSaved;
+		public event EventHandler<AfterSavedEventArgs> AfterSaved;
 
-		Activity Context;
+		public class AfterSavedEventArgs : EventArgs
+		{
+			public AfterSavedEventArgs(List<FinanceData> financeDatas)
+			{
+				FinanceDatas = financeDatas;
+			}
+
+			public List<FinanceData> FinanceDatas { get; private set; }
+		}
+
 		Pharmacy Pharmacy;
 		Transaction Transaction;
 		FinanceData FinanceData;
@@ -27,23 +36,18 @@ namespace CRMLite.Dialogs
 		Spinner Position;
 		List<Position> positions;
 
-		protected virtual void OnAfterSaved(EventArgs e)
+		protected virtual void OnAfterSaved(AfterSavedEventArgs e)
 		{
 			if (AfterSaved != null) {
 				AfterSaved(this, e);
 			}
 		}
 
-		public FinanceDialog(Activity context, Pharmacy pharmacy, FinanceData financeData = null)
+		public FinanceDialog(Pharmacy pharmacy, FinanceData financeData = null)
 		{
-			if (context == null) {
-				throw new ArgumentNullException(nameof(context));
-			}
 			if (pharmacy == null) {
 				throw new ArgumentNullException(nameof(pharmacy));
 			}
-
-			Context = context;
 			Pharmacy = pharmacy;
 			FinanceData = financeData;
 		}
@@ -76,7 +80,7 @@ namespace CRMLite.Dialogs
 
 			var drugSKU = view.FindViewById<Spinner>(Resource.Id.fdDrugSKUS);
 			var drugSKUAdapter = new ArrayAdapter(
-				Context,
+				Activity,
 				Android.Resource.Layout.SimpleSpinnerItem,
 				drugSKUs.Select(x => x.name).ToArray()
 			);
@@ -100,7 +104,7 @@ namespace CRMLite.Dialogs
 
 			var periodType = view.FindViewById<Spinner>(Resource.Id.fdPeriodTypeS);
 			var periodTypeAdapter = new ArrayAdapter(
-				Context,
+				Activity,
 				Android.Resource.Layout.SimpleSpinnerItem,
 				periodTypes
 			);
@@ -126,7 +130,7 @@ namespace CRMLite.Dialogs
 
 			var startMonth = view.FindViewById<Spinner>(Resource.Id.fdStartMonthS);
 			var startMonthAdapter = new ArrayAdapter(
-				Context,
+				Activity,
 				Android.Resource.Layout.SimpleSpinnerItem,
 				startMonths
 			);
@@ -152,25 +156,29 @@ namespace CRMLite.Dialogs
 			};
 
 			view.FindViewById<Button>(Resource.Id.fdSaveB).Click += delegate {
-				Toast.MakeText(Context, "SAVE BUTTON CLICKED", ToastLength.Short).Show();
+				Toast.MakeText(Activity, "SAVE BUTTON CLICKED", ToastLength.Short).Show();
+
+				var financeDatas = new List<FinanceData>();
 
 				if ((periodType.SelectedItemPosition > 0) 
 				    && (drugSKU.SelectedItemPosition >0)
 				    && (startMonth.SelectedItemPosition > 0))
 				{
-					Transaction = MainDatabase.BeginTransaction();
-					//var financeData = new FinanceData();
+					//Transaction = MainDatabase.BeginTransaction();
+
 					for (int m = 0; m < periodType.SelectedItemPosition; m++) {
-						var financeData = MainDatabase.Create<FinanceData>();
+						//var financeData = MainDatabase.Create<FinanceData>();
+						var financeData = new FinanceData();
 						financeData.Pharmacy = Pharmacy.UUID;
 						financeData.DrugSKU = drugSKUs[drugSKU.SelectedItemPosition].uuid;
 						financeData.Period = DateTimeOffset.Now.AddMonths(-12 + startMonth.SelectedItemPosition - 1).AddMonths(m);
 						financeData.Sale = ConvertToFloat(view.FindViewById<EditText>(Resource.Id.fdSaleET).Text, periodType.SelectedItemPosition);
 						financeData.Purchase = ConvertToFloat(view.FindViewById<EditText>(Resource.Id.fdPurchaseET).Text, periodType.SelectedItemPosition);
 						financeData.Remain = ConvertToFloat(view.FindViewById<EditText>(Resource.Id.fdRemainET).Text, periodType.SelectedItemPosition);
+						financeDatas.Add(financeData);
 					}
 
-					Transaction.Commit();
+					//Transaction.Commit();
 				}
 				// var sync = new SyncItem()
 				// {
@@ -183,7 +191,7 @@ namespace CRMLite.Dialogs
 
 				// context.StartService(new Intent("com.xamarin.SyncService"));
 
-				OnAfterSaved(EventArgs.Empty);
+				OnAfterSaved(new AfterSavedEventArgs(financeDatas));
 
 				Dismiss();
 			};
@@ -210,7 +218,6 @@ namespace CRMLite.Dialogs
 		public override void OnDestroyView()
 		{
 			base.OnDestroyView();
-			Context = null;
 			Pharmacy = null;
 			FinanceData = null;
 		}

@@ -13,21 +13,27 @@ namespace CRMLite.Dialogs
 	{
 		public const string TAG = "LockDialog";
 		public const string ARG_MESSAGE = "ARG_MESSAGE";
+		public const string ARG_BG_COLOR = "ARG_BG_COLOR";
+
 
 		string Message;
+		int TextColor;
+		int BGColor;
 
-		public static LockDialog Create(string message)
+		public static LockDialog Create(string message, int bgColor = -1)
 		{
 			if (string.IsNullOrEmpty(message))
 			{
 				throw new ArgumentNullException(nameof(message));
 			}
 
-			var lockDialog = new LockDialog();
 			var arguments = new Bundle();
 			arguments.PutString(ARG_MESSAGE, message);
-			lockDialog.Arguments = arguments;
-			return lockDialog;
+			arguments.PutInt(ARG_BG_COLOR, bgColor);
+
+			return new LockDialog() {
+				Arguments = arguments
+			};
 		}
 
 		public override Android.App.Dialog OnCreateDialog(Bundle savedInstanceState)
@@ -45,6 +51,7 @@ namespace CRMLite.Dialogs
 
 			// Create your fragment here
 			Message = Arguments.GetString(ARG_MESSAGE);
+			BGColor = Arguments.GetInt(ARG_BG_COLOR);
 		}
 
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -53,14 +60,11 @@ namespace CRMLite.Dialogs
 			// return inflater.Inflate(Resource.Layout.YourFragment, container, false);
 			base.OnCreateView(inflater, container, savedInstanceState);
 
-			View view = inflater.Inflate(Android.Resource.Layout.SelectDialogItem, container);
+			TextView view = (TextView)inflater.Inflate(Android.Resource.Layout.SelectDialogItem, container);
 
-			if (view is TextView)
-			{
-				((TextView)view).Text = Message;
-				((TextView)view).SetTextColor(Android.Graphics.Color.White);
-				((TextView)view).SetBackgroundColor(Android.Graphics.Color.Blue);
-			}
+			view.Text = Message;
+			view.SetTextColor(Android.Graphics.Color.White);
+			view.SetBackgroundResource(BGColor == -1 ? Resource.Color.white_bg : BGColor);
 
 			return view;
 		}

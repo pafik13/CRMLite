@@ -34,24 +34,18 @@ namespace CRMLite.Entities
 		public PharmacyState GetState() { return (PharmacyState)Enum.Parse(typeof(PharmacyState), State, true); }
 
 		/// <summary>
-		/// Название аптеки (Бренд).
+		/// Номер аптеки.
 		/// </summary>
-		/// <value>The name.</value>
-		public string Name { get; set; }
+		/// <value>The number name.</value>
+		public string NumberName { get; set; }
 
 		/// <summary>
-		/// Название аптеки в АС (с номером если есть).
+		/// Юридическое название аптеки.
 		/// </summary>
-		/// <value>The name in net.</value>
-		public string NameInNet { get; set; }
+		/// <value>The legal name.</value>
+		public string LegalName { get; set; }
 
-		public string GetName() { return string.IsNullOrEmpty(NameInNet) ? Name : NameInNet; }
-
-		/// <summary>
-		/// Аптечная сеть.
-		/// </summary>
-		/// <value>The legal address.</value>
-		public string LegalAddress { get; set; }
+		public string GetName() { return string.IsNullOrEmpty(LegalName) ? NumberName : LegalName; }
 
 		/// <summary>
 		/// Ссылка на аптечную сеть. UUID класса Net.
@@ -94,14 +88,14 @@ namespace CRMLite.Entities
 		/// <summary>
 		/// Категория по данным АС.
 		/// </summary>
-		/// <value>The сategory by net data.</value>
-		public string CategoryByNet { get; set; }
+		/// <value>The сategory.</value>
+		public string Category { get; set; }
 
 		/// <summary>
-		/// Категория по ТО.
+		/// Товарооборот.
 		/// </summary>
-		/// <value>The сategory by sell volume.</value>
-		public string CategoryBySell { get; set; }
+		/// <value>The turnover.</value>
+		public string TurnOver { get; set; }
 
 		/// <summary>
 		/// Ссылка на последний визит в аптеку. UUID класса Attendance.

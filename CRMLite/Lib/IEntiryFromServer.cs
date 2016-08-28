@@ -1,5 +1,4 @@
-﻿using System;
-namespace CRMLite
+﻿namespace CRMLite
 {
 	public interface IEntiryFromServer
 	{

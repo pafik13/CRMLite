@@ -29,6 +29,8 @@ namespace CRMLite
 		{
 			base.OnCreate(savedInstanceState);
 
+			RequestWindowFeature(WindowFeatures.NoTitle);
+
 			// Create your application here
 
 			SetContentView(Resource.Layout.History);

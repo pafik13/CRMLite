@@ -59,7 +59,6 @@ namespace CRMLite
 			if (string.IsNullOrEmpty(pharmacyUUID))
 			{
 				pharmacy = MainDatabase.CreatePharmacy();
-				pharmacy.LegalAddress = "Москва";
 				pharmacy.Address = "Москва";
 			}
 			else
@@ -99,12 +98,12 @@ namespace CRMLite
 			State.SetSelection((int)pharmacy.GetState());
 			#endregion
 
-			FindViewById<EditText>(Resource.Id.paNameET).Text = pharmacy.Name;
-			FindViewById<EditText>(Resource.Id.paNameInNetET).Text = pharmacy.NameInNet;
+			//FindViewById<EditText>(Resource.Id.paNameET).Text = pharmacy.Name;
+			//FindViewById<EditText>(Resource.Id.paNameInNetET).Text = pharmacy.NameInNet;
 
 			#region LegalAddress
 			var legalAddressACTV = FindViewById<AutoCompleteTextView>(Resource.Id.paLegalAddressACTV);
-			legalAddressACTV.Text = pharmacy.LegalAddress;
+			//legalAddressACTV.Text = pharmacy.LegalAddress;
 
 			legalAddressACTV.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
 			{
@@ -200,24 +199,24 @@ namespace CRMLite
 
 			#region CategoryByNet
 			AutoCompleteTextView byNetACTV = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryByNetACTV);
-			byNetACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryByNet) ? pharmacy.CategoryByNet : MainDatabase.GetCategory(pharmacy.CategoryByNet).name;
-			byNet = MainDatabase.GetCategories("net");
-			byNetACTV.Adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleDropDownItem1Line, byNet.Select(x => x.name).ToArray());
-			byNetACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
-			{
-				pharmacy.CategoryByNet = byNet[e.Position].uuid;
-			};
+			//byNetACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryByNet) ? pharmacy.CategoryByNet : MainDatabase.GetCategory(pharmacy.CategoryByNet).name;
+			//byNet = MainDatabase.GetCategories("net");
+			//byNetACTV.Adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleDropDownItem1Line, byNet.Select(x => x.name).ToArray());
+			//byNetACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
+			//{
+			//	pharmacy.CategoryByNet = byNet[e.Position].uuid;
+			//};
 			#endregion
 
 			#region CategoryBySell
 			AutoCompleteTextView bySellACTV = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryBySellACTV);
-			bySellACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryBySell) ? pharmacy.CategoryBySell : MainDatabase.GetCategory(pharmacy.CategoryBySell).name;
-			bySell = MainDatabase.GetCategories("sell");
-			bySellACTV.Adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleDropDownItem1Line, bySell.Select(x => x.name).ToArray());
-			bySellACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
-			{
-				pharmacy.CategoryBySell = bySell[e.Position].uuid;
-			};
+			//bySellACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryBySell) ? pharmacy.CategoryBySell : MainDatabase.GetCategory(pharmacy.CategoryBySell).name;
+			//bySell = MainDatabase.GetCategories("sell");
+			//bySellACTV.Adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleDropDownItem1Line, bySell.Select(x => x.name).ToArray());
+			//bySellACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
+			//{
+			//	pharmacy.CategoryBySell = bySell[e.Position].uuid;
+			//};
 			#endregion
 
 
@@ -238,9 +237,9 @@ namespace CRMLite
 			var save = FindViewById<Button>(Resource.Id.paSaveB);
 			save.Click += delegate {
 				pharmacy.CreatedAt = DateTimeOffset.Now;
-				pharmacy.Name = FindViewById<EditText>(Resource.Id.paNameET).Text;
-				pharmacy.NameInNet = FindViewById<EditText>(Resource.Id.paNameInNetET).Text;
-				pharmacy.LegalAddress = FindViewById<AutoCompleteTextView>(Resource.Id.paLegalAddressACTV).Text;
+				//pharmacy.Name = FindViewById<EditText>(Resource.Id.paNameET).Text;
+				//pharmacy.NameInNet = FindViewById<EditText>(Resource.Id.paNameInNetET).Text;
+				//pharmacy.LegalAddress = FindViewById<AutoCompleteTextView>(Resource.Id.paLegalAddressACTV).Text;
 				pharmacy.Address = FindViewById<AutoCompleteTextView>(Resource.Id.paAddressACTV).Text;
 				//pharmacy.Subway = FindViewById<AutoCompleteTextView>(Resource.Id.paSubwayACTV).Text;
 				//pharmacy.Region = FindViewById<AutoCompleteTextView>(Resource.Id.paRegionACTV).Text;

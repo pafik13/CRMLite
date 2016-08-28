@@ -14,7 +14,7 @@ namespace CRMLite.Entities
 	/// <summary>
 	/// Работник аптеки.
 	/// </summary>
-	public class Employee : RealmObject
+	public class Employee : RealmObject, IEntity, IPharmacyData
 	{
 		/// <summary>
 		/// Уникальный идентификатор работника аптеки. Используется Guid.

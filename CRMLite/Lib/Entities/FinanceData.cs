@@ -3,7 +3,7 @@ using Realms;
 
 namespace CRMLite
 {
-	public class FinanceData : RealmObject, IEntity
+	public class FinanceData : RealmObject, IEntity, IPharmacyData
 	{
 		/// <summary>
 		/// Уникальный идентификатор информации о продажах. Используется Guid.

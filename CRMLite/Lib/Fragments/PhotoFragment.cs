@@ -14,18 +14,21 @@ using Android.Content;
 using Android.Media;
 using Android.Provider;
 using System.IO;
+using Realms;
 
 namespace CRMLite
 {
-	public class PhotoFragment : Fragment
+	public class PhotoFragment : Fragment, IAttendanceControl
 	{
 
-		public const string ARG_UUID = @"ARG_UUID";
+		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";
 		public const int C_REQUEST_PHOTO = 100;
 
 		LayoutInflater Inflater;
 
 		Pharmacy Pharmacy;
+		DateTimeOffset? AttendanceStart;
+		TextView Locker;
 
 		//User user = null;
 		List<PhotoType> PhotoTypes;
@@ -53,7 +56,7 @@ namespace CRMLite
 		{
 			PhotoFragment fragment = new PhotoFragment();
 			Bundle arguments = new Bundle();
-			arguments.PutString(ARG_UUID, UUID);
+			arguments.PutString(C_PHARMACY_UUID, UUID);
 			fragment.Arguments = arguments;
 			return fragment;
 		}
@@ -62,10 +65,10 @@ namespace CRMLite
 		{
 			base.OnCreate(savedInstanceState);
 
-			var pharmacyUUID = Arguments.GetString(ARG_UUID);
-			if (!string.IsNullOrEmpty(pharmacyUUID)) {
-				Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
-			}
+			var pharmacyUUID = Arguments.GetString(C_PHARMACY_UUID);
+			if (string.IsNullOrEmpty(pharmacyUUID)) return;
+
+			Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
 		}
 
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -102,7 +105,7 @@ namespace CRMLite
 
 			PhotoType = view.FindViewById<Spinner>(Resource.Id.pfPhotoTypeS);
 			PhotoTypes = MainDatabase.GetItems<PhotoType>();
-			ArrayAdapter adapter = new ArrayAdapter(Activity, Android.Resource.Layout.SimpleSpinnerItem, PhotoTypes.Select(i => i.name).ToArray());
+			var adapter = new ArrayAdapter(Activity, Android.Resource.Layout.SimpleSpinnerItem, PhotoTypes.Select(i => i.name).ToArray());
 			adapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
 			PhotoType.Adapter = adapter;
 
@@ -118,7 +121,7 @@ namespace CRMLite
 
 			Brand = view.FindViewById<Spinner>(Resource.Id.pfBrandS);
 			Brands = MainDatabase.GetItems<DrugBrand>();
-			ArrayAdapter brandAdapter = new ArrayAdapter(Activity, Android.Resource.Layout.SimpleSpinnerItem, Brands.Select(i => i.name).ToArray());
+			var brandAdapter = new ArrayAdapter(Activity, Android.Resource.Layout.SimpleSpinnerItem, Brands.Select(i => i.name).ToArray());
 			brandAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
 			Brand.Adapter = brandAdapter;
 
@@ -136,6 +139,8 @@ namespace CRMLite
 					StartActivityForResult(intent, C_REQUEST_PHOTO);
 			//	}
 			};
+
+			Locker = view.FindViewById<TextView>(Resource.Id.locker);
 
 			return view;
 		}
@@ -205,7 +210,7 @@ namespace CRMLite
 
 			if ((requestCode == C_REQUEST_PHOTO) && (resultCode == -1)) {
 				//var trans = MainDatabase.BeginTransaction();
-				Photo photo = new Photo(); //MainDatabase.CreatePhoto();
+				var photo = new Photo(); //MainDatabase.CreatePhoto();
 				photo.Stamp = DateTimeOffset.Now;
 				photo.PhotoPath = file.ToString();
 				var photoType = PhotoTypes[PhotoType.SelectedItemPosition];
@@ -217,11 +222,11 @@ namespace CRMLite
 				}
 
 				//Latitude and Longitudee
-				ExifInterface exif = new ExifInterface(photo.PhotoPath);
-				float[] lat_long = new float[2];
-				if (exif.GetLatLong(lat_long)) {
-					photo.Latitude = lat_long[0];
-					photo.Longitude = lat_long[1];
+				var exif = new ExifInterface(photo.PhotoPath);
+				float[] latLong = new float[2];
+				if (exif.GetLatLong(latLong)) {
+					photo.Latitude = latLong[0];
+					photo.Longitude = latLong[1];
 				}
 
 				Photos.Add(photo);
@@ -238,6 +243,43 @@ namespace CRMLite
 		public override void OnResume()
 		{
 			base.OnResume();
+			if (Pharmacy == null) {
+				new Android.App.AlertDialog.Builder(Context)
+								   .SetTitle(Resource.String.error_caption)
+								   .SetMessage("Отсутствует аптека!")
+								   .SetCancelable(false)
+								   .SetPositiveButton(@"OK", (dialog, args) => {
+									   if (dialog is Android.App.Dialog) {
+										   ((Android.App.Dialog)dialog).Dismiss();
+									   }
+								   })
+								   .Show();
+
+			} else if (AttendanceStart == null) {
+				Locker.Visibility = ViewStates.Visible;
+			}
+		}
+
+		public void OnAttendanceStart(DateTimeOffset? start)
+		{
+			AttendanceStart = start;
+			Locker.Visibility = ViewStates.Gone;
+		}
+
+		public void OnAttendanceStop(Transaction openedTransaction, Attendance current)
+		{
+			if (openedTransaction == null) {
+				throw new ArgumentNullException(nameof(openedTransaction));
+			}
+
+			if (current == null) {
+				throw new ArgumentNullException(nameof(current));
+			}
+
+			foreach (var photo in Photos) {
+				photo.Attendance = current.UUID;
+				MainDatabase.SavePhoto(photo);
+			}
 		}
 	}
 }

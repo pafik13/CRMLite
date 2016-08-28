@@ -7,37 +7,40 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 
-using Realms;
-
+using CRMLite.Dialogs;
 using CRMLite.Entities;
+using Realms;
 
 namespace CRMLite
 {
-	public class InfoFragment : Fragment
+	public class InfoFragment : Fragment, IAttendanceControl
 	{
-		public const string ARG_UUID = @"ARG_UUID";
+		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";
+		public const string C_ATTENDANCE_LAST_UUID = @"C_ATTENDANCE_LAST_UUID";
 
 		LayoutInflater Inflater;
 
-		Pharmacy pharmacy;
-		IList<Employee> employees;
+		Pharmacy Pharmacy;
+		IList<Employee> Employees;
 		IList<DrugBrand> Brands;
-		Attendance CurrentAttendance;
-		List<PresentationData> presentationDatas;
-		List<CoterieData> coterieDatas;
-		List<MessageData> messageDatas;
-		PromotionData promotionData;
-		CompetitorData competitorData;
+		IList<DrugSKU> SKUs;
+		Attendance AttendanceLast;
 
-		//ListView DitributionList;
-		//DistributionAdapter Adapter;
+		DateTimeOffset? AttendanceStart;
+
+		TextView Locker;
+		List<PresentationData> PresentationDatas;
+		List<CoterieData> CoterieDatas;
+		List<MessageData> MessageDatas;
+		PromotionData PromotionData;
+		CompetitorData CompetitorData;
+
 		LinearLayout DistributionTable;
-		List<Distribution> Distributions;
+		//List<Distribution> Distributions;
 
-		//TextSwitcher AttendanceType;
-		//string[] AttendanceTypes = { "Презентация", "Фарм-кружок" };
-		//int CurrentAttendanceType = 0;
-		Transaction Transaction;
+		LinearLayout SaleTable;
+		DateTimeOffset[] SaleDataMonths;
+		Dictionary<string, TextView> SaleDataTextViews;
 
 		ViewSwitcher AttendanceTypeContent;
 
@@ -45,11 +48,12 @@ namespace CRMLite
 		LinearLayout CoterieTable;
 		LinearLayout MessageTable;
 
-		public static InfoFragment create(string UUID)
+		public static InfoFragment create(string pharmacyUUID, string attendanceLastUUID)
 		{
 			InfoFragment fragment = new InfoFragment();
 			Bundle arguments = new Bundle();
-			arguments.PutString(ARG_UUID, UUID);
+			arguments.PutString(C_PHARMACY_UUID, pharmacyUUID);
+			arguments.PutString(C_ATTENDANCE_LAST_UUID, attendanceLastUUID);
 			fragment.Arguments = arguments;
 			return fragment;
 		}
@@ -59,7 +63,6 @@ namespace CRMLite
 			base.OnCreate(savedInstanceState);
 
 			// Create your fragment here
-			//Transaction = MainDatabase.BeginTransaction();
 		}
 
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -71,123 +74,40 @@ namespace CRMLite
 
 			Inflater = inflater;
 
-			View view = inflater.Inflate(Resource.Layout.InfoFragment, container, false);
+			View mainView = inflater.Inflate(Resource.Layout.InfoFragment, container, false);
 
-			var pharmacyUUID = Arguments.GetString(ARG_UUID);
-			if (!string.IsNullOrEmpty(pharmacyUUID))
-			{
-				pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
-				employees = MainDatabase.GetEmployees(pharmacy.UUID);
-				Brands = MainDatabase.GetItems<DrugBrand>();
-				CurrentAttendance = new Attendance() {
-					UUID = Guid.NewGuid().ToString(),
-					When = DateTimeOffset.Now
-				};
-				presentationDatas = new List<PresentationData>();
-				coterieDatas = new List<CoterieData>();
-				messageDatas = new List<MessageData>();
-				promotionData = MainDatabase.Create<PromotionData>(CurrentAttendance.UUID);
-				competitorData = MainDatabase.Create<CompetitorData>(CurrentAttendance.UUID);
-			}
+			var pharmacyUUID = Arguments.GetString(C_PHARMACY_UUID);
+			if (string.IsNullOrEmpty(pharmacyUUID)) return mainView;
 
-			//DitributionList = view.FindViewById<ListView>(Resource.Id.ifDistributionTable);
+			var attendanceLastUUID = Arguments.GetString(C_ATTENDANCE_LAST_UUID);
+			AttendanceLast = string.IsNullOrEmpty(attendanceLastUUID) ? null : MainDatabase.GetEntity<Attendance>(attendanceLastUUID);
 
-			//View header = inflater.Inflate(Resource.Layout.DistributionTableHeader, DitributionList, false);
-			//DitributionList.AddHeaderView(header);
+			Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
+			Employees = MainDatabase.GetEmployees(Pharmacy.UUID);
+			Brands = MainDatabase.GetItems<DrugBrand>();
+			SKUs = MainDatabase.GetItems<DrugSKU>();
 
-			DistributionTable = view.FindViewById<LinearLayout>(Resource.Id.ifDistributionTable);
+			PresentationDatas = new List<PresentationData>();
+			CoterieDatas = new List<CoterieData>();
+			MessageDatas = new List<MessageData>();
+			PromotionData = new PromotionData();
+			CompetitorData = new CompetitorData();
 
-			//AttendanceType = view.FindViewById<TextSwitcher>(Resource.Id.ifAttendanceType);
-			//AttendanceType.SetInAnimation(Activity, Android.Resource.Animation.SlideInLeft);
-			//AttendanceType.SetOutAnimation(Activity, Android.Resource.Animation.SlideOutRight);
-			//AttendanceType.SetCurrentText(AttendanceTypes[CurrentAttendanceType]);
+			InitDistributionTable(mainView);
 
-			////AttendanceType.Click += (object sender, EventArgs e) =>
-			////{
-			////	CurrentAttendanceType = (CurrentAttendanceType + 1) % AttendanceTypes.Length;
-			////	(sender as TextSwitcher).SetText(AttendanceTypes[CurrentAttendanceType]);
-			////};
+			InitAttendanceContent(mainView);
 
-			//view.FindViewById<Button>(Resource.Id.ifButton).Click += (object sender, EventArgs e) =>
-			//{
-			//	CurrentAttendanceType = (CurrentAttendanceType + 1) % AttendanceTypes.Length;
-			//	AttendanceType.SetText(AttendanceTypes[CurrentAttendanceType]);
-			//};
+			InitPromotion(mainView);
 
-			AttendanceTypeContent = view.FindViewById<ViewSwitcher>(Resource.Id.ifAtendanceTypeContentVS);
-			AttendanceTypeContent.SetInAnimation(Activity, Android.Resource.Animation.SlideInLeft);
-			AttendanceTypeContent.SetOutAnimation(Activity, Android.Resource.Animation.SlideOutRight);
+			InitCompetitor(mainView);
 
-			view.FindViewById<Button>(Resource.Id.ifChangeAttendanceTypeB).Click += delegate 
-			{
-				AttendanceTypeContent.ShowNext();
-			};
+			InitMessage(mainView);
 
-			PresentationTable = view.FindViewById<LinearLayout>(Resource.Id.ifPresentationTable);
-			AddPresentationView();
-			view.FindViewById<ImageView>(Resource.Id.ifAddPresentationIV).Click += delegate
-			{
-				AddPresentationView();
-			};
+			InitSaleTable(mainView);
 
-			CoterieTable = view.FindViewById<LinearLayout>(Resource.Id.ifCoterieTable);
-			AddCoterieView();
-			view.FindViewById<ImageView>(Resource.Id.ifAddCoterieIV).Click += delegate
-			{
-				AddCoterieView();
-			};
+			Locker = mainView.FindViewById<TextView>(Resource.Id.locker);
 
-			var promotionText = view.FindViewById<EditText>(Resource.Id.ifPromotionET);
-			var promotions = new List<Promotion>();
-			promotions.Add(new Promotion { name = @"Выберите акцию!", uuid = Guid.Empty.ToString() });
-			promotions.AddRange(MainDatabase.GetItems<Promotion>());
-			var promotion = view.FindViewById<Spinner>(Resource.Id.ifPromotionS);
-			var promotionAdapter = new ArrayAdapter(
-				Context,
-				Android.Resource.Layout.SimpleSpinnerItem,
-				promotions.Select(x => x.name).ToArray()
-			);
-			promotionAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
-			promotion.Adapter = promotionAdapter;
-			promotion.ItemSelected += (sender, e) =>
-			{
-				if (e.Position == 0) {
-					promotionText.Text = string.Empty;
-					promotionText.Enabled = false;
-				} else {
-					promotionText.Enabled = true;
-					promotionData.Promotion = promotions[e.Position].uuid;
-				}
-			};
-
-			promotionText.AfterTextChanged += (sender, e) => {
-				promotionData.Text = e.Editable.ToString();
-			};
-
-			var competitorText = view.FindViewById<EditText>(Resource.Id.ifCompetitorET);
-			var competitor = view.FindViewById<CheckBox>(Resource.Id.ifCompetitorCB);
-			competitor.CheckedChange += (sender, e) => {
-				if (e.IsChecked) {
-					competitorText.Enabled = true;
-				}
-				else {
-					competitorText.Text = string.Empty;
-					competitorText.Enabled = false;
-				}
-			};
-
-			competitorText.AfterTextChanged += (sender, e) => {
-				competitorData.Text = e.Editable.ToString();
-			};
-
-			MessageTable = view.FindViewById<LinearLayout>(Resource.Id.ifMessageTable);
-			AddMessageView();
-			view.FindViewById<ImageView>(Resource.Id.ifAddMessageIV).Click += delegate
-			{
-				AddMessageView();
-			};
-
-			return view;
+			return mainView;
 		}
 
 		void AddMessageView()
@@ -205,19 +125,17 @@ namespace CRMLite
 
 			var messageType = message.FindViewById<Spinner>(Resource.Id.imiMessageTypeS);
 			var messageTypeAdapter = new ArrayAdapter(
-				Context, 
-				Android.Resource.Layout.SimpleSpinnerItem, 
+				Context,
+				Android.Resource.Layout.SimpleSpinnerItem,
 				messageTypes.Select(x => x.name).ToArray()
 			);
 			messageTypeAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
 			messageType.Adapter = messageTypeAdapter;
-			messageType.ItemSelected += (sender, e) =>
-			{
+			messageType.ItemSelected += (sender, e) => {
 				if (e.Position == 0) {
 					messageText.Text = string.Empty;
 					messageText.Enabled = false;
-				}
-				else {
+				} else {
 					messageText.Enabled = true;
 					newMessage.Type = messageTypes[e.Position].uuid;
 				}
@@ -227,7 +145,7 @@ namespace CRMLite
 				newMessage.Text = e.Editable.ToString();
 			};
 
-			messageDatas.Add(newMessage);
+			MessageDatas.Add(newMessage);
 			MessageTable.AddView(message);
 		}
 
@@ -237,71 +155,66 @@ namespace CRMLite
 
 			var presentation = Inflater.Inflate(Resource.Layout.InfoPresentationItem, PresentationTable, false);
 			presentation.SetTag(Resource.String.PresentationDataUUID, newPresentationData.UUID);
-			presentation.FindViewById<Button>(Resource.Id.ipiEmployeeForPresentationB).Click += (object sender, EventArgs e) =>
-			{
+			presentation.FindViewById<Button>(Resource.Id.ipiEmployeeForPresentationB).Click += (object sender, EventArgs e) => {
 				new Android.App.AlertDialog.Builder(Activity)
 						   .SetTitle("Выберите сотрудника аптеки:")
 						   .SetCancelable(true)
-						   .SetItems(employees.Select(item => item.Name).ToArray(), (caller, arguments) =>
-						   {
+						   .SetItems(Employees.Select(item => item.Name).ToArray(), (caller, arguments) => {
 							   Toast.MakeText(Activity, @"Selected " + arguments.Which, ToastLength.Short).Show();
 							   var parent = ((sender as Button).Parent as LinearLayout);
 							   var presentationDataUUID = parent.GetTag(Resource.String.PresentationDataUUID).ToString();
-							   var presentationData = presentationDatas.Single(item => item.UUID == presentationDataUUID);
-							   presentationData.Employee = employees[arguments.Which].UUID;
-							   (sender as Button).Text = employees[arguments.Which].Name;
+							   var presentationData = PresentationDatas.Single(item => item.UUID == presentationDataUUID);
+							   presentationData.Employee = Employees[arguments.Which].UUID;
+							   (sender as Button).Text = Employees[arguments.Which].Name;
 						   })
 						   .Show();
 			};
 
 
-			presentation.FindViewById<Button>(Resource.Id.ipiDrugBrandForPresentationB).Click += (object sender, EventArgs e) =>
-			{
+			presentation.FindViewById<Button>(Resource.Id.ipiDrugBrandForPresentationB).Click += (object sender, EventArgs e) => {
 				var cacheBrands = new List<DrugBrand>(newPresentationData.Brands);
 
 				bool[] checkedItems = new bool[Brands.Count];
-				for (int brandIndex = 0; brandIndex < Brands.Count; brandIndex++)
-				{
+				for (int brandIndex = 0; brandIndex < Brands.Count; brandIndex++) {
 					checkedItems[brandIndex] = cacheBrands.Contains(Brands[brandIndex]);
 				}
 
 				new Android.App.AlertDialog.Builder(Activity)
 						   .SetTitle("Выберите бренды:")
-				           .SetCancelable(false)
-				           .SetMultiChoiceItems(
-					           Brands.Select(item => item.name).ToArray(),
-					           checkedItems,
-					           (caller, arguments) => {
+						   .SetCancelable(false)
+						   .SetMultiChoiceItems(
+							   Brands.Select(item => item.name).ToArray(),
+							   checkedItems,
+							   (caller, arguments) => {
 								   Toast.MakeText(Activity, @"Selected " + arguments.Which, ToastLength.Short).Show();
 								   if (arguments.IsChecked) {
 									   cacheBrands.Add(Brands[arguments.Which]);
-			   					   } else {
+								   } else {
 									   cacheBrands.Remove(Brands[arguments.Which]);
 								   }
 							   }
 						   )
-				           .SetPositiveButton(
-					           @"Сохранить",
-							 	(caller, arguments) =>
-								{
-									newPresentationData.Brands.Clear();
-									foreach (var item in cacheBrands) {
-										newPresentationData.Brands.Add(item);
-									}
+						   .SetPositiveButton(
+							   @"Сохранить",
+							 	(caller, arguments) => {
+									 newPresentationData.Brands.Clear();
+									 foreach (var item in cacheBrands) {
+										 newPresentationData.Brands.Add(item);
+									 }
 
-									var parent = ((sender as Button).Parent as LinearLayout);
-									var text = parent.FindViewById<AutoCompleteTextView>(Resource.Id.ipiDrugBrandForPresentationACTV);
-									text.Text = string.Join(",", newPresentationData.Brands.Select(item => item.name));
+									 var parent = ((sender as Button).Parent as LinearLayout);
+									 var text = parent.FindViewById<AutoCompleteTextView>(Resource.Id.ipiDrugBrandForPresentationACTV);
+									 text.Text = string.Join(",", newPresentationData.Brands.Select(item => item.name));
 
-									(caller as Android.App.Dialog).Dispose();
-								}
+									 (caller as Android.App.Dialog).Dispose();
+								 }
 							)
-				           .SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Android.App.Dialog).Dispose(); })
+						   .SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Android.App.Dialog).Dispose(); })
 						   .Show();
 			};
 
 
-			presentationDatas.Add(newPresentationData);
+			PresentationDatas.Add(newPresentationData);
 			PresentationTable.AddView(presentation);
 		}
 
@@ -312,29 +225,25 @@ namespace CRMLite
 			var coterie = Inflater.Inflate(Resource.Layout.InfoCoterieItem, PresentationTable, false);
 			coterie.SetTag(Resource.String.CoterieDataUUID, newCoterieData.UUID);
 
-			coterie.FindViewById<Button>(Resource.Id.iciEmployeeForCoterieB).Click += (object sender, EventArgs e) =>
-			{
+			coterie.FindViewById<Button>(Resource.Id.iciEmployeeForCoterieB).Click += (object sender, EventArgs e) => {
 				new Android.App.AlertDialog.Builder(Activity)
 						   .SetTitle("Выберите сотрудника аптеки:")
 						   .SetCancelable(true)
-						   .SetItems(employees.Select(item => item.Name).ToArray(), (caller, arguments) =>
-						   {
+						   .SetItems(Employees.Select(item => item.Name).ToArray(), (caller, arguments) => {
 							   Toast.MakeText(Activity, @"Selected " + arguments.Which, ToastLength.Short).Show();
-							   newCoterieData.Employee = employees[arguments.Which].UUID;
-							   (sender as Button).Text = employees[arguments.Which].Name;
+							   newCoterieData.Employee = Employees[arguments.Which].UUID;
+							   (sender as Button).Text = Employees[arguments.Which].Name;
 
 						   })
 						   .Show();
 			};
 
 
-			coterie.FindViewById<Button>(Resource.Id.iciBrandForCoterieB).Click += (object sender, EventArgs e) =>
-			{
+			coterie.FindViewById<Button>(Resource.Id.iciBrandForCoterieB).Click += (object sender, EventArgs e) => {
 				var cacheBrands = new List<DrugBrand>(newCoterieData.Brands);
 
 				bool[] checkedItems = new bool[Brands.Count];
-				for (int brandIndex = 0; brandIndex < Brands.Count; brandIndex++)
-				{
+				for (int brandIndex = 0; brandIndex < Brands.Count; brandIndex++) {
 					checkedItems[brandIndex] = cacheBrands.Contains(Brands[brandIndex]);
 				}
 
@@ -344,8 +253,7 @@ namespace CRMLite
 						   .SetMultiChoiceItems(
 							   Brands.Select(item => item.name).ToArray(),
 							   checkedItems,
-							   (caller, arguments) =>
-							   {
+							   (caller, arguments) => {
 								   Toast.MakeText(Activity, @"Selected " + arguments.Which, ToastLength.Short).Show();
 								   if (arguments.IsChecked) {
 									   cacheBrands.Add(Brands[arguments.Which]);
@@ -354,130 +262,288 @@ namespace CRMLite
 								   }
 							   }
 						   )
-						    .SetPositiveButton(
+							.SetPositiveButton(
 							   @"Сохранить",
-							 	(caller, arguments) =>
-								{
-									newCoterieData.Brands.Clear();
-									foreach (var item in cacheBrands)
-									{
-										newCoterieData.Brands.Add(item);
-									}
+							 	(caller, arguments) => {
+									 newCoterieData.Brands.Clear();
+									 foreach (var item in cacheBrands) {
+										 newCoterieData.Brands.Add(item);
+									 }
 
-									var parent = ((sender as Button).Parent as LinearLayout);
-									var text = parent.FindViewById<AutoCompleteTextView>(Resource.Id.iciBrandForCoterieACTV);
-									text.Text = string.Join(",", newCoterieData.Brands.Select(item => item.name));
+									 var parent = ((sender as Button).Parent as LinearLayout);
+									 var text = parent.FindViewById<AutoCompleteTextView>(Resource.Id.iciBrandForCoterieACTV);
+									 text.Text = string.Join(",", newCoterieData.Brands.Select(item => item.name));
 
-									(caller as Android.App.Dialog).Dispose();
-								}
+									 (caller as Android.App.Dialog).Dispose();
+								 }
 							)
-						    .SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Android.App.Dialog).Dispose(); })
-						    .Show();
+							.SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Android.App.Dialog).Dispose(); })
+							.Show();
 			};
 
-			coterieDatas.Add(newCoterieData);
+			CoterieDatas.Add(newCoterieData);
 			CoterieTable.AddView(coterie);
 		}
 
-		//public class TextFactory : ViewSwitcher.IViewFactory
-		//{
-		//	public IntPtr Handle
-		//	{
-		//		get
-		//		{
-		//			throw new NotImplementedException();
-		//		}
-		//	}
+		void InitDistributionTable(View view)
+		{
+			DistributionTable = view.FindViewById<LinearLayout>(Resource.Id.ifDistributionTable);
 
-		//	public void Dispose()
-		//	{
-		//		throw new NotImplementedException();
-		//	}
+			View header = Inflater.Inflate(Resource.Layout.DistributionTableHeader, DistributionTable, false);
+			View divider = Inflater.Inflate(Resource.Layout.Divider, DistributionTable, false);
 
-		//	public View MakeView()
-		//	{
-		//		throw new NotImplementedException();
-		//	}
-		//}
+			DistributionTable.AddView(header);
+			DistributionTable.AddView(divider);
+
+			foreach (var SKU in SKUs) {
+				var row = (Inflater.Inflate(
+									Resource.Layout.DistributionTableItem,
+									DistributionTable,
+									false)) as LinearLayout;
+				
+				row.SetTag(Resource.String.DrugSKUUUID, SKU.uuid);
+				row.FindViewById<TextView>(Resource.Id.dtiDrugSKUTV).Text = SKU.name;
+
+				DistributionTable.AddView(row);
+
+				divider = Activity.LayoutInflater.Inflate(Resource.Layout.Divider, DistributionTable, false);
+
+				DistributionTable.AddView(divider);
+			}
+		}
+
+		void InitAttendanceContent(View view)
+		{
+			AttendanceTypeContent = view.FindViewById<ViewSwitcher>(Resource.Id.ifAtendanceTypeContentVS);
+			AttendanceTypeContent.SetInAnimation(Activity, Android.Resource.Animation.SlideInLeft);
+			AttendanceTypeContent.SetOutAnimation(Activity, Android.Resource.Animation.SlideOutRight);
+
+			view.FindViewById<Button>(Resource.Id.ifChangeAttendanceTypeB).Click += (sender, e) => {
+				AttendanceTypeContent.ShowNext();
+			};
+
+			PresentationTable = view.FindViewById<LinearLayout>(Resource.Id.ifPresentationTable);
+			AddPresentationView();
+			view.FindViewById<ImageView>(Resource.Id.ifAddPresentationIV).Click += (sender, e) => {
+				AddPresentationView();
+			};
+
+			CoterieTable = view.FindViewById<LinearLayout>(Resource.Id.ifCoterieTable);
+			AddCoterieView();
+			view.FindViewById<ImageView>(Resource.Id.ifAddCoterieIV).Click += (sender, e) => {
+				AddCoterieView();
+			};
+		}
+
+		void InitPromotion(View view)
+		{
+			var promotionText = view.FindViewById<EditText>(Resource.Id.ifPromotionET);
+			var promotions = new List<Promotion>();
+			promotions.Add(new Promotion { name = @"Выберите акцию!", uuid = Guid.Empty.ToString() });
+			promotions.AddRange(MainDatabase.GetItems<Promotion>());
+			var promotion = view.FindViewById<Spinner>(Resource.Id.ifPromotionS);
+			var promotionAdapter = new ArrayAdapter(
+				Context,
+				Android.Resource.Layout.SimpleSpinnerItem,
+				promotions.Select(x => x.name).ToArray()
+			);
+			promotionAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
+			promotion.Adapter = promotionAdapter;
+			promotion.ItemSelected += (sender, e) => {
+				if (e.Position == 0) {
+					promotionText.Text = string.Empty;
+					promotionText.Enabled = false;
+				} else {
+					promotionText.Enabled = true;
+					PromotionData.Promotion = promotions[e.Position].uuid;
+				}
+			};
+
+			promotionText.AfterTextChanged += (sender, e) => {
+				PromotionData.Text = e.Editable.ToString();
+			};
+		}
+
+		void InitCompetitor(View view)
+		{
+			var competitorText = view.FindViewById<EditText>(Resource.Id.ifCompetitorET);
+			var competitor = view.FindViewById<CheckBox>(Resource.Id.ifCompetitorCB);
+			competitor.CheckedChange += (sender, e) => {
+				if (e.IsChecked) {
+					competitorText.Enabled = true;
+				} else {
+					competitorText.Text = string.Empty;
+					competitorText.Enabled = false;
+				}
+			};
+
+			competitorText.AfterTextChanged += (sender, e) => {
+				CompetitorData.Text = e.Editable.ToString();
+			};		
+		}
+
+		void InitMessage(View mainView)
+		{
+			MessageTable = mainView.FindViewById<LinearLayout>(Resource.Id.ifMessageTable);
+			AddMessageView();
+			mainView.FindViewById<ImageView>(Resource.Id.ifAddMessageIV).Click += (sender, e) => {
+				AddMessageView();
+			};
+		}
+
+		void InitSaleTable(View view)
+		{
+			SaleTable = view.FindViewById<LinearLayout>(Resource.Id.ifSaleTable);
+
+			var header = (LinearLayout)Inflater.Inflate(Resource.Layout.SaleTableHeader, SaleTable, false);
+			SaleDataMonths = new DateTimeOffset[8];
+			foreach (var SKU in SKUs) {
+				for (int m = 0; m < 8; m++) {
+					var month = DateTimeOffset.Now.AddMonths(-6 + m);
+					SaleDataMonths[m] = month;
+					var hView = header.GetChildAt(m + 1);
+					if (hView is TextView) {
+						(hView as TextView).Text = month.ToString(string.Format(@"MMMM{0}yyyy", System.Environment.NewLine));
+					}
+				}
+			}
+
+			View divider = Inflater.Inflate(Resource.Layout.Divider, SaleTable, false);
+
+			SaleTable.AddView(header);
+			SaleTable.AddView(divider);
+
+			var key = string.Empty;
+			var formatForKey = @"MMyy";
+			SaleDataTextViews = new Dictionary<string, TextView>();
+			foreach (var SKU in SKUs) {
+				var row = (Inflater.Inflate(
+									Resource.Layout.SaleTableItem,
+									SaleTable,
+									false)) as LinearLayout;
+				row.SetTag(Resource.String.DrugSKUUUID, SKU.uuid);
+				row.FindViewById<TextView>(Resource.Id.stiDrugSKUTV).Text = SKU.name;
+
+				for (int c = 1; c < row.ChildCount; c++) {
+					var rView = (TextView)row.GetChildAt(c);
+					rView.SetTag(Resource.String.IsChanged, false);
+					rView.AfterTextChanged += RView_AfterTextChanged;
+
+					key = string.Format("{0}-{1}", SKU.uuid, SaleDataMonths[c - 1].ToString(formatForKey));
+					SaleDataTextViews.Add(key, rView);
+ 				}
+				
+				SaleTable.AddView(row);
+
+				divider = Inflater.Inflate(Resource.Layout.Divider, SaleTable, false);
+
+				SaleTable.AddView(divider);
+			}
+
+			var formatForMonthCompare = @"yyyyMM";
+			var months = SaleDataMonths.Select(m => m.ToString(formatForMonthCompare));
+			var saleDatas = MainDatabase.GetItems<SaleData>()
+										.Where(s => MainDatabase.GetEntity<Attendance>(s.Attendance).Pharmacy == Pharmacy.UUID)
+			                            .Where(s => months.Contains(s.Month.ToString(formatForMonthCompare)));
+
+			foreach (var sale in saleDatas) {
+				key = string.Format("{0}-{1}", sale.DrugSKU, sale.Month.ToString(formatForKey));
+				var textView = SaleDataTextViews[key];
+				textView.SetTag(Resource.String.SaleDataUUID, sale.UUID);
+				textView.Text = sale.Sale == null ? string.Empty : sale.Sale.ToString();
+
+			}
+		}
+
+		void RView_AfterTextChanged(object sender, Android.Text.AfterTextChangedEventArgs e)
+		{
+			var textView = sender as TextView;
+			textView.SetTag(Resource.String.IsChanged, true);
+		}
 
 		public override void OnResume()
 		{
 			base.OnResume();
+			if (Pharmacy == null) {
+				new Android.App.AlertDialog.Builder(Context)
+								   .SetTitle(Resource.String.error_caption)
+								   .SetMessage("Отсутствует аптека!")
+								   .SetCancelable(false)
+								   .SetPositiveButton(@"OK", (dialog, args) => {
+									   if (dialog is Android.App.Dialog) {
+										   ((Android.App.Dialog)dialog).Dismiss();
+									   }
+								   })
+								   .Show();
 
-			//if (Transaction == null) {
-			//	Transaction = MainDatabase.BeginTransaction();
-			//}
-
-			//realm = Realm.GetInstance();
-			//Distributions = new List<Distribution>();
-			//List<DrugSKU> drugSKUs = MainDatabase.GetItems<DrugSKU>();
-
-			//foreach (var SKU in drugSKUs)
-			//{
-			//	Distributions.Add( new Distribution {
-			//		UUID = Guid.NewGuid().ToString(),
-			//		DrugSKU = SKU.uuid,
-			//		IsExistence = false 
-			//	});
-			//}
-
-			//View header = Activity.LayoutInflater.Inflate(Resource.Layout.DistributionTableHeader, DistributionTable, false);
-			//View divider = Activity.LayoutInflater.Inflate(Resource.Layout.Divider, DistributionTable, false);
-
-			//DistributionTable.AddView(header);
-			//DistributionTable.AddView(divider);
-
-			//foreach (var item in Distributions)
-			//{
-			//	var view = (Activity.LayoutInflater.Inflate(
-			//						Resource.Layout.DistributionTableItem,
-			//						DistributionTable,
-			//						false)) as LinearLayout;
-
-			//	view.FindViewById<TextView>(Resource.Id.dtiDrugSKUTV).Text = MainDatabase.GetItem<DrugSKU>(item.DrugSKU).name;
-			//	view.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked = item.IsExistence;
-			//	view.FindViewById<EditText>(Resource.Id.dtiCountET).Text = item.Count.ToString();
-			//	view.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = item.Price.ToString();
-			//	view.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked = item.IsPresence;
-			//	view.FindViewById<CheckBox>(Resource.Id.dtiIsPOSCB).Checked = item.IsPOS;
-			//	view.FindViewById<EditText>(Resource.Id.dtiOrder).Text = item.Order;
-			//	view.FindViewById<EditText>(Resource.Id.dtiComment).Text = item.Comment;
-
-			//	DistributionTable.AddView(view);
-
-			//	divider = Activity.LayoutInflater.Inflate(Resource.Layout.Divider, DistributionTable, false);
-
-			//	DistributionTable.AddView(divider);
-			//}
-
-			//Adapter = new DistributionAdapter(Activity, Distributions);
-
-			//DitributionList.Adapter = Adapter;
+			} else if (AttendanceStart == null) {
+				Locker.Visibility = ViewStates.Visible;;
+			}
 		}
 
 		public override void OnPause()
 		{
 			base.OnPause();
-
-			//listView.Adapter = null;
-			//adapter = null;
-			//pharmacies = null;
-
-			//realm.Dispose();
 		}
 
 		public override void OnStop()
 		{
 			base.OnStop();
+		}
 
-			//DitributionList.Adapter = null;
-			//Adapter = null;
-			Distributions = null;
-			//MainDatabase.DeletePresentationDatas(presentationDatas);
-			//MainDatabase.DeleteCoterieDatas(coterieDatas);
-			//Transaction.Commit();
-			//Transaction = null;
-			//realm.Dispose();
+		public void OnAttendanceStart(DateTimeOffset? start)
+		{
+			AttendanceStart = start;
+			Locker.Visibility = ViewStates.Gone;
+		}
+
+		public void OnAttendanceStop(Transaction openedTransaction, Attendance current)
+		{
+			if (openedTransaction == null) {
+				throw new ArgumentNullException(nameof(openedTransaction));
+			}
+
+			// Save Distributions
+			for (int c = 2; c < DistributionTable.ChildCount; c = c + 2) {
+				var row = (LinearLayout)DistributionTable.GetChildAt(c);
+				var distr = MainDatabase.CreateData<Distribution>(current.UUID);
+				distr.DrugSKU = (string)row.GetTag(Resource.String.DrugSKUUUID);
+				distr.IsExistence = row.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked;
+				distr.Count = Helper.ToFloatExeptNull(row.FindViewById<EditText>(Resource.Id.dtiCountET).Text);
+				distr.Price = Helper.ToFloatExeptNull(row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text);
+				distr.IsPresence = row.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked;
+				distr.HasPOS = row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked;
+				distr.Order = row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text;
+				distr.Comment = row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text;;
+			}
+
+			// Save Sale
+			for (int c = 2; c < SaleTable.ChildCount; c = c + 2) {
+				var row = (LinearLayout)SaleTable.GetChildAt(c);
+				var skuUUID = (string)row.GetTag(Resource.String.DrugSKUUUID);
+				for (int m = 0; m < 8; m++) {
+					var rView = (TextView)row.GetChildAt(m + 1);
+					if (string.IsNullOrEmpty(rView.Text)) continue;
+
+					var isChanged = (bool)rView.GetTag(Resource.String.IsChanged);
+					if (isChanged) {
+						var saleUUID = (string)rView.GetTag(Resource.String.SaleDataUUID);
+
+						Console.WriteLine("Info: sku = {0}, value = {1}, sale = {2}", skuUUID, Helper.ToFloat(rView.Text), saleUUID);
+
+						if (string.IsNullOrEmpty(saleUUID)) {
+							var sale = MainDatabase.CreateData<SaleData>(current.UUID);
+							sale.DrugSKU = skuUUID;
+							sale.Month = SaleDataMonths[m];
+							sale.Sale = Helper.ToFloat(rView.Text);
+						} else {
+							var sale = MainDatabase.GetEntity<SaleData>(saleUUID);
+							Console.WriteLine("Info: sku = {0}, month = {1}", sale.DrugSKU == skuUUID, sale.Month.Month == SaleDataMonths[m].Month);
+							sale.Sale = Helper.ToFloat(rView.Text);
+						}
+					}
+				}
+			}
 		}
 	}
 }

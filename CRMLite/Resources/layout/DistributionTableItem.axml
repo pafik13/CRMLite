@@ -35,10 +35,9 @@
         android:background="@drawable/bottomline"
         android:textColorHint="@color/Grey_300"
         android:textColor="@android:color/black"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:hint="Количество"
-        android:inputType="textCapSentences"
+        android:layout_margin="10dp"
+        android:hint="0.00"
+        android:inputType="numberDecimal"
         android:gravity="center" />
     <EditText
         android:textCursorDrawable="@null"
@@ -49,10 +48,9 @@
         android:background="@drawable/bottomline"
         android:textColorHint="@color/Grey_300"
         android:textColor="@android:color/black"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:hint="Цена"
-        android:inputType="textCapSentences"
+        android:layout_margin="10dp"
+        android:hint="0.00"
+        android:inputType="numberDecimal"
         android:gravity="center" />
     <RelativeLayout
         android:layout_width="0dp"
@@ -73,7 +71,7 @@
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/dtiIsPOSCB"
+            android:id="@+id/dtiHasPOSCB"
             android:layout_centerInParent="true" />
     </RelativeLayout>
     <EditText
@@ -81,12 +79,11 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="19"
-        android:id="@+id/dtiOrder"
+        android:id="@+id/dtiOrderET"
         android:background="@drawable/bottomline"
         android:textColorHint="@color/Grey_300"
         android:textColor="@android:color/black"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:layout_margin="10dp"
         android:hint="Заказ"
         android:inputType="textCapSentences"
         android:layout_marginLeft="10dp" />
@@ -95,12 +92,11 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="20"
-        android:id="@+id/dtiComment"
+        android:id="@+id/dtiCommentET"
         android:background="@drawable/bottomline"
         android:textColorHint="@color/Grey_300"
         android:textColor="@android:color/black"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:layout_margin="10dp"
         android:hint="Комментарий"
         android:inputType="textCapSentences"
         android:layout_marginLeft="10dp" />

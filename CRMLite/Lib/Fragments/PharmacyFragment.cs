@@ -119,12 +119,12 @@ namespace CRMLite
 			};
 			#endregion
 
-			view.FindViewById<EditText>(Resource.Id.pfNameET).Text = pharmacy.Name;
-			view.FindViewById<EditText>(Resource.Id.pfNameInNetET).Text = pharmacy.NameInNet;
+			//view.FindViewById<EditText>(Resource.Id.pfNameET).Text = pharmacy.Name;
+			//view.FindViewById<EditText>(Resource.Id.pfNameInNetET).Text = pharmacy.NameInNet;
 
 			#region LegalAddress
 			var legalAddressACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfLegalAddressACTV);
-			legalAddressACTV.Text = pharmacy.LegalAddress;
+			//legalAddressACTV.Text = pharmacy.LegalAddress;
 
 			legalAddressACTV.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
 			{
@@ -225,24 +225,24 @@ namespace CRMLite
 
 			#region CategoryByNet
 			AutoCompleteTextView byNetACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfCategoryByNetACTV);
-			byNetACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryByNet) ? pharmacy.CategoryByNet : MainDatabase.GetCategory(pharmacy.CategoryByNet).name;
-			byNet = MainDatabase.GetCategories("net");
-			byNetACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, byNet.Select(x => x.name).ToArray());
-			byNetACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
-			{
-				pharmacy.CategoryByNet = byNet[e.Position].uuid;
-			};
+			//byNetACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryByNet) ? pharmacy.CategoryByNet : MainDatabase.GetCategory(pharmacy.CategoryByNet).name;
+			//byNet = MainDatabase.GetCategories("net");
+			//byNetACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, byNet.Select(x => x.name).ToArray());
+			//byNetACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
+			//{
+			//	pharmacy.CategoryByNet = byNet[e.Position].uuid;
+			//};
 			#endregion
 
 			#region CategoryBySell
 			AutoCompleteTextView bySellACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfCategoryBySellACTV);
-			bySellACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryBySell) ? pharmacy.CategoryBySell : MainDatabase.GetCategory(pharmacy.CategoryBySell).name;
-			bySell = MainDatabase.GetCategories("sell");
-			bySellACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, bySell.Select(x => x.name).ToArray());
-			bySellACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
-			{
-				pharmacy.CategoryBySell = bySell[e.Position].uuid;
-			};
+			//bySellACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryBySell) ? pharmacy.CategoryBySell : MainDatabase.GetCategory(pharmacy.CategoryBySell).name;
+			//bySell = MainDatabase.GetCategories("sell");
+			//bySellACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, bySell.Select(x => x.name).ToArray());
+			//bySellACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
+			//{
+			//	pharmacy.CategoryBySell = bySell[e.Position].uuid;
+			//};
 			#endregion
 
 

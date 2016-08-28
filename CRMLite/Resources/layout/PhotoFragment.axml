@@ -1,120 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="25px"
-    android:minHeight="25px"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#E0E0E0">
-    <RelativeLayout
+    android:layout_height="match_parent">
+    <LinearLayout
         android:minWidth="25px"
         android:minHeight="25px"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="25"
-        android:background="@drawable/rightline">
-        <TextView
-            android:text="НОВОЕ ФОТО"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/pfNewPhotoTV"
-            android:layout_centerHorizontal="true"
-            android:textColor="#000000"
-            android:layout_marginTop="60dp"
-            android:textSize="28dp" />
-        <TextView
-            android:text="Тип фото:"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/pfNewPhotoTV"
-            android:id="@+id/pfPhotoTypeTV"
-            android:layout_marginTop="60dp"
-            android:textColor="#000000"
-            android:textSize="20dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="20dp" />
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/pfPhotoTypeTV"
-            android:id="@+id/pfPhotoTypeS"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp" />
-        <TextView
-            android:text="Бренд:"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/pfPhotoTypeS"
-            android:id="@+id/pfBrandTV"
-            android:layout_marginTop="30dp"
-            android:textColor="#000000"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="20dp" />
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/pfBrandTV"
-            android:id="@+id/pfBrandS"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp" />
-        <Button
-            android:text="ДОБАВИТЬ ФОТО"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/pfBrandS"
-            android:id="@+id/pfAddPhotoB"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:typeface="monospace"
-            android:textSize="24dp"
-            android:textStyle="bold"
-            android:background="#03A9F4"
-            android:textColor="#FFFFFF"
-            android:minWidth="160dp"
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp" />
-    </RelativeLayout>
-    <RelativeLayout
-        android:minWidth="25px"
-        android:minHeight="25px"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="75">
-        <TextView
-            android:text="ВЫПОЛНЕННЫЕ ФОТО"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/pfPhotoTableHeaderTV"
-            android:textColor="#000000"
-            android:layout_marginTop="60dp"
-            android:layout_alignParentLeft="true"
-            android:textSize="28dp"
-            android:layout_marginLeft="30dp" />
-        <ScrollView
+        android:background="@color/Grey_300">
+        <RelativeLayout
             android:minWidth="25px"
             android:minHeight="25px"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/pfScrollView"
-            android:layout_below="@+id/pfPhotoTableHeaderTV"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/bottomline">
-            <LinearLayout
+            android:layout_weight="25"
+            android:background="@drawable/rightline">
+            <TextView
+                android:text="НОВОЕ ФОТО"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/pfNewPhotoTV"
+                android:layout_centerHorizontal="true"
+                android:textColor="#000000"
+                android:layout_marginTop="60dp"
+                android:textSize="28dp" />
+            <TextView
+                android:text="Тип фото:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pfNewPhotoTV"
+                android:id="@+id/pfPhotoTypeTV"
+                android:layout_marginTop="60dp"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pfPhotoTypeTV"
+                android:id="@+id/pfPhotoTypeS"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="20dp" />
+            <TextView
+                android:text="Бренд:"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pfPhotoTypeS"
+                android:id="@+id/pfBrandTV"
+                android:layout_marginTop="30dp"
+                android:textColor="#000000"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pfBrandTV"
+                android:id="@+id/pfBrandS"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp" />
+            <Button
+                android:text="ДОБАВИТЬ ФОТО"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pfBrandS"
+                android:id="@+id/pfAddPhotoB"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:typeface="monospace"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                android:background="#03A9F4"
+                android:textColor="#FFFFFF"
+                android:minWidth="160dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="75">
+            <TextView
+                android:text="ВЫПОЛНЕННЫЕ ФОТО"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/pfPhotoTableHeaderTV"
+                android:textColor="#000000"
+                android:layout_marginTop="60dp"
+                android:layout_alignParentLeft="true"
+                android:textSize="28dp"
+                android:layout_marginLeft="30dp" />
+            <ScrollView
                 android:minWidth="25px"
                 android:minHeight="25px"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/pfPhotoTableLL"
-                android:orientation="vertical" />
-        </ScrollView>
-    </RelativeLayout>
-</LinearLayout>
+                android:id="@+id/pfScrollView"
+                android:layout_below="@+id/pfPhotoTableHeaderTV"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bottomline">
+                <LinearLayout
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/pfPhotoTableLL"
+                    android:orientation="vertical" />
+            </ScrollView>
+        </RelativeLayout>
+    </LinearLayout>
+    <TextView
+        android:text="НАЧНИТЕ ВИЗИТ"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/locker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/translucent_black"
+        android:gravity="center" />
+</FrameLayout>

@@ -1,4 +1,5 @@
-﻿using Realms;
+﻿using System;
+using Realms;
 
 namespace CRMLite.Entities
 {
@@ -16,7 +17,11 @@ namespace CRMLite.Entities
 
 		public string Attendance { get; set; }
 
+		//public string Pharmacy { get; set; }
+
 		public string DrugSKU { get; set; }
+
+		public DateTimeOffset Month { get; set; }
 
 		public float? Sale { get; set; }
 	}

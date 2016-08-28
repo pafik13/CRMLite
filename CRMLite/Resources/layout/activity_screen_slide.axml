@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:minWidth="25px"
-    android:minHeight="64px"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/Grey_300">
     <RelativeLayout
-        android:id="@+id/haUpPanelRL"
+        android:id="@+id/aaUpPanelRL"
         android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="25px"
-        android:minHeight="64px"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
         android:background="@drawable/bottomline">
         <Button
             android:text="НАЧАТЬ ВИЗИТ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:id="@+id/StartAttendance"
+            android:id="@+id/aaStartOrStopAttendanceB"
             android:background="@color/Light_Green_500"
             android:typeface="monospace"
             android:width="150dp"
@@ -34,19 +30,47 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/Title"
+            android:id="@+id/aaTitleTV"
             android:gravity="center"
             android:textColor="@color/Light_Blue_500"
             android:height="64dp"
             android:paddingLeft="24dp"
             android:paddingRight="24dp"
             android:layout_centerHorizontal="true" />
+        <ImageView
+            android:src="@drawable/ic_history_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/aaHistoryIV"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginRight="18dp"
+            android:visibility="invisible" />
+        <ImageView
+            android:src="@drawable/ic_shopping_cart_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/aaFinanceIV"
+            android:layout_marginRight="18dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp"
+            android:visibility="invisible" />
+        <ImageView
+            android:src="@drawable/ic_description_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/aaContractsIV"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginRight="18dp"
+            android:layout_alignParentEnd="true"
+            android:visibility="invisible" />
         <Button
             android:text="ЗАКРЫТЬ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:id="@+id/CloseOrStopAttendance"
+            android:id="@+id/aaCloseB"
             android:background="@color/Deep_Orange_500"
             android:typeface="monospace"
             android:width="150dp"
@@ -57,16 +81,9 @@
             android:minHeight="62dp"
             android:layout_marginBottom="2dp" />
     </RelativeLayout>
-    <RelativeLayout
-        android:orientation="vertical"
-        android:layout_below="@id/haUpPanelRL"
-        android:minWidth="25px"
-        android:minHeight="25px"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/aaContainerVP"
+        android:layout_below="@id/aaUpPanelRL"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </RelativeLayout>
+        android:layout_height="match_parent" />
 </RelativeLayout>

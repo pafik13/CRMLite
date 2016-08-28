@@ -16,7 +16,7 @@ namespace CRMLite
 {
 	public class EmployeeFragment : Fragment
 	{
-		public const string ARG_UUID = @"ARG_UUID";
+		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";
 
 		Pharmacy pharmacy;
 		IList<Employee> employees = new List<Employee>();
@@ -27,7 +27,7 @@ namespace CRMLite
 		{
 			EmployeeFragment fragment = new EmployeeFragment();
 			Bundle arguments = new Bundle();
-			arguments.PutString(ARG_UUID, UUID);
+			arguments.PutString(C_PHARMACY_UUID, UUID);
 			fragment.Arguments = arguments;
 			return fragment;
 		}
@@ -48,7 +48,7 @@ namespace CRMLite
 
 			View view = inflater.Inflate(Resource.Layout.EmployeeFragment, container, false);
 
-			var pharmacyUUID = Arguments.GetString(ARG_UUID);
+			var pharmacyUUID = Arguments.GetString(C_PHARMACY_UUID);
 			if (!string.IsNullOrEmpty(pharmacyUUID))
 			{
 				pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);

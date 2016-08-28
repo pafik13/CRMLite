@@ -6,7 +6,7 @@ using Android.Widget;
 
 using CRMLite.Entities;
 
-namespace CRMLite
+namespace CRMLite.Adapters
 {
 	public class DistributionAdapter : BaseAdapter<Distribution>
 	{
@@ -57,8 +57,8 @@ namespace CRMLite
 			view.FindViewById<EditText>(Resource.Id.dtiCountET).Text = item.Count.ToString();
 			view.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = item.Price.ToString();
 			view.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked = item.IsPresence;
-			view.FindViewById<EditText>(Resource.Id.dtiOrder).Text = item.Order;
-			view.FindViewById<EditText>(Resource.Id.dtiComment).Text = item.Comment;
+			view.FindViewById<EditText>(Resource.Id.dtiOrderET).Text = item.Order;
+			view.FindViewById<EditText>(Resource.Id.dtiCommentET).Text = item.Comment;
 
 			return view;
 		}

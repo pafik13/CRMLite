@@ -22,6 +22,8 @@ namespace CRMLite
 	[Activity(Label = "FinanceActivity")]
 	public class FinanceActivity : Activity
 	{
+		const string PeriodFormatForKey = @"MMyy";
+
 		Pharmacy Pharmacy;
 		LinearLayout Table;
 		Dictionary<string, TextView> TextViews;
@@ -29,6 +31,8 @@ namespace CRMLite
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
+
+			RequestWindowFeature(WindowFeatures.NoTitle);
 
 			// Create your application here
 
@@ -39,24 +43,19 @@ namespace CRMLite
 			};
 
 			var pharmacyUUID = Intent.GetStringExtra("UUID");
-			if (string.IsNullOrEmpty(pharmacyUUID)) {
-				return;
-			} else {
+			if (string.IsNullOrEmpty(pharmacyUUID)) return;
 
-				Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
-				FindViewById<TextView>(Resource.Id.faInfoTV).Text = string.Format("ПРОДАЖИ: {0}", Pharmacy.GetName());
 
-				//				var date1 = FindViewById<TextView>(Resource.Id.htiDate1);
-				//				date1.Text = DateTimeOffset.Now.Date.ToString("dd.MM.yy");
-				//
-				//				var date2 = FindViewById<TextView>(Resource.Id.htiDate2);
-				//				date2.Text = DateTimeOffset.Now.Date.AddDays(7).Date.ToString("dd.MM.yy");
-				//
-				Table = FindViewById<LinearLayout>(Resource.Id.faTable);
-				//				for (int i = 0; i < 60; i++) {
-				//					var view = LayoutInflater.Inflate(Resource.Layout.HistoryTableItem, table, true);
-				//				}
-			}
+			Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
+			FindViewById<TextView>(Resource.Id.faInfoTV).Text = string.Format("ПРОДАЖИ: {0}", Pharmacy.GetName());
+
+			//				var date1 = FindViewById<TextView>(Resource.Id.htiDate1);
+			//				date1.Text = DateTimeOffset.Now.Date.ToString("dd.MM.yy");
+			//
+			//				var date2 = FindViewById<TextView>(Resource.Id.htiDate2);
+			//				date2.Text = DateTimeOffset.Now.Date.AddDays(7).Date.ToString("dd.MM.yy");
+			//
+			Table = FindViewById<LinearLayout>(Resource.Id.faTable);
 
 
 			var add = FindViewById<ImageView>(Resource.Id.faAdd);
@@ -64,14 +63,15 @@ namespace CRMLite
 				//Toast.MakeText(this, "ADD BUTTON CLICKED", ToastLength.Short).Show();
 				Console.WriteLine("Event {0} was called", "faAdd_Click");
 				FragmentTransaction fragmentTransaction = FragmentManager.BeginTransaction();
-				FinanceDialog financeDialog = new FinanceDialog(this, Pharmacy);
+				FinanceDialog financeDialog = new FinanceDialog(Pharmacy);
 				financeDialog.Show(fragmentTransaction, "FinanceDialog");
-				financeDialog.AfterSaved += (object caller, EventArgs arguments) => {
-					Console.WriteLine("Event {0} was called", "AfterSaved");
+				financeDialog.AfterSaved += (caller, arguments) => {
+					Console.WriteLine("Event {0} was called. FinanceDatas count {1}", "AfterSaved", arguments.FinanceDatas.Count);
 
-					Table.RemoveAllViews();
+					//Table.RemoveAllViews();
 
-					RefreshView();
+					//RefreshView();
+					SetValues(arguments.FinanceDatas);
 				};
 			};
 		}
@@ -155,7 +155,7 @@ namespace CRMLite
 				dict_key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitSale, financeData.Period.ToString(format));
 				TextViews[dict_key].Text = financeData.Sale.ToString();
 
-				// Purchase }
+				// Purchase
 				dict_key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitPurchase, financeData.Period.ToString(format));
 				TextViews[dict_key].Text = financeData.Purchase.ToString();
 
@@ -171,6 +171,25 @@ namespace CRMLite
 				"{0}-{1}",
 				s1.ElapsedMilliseconds,
 				TextViews.Count);
+		}
+
+		void SetValues(List<FinanceData> financeDatas)
+		{
+			var key = string.Empty;
+			// 2. Вставляем данные 
+			foreach (var financeData in financeDatas) {
+				// Salee
+				key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitSale, financeData.Period.ToString(PeriodFormatForKey));
+				TextViews[key].Text = financeData.Sale.ToString();
+
+				// Purchase
+				key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitPurchase, financeData.Period.ToString(PeriodFormatForKey));
+				TextViews[key].Text = financeData.Purchase.ToString();
+
+				// Remain 
+				key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitRemain, financeData.Period.ToString(PeriodFormatForKey));
+				TextViews[key].Text = financeData.Remain.ToString();
+			}
 		}
 
 		string GetTypeName(FinanceInfoType infoType)

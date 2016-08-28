@@ -60,6 +60,20 @@ namespace CRMLite
 				trans.Commit();
 			}
 		}
+
+		internal static void DeleteDistributions()
+		{
+			foreach (var item in Me.DB.All<Distribution>().ToList()) {
+				Me.DB.Remove(item);
+			}		
+		}
+
+		internal static void DeleteAttendancies()
+		{
+			foreach (var item in Me.DB.All<Attendance>().ToList()) {
+				Me.DB.Remove(item);
+			}
+		}
 		#endregion
 
 		#region Position
@@ -100,6 +114,13 @@ namespace CRMLite
 		internal static void DeleteFinanceData()
 		{
 			foreach (var item in Me.DB.All<FinanceData>().ToList()) {
+				Me.DB.Remove(item);
+			}
+		}
+
+		internal static void DeleteSaleData()
+		{
+			foreach (var item in Me.DB.All<SaleData>().ToList()) {
 				Me.DB.Remove(item);
 			}
 		}
@@ -145,6 +166,11 @@ namespace CRMLite
 		public static T GetItem<T>(string uuid) where T : RealmObject, IEntiryFromServer
 		{
 			return Me.DB.All<T>().Single(item => item.uuid == uuid);
+		}
+
+		public static T GetEntity<T>(string uuid) where T : RealmObject, IEntity
+		{
+			return Me.DB.All<T>().Single(item => item.UUID == uuid);
 		}
 
 		public static List<T> GetItems<T>() where T : RealmObject
@@ -194,6 +220,11 @@ namespace CRMLite
 			photo.UUID = Guid.NewGuid().ToString();
 			photo.Stamp = DateTimeOffset.Now;
 			return photo;
+		}
+
+		internal static void SavePhoto(Photo photo)
+		{
+			Me.DB.Manage(photo);
 		}
 
 		public static IList<string> GetStates()
@@ -397,6 +428,11 @@ namespace CRMLite
 		{
         	return Me.DB.All<Attendance>().Where(item => item.Pharmacy == pharmacyUUID).ToList();
         }
+
+		public static void SaveAttendace(Attendance attendance)
+		{
+			Me.DB.Manage(attendance);
+		}
 		#endregion
 
 		#region Hospital
