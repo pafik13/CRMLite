@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <dimen name="row_height">50dp</dimen>
+    <dimen name="drop_down_width">650dp</dimen>
+    <dimen name="ball_radius">30dp</dimen>
+    <dimen name="font_size">16sp</dimen>
+</resources>

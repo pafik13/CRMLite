@@ -17,7 +17,7 @@ using CRMLite.Suggestions;
 
 namespace CRMLite
 {
-	[Activity(Label = "PharmacyActivity")]
+	[Activity(Label = "PharmacyActivity", WindowSoftInputMode=SoftInput.StateHidden)]
 	public class PharmacyActivity : Activity
 	{
 		Pharmacy pharmacy;
@@ -26,8 +26,13 @@ namespace CRMLite
 		Spinner State;
 		IList<string> states;
 
-		Spinner Net;
-		List<Net> nets;
+		IList<Net> Nets;
+		string NetUUID;
+		AutoCompleteTextView NetName;
+
+		IList<Contract> Contracts;
+		AutoCompleteTextView ContractsNames;
+		Button ContractsChoice;
 
 		List<Subway> subways;
 		List<Region> regions;
@@ -84,6 +89,7 @@ namespace CRMLite
 
 			FindViewById<TextView>(Resource.Id.paUUIDTV).Text = pharmacy.UUID;
 
+
 			#region State
 			State = FindViewById<Spinner>(Resource.Id.paStateS);
 			states = MainDatabase.GetStates();
@@ -98,45 +104,33 @@ namespace CRMLite
 			State.SetSelection((int)pharmacy.GetState());
 			#endregion
 
-			//FindViewById<EditText>(Resource.Id.paNameET).Text = pharmacy.Name;
-			//FindViewById<EditText>(Resource.Id.paNameInNetET).Text = pharmacy.NameInNet;
 
-			#region LegalAddress
-			var legalAddressACTV = FindViewById<AutoCompleteTextView>(Resource.Id.paLegalAddressACTV);
-			//legalAddressACTV.Text = pharmacy.LegalAddress;
+			FindViewById<EditText>(Resource.Id.paBrandET).Text = pharmacy.Brand;
+			FindViewById<EditText>(Resource.Id.paNumberNameET).Text = pharmacy.NumberName;
+			FindViewById<EditText>(Resource.Id.paLegalNameET).Text = pharmacy.LegalName;
 
-			legalAddressACTV.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
-			{
-				if (legalAddressACTV.Text.Contains(" "))
-				{
-					var response = Api.QueryAddress(legalAddressACTV.Text);
-					var suggestions = response.suggestionss.Select(x => x.value).ToArray();
-					legalAddressACTV.Adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleDropDownItem1Line, suggestions);
-					(legalAddressACTV.Adapter as ArrayAdapter<string>).NotifyDataSetChanged();
-					if (legalAddressACTV.IsShown)
-					{
-						legalAddressACTV.DismissDropDown();
-					}
-					legalAddressACTV.ShowDropDown();
-				}
-			};
-			#endregion
 
 			#region Net
-			Net = FindViewById<Spinner>(Resource.Id.paNetS);
-			nets = MainDatabase.GetNets();
-			ArrayAdapter netAdapter = new ArrayAdapter(this, Android.Resource.Layout.SimpleSpinnerItem, (from item in nets select item.name).ToArray());
-			//stateAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
-			Net.Adapter = netAdapter;
-			Net.ItemSelected += (object sender, AdapterView.ItemSelectedEventArgs e) =>
-			{
-				pharmacy.Net = nets[e.Position].uuid;
-			};
-			// SetValue
+			Nets = MainDatabase.GetNets();
+			NetName = FindViewById<AutoCompleteTextView>(Resource.Id.paNetACTV);
 			if (!string.IsNullOrEmpty(pharmacy.Net)) {
-				Net.SetSelection(nets.FindIndex(item => string.Compare(item.uuid, pharmacy.Net) == 0)); 
+				NetName.Text = MainDatabase.GetNet(pharmacy.Net).name;
+			}
+			var netChoiceButton = FindViewById<Button>(Resource.Id.paNetB);
+			netChoiceButton.Click += (object sender, EventArgs e) => {
+				new AlertDialog.Builder(this)
+				               .SetTitle("Аптечная сеть")
+							   .SetCancelable(true)
+							   .SetItems(Nets.Select(item => item.name).ToArray(), (caller, arguments) => {
+									SetNet(arguments.Which);
+								   //Toast.MakeText(this, @"Selected " + arguments.Which, ToastLength.Short).Show();
+							   })
+							   .Show();
 			};
 			#endregion
+
+			ContractsNames = FindViewById<AutoCompleteTextView>(Resource.Id.paContractsACTV);
+			ContractsChoice = FindViewById<Button>(Resource.Id.paContractsB);
 
 			#region Address
 			var addressACTV = FindViewById<AutoCompleteTextView>(Resource.Id.paAddressACTV);
@@ -158,6 +152,8 @@ namespace CRMLite
 				}
 			};
 			#endregion
+
+
 
 			#region Subway
 			AutoCompleteTextView subwayACTV = FindViewById<AutoCompleteTextView>(Resource.Id.paSubwayACTV);
@@ -197,8 +193,8 @@ namespace CRMLite
 			};
 			#endregion
 
-			#region CategoryByNet
-			AutoCompleteTextView byNetACTV = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryByNetACTV);
+			#region Category
+			AutoCompleteTextView byNetACTV = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryACTV);
 			//byNetACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryByNet) ? pharmacy.CategoryByNet : MainDatabase.GetCategory(pharmacy.CategoryByNet).name;
 			//byNet = MainDatabase.GetCategories("net");
 			//byNetACTV.Adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleDropDownItem1Line, byNet.Select(x => x.name).ToArray());
@@ -208,8 +204,8 @@ namespace CRMLite
 			//};
 			#endregion
 
-			#region CategoryBySell
-			AutoCompleteTextView bySellACTV = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryBySellACTV);
+			#region TurnOver
+			AutoCompleteTextView turnOverACTV = FindViewById<AutoCompleteTextView>(Resource.Id.paTurnOverACTV);
 			//bySellACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryBySell) ? pharmacy.CategoryBySell : MainDatabase.GetCategory(pharmacy.CategoryBySell).name;
 			//bySell = MainDatabase.GetCategories("sell");
 			//bySellACTV.Adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleDropDownItem1Line, bySell.Select(x => x.name).ToArray());
@@ -237,9 +233,9 @@ namespace CRMLite
 			var save = FindViewById<Button>(Resource.Id.paSaveB);
 			save.Click += delegate {
 				pharmacy.CreatedAt = DateTimeOffset.Now;
-				//pharmacy.Name = FindViewById<EditText>(Resource.Id.paNameET).Text;
-				//pharmacy.NameInNet = FindViewById<EditText>(Resource.Id.paNameInNetET).Text;
-				//pharmacy.LegalAddress = FindViewById<AutoCompleteTextView>(Resource.Id.paLegalAddressACTV).Text;
+				pharmacy.Brand = FindViewById<EditText>(Resource.Id.paBrandET).Text;
+				pharmacy.NumberName = FindViewById<EditText>(Resource.Id.paNumberNameET).Text;
+				pharmacy.LegalName = FindViewById<EditText>(Resource.Id.paLegalNameET).Text;
 				pharmacy.Address = FindViewById<AutoCompleteTextView>(Resource.Id.paAddressACTV).Text;
 				//pharmacy.Subway = FindViewById<AutoCompleteTextView>(Resource.Id.paSubwayACTV).Text;
 				//pharmacy.Region = FindViewById<AutoCompleteTextView>(Resource.Id.paRegionACTV).Text;
@@ -251,22 +247,51 @@ namespace CRMLite
 
 				transaction.Commit();
 
-				var sync = new SyncItem()
-				{
-					Path = @"Pharmacy",
-					ObjectUUID = pharmacy.UUID,
-					JSON = JsonConvert.SerializeObject(pharmacy)
-				};
+				//var sync = new SyncItem()
+				//{
+				//	Path = @"Pharmacy",
+				//	ObjectUUID = pharmacy.UUID,
+				//	JSON = JsonConvert.SerializeObject(pharmacy)
+				//};
 
-				MainDatabase.AddToQueue(sync);
+				//MainDatabase.AddToQueue(sync);
 
-				StartService(new Intent("com.xamarin.SyncService"));
+				//StartService(new Intent("com.xamarin.SyncService"));
 
 				Finish();
 			};
 
 
 
+		}
+
+		void SetNet(int index)
+		{
+			if ((Nets != null) && (Nets.Count > 0)) {
+				if (NetUUID != Nets[index].uuid) {
+					NetUUID = Nets[index].uuid;
+					NetName.Text = Nets[index].name;
+
+					// Init Contracts
+					ContractsNames.Text = string.Empty;
+					Contracts = MainDatabase.GetItems<Contract>().Where(c => c.net == NetUUID).ToList();
+					ContractsChoice.Enabled = (Contracts.Count > 0);
+
+					ContractsChoice.Click -= ContractsChoice_Click;
+					ContractsChoice.Click += ContractsChoice_Click;
+				}
+			}
+		}
+
+		void ContractsChoice_Click(object sender, EventArgs e)
+		{
+			new AlertDialog.Builder(this)
+			               .SetTitle("Контракты")
+						   .SetCancelable(true)
+						   .SetItems(Contracts.Select(item => item.name).ToArray(), (caller, arguments) => {
+							   ContractsNames.Text = Contracts[arguments.Which].name;
+						   })
+						   .Show();
 		}
 	}
 }

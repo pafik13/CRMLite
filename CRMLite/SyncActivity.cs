@@ -45,7 +45,18 @@ namespace CRMLite
 			if (FindViewById<CheckBox>(Resource.Id.saLoadPromotionsCB).Checked) LoadPromotions(client);
 			if (FindViewById<CheckBox>(Resource.Id.saLoadMessageTypesCB).Checked) LoadMessageTypes(client);
 			if (FindViewById<CheckBox>(Resource.Id.saLoadPhotoTypesCB).Checked) LoadPhotoTypes(client);
+			if (FindViewById<CheckBox>(Resource.Id.saContractsCB).Checked) LoadContracts(client);
 
+		}
+
+		void LoadContracts(RestClient client)
+		{
+			var request = new RestRequest(@"Contract?limit=300&populate=false", Method.GET);
+			var response = client.Execute<List<Contract>>(request);
+			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+				SD.Debug.WriteLine(string.Format(@"Получено Contract {0}", response.Data.Count));
+				MainDatabase.SaveItems(response.Data);
+			}
 		}
 
 		void LoadPhotoTypes(RestClient client)

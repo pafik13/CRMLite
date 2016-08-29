@@ -99,7 +99,7 @@ namespace CRMLite
 				if (d < attendances.Count) {
 					dates[d] = attendances[d].When;
 				} else {
-					dates[d] = dates[d - 1].AddDays(dateStep);
+					dates[d] = d == 0 ? DateTimeOffset.Now : dates[d - 1].AddDays(dateStep);
 				}
 				var hView = header.GetChildAt(d + 1);
 				if (hView is TextView) {

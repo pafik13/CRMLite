@@ -71,6 +71,7 @@ namespace CRMLite
 					//Table.RemoveAllViews();
 
 					//RefreshView();
+					//MainDatabase.SaveItems(arguments.FinanceDatas);
 					SetValues(arguments.FinanceDatas);
 				};
 			};
@@ -117,7 +118,7 @@ namespace CRMLite
 				if (m < financeDatasDates.Length) {
 					dates[m] = financeDatasDates[m];
 				} else {
-					dates[m] = dates[m - 1].AddMonths(1);
+					dates[m] = m == 0 ? DateTimeOffset.Now : dates[m - 1].AddMonths(1);
 				}
 				var hView = header.GetChildAt(m + 1);
 				if (hView is TextView) {

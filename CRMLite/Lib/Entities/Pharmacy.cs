@@ -34,6 +34,12 @@ namespace CRMLite.Entities
 		public PharmacyState GetState() { return (PharmacyState)Enum.Parse(typeof(PharmacyState), State, true); }
 
 		/// <summary>
+		/// Бренд.
+		/// </summary>
+		/// <value>The brand.</value>
+		public string Brand { get; set; }
+
+		/// <summary>
 		/// Номер аптеки.
 		/// </summary>
 		/// <value>The number name.</value>

@@ -60,6 +60,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/saLoadPhotoTypesCB" />
+    <CheckBox
+        android:text="LoadContracts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saContractsCB" />
     <Button
         android:text="Button"
         android:layout_width="match_parent"

@@ -199,11 +199,6 @@
                             android:layout_width="wrap_content"
                             android:text="..." />
                     </LinearLayout>
-                <!--                    <Spinner
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/pfNetS"
-                        android:layout_marginRight="24dp" />-->
                 </TableRow>
                 <TableRow
                     android:id="@+id/pfRowAddress">

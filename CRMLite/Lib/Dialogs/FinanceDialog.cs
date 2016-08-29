@@ -164,11 +164,11 @@ namespace CRMLite.Dialogs
 				    && (drugSKU.SelectedItemPosition >0)
 				    && (startMonth.SelectedItemPosition > 0))
 				{
-					//Transaction = MainDatabase.BeginTransaction();
+					Transaction = MainDatabase.BeginTransaction();
 
 					for (int m = 0; m < periodType.SelectedItemPosition; m++) {
-						//var financeData = MainDatabase.Create<FinanceData>();
-						var financeData = new FinanceData();
+						var financeData = MainDatabase.Create<FinanceData>();
+						//var financeData = new FinanceData();
 						financeData.Pharmacy = Pharmacy.UUID;
 						financeData.DrugSKU = drugSKUs[drugSKU.SelectedItemPosition].uuid;
 						financeData.Period = DateTimeOffset.Now.AddMonths(-12 + startMonth.SelectedItemPosition - 1).AddMonths(m);
@@ -178,7 +178,7 @@ namespace CRMLite.Dialogs
 						financeDatas.Add(financeData);
 					}
 
-					//Transaction.Commit();
+					Transaction.Commit();
 				}
 				// var sync = new SyncItem()
 				// {
