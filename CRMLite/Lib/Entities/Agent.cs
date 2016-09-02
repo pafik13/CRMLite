@@ -1,7 +1,7 @@
 ﻿using System;
 using Realms;
 
-namespace RealmAndroid.Entities
+namespace CRMLite.Entities
 {
 	/// <summary>
 	/// Представитель/сотрудник.
@@ -36,19 +36,23 @@ namespace RealmAndroid.Entities
 		/// Пол представителя/сотрудника.
 		/// </summary>
 		/// <value>The sex.</value>
-		public Sex Sex { get; set; }
+		public string Sex { get; set; }
+
+		public void SetSex(Sex newSex) { Sex = newSex.ToString("G"); }
+
+		public Sex GetSex() { return (Sex)Enum.Parse(typeof(Sex), Sex, true); }
 
 		/// <summary>
 		/// Дата приема на работу представителя/сотрудника.
 		/// </summary>
 		/// <value>The hire date.</value>
-		public DateTime HireDate { get; set; }
+		public DateTimeOffset HireDate { get; set; }
 
 		/// <summary>
 		/// Дата рождения представителя/сотрудника.
 		/// </summary>
 		/// <value>The birth date.</value>
-		public DateTime BirthDate { get; set; }
+		public DateTimeOffset BirthDate { get; set; }
 
 		/// <summary>
 		/// Почтовый адрес представителя/сотрудника.

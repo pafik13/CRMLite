@@ -127,6 +127,7 @@
     <Compile Include="Lib\Adapters\ContractAdapter.cs" />
     <Compile Include="ContractActivity.cs" />
     <Compile Include="Lib\Entities\ContractData.cs" />
+    <Compile Include="Lib\Entities\Agent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -266,6 +267,8 @@
     <AndroidResource Include="Resources\drawable\ic_shopping_cart_black_48dp.png" />
     <AndroidResource Include="Resources\values\Dimens.xml" />
     <AndroidResource Include="Resources\drawable\ic_shopping_cart_black_36dp.png" />
+    <AndroidResource Include="Resources\layout\Contract.axml" />
+    <AndroidResource Include="Resources\layout\ContractTableItem.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

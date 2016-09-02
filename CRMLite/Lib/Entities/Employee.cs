@@ -77,6 +77,12 @@ namespace CRMLite.Entities
 		public string Email { get; set; }
 
 		/// <summary>
+		/// Лояльность
+		/// </summary>
+		/// <value>The loyalty.</value>
+		public string Loyalty { get; set; }
+
+		/// <summary>
 		/// Возможность участия в конференциях.
 		/// </summary>
 		/// <value>Can participate conference?</value>

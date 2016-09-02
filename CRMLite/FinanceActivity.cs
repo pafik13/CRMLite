@@ -3,12 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
@@ -27,6 +25,9 @@ namespace CRMLite
 		Pharmacy Pharmacy;
 		LinearLayout Table;
 		Dictionary<string, TextView> TextViews;
+
+		LinearLayout TableBySKU;
+		Dictionary<string, TextView> TextViewsBySKU;
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
@@ -56,7 +57,7 @@ namespace CRMLite
 			//				date2.Text = DateTimeOffset.Now.Date.AddDays(7).Date.ToString("dd.MM.yy");
 			//
 			Table = FindViewById<LinearLayout>(Resource.Id.faTable);
-
+			TableBySKU = FindViewById<LinearLayout>(Resource.Id.faTableBySKU);
 
 			var add = FindViewById<ImageView>(Resource.Id.faAdd);
 			add.Click += (sender, e) => {
@@ -74,6 +75,11 @@ namespace CRMLite
 					//MainDatabase.SaveItems(arguments.FinanceDatas);
 					SetValues(arguments.FinanceDatas);
 				};
+			};
+			var switcher = FindViewById<ViewSwitcher>(Resource.Id.faSwitchViewTypeVS);
+			var sw = FindViewById<ImageView>(Resource.Id.faSwitchIV);
+			sw.Click += (sender, e) => {
+				switcher.ShowNext();
 			};
 		}
 
@@ -95,6 +101,7 @@ namespace CRMLite
 							   .Show();
 			} else {
 				RefreshView();
+				RefreshViewBySKU();
 			}
 		}
 
@@ -102,7 +109,7 @@ namespace CRMLite
 		{
 			TextViews = new Dictionary<string, TextView>();
 
-			Stopwatch s1 = new Stopwatch();
+			var s1 = new Stopwatch();
 			s1.Start();
 
 			var financeDatas = MainDatabase.GetItems<FinanceData>().Where(i => i.Pharmacy == Pharmacy.UUID).ToList();
@@ -151,25 +158,26 @@ namespace CRMLite
 			}
 
 			// 2. Вставляем данные 
-			foreach (var financeData in financeDatas) {
-				// Salee
-				dict_key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitSale, financeData.Period.ToString(format));
-				TextViews[dict_key].Text = financeData.Sale.ToString();
+			SetValues(financeDatas);
+			//foreach (var financeData in financeDatas) {
+			//	// Sale
+			//	dict_key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitSale, financeData.Period.ToString(format));
+			//	TextViews[dict_key].Text = financeData.Sale.ToString();
 
-				// Purchase
-				dict_key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitPurchase, financeData.Period.ToString(format));
-				TextViews[dict_key].Text = financeData.Purchase.ToString();
+			//	// Purchase
+			//	dict_key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitPurchase, financeData.Period.ToString(format));
+			//	TextViews[dict_key].Text = financeData.Purchase.ToString();
 
-				// Remain 
-				dict_key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitRemain, financeData.Period.ToString(format));
-				TextViews[dict_key].Text = financeData.Remain.ToString();
-			}
+			//	// Remain 
+			//	dict_key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitRemain, financeData.Period.ToString(format));
+			//	TextViews[dict_key].Text = financeData.Remain.ToString();
+			//}
 
 
 			s1.Stop();
 
 			Console.WriteLine(
-				"{0}-{1}",
+				"FinanceData: RefreshView={0}-{1}",
 				s1.ElapsedMilliseconds,
 				TextViews.Count);
 		}
@@ -179,7 +187,7 @@ namespace CRMLite
 			var key = string.Empty;
 			// 2. Вставляем данные 
 			foreach (var financeData in financeDatas) {
-				// Salee
+				// Sale
 				key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitSale, financeData.Period.ToString(PeriodFormatForKey));
 				TextViews[key].Text = financeData.Sale.ToString();
 
@@ -205,6 +213,84 @@ namespace CRMLite
 				default:
 					return @"Unknown";
 			}
+		}
+
+		void RefreshViewBySKU()
+		{
+			TextViewsBySKU = new Dictionary<string, TextView>();
+			//var TableBySKU = new LinearLayout(this);
+
+			var s1 = new Stopwatch();
+			s1.Start();
+
+			var financeDatas = MainDatabase.GetItems<FinanceData>().Where(i => i.Pharmacy == Pharmacy.UUID).ToList();
+			var dict_key = string.Empty;
+
+			// 1. Рисуем таблицу
+			int monthesCount = 10;
+			string format = @"MMyy";
+			DateTimeOffset[] financeDatasDates = financeDatas.Select(i => i.Period).Distinct().OrderBy(i => i).ToArray();
+			DateTimeOffset[] dates = new DateTimeOffset[monthesCount];
+			var header = (LinearLayout)LayoutInflater.Inflate(Resource.Layout.FinanceTableHeader, TableBySKU, false);
+			for (int m = 0; m < monthesCount; m++) {
+				if (m < financeDatasDates.Length) {
+					dates[m] = financeDatasDates[m];
+				} else {
+					dates[m] = m == 0 ? DateTimeOffset.Now : dates[m - 1].AddMonths(1);
+				}
+				var hView = header.GetChildAt(m + 1);
+				if (hView is TextView) {
+					(hView as TextView).Text = dates[m].ToString(string.Format(@"MMMM{0}yyyy", System.Environment.NewLine));
+				}
+			}
+
+			TableBySKU.AddView(header);
+
+			var infoTypes = Enum.GetValues(typeof(FinanceInfoType)).Cast<FinanceInfoType>();
+			var drugSKUs = MainDatabase.GetDrugSKUs();
+
+			foreach (var SKU in drugSKUs) {	
+				View subheader = LayoutInflater.Inflate(Resource.Layout.FinanceTableSubHeader, TableBySKU, false);
+				subheader.FindViewById<TextView>(Resource.Id.ftshTypeName).Text = SKU.name;;
+				TableBySKU.AddView(subheader);
+				foreach (var type in infoTypes) {
+					var row = (LinearLayout)LayoutInflater.Inflate(Resource.Layout.FinanceTableItem, TableBySKU, false);
+					row.FindViewById<TextView>(Resource.Id.ftiDrugSKUTV).Text = GetTypeName(type);
+					for (int v = 1; v <= monthesCount; v++) {
+						dict_key = string.Format("{0}-{1}-{2}", SKU.uuid, type, dates[v - 1].ToString(format));
+						var view = row.GetChildAt(v);
+						if (view is TextView) {
+							(view as TextView).Text = string.Empty;
+							TextViewsBySKU.Add(dict_key, (view as TextView));
+						}
+					}
+					TableBySKU.AddView(row);
+				}
+			}
+
+			// 2. Вставляем данные
+			// SetValues(financeDatas);
+			foreach (var financeData in financeDatas) {
+				// Sale
+				dict_key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitSale, financeData.Period.ToString(format));
+				TextViewsBySKU[dict_key].Text = financeData.Sale.ToString();
+
+				// Purchase
+				dict_key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitPurchase, financeData.Period.ToString(format));
+				TextViewsBySKU[dict_key].Text = financeData.Purchase.ToString();
+
+				// Remain 
+				dict_key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitRemain, financeData.Period.ToString(format));
+				TextViewsBySKU[dict_key].Text = financeData.Remain.ToString();
+			}
+
+
+			s1.Stop();
+
+			Console.WriteLine(
+				"FinanceData: RefreshViewBySKU={0}-{1}",
+				s1.ElapsedMilliseconds,
+				TextViewsBySKU.Count);
 		}
 
 		void AddFinanceData(string pharmacyUUID, string skuUUID, DateTimeOffset period, float? sale, float? purchase, float? remain)

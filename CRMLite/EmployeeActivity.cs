@@ -34,10 +34,12 @@ namespace CRMLite
 			SetContentView(Resource.Layout.Employee);
 
 			var pharmacyUUID = Intent.GetStringExtra("UUID");
-			if (!string.IsNullOrEmpty(pharmacyUUID)) {
-				pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
-				FindViewById<TextView>(Resource.Id.eaInfoTV).Text = "СОТРУДНИКИ АПТЕКИ : " + pharmacy.GetName();
+			if (string.IsNullOrEmpty(pharmacyUUID)) {
+				return;
 			}
+
+			pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
+			FindViewById<TextView>(Resource.Id.eaInfoTV).Text = "СОТРУДНИКИ АПТЕКИ : " + pharmacy.GetName();
 
 			listView = FindViewById<ListView>(Resource.Id.eaEmployeeTable);
 

@@ -7,7 +7,7 @@
     android:minHeight="64px"
     android:background="@color/Grey_300">
     <RelativeLayout
-        android:id="@+id/faUpPanelRL"
+        android:id="@+id/caUpPanelRL"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,11 +15,11 @@
         android:minHeight="64px"
         android:background="@drawable/bottomline">
         <TextView
-            android:text="ПРОДАЖИ АПТЕКИ {0}"
+            android:text="КОНТРАКТЫ АПТЕКИ: {0}"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/faInfoTV"
+            android:id="@+id/caInfoTV"
             android:gravity="center"
             android:textColor="@color/Light_Blue_500"
             android:height="64dp"
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:id="@+id/faCloseB"
+            android:id="@+id/caCloseB"
             android:background="@color/Deep_Orange_500"
             android:typeface="monospace"
             android:width="150dp"
@@ -40,65 +40,50 @@
             android:textStyle="bold"
             android:minHeight="62dp"
             android:layout_marginBottom="2dp" />
-        <ImageView
-            android:src="@drawable/ic_add_circle_outline_black_48dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/faAdd"
-            android:layout_toLeftOf="@+id/faCloseB"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="9dp"
-            android:layout_marginRight="10dp" />
-        <ImageView
-            android:src="@drawable/ic_sync_black_48dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/faSwitchIV"
-            android:layout_toLeftOf="@+id/faAdd"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="9dp"
-            android:layout_marginRight="10dp" />
     </RelativeLayout>
-<!--	Тип визита	-->
-    <ViewSwitcher
+    <RelativeLayout
         android:minWidth="25px"
         android:minHeight="25px"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/faSwitchViewTypeVS"
-        android:layout_below="@id/faUpPanelRL">
-        <ScrollView
+        android:layout_height="match_parent"
+        android:layout_below="@id/caUpPanelRL"
+        android:background="@color/Grey_300">
+        <LinearLayout
             android:minWidth="25px"
             android:minHeight="25px"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/faUpPanelRL"
-            android:background="@color/Grey_300">
+            android:orientation="horizontal"
+            android:background="@color/Grey_300"
+            android:weightSum="100">
+        <!--	Левый отступ	-->
             <LinearLayout
-                android:id="@+id/faTable"
                 android:minWidth="25px"
                 android:minHeight="25px"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp" />
-        </ScrollView>
-        <ScrollView
-            android:minWidth="25px"
-            android:minHeight="25px"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/Grey_300">
-            <LinearLayout
-                android:id="@+id/faTableBySKU"
+                android:layout_weight="15" />
+        <!--	Таблица сотрудников		-->
+            <ListView
                 android:minWidth="25px"
                 android:minHeight="25px"
-                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:divider="@color/Grey_300"
+                android:dividerHeight="2dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:id="@+id/caContractTable"
+                android:layout_weight="70" />
+        <!--	Правый отступ	-->
+            <LinearLayout
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp" />
-        </ScrollView>
-    </ViewSwitcher>
+                android:layout_weight="15" />
+        </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@drawable/bottomline"
+    android:weightSum="100">
+    <ImageView
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/ic_local_library_black_48dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/ctiIsFilePresentsIV"
+        android:layout_weight="10" />
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ctiNameTV"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <TextView
+        android:text="Text"
+        android:layout_marginLeft="10dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ctiDescriptionTV"
+        android:layout_weight="70"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+</LinearLayout>
