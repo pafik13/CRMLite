@@ -269,6 +269,7 @@
     <AndroidResource Include="Resources\drawable\ic_shopping_cart_black_36dp.png" />
     <AndroidResource Include="Resources\layout\Contract.axml" />
     <AndroidResource Include="Resources\layout\ContractTableItem.axml" />
+    <AndroidResource Include="Resources\layout\FinanceTableSection.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />
