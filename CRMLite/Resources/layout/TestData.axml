@@ -6,7 +6,7 @@
     android:minWidth="25px"
     android:minHeight="25px">
     <Button
-        android:text="Button"
+        android:text="Generate Data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tdaGenerateDataB" />
@@ -30,4 +30,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tdaFinanceDatas" />
+    <TextView
+        android:text="tdaFinanceDatas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tdaPresentationDatas" />
+    <TextView
+        android:text="tdaCoteriaDatas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tdaCoteriaDatas" />
+    <TextView
+        android:text="tdaPromotionDatas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tdaPromotionDatas" />
+    <TextView
+        android:text="tdaCompetitorDatas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tdaCompetitorDatas" />
+    <TextView
+        android:text="tdaMessageDatas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tdaMessageDatas" />
+    <TextView
+        android:text="tdaResumeDatas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tdaResumeDatas" />
+    <Button
+        android:text="Custom Action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tdaCustomActionB" />
 </LinearLayout>

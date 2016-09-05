@@ -17,7 +17,7 @@ namespace CRMLite.Entities
 
 		public string Attendance { get; set; }
 
-		//public string Pharmacy { get; set; }
+		public string Pharmacy { get; set; }
 
 		public string DrugSKU { get; set; }
 

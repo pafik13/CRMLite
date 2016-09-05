@@ -160,7 +160,8 @@ namespace CRMLite
 				trans.Commit();
 			}
 		}
-		#endregion
+
+	#endregion
 
 		#region GENERIC
 		public static T GetItem<T>(string uuid) where T : RealmObject, IEntiryFromServer
@@ -511,8 +512,116 @@ namespace CRMLite
 				     .Take(count)
 				     .ToList();
 		}
+		#endregion
 
-	#endregion
+
+		internal static IList<Distribution> GetDistributions(string attendanceUUID)
+		{
+			return Me.DB.All<Distribution>()
+					 .Where(d => d.Attendance == attendanceUUID)
+					 .ToList();
+		}
+
+		internal static IList<PresentationData> GetPresentationDatas(string attendanceUUID)
+		{
+			return Me.DB.All<PresentationData>()
+					 .Where(pd => pd.Attendance == attendanceUUID)
+					 .ToList();
+		}
+		//IQueryable<IGrouping<ananinous type<string Employee, string Brand>, string>
+
+		public class PDGroups
+		{
+			public PresentationDataKey PDKey { get; set; }
+			public List<string> WorkTypes { get; set;}
+		}
+		internal static IDictionary<PresentationDataKey, List<WorkType>> GetPresentationDatasForView(string attendanceUUID)
+		{
+			var presentations = Me.DB.All<PresentationData>()
+						   .Where(pd => pd.Attendance == attendanceUUID);
+
+			var result = new Dictionary<PresentationDataKey, List<WorkType>>();
+			bool keyFound;
+			foreach (var presentation in presentations) {
+				keyFound = false;
+				foreach (var key in result.Keys) {
+					if ((presentation.Employee == key.Employee.UUID) && (presentation.Brand == key.Brand.uuid)) 
+					{
+						result[key].Add(GetItem<WorkType>(presentation.WorkType));
+						keyFound = true;
+						break;
+					}
+				}
+
+				if (keyFound) continue;
+
+				var pdkey = new PresentationDataKey() {
+					Brand = GetItem<DrugBrand>(presentation.Brand),
+					Employee = GetEntity<Employee>(presentation.Employee),
+				};
+				result.Add(pdkey, new List<WorkType>());
+				result[pdkey].Add(GetItem<WorkType>(presentation.WorkType));
+			}
+
+			return result;
+		}
+
+		internal static CoterieDataGrouped GetCoterieDataGrouped(string attendanceUUID)
+		{
+			var coterieDatas = Me.DB.All<CoterieData>()
+			                     .Where(cd => cd.Attendance == attendanceUUID)
+			                     .ToList();
+
+			var result = new CoterieDataGrouped(GetEntity<Attendance>(attendanceUUID));
+
+			foreach (var coterieData in coterieDatas) {
+				if (!result.Employees.ContainsKey(coterieData.Employee)) {
+					result.Employees.Add(coterieData.Employee, GetEntity<Employee>(coterieData.Employee));
+				}
+
+				if (!result.Brands.ContainsKey(coterieData.Brand)) {
+					result.Brands.Add(coterieData.Brand, GetItem<DrugBrand>(coterieData.Brand));
+				}
+			}
+
+			return result;
+		}
+
+		internal static void DeleteItems<T>() where T : RealmObject
+		{
+			foreach (var item in Me.DB.All<T>()) {
+				Me.DB.Remove(item);
+			}
+		}
+
+		internal static T GetSingleData<T>(string attendanceUUID) where T : RealmObject, IAttendanceData
+		{
+			var result = Me.DB.All<T>().Where(item => item.Attendance == attendanceUUID).ToList();
+
+			switch (result.Count()) {
+				case 0:
+					return null;
+				case 1:
+					return result[0];
+				default:
+					throw new Exception("Более чем 1 значение, когда ожидается одно или ни одного.");
+			}
+		}
+
+		internal static List<T> GetDatas<T>(string attendanceUUID) where T : RealmObject, IAttendanceData
+		{
+			return Me.DB.All<T>().Where(item => item.Attendance == attendanceUUID).ToList();
+		}
+
+		internal static IEnumerable<SaleData> GetSaleDatas(string pharmacyUUID, DateTimeOffset[] dates)
+		{
+			var formatForMonthCompare = @"yyyyMM";
+			var months = dates.Select(m => m.ToString(formatForMonthCompare));
+			return Me.DB.All<SaleData>()
+				     .Where(sd => sd.Pharmacy == pharmacyUUID)
+				     .ToList()
+				     .Where(sd => months.Contains(sd.Month.ToString(formatForMonthCompare)));
+		}
 	}
 }
 

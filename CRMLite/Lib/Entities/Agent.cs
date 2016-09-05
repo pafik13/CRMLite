@@ -6,13 +6,13 @@ namespace CRMLite.Entities
 	/// <summary>
 	/// Представитель/сотрудник.
 	/// </summary>
-	public class Agent : RealmObject
+	public class Agent : RealmObject, IEntiryFromServer
     {
 		/// <summary>
 		/// Уникальный идентификатор представителя/сотрудника. Используется Guid.
 		/// </summary>
 		/// <value>The UUID.</value>
-		public string UUID { get; set; }
+		public string uuid { get; set; }
 
 		/// <summary>
 		/// Имя представителя/сотрудника.

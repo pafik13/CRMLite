@@ -46,7 +46,18 @@ namespace CRMLite
 			if (FindViewById<CheckBox>(Resource.Id.saLoadMessageTypesCB).Checked) LoadMessageTypes(client);
 			if (FindViewById<CheckBox>(Resource.Id.saLoadPhotoTypesCB).Checked) LoadPhotoTypes(client);
 			if (FindViewById<CheckBox>(Resource.Id.saContractsCB).Checked) LoadContracts(client);
+			if (FindViewById<CheckBox>(Resource.Id.saWorkTypesCB).Checked) LoadWorkTypes(client);
 
+		}
+
+		void LoadWorkTypes(RestClient client)
+		{
+			var request = new RestRequest(@"WorkType?limit=300&populate=false", Method.GET);
+			var response = client.Execute<List<WorkType>>(request);
+			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+				SD.Debug.WriteLine(string.Format(@"Получено WorkType {0}", response.Data.Count));
+				MainDatabase.SaveItems(response.Data);
+			}
 		}
 
 		void LoadContracts(RestClient client)

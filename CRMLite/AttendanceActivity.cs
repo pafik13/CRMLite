@@ -131,20 +131,20 @@ namespace CRMLite
 					Thread.Sleep(2000); // иначе не успеет показаться диалог
 
 					RunOnUiThread(() => {
-						var transaction = MainDatabase.BeginTransaction();
-						var attendance = MainDatabase.Create<Attendance>();
-						attendance.Pharmacy = PharmacyUUID;
-						attendance.When = AttendanceStart.Value;
+						//var transaction = MainDatabase.BeginTransaction();
+						//var attendance = MainDatabase.Create<Attendance>();
+						//attendance.Pharmacy = PharmacyUUID;
+						//attendance.When = AttendanceStart.Value;
 
-						//MainDatabase.SaveAttendace(Attendance);
-						for (int f = 0; f < NUM_PAGES; f++) {
-							var fragment = GetFragment(f);
-							if (fragment is IAttendanceControl) {
-								(fragment as IAttendanceControl).OnAttendanceStop(transaction, attendance);
-							}
-						}
+						////MainDatabase.SaveAttendace(Attendance);
+						//for (int f = 0; f < NUM_PAGES; f++) {
+						//	var fragment = GetFragment(f);
+						//	if (fragment is IAttendanceControl) {
+						//		(fragment as IAttendanceControl).OnAttendanceStop(transaction, attendance);
+						//	}
+						//}
 
-						transaction.Commit();
+						//transaction.Commit();
 						lockDialog.Dismiss();
 						Finish();
 					});

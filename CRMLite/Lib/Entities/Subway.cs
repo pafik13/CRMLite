@@ -2,7 +2,7 @@
 
 namespace CRMLite.Entities
 {
-	public class Subway : RealmObject
+	public class Subway : RealmObject, IEntiryFromServer
 	{
 		[Indexed]
 		public string uuid { get; set; }

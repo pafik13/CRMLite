@@ -16,6 +16,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false" />
     <EditText
+        android:enabled="false"
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -29,6 +30,7 @@
         android:inputType="numberDecimal"
         android:gravity="center" />
     <EditText
+        android:enabled="false"
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -42,6 +44,7 @@
         android:inputType="numberDecimal"
         android:gravity="center" />
     <EditText
+        android:enabled="false"
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -55,6 +58,7 @@
         android:inputType="numberDecimal"
         android:gravity="center" />
     <EditText
+        android:enabled="false"
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -68,6 +72,7 @@
         android:inputType="numberDecimal"
         android:gravity="center" />
     <EditText
+        android:enabled="false"
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -81,6 +86,7 @@
         android:inputType="numberDecimal"
         android:gravity="center" />
     <EditText
+        android:enabled="false"
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -94,6 +100,7 @@
         android:inputType="numberDecimal"
         android:gravity="center" />
     <EditText
+        android:enabled="false"
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -107,6 +114,7 @@
         android:inputType="numberDecimal"
         android:gravity="center" />
     <EditText
+        android:enabled="false"
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
         android:layout_height="match_parent"

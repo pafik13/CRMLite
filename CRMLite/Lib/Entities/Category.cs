@@ -2,7 +2,7 @@
 
 namespace CRMLite.Entities
 {
-	public class Category : RealmObject
+	public class Category : RealmObject, IEntiryFromServer
 	{
 		[Indexed]
 		public string uuid { get; set; }

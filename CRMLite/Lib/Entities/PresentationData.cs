@@ -2,7 +2,7 @@
 
 namespace CRMLite.Entities
 {
-	public class PresentationData : RealmObject, IAttendanceData
+	public class PresentationData : RealmObject, IEntity, IAttendanceData
 	{
 		/// <summary>
 		/// Уникальный идентификатор презентации. Используется Guid.
@@ -11,11 +11,21 @@ namespace CRMLite.Entities
 		[ObjectId]
 		public string UUID { get; set; }
 
+		[Indexed]
 		public string Attendance { get; set; }
 
 		public string Employee { get; set; }
 
-		public RealmList<DrugBrand> Brands { get; }
+		public string Brand { get; set; }
+
+		public string WorkType { get; set; }
+	}
+
+	public class PresentationDataKey
+	{
+		public Employee Employee { get; set; }
+
+		public DrugBrand Brand { get; set; }		
 	}
 }
 

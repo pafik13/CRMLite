@@ -128,6 +128,8 @@
     <Compile Include="ContractActivity.cs" />
     <Compile Include="Lib\Entities\ContractData.cs" />
     <Compile Include="Lib\Entities\Agent.cs" />
+    <Compile Include="Lib\Entities\WorkType.cs" />
+    <Compile Include="Lib\Entities\ResumeData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -270,6 +272,8 @@
     <AndroidResource Include="Resources\layout\Contract.axml" />
     <AndroidResource Include="Resources\layout\ContractTableItem.axml" />
     <AndroidResource Include="Resources\layout\FinanceTableSection.axml" />
+    <AndroidResource Include="Resources\layout\InfoPresentationData.axml" />
+    <AndroidResource Include="Resources\layout\InfoCoterieData.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

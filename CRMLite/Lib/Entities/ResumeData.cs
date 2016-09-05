@@ -2,10 +2,10 @@
 
 namespace CRMLite.Entities
 {
-	public class MessageData : RealmObject, IAttendanceData, IEntity
+	public class ResumeData : RealmObject, IAttendanceData, IEntity
 	{
 		/// <summary>
-		/// Уникальный идентификатор сообщения от аптеки. Используется Guid.
+		/// Уникальный идентификатор резюме визита. Используется Guid.
 		/// </summary>
 		/// <value>The UUID.</value>
 		[ObjectId]
@@ -13,9 +13,7 @@ namespace CRMLite.Entities
 
 		public string Attendance { get; set; }
 
-		public string Type { get; set; }
-
 		public string Text { get; set; }
-
 	}
 }
+

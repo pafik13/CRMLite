@@ -11,6 +11,13 @@
 	<string name="DrugSKUUUID">DrugSKUUUID</string>
 	<string name="IsChanged">IsChanged</string>
 	<string name="SaleDataUUID">SaleDataUUID</string>
+	
+	<string name="PDEmployee">PDEmployee</string>
+	<string name="PDBrand">PDBrand</string>
+	<string name="PDWorkTypes">PDWorkTypes</string>
+
+	<string name="CDBrands">CDBrands</string>
+	<string name="CDEmployees">CDEmployees</string>
 
 	<string name="PhotoPath">Путь к выполненному фото - используется в PhotoAddFragment</string>
 

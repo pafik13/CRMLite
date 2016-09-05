@@ -1,8 +1,9 @@
-﻿using Realms;
+﻿using System.Collections.Generic;
+using Realms;
 
 namespace CRMLite.Entities
 {
-	public class CoterieData: RealmObject, IAttendanceData
+	public class CoterieData: RealmObject, IAttendanceData, IEntity
 	{
 		/// <summary>
 		/// Уникальный идентификатор фарм-кружка. Используется Guid.
@@ -15,6 +16,22 @@ namespace CRMLite.Entities
 
 		public string Employee { get; set; }
 
-		public RealmList<DrugBrand> Brands { get; }
+		public string Brand { get; set; }
+	}
+
+	public class CoterieDataGrouped
+	{
+		public Attendance Attendance { get; set; }
+
+		public Dictionary<string, Employee> Employees { get; }
+
+		public Dictionary<string, DrugBrand> Brands { get; }
+
+		public CoterieDataGrouped(Attendance attendance)
+		{
+			Attendance = attendance;
+			Employees = new Dictionary<string, Employee>();
+			Brands = new Dictionary<string, DrugBrand>();
+		}
 	}
 }
