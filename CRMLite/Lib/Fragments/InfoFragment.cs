@@ -222,7 +222,7 @@ namespace CRMLite
 										false)
 							  ) as LinearLayout;
 
-					//row.SetTag(Resource.String.DrugSKUUUID, SKU.uuid);
+					row.SetTag(Resource.String.DrugSKUUUID, SKU.uuid);
 					row.FindViewById<TextView>(Resource.Id.dtiDrugSKUTV).Text = SKU.name;
 
 					DistributionTable.AddView(row);
@@ -244,8 +244,9 @@ namespace CRMLite
 										DistributionTable,
 										false)
 							  ) as LinearLayout;
-					
+
 					var item = dictDistrs[SKU.uuid];
+					row.SetTag(Resource.String.DrugSKUUUID, SKU.uuid);
 					row.FindViewById<TextView>(Resource.Id.dtiDrugSKUTV).Text = SKU.name;
 					row.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked = item.IsExistence;
 					row.FindViewById<EditText>(Resource.Id.dtiCountET).Text = item.Count.ToString();
@@ -747,6 +748,8 @@ namespace CRMLite
 			CoterieEmployees.Click += CoterieEmployees_Click;
 			AttendanceTypeContent.AddView(CoterieLayout);
 
+			AttendanceTypeContent.Visibility = ViewStates.Visible;;
+
 			// 3. Акция
 			var promotionText = PromotionLayout.FindViewById<EditText>(Resource.Id.ifPromotionET);
 			promotionText.Text = string.Empty;
@@ -816,20 +819,22 @@ namespace CRMLite
 				throw new ArgumentNullException(nameof(openedTransaction));
 			}
 
+			if (current == null) {
+				throw new ArgumentNullException(nameof(current));
+			}
+
 			// 1. Дистрибьюция
 			for (int c = 2; c < DistributionTable.ChildCount; c = c + 2) {
 				var row = (LinearLayout)DistributionTable.GetChildAt(c);
-				if (row.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked) {
-					var distr = MainDatabase.CreateData<DistributionData>(current.UUID);
-					distr.DrugSKU = (string)row.GetTag(Resource.String.DrugSKUUUID);
-					distr.IsExistence = row.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked;
-					distr.Count = Helper.ToFloatExeptNull(row.FindViewById<EditText>(Resource.Id.dtiCountET).Text);
-					distr.Price = Helper.ToFloatExeptNull(row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text);
-					distr.IsPresence = row.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked;
-					distr.HasPOS = row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked;
-					distr.Order = row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text;
-					distr.Comment = row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text;
-				}
+				var distr = MainDatabase.CreateData<DistributionData>(current.UUID);
+				distr.DrugSKU = (string)row.GetTag(Resource.String.DrugSKUUUID);
+				distr.IsExistence = row.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked;
+				distr.Count = Helper.ToFloatExeptNull(row.FindViewById<EditText>(Resource.Id.dtiCountET).Text);
+				distr.Price = Helper.ToFloatExeptNull(row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text);
+				distr.IsPresence = row.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked;
+				distr.HasPOS = row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked;
+				distr.Order = row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text;
+				distr.Comment = row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text;
 			}
 
 			// 2. Содержание визита
@@ -838,11 +843,15 @@ namespace CRMLite
 			for (int c = 0; c < PresentationTable.ChildCount; c++) {
 				var row = (LinearLayout)PresentationTable.GetChildAt(c);
 				var employeeUUID = (string)row.FindViewById<TextView>(Resource.Id.ipiEmployeeTV).GetTag(Resource.String.PDEmployee);
-				var brandUUID = (string)row.FindViewById<TextView>(Resource.Id.ipiBrandTV).GetTag(Resource.String.PDBrand);
-				var workTypes = (string)row.FindViewById<TextView>(Resource.Id.ipiWorkTypesTV).GetTag(Resource.String.PDWorkTypes);
-				var worktTypesUUIDs = workTypes.Split(';');
+				if (string.IsNullOrEmpty(employeeUUID)) continue;
 
-				foreach (var workType in worktTypesUUIDs) {
+				var brandUUID = (string)row.FindViewById<TextView>(Resource.Id.ipiBrandTV).GetTag(Resource.String.PDBrand);
+				if (string.IsNullOrEmpty(brandUUID)) continue;
+
+				var workTypes = (string)row.FindViewById<TextView>(Resource.Id.ipiWorkTypesTV).GetTag(Resource.String.PDWorkTypes);
+				if (string.IsNullOrEmpty(workTypes)) continue;
+
+				foreach (var workType in workTypes.Split(';')) {
 					var presentationData = MainDatabase.CreateData<PresentationData>(current.UUID);
 					presentationData.Employee = employeeUUID;
 					presentationData.Brand = brandUUID;
@@ -851,16 +860,43 @@ namespace CRMLite
 			}
 
 			// 2.1 Фарм-кружок
-			var brands = CoterieBrands.GetTag(Resource.String.CDBrands).ToString().Split(';');
-			var employees = CoterieBrands.GetTag(Resource.String.CDBrands).ToString().Split(';');
-			foreach (var brand in brands) {
-				foreach (var employee in employees) {
-					var coterieData = MainDatabase.CreateData<CoterieData>(current.UUID);
-					coterieData.Employee = employee;
-					coterieData.Brand = brand;
+			var brands = (string)CoterieBrands.GetTag(Resource.String.CDBrands);
+			var employees = (string)CoterieEmployees.GetTag(Resource.String.CDEmployees);
+			if (!string.IsNullOrEmpty(brands) && !string.IsNullOrEmpty(employees)) {
+				foreach (var brand in brands.Split(';')) {
+					foreach (var employee in employees.Split(';')) {
+						var coterieData = MainDatabase.CreateData<CoterieData>(current.UUID);
+						coterieData.Employee = employee;
+						coterieData.Brand = brand;
+					}
 				}
-   			}
-				
+			}
+
+			// 3. Акция
+			var promotionSpinner = PromotionLayout.FindViewById<Spinner>(Resource.Id.ifPromotionS);
+			if (promotionSpinner.SelectedItemPosition > 0) {
+				var promotionData = MainDatabase.CreateData<PromotionData>(current.UUID);
+				promotionData.Promotion = Promotions[promotionSpinner.SelectedItemPosition - 1].uuid;
+				promotionData.Text = PromotionLayout.FindViewById<EditText>(Resource.Id.ifPromotionET).Text;
+			}
+
+			// 4. Активность конкурентов
+			if (CompetitorLayout.FindViewById<CheckBox>(Resource.Id.ifCompetitorCB).Checked) {
+				var competitorData = MainDatabase.CreateData<CompetitorData>(current.UUID);
+				competitorData.Text = CompetitorLayout.FindViewById<EditText>(Resource.Id.ifCompetitorET).Text;
+			}
+
+			// 5. Сообщения
+			for (int c = 0; c < MessageTable.ChildCount; c++) {
+				var row = (LinearLayout)MessageTable.GetChildAt(c);
+				var messageTypeSpinner = row.FindViewById<Spinner>(Resource.Id.imiMessageTypeS);
+				if (messageTypeSpinner.SelectedItemPosition > 0) {
+					var messageData = MainDatabase.CreateData<MessageData>(current.UUID);
+					messageData.Type = MessageTypes[messageTypeSpinner.SelectedItemPosition - 1].uuid;
+					messageData.Text = row.FindViewById<EditText>(Resource.Id.imiMessageTextET).Text;
+				}
+			}
+
 			// 6. Продажи
 			for (int c = 2; c < SaleTable.ChildCount; c = c + 2) {
 				var row = (LinearLayout)SaleTable.GetChildAt(c);
@@ -888,6 +924,12 @@ namespace CRMLite
 					}
 				}
 			}
+
+			// 7. Резюме визита
+			var resumeText = ResumeLayout.FindViewById<EditText>(Resource.Id.ifResumeET);
+			if (string.IsNullOrEmpty(resumeText.Text)) return;
+			var resumeData = MainDatabase.CreateData<ResumeData>(current.UUID);
+			resumeData.Text = resumeText.Text;
 		}
 	}
 }

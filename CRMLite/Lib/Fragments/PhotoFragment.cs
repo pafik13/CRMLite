@@ -264,6 +264,7 @@ namespace CRMLite
 		{
 			AttendanceStart = start;
 			Locker.Visibility = ViewStates.Gone;
+			AddPhoto.Enabled = true;
 		}
 
 		public void OnAttendanceStop(Transaction openedTransaction, Attendance current)

@@ -129,7 +129,7 @@
     <Compile Include="Lib\Entities\Agent.cs" />
     <Compile Include="Lib\Entities\WorkType.cs" />
     <Compile Include="Lib\Entities\ResumeData.cs" />
-    <Compile Include="Lib\Suggestions\PhotoFragment.cs" />
+    <Compile Include="Lib\Fragments\PhotoFragment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

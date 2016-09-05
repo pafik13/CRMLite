@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minWidth="25px"
-    android:minHeight="25px">
+    android:minHeight="25px"
+    android:id="@+id/saMainLL">
     <CheckBox
         android:text="LoadPositions"
         android:layout_width="match_parent"
@@ -75,4 +76,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/saGetDataB" />
+    <Button
+        android:text="CheckAll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saCheckAll" />
 </LinearLayout>

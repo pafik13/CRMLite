@@ -98,7 +98,7 @@ namespace CRMLite.Dialogs
 			Position = view.FindViewById<Spinner>(Resource.Id.edPositionS);
 			positions = MainDatabase.GetPositions();
 			ArrayAdapter positionAdapter = new ArrayAdapter(context, Android.Resource.Layout.SimpleSpinnerItem, positions.Select(x => x.name).ToArray());
-			//stateAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
+			positionAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
 			Position.Adapter = positionAdapter;
 			Position.ItemSelected += (object sender, AdapterView.ItemSelectedEventArgs e) =>
 			{
@@ -113,10 +113,7 @@ namespace CRMLite.Dialogs
 
 			view.FindViewById<CheckBox>(Resource.Id.edIsCustomerCB).Checked = employee.IsCustomer;
 
-			//if (employee.BirthDate != null)
-			//{
-			//	view.FindViewById<DatePicker>(Resource.Id.edBirthDateDP).DateTime = employee.BirthDate.Value.DateTime;
-			//}
+			view.FindViewById<EditText>(Resource.Id.edBirthDateET).Text = employee.BirthDate.HasValue ? string.Empty : employee.BirthDate.Value.ToString("dd.MM.yyyy");
 
 			view.FindViewById<EditText>(Resource.Id.edPhoneET).Text = employee.Phone;
 			view.FindViewById<EditText>(Resource.Id.edEmailET).Text = employee.Email;
@@ -141,10 +138,13 @@ namespace CRMLite.Dialogs
 				employee.IsCustomer = view.FindViewById<CheckBox>(Resource.Id.edIsCustomerCB).Checked;
 
 				string birthDate = view.FindViewById<EditText>(Resource.Id.edBirthDateET).Text;
+
 				DateTimeFormatInfo fmt = new CultureInfo("ru-RU").DateTimeFormat;
-				if (!string.IsNullOrEmpty(birthDate))
-				{
-					employee.BirthDate = DateTimeOffset.Parse(birthDate, fmt);
+				if (!string.IsNullOrEmpty(birthDate)) {
+					DateTimeOffset dtoBirthDate;
+					if (DateTimeOffset.TryParse(birthDate, fmt, DateTimeStyles.None, out dtoBirthDate)) {
+						employee.BirthDate = dtoBirthDate;
+					}
 				}
 
 				employee.Phone = view.FindViewById<EditText>(Resource.Id.edPhoneET).Text;

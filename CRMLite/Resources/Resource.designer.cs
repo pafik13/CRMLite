@@ -2585,47 +2585,53 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c003b
 			public const int radio = 2131492923;
 			
-			// aapt resource value: 0x7f0c018c
-			public const int saContractsCB = 2131493260;
-			
-			// aapt resource value: 0x7f0c018e
-			public const int saGetDataB = 2131493262;
-			
-			// aapt resource value: 0x7f0c0186
-			public const int saLoadCategoriesCB = 2131493254;
-			
-			// aapt resource value: 0x7f0c0188
-			public const int saLoadDrugBrandsCB = 2131493256;
-			
-			// aapt resource value: 0x7f0c0187
-			public const int saLoadDrugSKUsCB = 2131493255;
-			
-			// aapt resource value: 0x7f0c018a
-			public const int saLoadMessageTypesCB = 2131493258;
-			
-			// aapt resource value: 0x7f0c0182
-			public const int saLoadNetsCB = 2131493250;
-			
-			// aapt resource value: 0x7f0c018b
-			public const int saLoadPhotoTypesCB = 2131493259;
-			
-			// aapt resource value: 0x7f0c0185
-			public const int saLoadPlacesCB = 2131493253;
-			
-			// aapt resource value: 0x7f0c0181
-			public const int saLoadPositionsCB = 2131493249;
-			
-			// aapt resource value: 0x7f0c0189
-			public const int saLoadPromotionsCB = 2131493257;
-			
-			// aapt resource value: 0x7f0c0184
-			public const int saLoadRegionsCB = 2131493252;
-			
-			// aapt resource value: 0x7f0c0183
-			public const int saLoadSubwaysCB = 2131493251;
+			// aapt resource value: 0x7f0c0190
+			public const int saCheckAll = 2131493264;
 			
 			// aapt resource value: 0x7f0c018d
-			public const int saWorkTypesCB = 2131493261;
+			public const int saContractsCB = 2131493261;
+			
+			// aapt resource value: 0x7f0c018f
+			public const int saGetDataB = 2131493263;
+			
+			// aapt resource value: 0x7f0c0187
+			public const int saLoadCategoriesCB = 2131493255;
+			
+			// aapt resource value: 0x7f0c0189
+			public const int saLoadDrugBrandsCB = 2131493257;
+			
+			// aapt resource value: 0x7f0c0188
+			public const int saLoadDrugSKUsCB = 2131493256;
+			
+			// aapt resource value: 0x7f0c018b
+			public const int saLoadMessageTypesCB = 2131493259;
+			
+			// aapt resource value: 0x7f0c0183
+			public const int saLoadNetsCB = 2131493251;
+			
+			// aapt resource value: 0x7f0c018c
+			public const int saLoadPhotoTypesCB = 2131493260;
+			
+			// aapt resource value: 0x7f0c0186
+			public const int saLoadPlacesCB = 2131493254;
+			
+			// aapt resource value: 0x7f0c0182
+			public const int saLoadPositionsCB = 2131493250;
+			
+			// aapt resource value: 0x7f0c018a
+			public const int saLoadPromotionsCB = 2131493258;
+			
+			// aapt resource value: 0x7f0c0185
+			public const int saLoadRegionsCB = 2131493253;
+			
+			// aapt resource value: 0x7f0c0184
+			public const int saLoadSubwaysCB = 2131493252;
+			
+			// aapt resource value: 0x7f0c0181
+			public const int saMainLL = 2131493249;
+			
+			// aapt resource value: 0x7f0c018e
+			public const int saWorkTypesCB = 2131493262;
 			
 			// aapt resource value: 0x7f0c0014
 			public const int screen = 2131492884;
@@ -2738,41 +2744,41 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c000b
 			public const int tabMode = 2131492875;
 			
-			// aapt resource value: 0x7f0c0191
-			public const int tdaAttendances = 2131493265;
-			
-			// aapt resource value: 0x7f0c0197
-			public const int tdaCompetitorDatas = 2131493271;
-			
-			// aapt resource value: 0x7f0c0195
-			public const int tdaCoteriaDatas = 2131493269;
-			
-			// aapt resource value: 0x7f0c019a
-			public const int tdaCustomActionB = 2131493274;
-			
-			// aapt resource value: 0x7f0c0192
-			public const int tdaDistributions = 2131493266;
-			
 			// aapt resource value: 0x7f0c0193
-			public const int tdaFinanceDatas = 2131493267;
-			
-			// aapt resource value: 0x7f0c018f
-			public const int tdaGenerateDataB = 2131493263;
-			
-			// aapt resource value: 0x7f0c0198
-			public const int tdaMessageDatas = 2131493272;
-			
-			// aapt resource value: 0x7f0c0190
-			public const int tdaPharmacies = 2131493264;
-			
-			// aapt resource value: 0x7f0c0194
-			public const int tdaPresentationDatas = 2131493268;
-			
-			// aapt resource value: 0x7f0c0196
-			public const int tdaPromotionDatas = 2131493270;
+			public const int tdaAttendances = 2131493267;
 			
 			// aapt resource value: 0x7f0c0199
-			public const int tdaResumeDatas = 2131493273;
+			public const int tdaCompetitorDatas = 2131493273;
+			
+			// aapt resource value: 0x7f0c0197
+			public const int tdaCoteriaDatas = 2131493271;
+			
+			// aapt resource value: 0x7f0c019c
+			public const int tdaCustomActionB = 2131493276;
+			
+			// aapt resource value: 0x7f0c0194
+			public const int tdaDistributions = 2131493268;
+			
+			// aapt resource value: 0x7f0c0195
+			public const int tdaFinanceDatas = 2131493269;
+			
+			// aapt resource value: 0x7f0c0191
+			public const int tdaGenerateDataB = 2131493265;
+			
+			// aapt resource value: 0x7f0c019a
+			public const int tdaMessageDatas = 2131493274;
+			
+			// aapt resource value: 0x7f0c0192
+			public const int tdaPharmacies = 2131493266;
+			
+			// aapt resource value: 0x7f0c0196
+			public const int tdaPresentationDatas = 2131493270;
+			
+			// aapt resource value: 0x7f0c0198
+			public const int tdaPromotionDatas = 2131493272;
+			
+			// aapt resource value: 0x7f0c019b
+			public const int tdaResumeDatas = 2131493275;
 			
 			// aapt resource value: 0x7f0c010b
 			public const int text = 2131493131;

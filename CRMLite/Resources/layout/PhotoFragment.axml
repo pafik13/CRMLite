@@ -66,6 +66,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp" />
             <Button
+                android:enabled="false"
                 android:text="ДОБАВИТЬ ФОТО"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -122,12 +123,13 @@
             </ScrollView>
         </RelativeLayout>
     </LinearLayout>
-    <TextView
+    <TextView xmlns:tools="http://schemas.android.com/tools"
         android:text="НАЧНИТЕ ВИЗИТ"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/locker"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/translucent_black"
-        android:gravity="center" />
+        android:gravity="center"
+        tools:visibility="gone" />
 </FrameLayout>

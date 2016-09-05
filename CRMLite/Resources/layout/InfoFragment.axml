@@ -215,9 +215,10 @@
                 android:background="@android:color/white"
                 android:weightSum="100">
                 <TextView
+                    android:minHeight="60dp"
                     android:text="Резюме визита"
                     android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_height="match_parent"
                     android:id="@+id/ifResumeTV"
                     android:layout_weight="30"
                     android:gravity="center"
@@ -236,7 +237,8 @@
                     android:textColorHint="@color/Grey_300"
                     android:textColor="@android:color/black"
                     android:hint="Резюме"
-                    android:inputType="textCapSentences" />
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:minLines="5" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

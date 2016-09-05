@@ -16,7 +16,7 @@ namespace CRMLite
 	public class SyncActivity : Activity
 	{
 		Button GetData;
-
+		Button CheckAll;
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
@@ -27,6 +27,21 @@ namespace CRMLite
 			GetData = FindViewById<Button>(Resource.Id.saGetDataB);
 
 			GetData.Click += GetData_Click;
+
+			CheckAll = FindViewById<Button>(Resource.Id.saCheckAll);
+
+			CheckAll.Click += CheckAll_Click;
+		}
+
+		void CheckAll_Click(object sender, EventArgs e)
+		{
+			var mainLL = FindViewById<LinearLayout>(Resource.Id.saMainLL);
+			for (int c = 0; c < mainLL.ChildCount; c++) {
+				var view = mainLL.GetChildAt(c);
+				if (view is CheckBox) {
+					((CheckBox)view).Checked = true;
+				}
+			}
 		}
 
 		void GetData_Click(object sender, EventArgs e)
