@@ -2,7 +2,7 @@
 
 namespace CRMLite.Entities
 {
-	public class Distribution : RealmObject, IAttendanceData, IEntity
+	public class DistributionData : RealmObject, IAttendanceData, IEntity
 	{
 		/// <summary>
 		/// Уникальный идентификатор информации о дистрибуции. Используется Guid.

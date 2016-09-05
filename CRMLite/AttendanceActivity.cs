@@ -51,7 +51,7 @@ namespace CRMLite
 					FragmentTitle.Text = @"СОТРУДНИКИ";
 					break;
 				case 2:
-					FragmentTitle.Text = @"СОБИРАЕМАЯ ИНФОРМАЦИЯ";
+					FragmentTitle.Text = (AttendanceLast == null) ? @"СОБИРАЕМАЯ ИНФОРМАЦИЯ" : string.Format(@"ИНФОРМАЦИЯ С ВИЗИТА ОТ {0}", AttendanceLast.When);
 					break;
 				case 3:
 					FragmentTitle.Text = @"ФОТО НА ВИЗИТЕ";
@@ -131,20 +131,20 @@ namespace CRMLite
 					Thread.Sleep(2000); // иначе не успеет показаться диалог
 
 					RunOnUiThread(() => {
-						//var transaction = MainDatabase.BeginTransaction();
-						//var attendance = MainDatabase.Create<Attendance>();
-						//attendance.Pharmacy = PharmacyUUID;
-						//attendance.When = AttendanceStart.Value;
+						var transaction = MainDatabase.BeginTransaction();
+						var attendance = MainDatabase.Create<Attendance>();
+						attendance.Pharmacy = PharmacyUUID;
+						attendance.When = AttendanceStart.Value;
 
-						////MainDatabase.SaveAttendace(Attendance);
-						//for (int f = 0; f < NUM_PAGES; f++) {
-						//	var fragment = GetFragment(f);
-						//	if (fragment is IAttendanceControl) {
-						//		(fragment as IAttendanceControl).OnAttendanceStop(transaction, attendance);
-						//	}
-						//}
+						//MainDatabase.SaveAttendace(Attendance);
+						for (int f = 0; f < NUM_PAGES; f++) {
+							var fragment = GetFragment(f);
+							if (fragment is IAttendanceControl) {
+								(fragment as IAttendanceControl).OnAttendanceStop(transaction, attendance);
+							}
+						}
 
-						//transaction.Commit();
+						transaction.Commit();
 						lockDialog.Dismiss();
 						Finish();
 					});

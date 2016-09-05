@@ -94,7 +94,7 @@ namespace CRMLite
 						attendance.When = baseDate.AddDays(i * step);
 
 						foreach (var SKU in drugSKUs) {
-							var distribution = MainDatabase.CreateData<Distribution>(attendance.UUID);
+							var distribution = MainDatabase.CreateData<DistributionData>(attendance.UUID);
 							distribution.DrugSKU = SKU.uuid;
 							distribution.IsExistence = rnd.NextDouble() > 0.5;
 							distribution.Count = rnd.Next(0, 10);
@@ -205,7 +205,7 @@ namespace CRMLite
 		{
 			FindViewById<TextView>(Resource.Id.tdaPharmacies).Text = string.Format(@"Pharmacies: {0}", MainDatabase.GetItems<Pharmacy>().Count);
 			FindViewById<TextView>(Resource.Id.tdaAttendances).Text = string.Format(@"Attendances: {0}", MainDatabase.GetItems<Attendance>().Count);
-			FindViewById<TextView>(Resource.Id.tdaDistributions).Text = string.Format(@"Distributions: {0}", MainDatabase.GetItems<Distribution>().Count);
+			FindViewById<TextView>(Resource.Id.tdaDistributions).Text = string.Format(@"Distributions: {0}", MainDatabase.GetItems<DistributionData>().Count);
 			FindViewById<TextView>(Resource.Id.tdaFinanceDatas).Text = string.Format(@"FinanceDatas: {0}", MainDatabase.GetItems<FinanceData>().Count);
 			FindViewById<TextView>(Resource.Id.tdaPresentationDatas).Text = string.Format(@"PresentationDatas: {0}", MainDatabase.GetItems<PresentationData>().Count);
 			FindViewById<TextView>(Resource.Id.tdaCoteriaDatas).Text = string.Format(@"CoteriaDatas: {0}", MainDatabase.GetItems<CoterieData>().Count);

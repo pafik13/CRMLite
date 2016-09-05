@@ -25,16 +25,14 @@ namespace CRMLite
 		IList<DrugBrand> Brands;
 		IList<DrugSKU> SKUs;
 		IList<WorkType> WorkTypes;
+		IList<Promotion> Promotions;
+		IList<MessageType> MessageTypes;
 
 		DateTimeOffset? AttendanceStart;
 
 		TextView Locker;
-		List<MessageData> MessageDatas;
-		PromotionData PromotionData;
-		CompetitorData CompetitorData;
 
 		LinearLayout DistributionTable;
-		//List<Distribution> Distributions;
 
 		LinearLayout SaleTable;
 		DateTimeOffset[] SaleDataMonths;
@@ -56,11 +54,11 @@ namespace CRMLite
 		View MessageDivider;
 		View SaleDivider;
 
-		List<MessageType> MessageTypes;
-		ImageView MessageAdd;
-
 		TextView CoterieBrands;
 		TextView CoterieEmployees;
+
+		Employee PresentetionEmployeeLast;
+
 		public static InfoFragment create(string pharmacyUUID, string attendanceLastUUID)
 		{
 			InfoFragment fragment = new InfoFragment();
@@ -100,10 +98,8 @@ namespace CRMLite
 			Brands = MainDatabase.GetItems<DrugBrand>();
 			SKUs = MainDatabase.GetItems<DrugSKU>();
 			WorkTypes = MainDatabase.GetItems<WorkType>();
-
-			MessageDatas = new List<MessageData>();
-			PromotionData = new PromotionData();
-			CompetitorData = new CompetitorData();
+			Promotions = MainDatabase.GetItems<Promotion>();
+			MessageTypes = MainDatabase.GetItems<MessageType>();
 
 			InitDistribution(mainView, attendanceLast);
 
@@ -124,45 +120,6 @@ namespace CRMLite
 			return mainView;
 		}
 
-		void AddMessageView()
-		{
-			var newMessage = new MessageData(); //MainDatabase.CreateMessageData(CurrentAttendance.UUID);
-
-			var message = Inflater.Inflate(Resource.Layout.InfoMessageItem, MessageTable, false);
-			message.SetTag(Resource.String.MessageUUID, newMessage.UUID);
-
-			var messageText = message.FindViewById<EditText>(Resource.Id.imiMessageTextET);
-
-			var messageTypes = new List<MessageType>();
-			messageTypes.Add(new MessageType { name = @"Выберите тип сообщения!", uuid = Guid.Empty.ToString() });
-			messageTypes.AddRange(MainDatabase.GetItems<MessageType>());
-
-			var messageType = message.FindViewById<Spinner>(Resource.Id.imiMessageTypeS);
-			var messageTypeAdapter = new ArrayAdapter(
-				Context,
-				Android.Resource.Layout.SimpleSpinnerItem,
-				messageTypes.Select(x => x.name).ToArray()
-			);
-			messageTypeAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
-			messageType.Adapter = messageTypeAdapter;
-			messageType.ItemSelected += (sender, e) => {
-				if (e.Position == 0) {
-					messageText.Text = string.Empty;
-					messageText.Enabled = false;
-				} else {
-					messageText.Enabled = true;
-					newMessage.Type = messageTypes[e.Position].uuid;
-				}
-			};
-
-			messageText.AfterTextChanged += (sender, e) => {
-				newMessage.Text = e.Editable.ToString();
-			};
-
-			MessageDatas.Add(newMessage);
-			MessageTable.AddView(message);
-		}
-
 		void AddPresentationView()
 		{
 			var presentation = Inflater.Inflate(Resource.Layout.InfoPresentationItem, PresentationTable, false);
@@ -174,9 +131,15 @@ namespace CRMLite
 						   .SetItems(Employees.Select(item => item.Name).ToArray(), (caller, arguments) => {
 							    employee.SetTag(Resource.String.PDEmployee, Employees[arguments.Which].UUID);
 								employee.Text = Employees[arguments.Which].Name;
+								PresentetionEmployeeLast = Employees[arguments.Which];
 						   })
 						   .Show();
 			};
+			if (PresentetionEmployeeLast != null) {
+				employee.SetTag(Resource.String.PDEmployee, PresentetionEmployeeLast.UUID);
+				employee.Text = PresentetionEmployeeLast.Name;
+			}
+
 
 			var brand = presentation.FindViewById<TextView>(Resource.Id.ipiBrandTV);
 			brand.Click += (object sender, EventArgs e) => {
@@ -241,73 +204,6 @@ namespace CRMLite
 						.Show();
 		}
 
-		void AddCoterieView()
-		{
-			var newCoterieData = new CoterieData(); //MainDatabase.CreateCoterieData(CurrentAttendance.UUID);
-
-			var coterie = Inflater.Inflate(Resource.Layout.InfoCoterieItem, PresentationTable, false);
-			coterie.SetTag(Resource.String.CoterieDataUUID, newCoterieData.UUID);
-
-			coterie.FindViewById<Button>(Resource.Id.iciEmployeeForCoterieB).Click += (object sender, EventArgs e) => {
-				new Android.App.AlertDialog.Builder(Activity)
-						   .SetTitle("Выберите сотрудника аптеки:")
-						   .SetCancelable(true)
-						   .SetItems(Employees.Select(item => item.Name).ToArray(), (caller, arguments) => {
-							   Toast.MakeText(Activity, @"Selected " + arguments.Which, ToastLength.Short).Show();
-							   newCoterieData.Employee = Employees[arguments.Which].UUID;
-							   (sender as Button).Text = Employees[arguments.Which].Name;
-
-						   })
-						   .Show();
-			};
-
-
-			//coterie.FindViewById<Button>(Resource.Id.iciBrandForCoterieB).Click += (object sender, EventArgs e) => {
-			//	var cacheBrands = new List<DrugBrand>(newCoterieData.Brands);
-
-			//	bool[] checkedItems = new bool[Brands.Count];
-			//	for (int brandIndex = 0; brandIndex < Brands.Count; brandIndex++) {
-			//		checkedItems[brandIndex] = cacheBrands.Contains(Brands[brandIndex]);
-			//	}
-
-			//	new Android.App.AlertDialog.Builder(Activity)
-			//			   .SetTitle("Выберите бренды:")
-			//			   .SetCancelable(false)
-			//			   .SetMultiChoiceItems(
-			//				   Brands.Select(item => item.name).ToArray(),
-			//				   checkedItems,
-			//				   (caller, arguments) => {
-			//					   Toast.MakeText(Activity, @"Selected " + arguments.Which, ToastLength.Short).Show();
-			//					   if (arguments.IsChecked) {
-			//						   cacheBrands.Add(Brands[arguments.Which]);
-			//					   } else {
-			//						   cacheBrands.Remove(Brands[arguments.Which]);
-			//					   }
-			//				   }
-			//			   )
-			//				.SetPositiveButton(
-			//				   @"Сохранить",
-			//				 	(caller, arguments) => {
-			//						 newCoterieData.Brands.Clear();
-			//						 foreach (var item in cacheBrands) {
-			//							 newCoterieData.Brands.Add(item);
-			//						 }
-
-			//						 var parent = ((sender as Button).Parent as LinearLayout);
-			//						 var text = parent.FindViewById<AutoCompleteTextView>(Resource.Id.iciBrandForCoterieACTV);
-			//						 text.Text = string.Join(",", newCoterieData.Brands.Select(item => item.name));
-
-			//						 (caller as Android.App.Dialog).Dispose();
-			//					 }
-			//				)
-			//				.SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Android.App.Dialog).Dispose(); })
-			//				.Show();
-			//};
-
-			//CoterieDatas.Add(newCoterieData);
-			//CoterieLayout.AddView(coterie);
-		}
-
 		void InitDistribution(View view, Attendance attendanceLast)
 		{
 			DistributionTable = view.FindViewById<LinearLayout>(Resource.Id.ifDistributionTable);
@@ -337,7 +233,7 @@ namespace CRMLite
 				}
 			} else {
 				var distributions = MainDatabase.GetDistributions(attendanceLast.UUID);
-				var dictDistrs = new Dictionary<string, Distribution>();
+				var dictDistrs = new Dictionary<string, DistributionData>();
 				foreach (var item in distributions) {
 					dictDistrs.Add(item.DrugSKU, item); 
 				}
@@ -444,8 +340,7 @@ namespace CRMLite
 
 			var promotionsList = new List<Promotion>();
 			promotionsList.Add(new Promotion { name = @"Выберите акцию!", uuid = Guid.Empty.ToString() });
-			var promotions = MainDatabase.GetItems<Promotion>();
-			promotionsList.AddRange(promotions);
+			promotionsList.AddRange(Promotions);
 			var promotionSpinner = view.FindViewById<Spinner>(Resource.Id.ifPromotionS);
 			var promotionAdapter = new ArrayAdapter(
 				Context,
@@ -454,15 +349,6 @@ namespace CRMLite
 			);
 			promotionAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
 			promotionSpinner.Adapter = promotionAdapter;
-			//promotionSpinner.ItemSelected += (sender, e) => {
-			//	if (e.Position == 0) {
-			//		promotionText.Text = string.Empty;
-			//		promotionText.Enabled = false;
-			//	} else {
-			//		promotionText.Enabled = true;
-			//		PromotionData.Promotion = promotions[e.Position].uuid;
-			//	}
-			//};
 
 			if (attendanceLast == null) {
 				PromotionLayout.Visibility = ViewStates.Gone;
@@ -507,20 +393,7 @@ namespace CRMLite
 			}
 
 			CompetitorLayout.FindViewById<EditText>(Resource.Id.ifCompetitorET).Text = competitorData.Text;
-			CompetitorLayout.FindViewById<CheckBox>(Resource.Id.ifCompetitorCB).Checked = true;
-
-			//competitor.CheckedChange += (sender, e) => {
-			//	if (e.IsChecked) {
-			//		competitorText.Enabled = true;
-			//	} else {
-			//		competitorText.Text = string.Empty;
-			//		competitorText.Enabled = false;
-			//	}
-			//};
-
-			//competitorText.AfterTextChanged += (sender, e) => {
-			//	CompetitorData.Text = e.Editable.ToString();
-			//};		
+			CompetitorLayout.FindViewById<CheckBox>(Resource.Id.ifCompetitorCB).Checked = true;	
 		}
 
 		void InitMessage(View view, Attendance attendanceLast)
@@ -528,7 +401,8 @@ namespace CRMLite
 			MessageLayout = view.FindViewById<LinearLayout>(Resource.Id.ifMessageLL);
 			MessageDivider = view.FindViewById<View>(Resource.Id.ifMessageDividerV);
 			MessageTable = view.FindViewById<LinearLayout>(Resource.Id.ifMessageTable);
-			MessageAdd = view.FindViewById<ImageView>(Resource.Id.ifMessageAddIV);
+			var messageAdd = view.FindViewById<ImageView>(Resource.Id.ifMessageAddIV);
+			messageAdd.Visibility = ViewStates.Gone;
 
 			if (attendanceLast == null) {
 				MessageLayout.Visibility = ViewStates.Gone;
@@ -544,11 +418,10 @@ namespace CRMLite
 				return;
 			}
 
-			MessageAdd.Visibility = ViewStates.Gone;
 
-			MessageTypes = new List<MessageType>();
-			MessageTypes.Add(new MessageType { name = @"Выберите тип сообщения!", uuid = Guid.Empty.ToString() });
-			MessageTypes.AddRange(MainDatabase.GetItems<MessageType>());
+			var messageTypes = new List<MessageType>();
+			messageTypes.Add(new MessageType { name = @"Выберите тип сообщения!", uuid = Guid.Empty.ToString() });
+			messageTypes.AddRange(MessageTypes);
 
 			foreach (var item in messages) {
 				var row = Inflater.Inflate(Resource.Layout.InfoMessageItem, MessageTable, false);
@@ -557,11 +430,11 @@ namespace CRMLite
 				type.Adapter = new ArrayAdapter(
 					Context,
 					Android.Resource.Layout.SimpleSpinnerItem,
-					MessageTypes.Select(x => x.name).ToArray()
+					messageTypes.Select(x => x.name).ToArray()
 				);
 
-				for (int mt = 1; mt < MessageTypes.Count; mt++) {
-					if (MessageTypes[mt].uuid == item.Type) {
+				for (int mt = 1; mt < messageTypes.Count; mt++) {
+					if (messageTypes[mt].uuid == item.Type) {
 						type.SetSelection(mt);
 						break;
 					}
@@ -692,12 +565,137 @@ namespace CRMLite
 			base.OnStop();
 		}
 
+		void CoterieEmployees_Click(object sender, EventArgs e)
+		{
+			var tv = (TextView)sender;
+
+			var employeesUUIDs = (string)tv.GetTag(Resource.String.CDEmployees);
+			var cacheEmployees = string.IsNullOrEmpty(employeesUUIDs) ? new List<string>() : employeesUUIDs.Split(';').ToList();
+
+			bool[] checkedItems = new bool[Employees.Count];
+			if (cacheEmployees.Count > 0) {
+				for (int i = 0; i < Employees.Count; i++) {
+					checkedItems[i] = cacheEmployees.Contains(Employees[i].UUID);
+				}
+			}
+
+			new Android.App.AlertDialog.Builder(Activity)
+					   .SetTitle("Выберите сотрудников:")
+					   .SetCancelable(false)
+					   .SetMultiChoiceItems(
+						   Employees.Select(item => item.Name).ToArray(),
+						   checkedItems,
+						   (caller, arguments) => {
+							   if (arguments.IsChecked) {
+								   cacheEmployees.Add(Employees[arguments.Which].UUID);
+							   } else {
+								   cacheEmployees.Remove(Employees[arguments.Which].UUID);
+							   }
+						   }
+					   )
+						.SetPositiveButton(
+						   @"Сохранить",
+						   (caller, arguments) => {
+							   tv.SetTag(Resource.String.CDEmployees, string.Join(@";", cacheEmployees));
+							   if (cacheEmployees.Count > 0) {
+								   tv.Text = string.Join(System.Environment.NewLine,
+														 Employees.Where(emp => cacheEmployees.Contains(emp.UUID))
+																   .Select(emp => emp.Name).ToArray()
+														  );
+							   } else {
+								   tv.Text = @"Выберите сотрудников!";
+							   }
+								(caller as Android.App.Dialog).Dispose();
+						   }
+						)
+						.SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Android.App.Dialog).Dispose(); })
+						.Show();
+		}
+
+		void CoterieBrands_Click(object sender, EventArgs e)
+		{
+			var tv = (TextView)sender;
+
+			var brandsUUIDs = (string)tv.GetTag(Resource.String.CDBrands);
+			var cacheBrands = string.IsNullOrEmpty(brandsUUIDs) ? new List<string>() : brandsUUIDs.Split(';').ToList();
+
+			bool[] checkedItems = new bool[Brands.Count];
+			if (cacheBrands.Count > 0) {
+				for (int brandIndex = 0; brandIndex < Brands.Count; brandIndex++) {
+					checkedItems[brandIndex] = cacheBrands.Contains(Brands[brandIndex].uuid);
+				}
+			}
+
+			new Android.App.AlertDialog.Builder(Activity)
+					   .SetTitle("Выберите бренды:")
+					   .SetCancelable(false)
+					   .SetMultiChoiceItems(
+						   Brands.Select(item => item.name).ToArray(),
+						   checkedItems,
+						   (caller, arguments) => {
+							   if (arguments.IsChecked) {
+								   cacheBrands.Add(Brands[arguments.Which].uuid);
+							   } else {
+								   cacheBrands.Remove(Brands[arguments.Which].uuid);
+							   }
+						   }
+					   )
+						.SetPositiveButton(
+						   @"Сохранить",
+						   (caller, arguments) => {
+							   tv.SetTag(Resource.String.CDBrands, string.Join(@";", cacheBrands));
+							   if (cacheBrands.Count > 0) {
+								   tv.Text = string.Join(System.Environment.NewLine,
+														 Brands.Where(b => cacheBrands.Contains(b.uuid))
+																.Select(b => b.name).ToArray()
+														  );
+							   } else {
+								   tv.Text = @"Выберите бренды!";
+							   }
+								(caller as Android.App.Dialog).Dispose();
+						   }
+						)
+						.SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Android.App.Dialog).Dispose(); })
+						.Show();
+		}
+
+		void AddMessageView()
+		{
+			var message = Inflater.Inflate(Resource.Layout.InfoMessageItem, MessageTable, false);
+
+			var messageText = message.FindViewById<EditText>(Resource.Id.imiMessageTextET);
+
+			var messageTypes = new List<MessageType>();
+			messageTypes.Add(new MessageType { name = @"Выберите тип сообщения!", uuid = Guid.Empty.ToString() });
+			messageTypes.AddRange(MessageTypes);
+
+			var messageSpinner = message.FindViewById<Spinner>(Resource.Id.imiMessageTypeS);
+			var messageTypeAdapter = new ArrayAdapter(
+				Context,
+				Android.Resource.Layout.SimpleSpinnerItem,
+				messageTypes.Select(x => x.name).ToArray()
+			);
+			messageTypeAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
+			messageSpinner.Adapter = messageTypeAdapter;
+			messageSpinner.ItemSelected += (caller, arguments) => {
+				if (arguments.Position == 0) {
+					messageText.Text = string.Empty;
+					messageText.Enabled = false;
+				} else {
+					messageText.Enabled = true;
+				}
+			};
+			messageSpinner.Clickable = true;
+
+			MessageTable.AddView(message);
+		}
+
 		public void OnAttendanceStart(DateTimeOffset? start)
 		{
 			AttendanceStart = start;
 			Locker.Visibility = ViewStates.Gone;
 
-			// 1. Дистрибуция
+			// 1. Дистрибьюция
 			for (int c = 2; c < DistributionTable.ChildCount; c = c + 2) {
 				var row = DistributionTable.GetChildAt(c) as LinearLayout;
 				var isExistence = row.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB);
@@ -748,100 +746,68 @@ namespace CRMLite
 			CoterieEmployees = CoterieLayout.FindViewById<TextView>(Resource.Id.icdEmployeesTV);
 			CoterieEmployees.Click += CoterieEmployees_Click;
 			AttendanceTypeContent.AddView(CoterieLayout);
-		}
 
-		void CoterieEmployees_Click(object sender, EventArgs e)
-		{
-			var tv = (TextView)sender;
+			// 3. Акция
+			var promotionText = PromotionLayout.FindViewById<EditText>(Resource.Id.ifPromotionET);
+			promotionText.Text = string.Empty;
+			promotionText.Enabled = false;
+			var promotionSpinner = PromotionLayout.FindViewById<Spinner>(Resource.Id.ifPromotionS);
+			promotionSpinner.Clickable = true;
+			promotionSpinner.ItemSelected += (sender, e) => {
+				if (e.Position == 0) {
+					promotionText.Text = string.Empty;
+					promotionText.Enabled = false;
+				} else {
+					promotionText.Enabled = true;
+				}
+			};
+			promotionSpinner.SetSelection(0); // Обнуление значений;
+			PromotionLayout.Visibility = ViewStates.Visible;
+			PromotionDivider.Visibility = ViewStates.Visible;
 
-			var employeesUUIDs = (string)tv.GetTag(Resource.String.CDEmployees);
-			var cacheEmployees = string.IsNullOrEmpty(employeesUUIDs) ? new List<string>() : employeesUUIDs.Split(';').ToList();
+			// 4. Активность конкурентов
+			var competitorText = CompetitorLayout.FindViewById<EditText>(Resource.Id.ifCompetitorET);
+			competitorText.Text = string.Empty;
+			competitorText.Enabled = false;
+			var competitorCB = CompetitorLayout.FindViewById<CheckBox>(Resource.Id.ifCompetitorCB);
+			competitorCB.Enabled = true;
+			competitorCB.CheckedChange += (sender, e) => {
+				if (e.IsChecked) {
+					competitorText.Enabled = true;
+				} else {
+					competitorText.Text = string.Empty;
+					competitorText.Enabled = false;
+				}
+			};
+			competitorCB.Checked = false;
+			CompetitorLayout.Visibility = ViewStates.Visible;
+			CompetitorDivider.Visibility = ViewStates.Visible;
 
-			bool[] checkedItems = new bool[Employees.Count];
-			if (cacheEmployees.Count > 0) {
-				for (int i = 0; i < Employees.Count; i++) {
-					checkedItems[i] = cacheEmployees.Contains(Employees[i].UUID);
+			// 5. Сообщения
+			MessageTable.RemoveAllViews();
+			var messageAdd = MessageLayout.FindViewById<ImageView>(Resource.Id.ifMessageAddIV);
+			messageAdd.Visibility = ViewStates.Visible;
+			messageAdd.Click += (s, e) => {
+				AddMessageView();
+			};
+			AddMessageView();
+			MessageLayout.Visibility = ViewStates.Visible;
+			MessageDivider.Visibility = ViewStates.Visible;
+
+			// 6. Продажи
+			for (int c = 2; c < SaleTable.ChildCount; c = c + 2) {
+				for (int m = 0; m < SaleDataMonths.Count(); m++) {
+					(SaleTable.GetChildAt(c) as LinearLayout).GetChildAt(m + 1).Enabled = true;
 				}
 			}
+			SaleLayout.Visibility = ViewStates.Visible;
+			SaleDivider.Visibility = ViewStates.Visible;
 
-			new Android.App.AlertDialog.Builder(Activity)
-					   .SetTitle("Выберите сотрудников:")
-					   .SetCancelable(false)
-					   .SetMultiChoiceItems(
-				           Employees.Select(item => item.Name).ToArray(),
-						   checkedItems,
-						   (caller, arguments) => {
-							   if (arguments.IsChecked) {
-								   cacheEmployees.Add(Employees[arguments.Which].UUID);
-							   } else {
-								   cacheEmployees.Remove(Employees[arguments.Which].UUID);
-							   }
-						   }
-					   )
-						.SetPositiveButton(
-						   @"Сохранить",
-						   (caller, arguments) => {
-								tv.SetTag(Resource.String.CDEmployees, string.Join(@";", cacheEmployees));
-							   if (cacheEmployees.Count > 0) {
-								   tv.Text = string.Join(System.Environment.NewLine,
-						                                 Employees.Where(emp => cacheEmployees.Contains(emp.UUID))
-						                                 		  .Select(emp => emp.Name).ToArray()
-														  );
-							   } else {
-								   tv.Text = @"Выберите сотрудников!";
-							   }
-								(caller as Android.App.Dialog).Dispose();
-						   }
-						)
-						.SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Android.App.Dialog).Dispose(); })
-						.Show();
-		}
-
-		void CoterieBrands_Click(object sender, EventArgs e)
-		{
-			var tv = (TextView)sender;
-
-			var brandsUUIDs = (string)tv.GetTag(Resource.String.CDBrands);
-			var cacheBrands = string.IsNullOrEmpty(brandsUUIDs) ? new List<string>() : brandsUUIDs.Split(';').ToList();
-
-			bool[] checkedItems = new bool[Brands.Count];
-			if (cacheBrands.Count > 0) {
-				for (int brandIndex = 0; brandIndex < Brands.Count; brandIndex++) {
-					checkedItems[brandIndex] = cacheBrands.Contains(Brands[brandIndex].uuid);
-				}
-			}
-
-			new Android.App.AlertDialog.Builder(Activity)
-					   .SetTitle("Выберите бренды:")
-					   .SetCancelable(false)
-					   .SetMultiChoiceItems(
-						   Brands.Select(item => item.name).ToArray(),
-						   checkedItems,
-						   (caller, arguments) => {
-							   if (arguments.IsChecked) {
-								   cacheBrands.Add(Brands[arguments.Which].uuid);
-							   } else {
-								   cacheBrands.Remove(Brands[arguments.Which].uuid);
-							   }
-						   }
-					   )
-						.SetPositiveButton(
-						   @"Сохранить",
-						   (caller, arguments) => {
-							   tv.SetTag(Resource.String.CDBrands, string.Join(@";", cacheBrands));
-							   if (cacheBrands.Count > 0) {
-								   tv.Text = string.Join(System.Environment.NewLine, 
-						                                 Brands.Where(b => cacheBrands.Contains(b.uuid))
-						                                 	   .Select(b => b.name).ToArray()
-						                      			);
-							   } else {
-								   tv.Text = @"Выберите бренды!";
-							   }
-								(caller as Android.App.Dialog).Dispose();
-						   }
-						)
-						.SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Android.App.Dialog).Dispose(); })
-						.Show();
+			// 7. Резюме визита
+			var resumeText = ResumeLayout.FindViewById<EditText>(Resource.Id.ifResumeET);
+			resumeText.Text = string.Empty;
+			resumeText.Enabled = true;
+			ResumeLayout.Visibility = ViewStates.Visible;
 		}
 
 		public void OnAttendanceStop(Transaction openedTransaction, Attendance current)
@@ -850,25 +816,56 @@ namespace CRMLite
 				throw new ArgumentNullException(nameof(openedTransaction));
 			}
 
-			// Save Distributions
+			// 1. Дистрибьюция
 			for (int c = 2; c < DistributionTable.ChildCount; c = c + 2) {
 				var row = (LinearLayout)DistributionTable.GetChildAt(c);
-				var distr = MainDatabase.CreateData<Distribution>(current.UUID);
-				distr.DrugSKU = (string)row.GetTag(Resource.String.DrugSKUUUID);
-				distr.IsExistence = row.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked;
-				distr.Count = Helper.ToFloatExeptNull(row.FindViewById<EditText>(Resource.Id.dtiCountET).Text);
-				distr.Price = Helper.ToFloatExeptNull(row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text);
-				distr.IsPresence = row.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked;
-				distr.HasPOS = row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked;
-				distr.Order = row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text;
-				distr.Comment = row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text;
+				if (row.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked) {
+					var distr = MainDatabase.CreateData<DistributionData>(current.UUID);
+					distr.DrugSKU = (string)row.GetTag(Resource.String.DrugSKUUUID);
+					distr.IsExistence = row.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked;
+					distr.Count = Helper.ToFloatExeptNull(row.FindViewById<EditText>(Resource.Id.dtiCountET).Text);
+					distr.Price = Helper.ToFloatExeptNull(row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text);
+					distr.IsPresence = row.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked;
+					distr.HasPOS = row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked;
+					distr.Order = row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text;
+					distr.Comment = row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text;
+				}
 			}
 
-			// Save Sale
+			// 2. Содержание визита
+
+			// 2.1 Презентация
+			for (int c = 0; c < PresentationTable.ChildCount; c++) {
+				var row = (LinearLayout)PresentationTable.GetChildAt(c);
+				var employeeUUID = (string)row.FindViewById<TextView>(Resource.Id.ipiEmployeeTV).GetTag(Resource.String.PDEmployee);
+				var brandUUID = (string)row.FindViewById<TextView>(Resource.Id.ipiBrandTV).GetTag(Resource.String.PDBrand);
+				var workTypes = (string)row.FindViewById<TextView>(Resource.Id.ipiWorkTypesTV).GetTag(Resource.String.PDWorkTypes);
+				var worktTypesUUIDs = workTypes.Split(';');
+
+				foreach (var workType in worktTypesUUIDs) {
+					var presentationData = MainDatabase.CreateData<PresentationData>(current.UUID);
+					presentationData.Employee = employeeUUID;
+					presentationData.Brand = brandUUID;
+					presentationData.WorkType = workType;
+				}
+			}
+
+			// 2.1 Фарм-кружок
+			var brands = CoterieBrands.GetTag(Resource.String.CDBrands).ToString().Split(';');
+			var employees = CoterieBrands.GetTag(Resource.String.CDBrands).ToString().Split(';');
+			foreach (var brand in brands) {
+				foreach (var employee in employees) {
+					var coterieData = MainDatabase.CreateData<CoterieData>(current.UUID);
+					coterieData.Employee = employee;
+					coterieData.Brand = brand;
+				}
+   			}
+				
+			// 6. Продажи
 			for (int c = 2; c < SaleTable.ChildCount; c = c + 2) {
 				var row = (LinearLayout)SaleTable.GetChildAt(c);
 				var skuUUID = (string)row.GetTag(Resource.String.DrugSKUUUID);
-				for (int m = 0; m < 8; m++) {
+				for (int m = 0; m < SaleDataMonths.Count(); m++) {
 					var rView = (TextView)row.GetChildAt(m + 1);
 					if (string.IsNullOrEmpty(rView.Text)) continue;
 

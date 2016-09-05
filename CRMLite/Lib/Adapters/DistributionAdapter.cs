@@ -8,18 +8,18 @@ using CRMLite.Entities;
 
 namespace CRMLite.Adapters
 {
-	public class DistributionAdapter : BaseAdapter<Distribution>
+	public class DistributionAdapter : BaseAdapter<DistributionData>
 	{
 		Activity Context;
-		readonly IList<Distribution> Distributions;
+		readonly IList<DistributionData> Distributions;
 
-		public DistributionAdapter(Activity context, IList<Distribution> distributions) : base()
+		public DistributionAdapter(Activity context, IList<DistributionData> distributions) : base()
 		{
 			Context = context;
-			Distributions = distributions ?? new List<Distribution>();
+			Distributions = distributions ?? new List<DistributionData>();
 		}
 
-		public override Distribution this[int position]
+		public override DistributionData this[int position]
 		{
 			get
 			{

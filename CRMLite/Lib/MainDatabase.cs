@@ -63,7 +63,7 @@ namespace CRMLite
 
 		internal static void DeleteDistributions()
 		{
-			foreach (var item in Me.DB.All<Distribution>().ToList()) {
+			foreach (var item in Me.DB.All<DistributionData>().ToList()) {
 				Me.DB.Remove(item);
 			}		
 		}
@@ -515,9 +515,9 @@ namespace CRMLite
 		#endregion
 
 
-		internal static IList<Distribution> GetDistributions(string attendanceUUID)
+		internal static IList<DistributionData> GetDistributions(string attendanceUUID)
 		{
-			return Me.DB.All<Distribution>()
+			return Me.DB.All<DistributionData>()
 					 .Where(d => d.Attendance == attendanceUUID)
 					 .ToList();
 		}

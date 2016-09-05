@@ -133,7 +133,7 @@ namespace CRMLite
 
 			// 2. Вставляем данные 
 			foreach (var attendance in attendances) {
-				var distributions = MainDatabase.GetItems<Distribution>().Where(i => i.Attendance == attendance.UUID);
+				var distributions = MainDatabase.GetItems<DistributionData>().Where(i => i.Attendance == attendance.UUID);
 				foreach (var distribution in distributions) {;
 					// IsExistence
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditIsExistence, attendance.When.ToString(format));
