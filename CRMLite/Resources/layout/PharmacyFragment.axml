@@ -63,106 +63,93 @@
                         android:text="Статус аптеки"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
-                    <LinearLayout
-                        android:layout_column="1"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
+                    <Spinner
                         android:layout_width="wrap_content"
-                        android:layout_marginRight="24dp">
-                        <AutoCompleteTextView
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:dropDownWidth="650dp"
-                            android:textCursorDrawable="@null"
-                            android:id="@+id/pfStateACTV"
-                            android:background="@drawable/bottomline"
-                            android:textColorHint="@color/Grey_300"
-                            android:textColor="@android:color/black"
-                            android:paddingTop="10dp"
-                            android:paddingBottom="10dp"
-                            android:hint="Статус аптеки"
-                            android:layout_weight="1"
-                            android:inputType="textCapWords" />
-                        <Button
-                            android:id="@+id/pfStateB"
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:text="..." />
-                    </LinearLayout>
-                <!--                    <Spinner
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:id="@+id/pfStateS"
-                        android:layout_marginRight="24dp" />-->
+                        android:layout_marginRight="24dp" />
                 </TableRow>
                 <TableRow
-                    android:id="@+id/pfRowName">
+                    android:id="@+id/pfRowBrand">
                     <TextView
-                        android:text="Название аптеки (Бренд)"
+                        android:text="Бренд"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
                     <EditText
                         android:textCursorDrawable="@null"
                         android:layout_column="1"
-                        android:id="@+id/pfNameET"
+                        android:id="@+id/pfBrandET"
                         android:background="@drawable/bottomline"
                         android:textColorHint="@color/Grey_300"
                         android:textColor="@android:color/black"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:hint="Например, ..."
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:hint="Например, 36и6"
                         android:enabled="true"
                         android:layout_marginRight="24dp"
-                        android:inputType="textCapSentences" />
+                        android:inputType="textCapSentences"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent" />
                 </TableRow>
                 <TableRow
-                    android:id="@+id/pfRowNameInNet">
+                    android:id="@+id/pfRowNumberName">
                     <TextView
-                        android:text="Название аптеки в АС"
+                        android:text="Номер аптеки"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
                     <EditText
                         android:textCursorDrawable="@null"
                         android:layout_column="1"
-                        android:id="@+id/pfNameInNetET"
+                        android:id="@+id/pfNumberNameET"
                         android:background="@drawable/bottomline"
                         android:textColorHint="@color/Grey_300"
                         android:textColor="@android:color/black"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
                         android:hint="Например, Аптека №6"
                         android:enabled="true"
                         android:layout_marginRight="24dp"
-                        android:inputType="textCapSentences" />
+                        android:inputType="textCapSentences"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent" />
                 </TableRow>
                 <TableRow
-                    android:id="@+id/pfRowLegalAddress">
+                    android:id="@+id/pfRowLegalName">
                     <TextView
-                        android:text="Юридический адрес"
+                        android:text="Юридичесое название"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
-                    <AutoCompleteTextView
-                        android:dropDownWidth="650dp"
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
+                    <EditText
                         android:textCursorDrawable="@null"
                         android:layout_column="1"
-                        android:id="@+id/pfLegalAddressACTV"
+                        android:id="@+id/pfLegalNameET"
                         android:background="@drawable/bottomline"
                         android:textColorHint="@color/Grey_300"
                         android:textColor="@android:color/black"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:hint="Юридический адрес"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:hint="Например, ООО 'АПТЕКА'"
                         android:enabled="true"
                         android:layout_marginRight="24dp"
-                        android:inputType="textCapSentences" />
+                        android:inputType="textCapSentences"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent" />
                 </TableRow>
             <!-- Ссылка на аптечную сеть. UUID класса Net -->
                 <TableRow
@@ -171,31 +158,72 @@
                         android:text="Аптечная сеть"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
                     <LinearLayout
                         android:layout_column="1"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/row_height"
                         android:orientation="horizontal"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_marginRight="24dp">
                         <AutoCompleteTextView
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:dropDownWidth="650dp"
+                            android:layout_height="match_parent"
+                            android:layout_width="match_parent"
+                            android:dropDownWidth="@dimen/drop_down_width"
                             android:textCursorDrawable="@null"
                             android:id="@+id/pfNetACTV"
                             android:background="@drawable/bottomline"
                             android:textColorHint="@color/Grey_300"
                             android:textColor="@android:color/black"
-                            android:paddingTop="10dp"
-                            android:paddingBottom="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
                             android:hint="Аптечная сеть"
                             android:layout_weight="1"
                             android:inputType="textCapWords" />
                         <Button
                             android:id="@+id/pfNetB"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_width="wrap_content"
+                            android:text="..." />
+                    </LinearLayout>
+                </TableRow>
+                <TableRow
+                    android:id="@+id/pfRowContracts">
+                    <TextView
+                        android:text="Контракты"
+                        android:layout_column="0"
+                        android:background="@android:color/background_light"
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
+                    <LinearLayout
+                        android:layout_column="1"
+                        android:layout_height="@dimen/row_height"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_marginRight="24dp">
+                        <AutoCompleteTextView
+                            android:enabled="false"
+                            android:layout_height="match_parent"
+                            android:layout_width="match_parent"
+                            android:dropDownWidth="@dimen/drop_down_width"
+                            android:textCursorDrawable="@null"
+                            android:id="@+id/pfContractsACTV"
+                            android:background="@drawable/bottomline"
+                            android:textColorHint="@color/Grey_300"
+                            android:textColor="@android:color/black"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:hint="Список контрактов"
+                            android:layout_weight="1"
+                            android:inputType="textCapWords" />
+                        <Button
+                            android:enabled="false"
+                            android:id="@+id/pfContractsB"
+                            android:layout_height="match_parent"
                             android:layout_width="wrap_content"
                             android:text="..." />
                     </LinearLayout>
@@ -206,8 +234,10 @@
                         android:text="Фактический адрес"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
                     <AutoCompleteTextView
                         android:dropDownWidth="650dp"
                         android:textCursorDrawable="@null"
@@ -216,12 +246,14 @@
                         android:background="@drawable/bottomline"
                         android:textColorHint="@color/Grey_300"
                         android:textColor="@android:color/black"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
                         android:hint="Фактический адрес"
                         android:enabled="true"
                         android:layout_marginRight="24dp"
-                        android:inputType="textCapSentences" />
+                        android:inputType="textCapSentences"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent" />
                 </TableRow>
                 <TableRow
                     android:id="@+id/pfRowSubway">
@@ -229,8 +261,10 @@
                         android:text="Метро"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
                     <AutoCompleteTextView
                         android:dropDownWidth="450dp"
                         android:textCursorDrawable="@null"
@@ -239,12 +273,14 @@
                         android:background="@drawable/bottomline"
                         android:textColorHint="@color/Grey_300"
                         android:textColor="@android:color/black"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
                         android:hint="Метро"
                         android:enabled="true"
                         android:layout_marginRight="24dp"
-                        android:inputType="textCapSentences" />
+                        android:inputType="textCapSentences"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent" />
                 </TableRow>
                 <TableRow
                     android:id="@+id/pfRowRegion">
@@ -252,8 +288,10 @@
                         android:text="Район"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
                     <AutoCompleteTextView
                         android:dropDownWidth="450dp"
                         android:textCursorDrawable="@null"
@@ -262,12 +300,14 @@
                         android:background="@drawable/bottomline"
                         android:textColorHint="@color/Grey_300"
                         android:textColor="@android:color/black"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
                         android:hint="Район"
                         android:enabled="true"
                         android:layout_marginRight="24dp"
-                        android:inputType="textCapSentences" />
+                        android:inputType="textCapSentences"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent" />
                 </TableRow>
                 <TableRow
                     android:id="@+id/b1fRowPhone">
@@ -275,21 +315,25 @@
                         android:text="Телефон"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
                     <EditText
                         android:textCursorDrawable="@null"
                         android:layout_column="1"
                         android:id="@+id/pfPhoneET"
                         android:background="@drawable/bottomline"
-                        android:textColorHint="#E0E0E0"
-                        android:textColor="#000000"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
+                        android:textColorHint="@color/Grey_300"
+                        android:textColor="@android:color/black"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
                         android:hint="Телефон"
                         android:phoneNumber="true"
                         android:layout_marginRight="24dp"
-                        android:inputType="phone" />
+                        android:inputType="phone"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent" />
                 </TableRow>
                 <TableRow
                     android:id="@+id/pfRowPlace">
@@ -297,8 +341,10 @@
                         android:text="Место нахождения"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
                     <AutoCompleteTextView
                         android:dropDownWidth="450dp"
                         android:textCursorDrawable="@null"
@@ -307,58 +353,66 @@
                         android:background="@drawable/bottomline"
                         android:textColorHint="@color/Grey_300"
                         android:textColor="@android:color/black"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
                         android:hint="Например, в магазине"
                         android:enabled="true"
                         android:layout_marginRight="24dp"
-                        android:inputType="textCapSentences" />
+                        android:inputType="textCapSentences"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent" />
                 </TableRow>
                 <TableRow
-                    android:id="@+id/pfRowCategoryByNet">
+                    android:id="@+id/pfRowCategory">
                     <TextView
                         android:text="Категория по данным АС"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
                     <AutoCompleteTextView
                         android:dropDownWidth="450dp"
                         android:textCursorDrawable="@null"
                         android:layout_column="1"
-                        android:id="@+id/pfCategoryByNetACTV"
+                        android:id="@+id/pfCategoryACTV"
                         android:background="@drawable/bottomline"
                         android:textColorHint="@color/Grey_300"
                         android:textColor="@android:color/black"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:hint="Например, ..."
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:hint="Например, Категория A"
                         android:enabled="true"
                         android:layout_marginRight="24dp"
-                        android:inputType="textCapSentences" />
+                        android:inputType="textCapSentences"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent" />
                 </TableRow>
                 <TableRow
-                    android:id="@+id/pfRowCategoryBySell">
+                    android:id="@+id/pfRowTurnOver">
                     <TextView
-                        android:text="Категория по ТО"
+                        android:text="Товарооборот по чекам"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
-                    <AutoCompleteTextView
-                        android:dropDownWidth="450dp"
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
+                    <EditText
                         android:textCursorDrawable="@null"
                         android:layout_column="1"
-                        android:id="@+id/pfCategoryBySellACTV"
+                        android:id="@+id/pfTurnOverET"
                         android:background="@drawable/bottomline"
                         android:textColorHint="@color/Grey_300"
                         android:textColor="@android:color/black"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:hint="Например, ..."
-                        android:enabled="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:hint="Товарооборот (количество чеков)"
                         android:layout_marginRight="24dp"
-                        android:inputType="textCapSentences" />
+                        android:inputType="number"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent" />
                 </TableRow>
             <!-- Ссылка на последний визит в аптеку. UUID класса Attendance -->
                 <TableRow
@@ -367,44 +421,37 @@
                         android:text="Последний визит"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
                     <TextView
                         android:hint="Последний визит"
                         android:layout_column="1"
                         android:id="@+id/pfLastAttendanceTV"
-                        android:layout_gravity="center_vertical"
-                        style="@style/fcs_block1" />
+                        style="@style/fcs_block1"
+                        android:gravity="end|center_vertical"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
                 </TableRow>
-            <!--                <TableRow
-                    android:id="@+id/b1fRow11">
-                    <TextView
-                        android:text="LastAttendanceDate"
-                        android:layout_column="0"
-                        android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
-                    <TextView
-                        android:text="LastAttendanceDate"
-                        android:layout_column="1"
-                        android:id="@+id/pfLastAttendanceDateTV"
-                        android:layout_gravity="center_vertical"
-                        style="@style/fcs_block1" />
-                </TableRow>-->
                 <TableRow
                     android:id="@+id/pfRowNextAttendanceDate">
                     <TextView
                         android:text="Дата следующего визита"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
                     <TextView
                         android:hint="Дата следующего визита"
                         android:layout_column="1"
                         android:id="@+id/pfNextAttendanceDateTV"
-                        android:layout_gravity="center_vertical"
-                        style="@style/fcs_block1" />
+                        style="@style/fcs_block1"
+                        android:gravity="end|center_vertical"
+                        android:layout_height="@dimen/row_height"
+                        android:layout_width="match_parent" />
                 </TableRow>
                 <TableRow
                     android:id="@+id/pfRowComment">
@@ -412,17 +459,18 @@
                         android:text="Комментарий"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
-                        android:layout_gravity="center_vertical"
-                        style="@style/control_label" />
+                        android:gravity="end|center_vertical"
+                        style="@style/control_label"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_marginBottom="10dp" />
                     <EditText
                         android:textCursorDrawable="@null"
                         android:layout_column="1"
                         android:id="@+id/pfCommentET"
                         android:background="@drawable/bottomline"
-                        android:textColorHint="#E0E0E0"
-                        android:textColor="#000000"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
+                        android:textColorHint="@color/Grey_300"
+                        android:textColor="@android:color/black"
                         android:hint="Комментарий"
                         android:inputType="textCapSentences|textMultiLine"
                         android:maxWidth="450dp"

@@ -215,15 +215,15 @@ namespace CRMLite
 		}
 		#endregion
 
-		public static Photo CreatePhoto()
+		public static PhotoData CreatePhoto()
 		{
-			var photo = Me.DB.CreateObject<Photo>();
+			var photo = Me.DB.CreateObject<PhotoData>();
 			photo.UUID = Guid.NewGuid().ToString();
 			photo.Stamp = DateTimeOffset.Now;
 			return photo;
 		}
 
-		internal static void SavePhoto(Photo photo)
+		internal static void SavePhoto(PhotoData photo)
 		{
 			Me.DB.Manage(photo);
 		}
@@ -555,9 +555,9 @@ namespace CRMLite
 
 				if (keyFound) continue;
 
-				var pdkey = new PresentationDataKey() {
+				var pdkey = new PresentationDataKey {
 					Brand = GetItem<DrugBrand>(presentation.Brand),
-					Employee = GetEntity<Employee>(presentation.Employee),
+					Employee = GetEntity<Employee>(presentation.Employee)
 				};
 				result.Add(pdkey, new List<WorkType>());
 				result[pdkey].Add(GetItem<WorkType>(presentation.WorkType));

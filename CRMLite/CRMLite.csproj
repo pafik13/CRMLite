@@ -112,7 +112,7 @@
     <Compile Include="Lib\IEntityFromClient.cs" />
     <Compile Include="Lib\Entities\CompetitorData.cs" />
     <Compile Include="Lib\Entities\PhotoType.cs" />
-    <Compile Include="Lib\Entities\Photo.cs" />
+    <Compile Include="Lib\Entities\PhotoData.cs" />
     <Compile Include="HistoryActivity.cs" />
     <Compile Include="TestDataActivity.cs" />
     <Compile Include="Lib\Entities\FinanceData.cs" />

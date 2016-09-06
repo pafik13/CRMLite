@@ -47,12 +47,9 @@ namespace CRMLite.Adapters
 								parent,
 								false)) as LinearLayout;
 
-			view.FindViewById<TextView>(Resource.Id.ptiNameTV).Text = item.GetName(); //string.IsNullOrEmpty(item.LegalName) ? "<unknow name>" : item.LegalName;
-			view.FindViewById<TextView>(Resource.Id.ptiAddressTV).Text = string.IsNullOrEmpty(item.Address) ? "<unknow address>" : item.Address;
+			view.FindViewById<TextView>(Resource.Id.ptiNameTV).Text = string.IsNullOrEmpty(item.Brand) ? @"<нет бренда>" : item.Brand;
+			view.FindViewById<TextView>(Resource.Id.ptiAddressTV).Text = string.IsNullOrEmpty(item.Address) ? @"<нет адреса>" : item.Address;
 
-			//view.FindViewById<Button>(Resource.Id.ptiLastAttendanceDateB).Click += delegate {
-			//	Toast.MakeText(context, "Нажали на кнопку!", ToastLength.Short).Show();
-			//};
 			var showFinance = view.FindViewById<ImageView>(Resource.Id.ptiContractIV);
 			showFinance.SetTag(Resource.String.PharmacyUUID, item.UUID);
 			showFinance.Click -= ShowFinanceClickEventHandler;
@@ -76,8 +73,15 @@ namespace CRMLite.Adapters
 
 			var startAttendance = view.FindViewById<Button>(Resource.Id.ptiNextAttendanceB);
 			startAttendance.SetTag(Resource.String.PharmacyUUID, item.UUID);
+			startAttendance.Text = item.NextAttendanceDate.HasValue ? 
+				item.NextAttendanceDate.Value.ToString(@"dd.MM.yyyy") : DateTimeOffset.Now.ToString(@"dd.MM.yyyy");
 			startAttendance.Click -= StartAttendanceClickEventHandler;
 			startAttendance.Click += StartAttendanceClickEventHandler;
+
+			var lastAttendance = view.FindViewById<Button>(Resource.Id.ptiLastAttendanceDateB);
+			lastAttendance.SetTag(Resource.String.PharmacyUUID, item.UUID);
+			lastAttendance.Text = item.LastAttendanceDate.HasValue ? 
+				item.LastAttendanceDate.Value.ToString(@"dd.MM.yyyy") : @"<нет визита>";
 
 			//Finally return the view
 			return view;

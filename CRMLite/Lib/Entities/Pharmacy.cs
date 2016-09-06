@@ -14,7 +14,7 @@ namespace CRMLite.Entities
 	/// <summary>
 	/// Аптека.
 	/// </summary>
-	public class Pharmacy : RealmObject
+	public class Pharmacy : RealmObject, IEntity
 	{
 		/// <summary>
 		/// Уникальный идентификатор аптеки. Используется Guid.
@@ -101,7 +101,7 @@ namespace CRMLite.Entities
 		/// Товарооборот.
 		/// </summary>
 		/// <value>The turnover.</value>
-		public string TurnOver { get; set; }
+		public int? TurnOver { get; set; }
 
 		/// <summary>
 		/// Ссылка на последний визит в аптеку. UUID класса Attendance.

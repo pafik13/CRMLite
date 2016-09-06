@@ -307,6 +307,7 @@ namespace CRMLite
 
 				AttendanceTypeContent.AddView(presentationView);
 
+				//TODO: uncomment
 				//return;
 			}
 
@@ -324,11 +325,13 @@ namespace CRMLite
 
 				AttendanceTypeContent.AddView(CoterieLayout);
 
-				return;
+				//TODO: uncomment
+				//return;
 			}
 
+			//TODO: uncommen
 			// если ничего нет, то спрятать
-			AttendanceTypeContent.Visibility = ViewStates.Gone;
+			//AttendanceTypeContent.Visibility = ViewStates.Gone;
 			//ChangeAttendanceType.Visibility = ViewStates.Gone;
 		}
 
@@ -913,6 +916,7 @@ namespace CRMLite
 
 						if (string.IsNullOrEmpty(saleUUID)) {
 							var sale = MainDatabase.CreateData<SaleData>(current.UUID);
+							sale.Pharmacy = Pharmacy.UUID;
 							sale.DrugSKU = skuUUID;
 							sale.Month = SaleDataMonths[m];
 							sale.Sale = Helper.ToFloat(rView.Text);

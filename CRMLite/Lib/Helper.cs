@@ -5,6 +5,16 @@ namespace CRMLite
 {
 	public static class Helper
 	{
+		public static int? ToInt(string value, int divider = 1)
+		{
+			if (string.IsNullOrEmpty(value)) return null;
+
+			int result;
+			int.TryParse(value.Replace(',', '.'), NumberStyles.Integer, new CultureInfo("en-US").NumberFormat, out result);
+
+			return result;
+		}
+
 		public static float? ToFloat(string value, int divider = 1)
 		{
 			if (string.IsNullOrEmpty(value)) return null;

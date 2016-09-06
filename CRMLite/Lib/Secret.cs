@@ -9,7 +9,7 @@
 
 		public static bool IsNeedReCreateDB
 		{
-			get { return false; }
+			get { return true; }
 		}
 	}
 }

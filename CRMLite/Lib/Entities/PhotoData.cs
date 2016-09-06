@@ -3,7 +3,7 @@ using Realms;
 
 namespace CRMLite
 {
-	public class Photo : RealmObject, IAttendanceData, IEntity
+	public class PhotoData : RealmObject, IAttendanceData, IEntity
 	{
 		/// <summary>
 		/// Уникальный идентификатор фотографии. Используется Guid.
@@ -15,10 +15,15 @@ namespace CRMLite
 		public DateTimeOffset Stamp { get; set; }
 
 		public string Attendance { get; set; }
+
 		public string PhotoType { get; set; }
-		public string Drug { get; set; }
+
+		public string Brand { get; set; }
+
 		public double Latitude { get; set; }
+
 		public double Longitude { get; set; }
+
 		public string PhotoPath { get; set; }
 	}
 }

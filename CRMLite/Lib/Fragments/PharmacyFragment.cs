@@ -7,39 +7,42 @@ using Android.Views;
 using Android.Widget;
 
 using Android.Support.V4.App;
-
-using CRMLite.Dialogs;
 using CRMLite.Entities;
 using CRMLite.Suggestions;
+using Realms;
 
 namespace CRMLite
 {
-	public class PharmacyFragment : Fragment
+	public class PharmacyFragment : Fragment, IAttendanceControl
 	{
-		public const string ARG_UUID = @"ARG_UUID";
+		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";
 
-		Pharmacy pharmacy;
+		Pharmacy Pharmacy;
 
 		Spinner State;
-		IList<string> states;
+		IList<string> States;
 
-		Spinner Net;
-		List<Net> nets;
+		IList<Net> Nets;
+		string NetUUID;
+		AutoCompleteTextView NetName;
 
-		List<Subway> subways;
-		List<Region> regions;
-		List<Place> places;
-		List<Category> byNet;
-		List<Category> bySell;
+		IList<Contract> Contracts;
+		AutoCompleteTextView ContractsNames;
+		Button ContractsChoice;
+
+		IList<Subway> Subways;
+		IList<Region> Regions;
+		IList<Place> Places;
+		IList<Category> CategoryByNets;
 
 
 		SuggestClient Api;
 
-		public static PharmacyFragment create(string UUID)
+		public static PharmacyFragment create(string pharmacyUUID)
 		{
 			PharmacyFragment fragment = new PharmacyFragment();
 			Bundle arguments = new Bundle();
-			arguments.PutString(ARG_UUID, UUID);
+			arguments.PutString(C_PHARMACY_UUID, pharmacyUUID);
 			fragment.Arguments = arguments;
 			return fragment;
 		}
@@ -64,120 +67,67 @@ namespace CRMLite
 			var url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs";
 			Api = new SuggestClient(token, url);
 
-			var pharmacyUUID = Arguments.GetString(ARG_UUID);
-			var caption = "ДОБАВЛЕНИЕ НОВОЙ АПТЕКИ";
-			if (string.IsNullOrEmpty(pharmacyUUID))
-			{
-				var fragmentTransaction = FragmentManager.BeginTransaction();
-				var prev = FragmentManager.FindFragmentByTag(LockDialog.TAG);
-				if (prev != null)
-				{
-					fragmentTransaction.Remove(prev);
-				}
-				fragmentTransaction.AddToBackStack(null);
+			var pharmacyUUID = Arguments.GetString(C_PHARMACY_UUID);
+			if (string.IsNullOrEmpty(pharmacyUUID)) return view;
 
-				var lockDialog = LockDialog.Create(@"МОЙ ПЕРВЫЙ ЛОКЕР");
-				lockDialog.Cancelable = false;
-				lockDialog.Show(fragmentTransaction, LockDialog.TAG);
-			}
-			else
-			{
-				pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
-				var result = MainDatabase.GetSyncResult(pharmacyUUID);
-				if (result != null)
-				{
-					pharmacy.LastSyncResult = result;
-				}
-				caption = "АПТЕКА : " + pharmacy.GetName();
+			Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
 
-				if (pharmacy.LastSyncResult != null)
-				{
-					caption += string.Format(" (синхр. {0} в {1})"
-											 , pharmacy.LastSyncResult.createdAt.ToLocalTime().ToString("dd.MM.yy")
-											 , pharmacy.LastSyncResult.createdAt.ToLocalTime().ToString("HH:mm:ss")
-											);
-				}
-			}
-			// Screen caption set
-			//view.FindViewById<TextView>(Resource.Id.pfInfoTV).Text = caption;
+			view.FindViewById<TextView>(Resource.Id.pfUUIDTV).Text = Pharmacy.UUID;
 
-			view.FindViewById<TextView>(Resource.Id.pfUUIDTV).Text = pharmacy.UUID;
 
 			#region State
-			states = MainDatabase.GetStates();
-			var state = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfStateACTV);
-			state.Text = states[(int)pharmacy.GetState()];
-			var stateChoiceButton = view.FindViewById<Button>(Resource.Id.pfStateB);
-			stateChoiceButton.Click += (object sender, EventArgs e) =>
-			{
-				new Android.App.AlertDialog.Builder(Activity)
-						   .SetTitle("Статус аптеки")
-				           .SetItems(states.ToArray(), (caller, arguments) => {
-							   Toast.MakeText(Activity, @"Selected " + arguments.Which, ToastLength.Short).Show();
-							})
-				           .Show();
+			State = view.FindViewById<Spinner>(Resource.Id.pfStateS);
+			States = MainDatabase.GetStates();
+			var stateAdapter = new ArrayAdapter(Context, Android.Resource.Layout.SimpleSpinnerItem, States.ToArray());
+			//stateAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
+			State.Adapter = stateAdapter;
+			State.ItemSelected += (object sender, AdapterView.ItemSelectedEventArgs e) => {
+				Pharmacy.SetState((PharmacyState)e.Position);
 			};
+			// SetValue
+			State.SetSelection((int)Pharmacy.GetState());
 			#endregion
 
-			//view.FindViewById<EditText>(Resource.Id.pfNameET).Text = pharmacy.Name;
-			//view.FindViewById<EditText>(Resource.Id.pfNameInNetET).Text = pharmacy.NameInNet;
+			view.FindViewById<EditText>(Resource.Id.pfBrandET).Text = Pharmacy.Brand;
+			view.FindViewById<EditText>(Resource.Id.pfNumberNameET).Text = Pharmacy.NumberName;
+			view.FindViewById<EditText>(Resource.Id.pfLegalNameET).Text = Pharmacy.LegalName;
 
-			#region LegalAddress
-			var legalAddressACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfLegalAddressACTV);
-			//legalAddressACTV.Text = pharmacy.LegalAddress;
-
-			legalAddressACTV.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
-			{
-				if (legalAddressACTV.Text.Contains(" "))
-				{
-					var response = Api.QueryAddress(legalAddressACTV.Text);
-					var suggestions = response.suggestionss.Select(x => x.value).ToArray();
-					legalAddressACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, suggestions);
-					(legalAddressACTV.Adapter as ArrayAdapter<string>).NotifyDataSetChanged();
-					if (legalAddressACTV.IsShown)
-					{
-						legalAddressACTV.DismissDropDown();
-					}
-					legalAddressACTV.ShowDropDown();
-				}
-			};
-			#endregion
 
 			#region Net
-			nets = MainDatabase.GetNets();
-			var net = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfNetACTV);
-			if (!string.IsNullOrEmpty(pharmacy.Net))
-			{
-				net.Text = MainDatabase.GetNet(pharmacy.Net).name;
+			Nets = MainDatabase.GetNets();
+			NetName = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfNetACTV);
+			if (!string.IsNullOrEmpty(Pharmacy.Net)) {
+				NetName.Text = MainDatabase.GetNet(Pharmacy.Net).name;
 			}
 			var netChoiceButton = view.FindViewById<Button>(Resource.Id.pfNetB);
-			netChoiceButton.Click += (object sender, EventArgs e) =>
-			{
-				new Android.App.AlertDialog.Builder(Activity)
-						   .SetTitle("Аптечная сеть")
-				           .SetCancelable(true)
-						   .SetItems(nets.Select(item => item.name).ToArray(), (caller, arguments) =>
-						   {
-							   Toast.MakeText(Activity, @"Selected " + arguments.Which, ToastLength.Short).Show();
-						   })
-						   .Show();
+			netChoiceButton.Click += (object sender, EventArgs e) => {
+				new Android.App.AlertDialog.Builder(Context)
+							   .SetTitle("Аптечная сеть")
+							   .SetCancelable(true)
+							   .SetItems(Nets.Select(item => item.name).ToArray(), (caller, arguments) => {
+								   //SetNet(arguments.Which);
+								   //Toast.MakeText(this, @"Selected " + arguments.Which, ToastLength.Short).Show();
+							   })
+							   .Show();
 			};
 			#endregion
+
+			ContractsNames = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfContractsACTV);
+			ContractsChoice = view.FindViewById<Button>(Resource.Id.pfContractsB);
 
 			#region Address
 			var addressACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfAddressACTV);
-			addressACTV.Text = pharmacy.Address;
+			addressACTV.Text = Pharmacy.Address;
 
-			addressACTV.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
-			{
-				if (addressACTV.Text.Contains(" "))
-				{
+			addressACTV.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) => {
+				if (addressACTV.Text.Contains(" ")) {
 					var response = Api.QueryAddress(addressACTV.Text);
 					var suggestions = response.suggestionss.Select(x => x.value).ToArray();
-					addressACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, suggestions);
+					addressACTV.Adapter = new ArrayAdapter<string>(
+						Context, Android.Resource.Layout.SimpleDropDownItem1Line, suggestions
+					);
 					(addressACTV.Adapter as ArrayAdapter<string>).NotifyDataSetChanged();
-					if (addressACTV.IsShown)
-					{
+					if (addressACTV.IsShown) {
 						addressACTV.DismissDropDown();
 					}
 					addressACTV.ShowDropDown();
@@ -187,68 +137,123 @@ namespace CRMLite
 
 			#region Subway
 			AutoCompleteTextView subwayACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfSubwayACTV);
-			//subwayACTV.Text = string.IsNullOrEmpty(pharmacy.Subway) ? pharmacy.Subway : MainDatabase.GetSubway(pharmacy.Subway).name;
-			//string[] stations = Resources.GetStringArray(Resource.Array.moscow_stations);
-			//subways = MainDatabase.GetSubways();
-			//subwayACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, subways.Select(x => x.name).ToArray());
-			subwayACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
-			{
-				pharmacy.Subway = subways[e.Position].uuid;
+			subwayACTV.Text = string.IsNullOrEmpty(Pharmacy.Subway) ?
+				string.Empty : MainDatabase.GetItem<Subway>(Pharmacy.Subway).name;
+			Subways = MainDatabase.GetItems<Subway>();
+			subwayACTV.Adapter = new ArrayAdapter<string>(
+				Context, Android.Resource.Layout.SimpleDropDownItem1Line, Subways.Select(s => s.name).ToArray()
+			);
+			subwayACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) => {
+				Pharmacy.Subway = Subways[e.Position].uuid;
 			};
 			#endregion
 
 			#region Region
 			AutoCompleteTextView regionACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfRegionACTV);
-			//regionACTV.Text = string.IsNullOrEmpty(pharmacy.Region) ? pharmacy.Region : MainDatabase.GetRegion(pharmacy.Region).name;
-			//string[] regions = Resources.GetStringArray(Resource.Array.moscow_regions);
-			//regions = MainDatabase.GetRegions();
-			//regionACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, regions.Select(x => x.name).ToArray());
-			regionACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
-			{
-				pharmacy.Region = regions[e.Position].uuid;
+			regionACTV.Text = string.IsNullOrEmpty(Pharmacy.Region) ?
+				string.Empty : MainDatabase.GetItem<Region>(Pharmacy.Region).name;
+			Regions = MainDatabase.GetItems<Region>();
+			regionACTV.Adapter = new ArrayAdapter<string>(
+				Context, Android.Resource.Layout.SimpleDropDownItem1Line, Regions.Select(r => r.name).ToArray()
+			);
+			regionACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) => {
+				Pharmacy.Region = Regions[e.Position].uuid;
 			};
 			#endregion
 
-			view.FindViewById<EditText>(Resource.Id.pfPhoneET).Text = pharmacy.Phone;
+			view.FindViewById<EditText>(Resource.Id.pfPhoneET).Text = Pharmacy.Phone;
 
 			#region Place
 			AutoCompleteTextView placeACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfPlaceACTV);
-			placeACTV.Text = string.IsNullOrEmpty(pharmacy.Place) ? pharmacy.Place : MainDatabase.GetPlace(pharmacy.Place).name;
-			//string[] places = Resources.GetStringArray(Resource.Array.pharmacy_places);
-			places = MainDatabase.GetPlaces();
-			placeACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, places.Select(x => x.name).ToArray());
-			placeACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
-			{
-				pharmacy.Place = places[e.Position].uuid;
+			placeACTV.Text = string.IsNullOrEmpty(Pharmacy.Place) ?
+				string.Empty : MainDatabase.GetItem<Place>(Pharmacy.Place).name;
+			Places = MainDatabase.GetItems<Place>();
+			placeACTV.Adapter = new ArrayAdapter<string>(
+				Context, Android.Resource.Layout.SimpleDropDownItem1Line, Places.Select(x => x.name).ToArray()
+			);
+			placeACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) => {
+				Pharmacy.Place = Places[e.Position].uuid;
 			};
 			#endregion
 
-			#region CategoryByNet
-			AutoCompleteTextView byNetACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfCategoryByNetACTV);
-			//byNetACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryByNet) ? pharmacy.CategoryByNet : MainDatabase.GetCategory(pharmacy.CategoryByNet).name;
-			//byNet = MainDatabase.GetCategories("net");
-			//byNetACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, byNet.Select(x => x.name).ToArray());
-			//byNetACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
-			//{
-			//	pharmacy.CategoryByNet = byNet[e.Position].uuid;
-			//};
+			#region Category
+			AutoCompleteTextView byNetACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfCategoryACTV);
+			byNetACTV.Text = string.IsNullOrEmpty(Pharmacy.Category) ?
+				string.Empty : MainDatabase.GetItem<Category>(Pharmacy.Category).name;
+			CategoryByNets = MainDatabase.GetCategories("net");
+			byNetACTV.Adapter = new ArrayAdapter<string>(
+				Context, Android.Resource.Layout.SimpleDropDownItem1Line, CategoryByNets.Select(c => c.name).ToArray()
+			);
+			byNetACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) => {
+				Pharmacy.Category = CategoryByNets[e.Position].uuid;
+			};
 			#endregion
 
-			#region CategoryBySell
-			AutoCompleteTextView bySellACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfCategoryBySellACTV);
-			//bySellACTV.Text = string.IsNullOrEmpty(pharmacy.CategoryBySell) ? pharmacy.CategoryBySell : MainDatabase.GetCategory(pharmacy.CategoryBySell).name;
-			//bySell = MainDatabase.GetCategories("sell");
-			//bySellACTV.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleDropDownItem1Line, bySell.Select(x => x.name).ToArray());
-			//bySellACTV.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
-			//{
-			//	pharmacy.CategoryBySell = bySell[e.Position].uuid;
-			//};
-			#endregion
+			view.FindViewById<EditText>(Resource.Id.pfTurnOverET).Text = Pharmacy.TurnOver.HasValue ?
+				Pharmacy.TurnOver.Value.ToString() : string.Empty;
 
+			view.FindViewById<TextView>(Resource.Id.pfLastAttendanceTV).Text = Pharmacy.LastAttendanceDate.HasValue ?
+				Pharmacy.LastAttendanceDate.Value.ToString(@"dd.MM.yyyy") : @"<нет визита>";
 
-			view.FindViewById<EditText>(Resource.Id.pfCommentET).Text = pharmacy.Comment;
+			view.FindViewById<TextView>(Resource.Id.pfNextAttendanceDateTV).Text = Pharmacy.NextAttendanceDate.HasValue ?
+				Pharmacy.NextAttendanceDate.Value.ToString(@"dd.MM.yyyy") : DateTimeOffset.Now.ToString(@"dd.MM.yyyy");
+
+			view.FindViewById<EditText>(Resource.Id.pfCommentET).Text = Pharmacy.Comment;
 
 			return view;
+		}
+
+		void SetNet(int index)
+		{
+			if ((Nets != null) && (Nets.Count > 0)) {
+				if (NetUUID != Nets[index].uuid) {
+					NetUUID = Nets[index].uuid;
+					NetName.Text = Nets[index].name;
+
+					// Init Contracts
+					ContractsNames.Text = string.Empty;
+					Contracts = MainDatabase.GetItems<Contract>().Where(c => c.net == NetUUID).ToList();
+					ContractsChoice.Enabled = (Contracts.Count > 0);
+
+					ContractsChoice.Click -= ContractsChoice_Click;
+					ContractsChoice.Click += ContractsChoice_Click;
+				}
+			}
+		}
+
+		void ContractsChoice_Click(object sender, EventArgs e)
+		{
+			new Android.App.AlertDialog.Builder(Context)
+						   .SetTitle("Контракты")
+						   .SetCancelable(true)
+						   .SetItems(Contracts.Select(item => item.name).ToArray(), (caller, arguments) => {
+							   ContractsNames.Text = Contracts[arguments.Which].name;
+						   })
+						   .Show();
+		}
+
+		public void OnAttendanceStart(DateTimeOffset? start)
+		{
+			if (!start.HasValue) {
+				throw new ArgumentNullException(nameof(start));
+			}
+		}
+
+		public void OnAttendanceStop(Transaction openedTransaction, Attendance current)
+		{
+			if (openedTransaction == null) {
+				throw new ArgumentNullException(nameof(openedTransaction));
+			}
+
+			if (current == null) {
+				throw new ArgumentNullException(nameof(current));
+			}
+
+			var pharmacy = MainDatabase.GetEntity<Pharmacy>(Pharmacy.UUID);
+			pharmacy.LastAttendance = current.UUID;
+			pharmacy.LastAttendanceDate = current.When;
+			// TODO: Сделать глобальной настройкой
+			pharmacy.NextAttendanceDate = current.When.AddDays(14);
 		}
 	}
 }

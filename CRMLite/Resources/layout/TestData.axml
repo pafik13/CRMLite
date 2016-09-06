@@ -60,6 +60,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tdaResumeDatas" />
+    <TextView
+        android:text="tdaSaleDatas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tdaSaleDatas" />
+    <TextView
+        android:text="tdaPhotoDatas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tdaPhotoDatas" />
     <Button
         android:text="Custom Action"
         android:layout_width="match_parent"

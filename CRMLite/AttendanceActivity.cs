@@ -51,7 +51,8 @@ namespace CRMLite
 					FragmentTitle.Text = @"СОТРУДНИКИ";
 					break;
 				case 2:
-					FragmentTitle.Text = (AttendanceLast == null) ? @"СОБИРАЕМАЯ ИНФОРМАЦИЯ" : string.Format(@"ИНФОРМАЦИЯ С ВИЗИТА ОТ {0}", AttendanceLast.When);
+					FragmentTitle.Text = (AttendanceLast == null) || AttendanceStart.HasValue ? 
+						@"СОБИРАЕМАЯ ИНФОРМАЦИЯ" : string.Format(@"ИНФОРМАЦИЯ С ВИЗИТА ОТ {0}", AttendanceLast.When);
 					break;
 				case 3:
 					FragmentTitle.Text = @"ФОТО НА ВИЗИТЕ";
@@ -89,6 +90,10 @@ namespace CRMLite
 			{
 				if (AttendanceStart == null) {
 					AttendanceStart = DateTimeOffset.Now;
+
+					if (Pager.CurrentItem == 2) {
+						FragmentTitle.Text = @"СОБИРАЕМАЯ ИНФОРМАЦИЯ";
+					}
 
 					for (int f = 0; f < NUM_PAGES; f++) {
 						var fragment = GetFragment(f);
@@ -136,7 +141,7 @@ namespace CRMLite
 						attendance.Pharmacy = PharmacyUUID;
 						attendance.When = AttendanceStart.Value;
 
-						//MainDatabase.SaveAttendace(Attendance);
+						// Оповещаем фрагменты о завершении визита
 						for (int f = 0; f < NUM_PAGES; f++) {
 							var fragment = GetFragment(f);
 							if (fragment is IAttendanceControl) {

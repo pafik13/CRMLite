@@ -37,6 +37,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="20dp" />
             <Spinner
+                android:clickable="false"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/pfPhotoTypeTV"
@@ -44,7 +46,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="20dp" />
+                android:layout_marginRight="20dp"
+                android:minHeight="50dp" />
             <TextView
                 android:text="Бренд:"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -57,6 +60,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="20dp" />
             <Spinner
+                android:clickable="false"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/pfBrandTV"
@@ -64,7 +69,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp" />
+                android:layout_marginRight="20dp"
+                android:minHeight="50dp" />
             <Button
                 android:enabled="false"
                 android:text="ДОБАВИТЬ ФОТО"
@@ -83,7 +89,8 @@
                 android:paddingRight="10dp"
                 android:paddingLeft="10dp"
                 android:paddingBottom="5dp"
-                android:paddingTop="5dp" />
+                android:paddingTop="5dp"
+                android:minHeight="60dp" />
         </RelativeLayout>
         <RelativeLayout
             android:minWidth="25px"

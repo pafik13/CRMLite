@@ -8,7 +8,7 @@
     <TextView
         android:text="Text"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/ptiNameTV"
         android:layout_weight="24"
         android:gravity="center"
@@ -18,7 +18,7 @@
     <TextView
         android:text="Text"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/ptiAddressTV"
         android:layout_weight="36"
         android:gravity="center"
@@ -28,7 +28,7 @@
     <Button
         android:text="Text"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/ptiLastAttendanceDateB"
         android:layout_weight="10"
         android:gravity="center"
@@ -38,7 +38,7 @@
     <Button
         android:text="Text"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/ptiNextAttendanceB"
         android:layout_weight="10"
         android:gravity="center"
@@ -46,31 +46,35 @@
         android:focusable="false"
         android:focusableInTouchMode="false" />
     <ImageView
-        android:src="@drawable/ic_shopping_cart_black_36dp"
-        android:layout_marginTop="9dp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/ptiContractIV"
-        android:layout_weight="5" />
-    <ImageView
         android:src="@drawable/ic_history_black_36dp"
-        android:layout_marginTop="9dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="8dp"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/ptiHistoryIV"
         android:layout_weight="5" />
     <ImageView
-        android:src="@drawable/ic_local_hospital_black_36dp"
-        android:layout_marginTop="9dp"
+        android:src="@drawable/ic_face_black_36dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="8dp"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/ptiHospitalIV"
+        android:layout_height="match_parent"
+        android:id="@+id/ptiEmployeeIV"
         android:layout_weight="5" />
     <ImageView
-        android:src="@drawable/ic_face_black_36dp"
-        android:layout_marginTop="9dp"
+        android:src="@drawable/ic_shopping_cart_black_36dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="8dp"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/ptiEmployeeIV"
+        android:layout_height="match_parent"
+        android:id="@+id/ptiContractIV"
+        android:layout_weight="5" />
+    <ImageView
+        android:src="@drawable/ic_local_hospital_black_36dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="8dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ptiHospitalIV"
         android:layout_weight="5" />
 </LinearLayout>

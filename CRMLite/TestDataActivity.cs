@@ -213,6 +213,8 @@ namespace CRMLite
 			FindViewById<TextView>(Resource.Id.tdaCompetitorDatas).Text = string.Format(@"CompetitorDatas: {0}", MainDatabase.GetItems<CompetitorData>().Count);
 			FindViewById<TextView>(Resource.Id.tdaMessageDatas).Text = string.Format(@"MessageDatas: {0}", MainDatabase.GetItems<MessageData>().Count);
 			FindViewById<TextView>(Resource.Id.tdaResumeDatas).Text = string.Format(@"ResumeDatas: {0}", MainDatabase.GetItems<ResumeData>().Count);
+			FindViewById<TextView>(Resource.Id.tdaSaleDatas).Text = string.Format(@"SaleDatas: {0}", MainDatabase.GetItems<SaleData>().Count);
+			FindViewById<TextView>(Resource.Id.tdaPhotoDatas).Text = string.Format(@"PhotoDatas: {0}", MainDatabase.GetItems<PhotoData>().Count);
 
 		}
 	}
