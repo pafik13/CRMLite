@@ -1,169 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:minWidth="500dp"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <ScrollView
-        android:minWidth="25px"
-        android:minHeight="25px"
-        android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/fdMainLL"
+    android:background="@android:color/white">
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/fdMainSV"
-        android:layout_centerHorizontal="true">
-        <TableLayout
-            android:minWidth="25px"
-            android:minHeight="25px"
-            android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="100"
+        android:background="@android:color/white">
+        <TextView
+            android:text="Месяц"
+            android:background="@android:color/background_light"
+            android:gravity="right|center_vertical"
+            android:layout_width="0dp"
+            android:layout_weight="50"
             android:layout_height="match_parent"
-            android:id="@+id/fdMainTL"
-            android:background="#FFFFFF">
-            <TableRow
-                android:id="@+id/fdHeaderTR"
-                android:visibility="gone">
-                <TextView
-                    android:layout_column="0"
-                    android:width="300dp"
-                    android:layout_marginRight="24dp" />
-                <TextView
-                    android:layout_column="1"
-                    android:width="300dp" />
-            </TableRow>
-            <TableRow
-                android:id="@+id/fdRowDrugSKU">
-                <TextView
-                    android:text="Препарат (SKU)"
-                    android:layout_column="0"
-                    android:background="@android:color/background_light"
-                    android:layout_gravity="center_vertical"
-                    style="@style/control_label" />
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/fdDrugSKUS"
-                    android:layout_marginRight="24dp" />
-            </TableRow>
-            <TableRow
-                android:id="@+id/fdRowPeriodType">
-                <TextView
-                    android:text="Период"
-                    android:layout_column="0"
-                    android:background="@android:color/background_light"
-                    android:layout_gravity="center_vertical"
-                    style="@style/control_label" />
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/fdPeriodTypeS"
-                    android:layout_marginRight="24dp" />
-            </TableRow>
-            <TableRow
-                android:id="@+id/fdRowStartMonth">
-                <TextView
-                    android:text="Месяц"
-                    android:layout_column="0"
-                    android:background="@android:color/background_light"
-                    android:layout_gravity="center_vertical"
-                    style="@style/control_label" />
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/fdStartMonthS"
-                    android:layout_marginRight="24dp" />
-            </TableRow>
-            <TableRow
-                android:id="@+id/fdRowPurchase">
-                <TextView
-                    android:text="Закуп"
-                    android:layout_column="0"
-                    android:background="@android:color/background_light"
-                    android:layout_gravity="center_vertical"
-                    style="@style/control_label" />
-                <EditText
-                    android:textCursorDrawable="@null"
-                    android:layout_column="1"
-                    android:id="@+id/fdPurchaseET"
-                    android:background="@drawable/bottomline"
-                    android:textColorHint="@color/Grey_300"
-                    android:textColor="@android:color/black"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:hint="Закуп"
-                    android:enabled="true"
-                    android:layout_marginRight="24dp"
-                    android:inputType="numberDecimal" />
-            </TableRow>
-            <TableRow
-                android:id="@+id/edRowSale">
-                <TextView
-                    android:text="Продажи"
-                    android:layout_column="0"
-                    android:background="@android:color/background_light"
-                    android:layout_gravity="center_vertical"
-                    style="@style/control_label" />
-                <EditText
-                    android:textCursorDrawable="@null"
-                    android:layout_column="1"
-                    android:id="@+id/fdSaleET"
-                    android:background="@drawable/bottomline"
-                    android:textColorHint="#E0E0E0"
-                    android:textColor="#000000"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:hint="Продажи"
-                    android:phoneNumber="true"
-                    android:layout_marginRight="24dp"
-                    android:inputType="numberDecimal"
-                    android:digits="0123456789," />
-            </TableRow>
-            <TableRow
-                android:id="@+id/fdRowRemain">
-                <TextView
-                    android:text="Остаток"
-                    android:layout_column="0"
-                    android:background="@android:color/background_light"
-                    android:layout_gravity="center_vertical"
-                    style="@style/control_label" />
-                <EditText
-                    android:textCursorDrawable="@null"
-                    android:layout_column="1"
-                    android:id="@+id/fdRemainET"
-                    android:background="@drawable/bottomline"
-                    android:textColorHint="#E0E0E0"
-                    android:textColor="#000000"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:hint="Остаток"
-                    android:phoneNumber="true"
-                    android:layout_marginRight="24dp"
-                    android:inputType="numberDecimal" />
-            </TableRow>
-            <TableRow
-                android:id="@+id/fdRowButtons">
-                <Button
-                    android:text="ЗАКРЫТЬ"
-                    android:layout_column="0"
-                    android:layout_height="56dp"
-                    android:layout_width="match_parent"
-                    android:id="@+id/fdCloseB"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/Deep_Orange_500"
-                    android:typeface="monospace"
-                    android:textColor="@android:color/white"
-                    android:textSize="24dp"
-                    android:textStyle="bold" />
-                <Button
-                    android:text="СОХРАНИТЬ"
-                    android:layout_column="1"
-                    android:layout_height="56dp"
-                    android:layout_width="match_parent"
-                    android:id="@+id/fdSaveB"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/Light_Green_500"
-                    android:typeface="monospace"
-                    android:textColor="@android:color/white"
-                    android:textSize="24dp"
-                    android:textStyle="bold" />
-            </TableRow>
-        </TableLayout>
-    </ScrollView>
+            style="@style/control_label"
+            android:minHeight="50dp" />
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_weight="50"
+            android:layout_height="match_parent"
+            android:id="@+id/fdStartMonthS"
+            android:layout_marginRight="24dp" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/fdFinanceTable" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="100">
+        <Button
+            android:text="ЗАКРЫТЬ"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="50"
+            android:minHeight="64dp"
+            android:id="@+id/fdCloseB"
+            android:layout_gravity="center_vertical"
+            android:background="@color/Deep_Orange_500"
+            android:typeface="monospace"
+            android:textColor="@android:color/white"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+        <Button
+            android:text="СОХРАНИТЬ"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="50"
+            android:minHeight="64dp"
+            android:id="@+id/fdSaveB"
+            android:layout_gravity="center_vertical"
+            android:background="@color/Light_Green_500"
+            android:typeface="monospace"
+            android:textColor="@android:color/white"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+    </LinearLayout>
 </LinearLayout>

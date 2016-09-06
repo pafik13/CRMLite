@@ -16,6 +16,7 @@ namespace CRMLite.Dialogs
 {
 	public class FinanceDialog : DialogFragment
 	{
+		public const string TAG = @"FinanceDialog";
 
 		public event EventHandler<AfterSavedEventArgs> AfterSaved;
 
@@ -32,9 +33,8 @@ namespace CRMLite.Dialogs
 		Pharmacy Pharmacy;
 		Transaction Transaction;
 		FinanceData FinanceData;
-
-		Spinner Position;
-		List<Position> positions;
+		IList<DrugSKU> SKUs;
+		LinearLayout FinanceTable;
 
 		protected virtual void OnAfterSaved(AfterSavedEventArgs e)
 		{
@@ -73,108 +73,107 @@ namespace CRMLite.Dialogs
 
 			View view = inflater.Inflate(Resource.Layout.FinanceDialog, container, false);
 
-			#region DrugSKU
-			var drugSKUs = new List<DrugSKU>();
-			drugSKUs.Add(new DrugSKU { name = @"Выберите SKU!", uuid = Guid.Empty.ToString() });
-			drugSKUs.AddRange(MainDatabase.GetItems<DrugSKU>());
-
-			var drugSKU = view.FindViewById<Spinner>(Resource.Id.fdDrugSKUS);
-			var drugSKUAdapter = new ArrayAdapter(
-				Activity,
-				Android.Resource.Layout.SimpleSpinnerItem,
-				drugSKUs.Select(x => x.name).ToArray()
-			);
-			drugSKUAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
-			drugSKU.Adapter = drugSKUAdapter;
-			//drugSKU.ItemSelected += (sender, e) => {
-			//	if (e.Position == 0) {
-			//		FinanceData.DrugSKU = null;
-			//	} else {
-			//		FinanceData.DrugSKU = drugSKUs[e.Position].uuid;
-			//	}
-			//};
-			#endregion
-
-			#region PeriodType
-			var periodTypes = new string[7];
-			periodTypes[0] = @"Выберите период!";
-			for (int p = 1; p < 7; p++) {
-				periodTypes[p] = string.Format(@"{0} месяц(а)", p);
-			}
-
-			var periodType = view.FindViewById<Spinner>(Resource.Id.fdPeriodTypeS);
-			var periodTypeAdapter = new ArrayAdapter(
-				Activity,
-				Android.Resource.Layout.SimpleSpinnerItem,
-				periodTypes
-			);
-			periodTypeAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
-			periodType.Adapter = periodTypeAdapter;
-			// 			periodType.ItemSelected += (sender, e) =>
-			// 			{
-			// 				if (e.Position == 0) {
-			// 					FinanceData.Period = null;
-			// 				}
-			// 				else {
-			// 					FinanceData.Period = drugSKUs[e.Position].uuid;
-			// 				}
-			// 			};
-			#endregion
 
 			#region StartMonth
-			var startMonths = new string[26]; // -12 0 +12 = 25 и +1[Выберите]
-			startMonths[0] = @"Выберите месяц!";
-			for (int p = 1; p < 26; p++) {
-				startMonths[p] = DateTimeOffset.Now.AddMonths(-12 + p - 1).ToString(@"MMMM - yyyy");
+			//var months = new List<DateTimeOffset>();
+			//for (int m = 0; m < 17; m++) { // -12 0 +3 = 16 и +1[Выберите]
+			//	months.Add(DateTimeOffset.Now.AddMonths(-12 + m - 1));
+			//}
+
+			var months = new string[17]; // -12 0 +3 = 16 и +1[Выберите]
+			months[0] = @"Выберите месяц!";
+			for (int m = 1; m < 17; m++) {
+				months[m] = DateTimeOffset.Now.AddMonths(-12 + m - 1).ToString(@"MMMM - yyyy");
 			}
 
 			var startMonth = view.FindViewById<Spinner>(Resource.Id.fdStartMonthS);
 			var startMonthAdapter = new ArrayAdapter(
 				Activity,
 				Android.Resource.Layout.SimpleSpinnerItem,
-				startMonths
+				months
 			);
 			startMonthAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
 			startMonth.Adapter = startMonthAdapter;
-			// 			startMonth.ItemSelected += (sender, e) =>
-			// 			{
-			// 				if (e.Position == 0) {
-			// 					FinanceData.Period = null;
-			// 				}
-			// 				else {
-			// 					FinanceData.Period = drugSKUs[e.Position].uuid;
-			// 				}
-			// 			};
+			startMonth.ItemSelected += (sender, e) => {
+				if (e.Position == 0) {
+					for (int c = 2; c < FinanceTable.ChildCount; c = c + 2) {
+						var row = (LinearLayout)FinanceTable.GetChildAt(c);
+						for (int cc = 1; cc < row.ChildCount; cc++) {
+							row.GetChildAt(cc).Enabled = false;
+						}
+					}
+				} else {
+					for (int c = 2; c < FinanceTable.ChildCount; c = c + 2) {
+						var row = (LinearLayout)FinanceTable.GetChildAt(c);
+						for (int cc = 1; cc < row.ChildCount; cc++) {
+							row.GetChildAt(cc).Enabled = true;
+						}
+					}
+				}
+			};
 			#endregion
 
-			//view.FindViewById<EditText>(Resource.Id.fdSaleET).Text = FinanceData.Sale == null ? string.Empty : FinanceData.Sale.ToString();
-			//view.FindViewById<EditText>(Resource.Id.fdPurchaseET).Text = FinanceData.Purchase == null ? string.Empty : FinanceData.Sale.ToString();
-			//view.FindViewById<EditText>(Resource.Id.fdRemainET).Text = FinanceData.Remain == null ? string.Empty : FinanceData.Sale.ToString();
+			FinanceTable = view.FindViewById<LinearLayout>(Resource.Id.fdFinanceTable);
+			var header = (LinearLayout)inflater.Inflate(Resource.Layout.FinanceDialogTableHeader, FinanceTable, false);
+			var divider = inflater.Inflate(Resource.Layout.Divider, FinanceTable, false);
+
+			FinanceTable.AddView(header);
+			FinanceTable.AddView(divider);
+
+			SKUs = MainDatabase.GetItems<DrugSKU>();
+			foreach (var SKU in SKUs) {
+				var row = (inflater.Inflate(
+									Resource.Layout.FinanceDialogTableItem,
+									FinanceTable,
+									false)) as LinearLayout;
+				row.SetTag(Resource.String.DrugSKUUUID, SKU.uuid);
+				row.FindViewById<TextView>(Resource.Id.fdtiDrugSKUTV).Text = SKU.name;
+
+				var sale = row.FindViewById<EditText>(Resource.Id.fdtiSaleET);
+				sale.SetTag(Resource.String.IsChanged, false);
+				sale.AfterTextChanged += RView_AfterTextChanged;
+
+				var purchase = row.FindViewById<EditText>(Resource.Id.fdtiPurchaseET);
+				purchase.SetTag(Resource.String.IsChanged, false);
+				purchase.AfterTextChanged += RView_AfterTextChanged;
+
+				var remain = row.FindViewById<EditText>(Resource.Id.fdtiRemainET);
+				remain.SetTag(Resource.String.IsChanged, false);
+				remain.AfterTextChanged += RView_AfterTextChanged;
+
+				FinanceTable.AddView(row);
+
+				divider = inflater.Inflate(Resource.Layout.Divider, FinanceTable, false);
+
+				FinanceTable.AddView(divider);
+			}
+
 
 			view.FindViewById<Button>(Resource.Id.fdCloseB).Click += delegate {
 				Dismiss();
 			};
 
 			view.FindViewById<Button>(Resource.Id.fdSaveB).Click += delegate {
-				Toast.MakeText(Activity, "SAVE BUTTON CLICKED", ToastLength.Short).Show();
-
+				//Toast.MakeText(Activity, "SAVE BUTTON CLICKED", ToastLength.Short).Show();
 				var financeDatas = new List<FinanceData>();
 
-				if ((periodType.SelectedItemPosition > 0) 
-				    && (drugSKU.SelectedItemPosition >0)
-				    && (startMonth.SelectedItemPosition > 0))
+				if (startMonth.SelectedItemPosition > 0)
 				{
+					var period = DateTimeOffset.Now.AddMonths(-12 + startMonth.SelectedItemPosition - 1);
 					Transaction = MainDatabase.BeginTransaction();
 
-					for (int m = 0; m < periodType.SelectedItemPosition; m++) {
+
+
+					for (int c = 2; c < FinanceTable.ChildCount; c = c + 2) {
+						var row = (LinearLayout)FinanceTable.GetChildAt(c);
+
 						var financeData = MainDatabase.Create<FinanceData>();
-						//var financeData = new FinanceData();
 						financeData.Pharmacy = Pharmacy.UUID;
-						financeData.DrugSKU = drugSKUs[drugSKU.SelectedItemPosition].uuid;
-						financeData.Period = DateTimeOffset.Now.AddMonths(-12 + startMonth.SelectedItemPosition - 1).AddMonths(m);
-						financeData.Sale = ConvertToFloat(view.FindViewById<EditText>(Resource.Id.fdSaleET).Text, periodType.SelectedItemPosition);
-						financeData.Purchase = ConvertToFloat(view.FindViewById<EditText>(Resource.Id.fdPurchaseET).Text, periodType.SelectedItemPosition);
-						financeData.Remain = ConvertToFloat(view.FindViewById<EditText>(Resource.Id.fdRemainET).Text, periodType.SelectedItemPosition);
+						financeData.DrugSKU = (string)row.GetTag(Resource.String.DrugSKUUUID);
+						financeData.Period = period;
+						financeData.Sale = Helper.ToFloat(row.FindViewById<EditText>(Resource.Id.fdtiSaleET).Text);
+						financeData.Purchase = Helper.ToFloat(row.FindViewById<EditText>(Resource.Id.fdtiPurchaseET).Text);
+						financeData.Remain = Helper.ToFloat(row.FindViewById<EditText>(Resource.Id.fdtiRemainET).Text);
 						financeDatas.Add(financeData);
 					}
 
@@ -190,13 +189,19 @@ namespace CRMLite.Dialogs
 				// MainDatabase.AddToQueue(sync);
 
 				// context.StartService(new Intent("com.xamarin.SyncService"));
-
+				//var financeDatas = new List<FinanceData>();
 				OnAfterSaved(new AfterSavedEventArgs(financeDatas));
 
 				Dismiss();
 			};
 
 			return view;
+		}
+
+		void RView_AfterTextChanged(object sender, Android.Text.AfterTextChangedEventArgs e)
+		{
+			var editText = sender as EditText;
+			editText.SetTag(Resource.String.IsChanged, true);
 		}
 
 		float? ConvertToFloat(string value, int divider = 1)

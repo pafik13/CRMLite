@@ -80,6 +80,7 @@ namespace CRMLite
 			MainDatabase.DeleteItems<CompetitorData>();
 			MainDatabase.DeleteItems<MessageData>();
 			MainDatabase.DeleteItems<ResumeData>();
+			MainDatabase.DeleteItems<PhotoData>();
 
 			transaction.Commit();
 

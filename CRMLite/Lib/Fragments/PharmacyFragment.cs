@@ -81,9 +81,9 @@ namespace CRMLite
 			var stateAdapter = new ArrayAdapter(Context, Android.Resource.Layout.SimpleSpinnerItem, States.ToArray());
 			//stateAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
 			State.Adapter = stateAdapter;
-			State.ItemSelected += (object sender, AdapterView.ItemSelectedEventArgs e) => {
-				Pharmacy.SetState((PharmacyState)e.Position);
-			};
+			//State.ItemSelected += (object sender, AdapterView.ItemSelectedEventArgs e) => {
+			//	Pharmacy.SetState((PharmacyState)e.Position);
+			//};
 			// SetValue
 			State.SetSelection((int)Pharmacy.GetState());
 			#endregion

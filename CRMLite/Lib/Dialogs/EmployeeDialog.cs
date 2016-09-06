@@ -113,7 +113,10 @@ namespace CRMLite.Dialogs
 
 			view.FindViewById<CheckBox>(Resource.Id.edIsCustomerCB).Checked = employee.IsCustomer;
 
-			view.FindViewById<EditText>(Resource.Id.edBirthDateET).Text = employee.BirthDate.HasValue ? string.Empty : employee.BirthDate.Value.ToString("dd.MM.yyyy");
+			if (employee.BirthDate != null) {
+				view.FindViewById<EditText>(Resource.Id.edBirthDateET).Text = employee.BirthDate.HasValue ?
+					string.Empty : employee.BirthDate.Value.ToString("dd.MM.yyyy");
+			}
 
 			view.FindViewById<EditText>(Resource.Id.edPhoneET).Text = employee.Phone;
 			view.FindViewById<EditText>(Resource.Id.edEmailET).Text = employee.Email;

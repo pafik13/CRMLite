@@ -64,8 +64,15 @@ namespace CRMLite
 				//Toast.MakeText(this, "ADD BUTTON CLICKED", ToastLength.Short).Show();
 				Console.WriteLine("Event {0} was called", "faAdd_Click");
 				FragmentTransaction fragmentTransaction = FragmentManager.BeginTransaction();
-				FinanceDialog financeDialog = new FinanceDialog(Pharmacy);
-				financeDialog.Show(fragmentTransaction, "FinanceDialog");
+
+				var prev = FragmentManager.FindFragmentByTag(FinanceDialog.TAG);
+				if (prev != null) {
+					fragmentTransaction.Remove(prev);
+				}
+				fragmentTransaction.AddToBackStack(null);
+
+				var financeDialog = new FinanceDialog(Pharmacy);
+				financeDialog.Show(fragmentTransaction, FinanceDialog.TAG);
 				financeDialog.AfterSaved += (caller, arguments) => {
 					Console.WriteLine("Event {0} was called. FinanceDatas count {1}", "AfterSaved", arguments.FinanceDatas.Count);
 

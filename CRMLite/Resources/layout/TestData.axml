@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tdaFinanceDatas" />
     <TextView
-        android:text="tdaFinanceDatas"
+        android:text="tdaPresentationDatas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tdaPresentationDatas" />

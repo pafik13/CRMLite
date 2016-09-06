@@ -130,6 +130,7 @@
     <Compile Include="Lib\Entities\WorkType.cs" />
     <Compile Include="Lib\Entities\ResumeData.cs" />
     <Compile Include="Lib\Fragments\PhotoFragment.cs" />
+    <Compile Include="Lib\Entities\FinanceDataByQuarter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -274,6 +275,8 @@
     <AndroidResource Include="Resources\layout\FinanceTableSection.axml" />
     <AndroidResource Include="Resources\layout\InfoPresentationData.axml" />
     <AndroidResource Include="Resources\layout\InfoCoterieData.axml" />
+    <AndroidResource Include="Resources\layout\FinanceDialogTableItem.axml" />
+    <AndroidResource Include="Resources\layout\FinanceDialogTableHeader.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />
