@@ -22,10 +22,11 @@ namespace CRMLite
 	[Activity(Label = "HospitalActivity")]
 	public class HospitalActivity : Activity
 	{
-		Pharmacy pharmacy = null;
-		IList<Hospital> hospitals = new List<Hospital>();
-		ListView listView = null;
-		HospitalAdapter adapter = null;
+		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";
+
+		Pharmacy Pharmacy;
+		IList<HospitalData> HospitalDatas;
+		ListView HospitalTable;
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
@@ -37,50 +38,91 @@ namespace CRMLite
 			// Create your application here
 			SetContentView(Resource.Layout.Hospital);
 
-			var pharmacyUUID = Intent.GetStringExtra("UUID");
-			if (!string.IsNullOrEmpty(pharmacyUUID))
-			{
-				pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
-				FindViewById<TextView>(Resource.Id.haInfoTV).Text = "ЛПУ БЛИЗКИЕ К АПТЕКЕ : " + pharmacy.GetName();
-			}
-
-			listView = FindViewById<ListView>(Resource.Id.haHospitalTable);
-
-			listView.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
-			{
-				FragmentTransaction fragmentTransaction = FragmentManager.BeginTransaction();
-				HospitalDialog hospitalDialog = new HospitalDialog(this, pharmacy, hospitals[e.Position]);
-				hospitalDialog.Show(fragmentTransaction, "HospitalDialog");
-				hospitalDialog.AfterSaved += delegate
-				{
-					Console.WriteLine("Event {0} was called", "AfterSaved");
-						if (listView.Adapter is HospitalAdapter)
-					{
-						((HospitalAdapter)listView.Adapter).NotifyDataSetChanged();
-					}
-				};
-			};
-
-			FindViewById<Button>(Resource.Id.haCloseB).Click += delegate
-			{
+			FindViewById<Button>(Resource.Id.haCloseB).Click += (s, e) => {
 				Finish();
 			};
 
-			FindViewById<ImageView>(Resource.Id.haAdd).Click += delegate
+			var pharmacyUUID = Intent.GetStringExtra(C_PHARMACY_UUID);
+			if (string.IsNullOrEmpty(pharmacyUUID)) return;
+
+			Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
+			FindViewById<TextView>(Resource.Id.haInfoTV).Text = string.Format("ЛПУ БЛИЗКИЕ К АПТЕКЕ : {0}", Pharmacy.GetName());
+
+			HospitalDatas = MainDatabase.GetPharmacyDatas<HospitalData>(Pharmacy.UUID);
+
+			HospitalTable = FindViewById<ListView>(Resource.Id.haHospitalTable);
+
+			var header = LayoutInflater.Inflate(Resource.Layout.HospitalTableHeader, HospitalTable, false);
+			HospitalTable.AddHeaderView(header);
+
+			HospitalTable.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
 			{
-				//Toast.MakeText(this, "ADD BUTTON CLICKED", ToastLength.Short).Show();
+				HospitalData item;
+				if (HospitalTable.ChildCount == HospitalDatas.Count + 1) {
+					item = HospitalDatas[e.Position - 1];
+				} else {
+					item = HospitalDatas[e.Position];
+				}
+
+				if (string.IsNullOrEmpty(item.Hospital)) {
+					Toast.MakeText(this, @"Нельзя редактировать данные о ЛПУ, которые пришли с сервера!", ToastLength.Short).Show();
+					return;
+				}
+
+				var fragmentTransaction = FragmentManager.BeginTransaction();
+				var prev = FragmentManager.FindFragmentByTag(HospitalDialog.TAG);
+				if (prev != null) {
+					fragmentTransaction.Remove(prev);
+				}
+				fragmentTransaction.AddToBackStack(null);
+
+				var hospitalDialog = new HospitalDialog(Pharmacy, item);
+				hospitalDialog.Show(fragmentTransaction, HospitalDialog.TAG);
+				hospitalDialog.AfterSaved += (caller, arguments) => {
+					Console.WriteLine("Event {0} was called", "AfterSaved");
+
+					RecreateAdapter();
+				};
+			};
+
+
+			FindViewById<ImageView>(Resource.Id.haAddIV).Click += (s, ea) => {
 				Console.WriteLine("Event {0} was called", "haAdd_Click");
-				FragmentTransaction fragmentTransaction = FragmentManager.BeginTransaction();
-				HospitalDialog hospitalDialog = new HospitalDialog(this, pharmacy);
-				hospitalDialog.Show(fragmentTransaction, "HospitalDialog");
+
+				var fragmentTransaction = FragmentManager.BeginTransaction();
+				var prev = FragmentManager.FindFragmentByTag(HospitalDialog.TAG);
+				if (prev != null) {
+					fragmentTransaction.Remove(prev);
+				}
+				fragmentTransaction.AddToBackStack(null);
+
+				var hospitalDialog = new HospitalDialog(Pharmacy);
+				hospitalDialog.Show(fragmentTransaction, HospitalDialog.TAG);
 				hospitalDialog.AfterSaved += (object sender, EventArgs e) =>
 				{
 					Console.WriteLine("Event {0} was called", "AfterSaved");
-					hospitals = MainDatabase.GetHospitals(pharmacy.UUID);
 
-					adapter = new HospitalAdapter(this, hospitals);
+					RecreateAdapter();
+				};
+			};
 
-					listView.Adapter = adapter;
+
+			FindViewById<ImageView>(Resource.Id.haListIV).Click += (s, ea) => {
+				Console.WriteLine("Event {0} was called", "haListIV_Click");
+
+				var fragmentTransaction = FragmentManager.BeginTransaction();
+				var prev = FragmentManager.FindFragmentByTag(ListedHospitalDialog.TAG);
+				if (prev != null) {
+					fragmentTransaction.Remove(prev);
+				}
+				fragmentTransaction.AddToBackStack(null);
+
+				var hospitalDialog = new ListedHospitalDialog(Pharmacy);
+				hospitalDialog.Show(fragmentTransaction, ListedHospitalDialog.TAG);
+				hospitalDialog.AfterSaved += (object sender, EventArgs e) => {
+					Console.WriteLine("Event {0} was called", "ListedHospitalDialog_AfterSaved");
+
+					RecreateAdapter();
 				};
 			};
 		}
@@ -89,39 +131,28 @@ namespace CRMLite
 		{
 			base.OnResume();
 
-			if (pharmacy == null)
-			{
+			if (Pharmacy == null) {
 				new AlertDialog.Builder(this)
-							   .SetTitle(Resource.String.error_caption)
-							   .SetMessage("Отсутствует аптека!")
-							   .SetCancelable(false)
-							   .SetPositiveButton(@"OK", (dialog, args) =>
-							   {
-								   if (dialog is Dialog)
-								   {
-									   ((Dialog)dialog).Dismiss();
-									   Finish();
-								   }
-							   })
-							   .Show();
+								   .SetTitle(Resource.String.error_caption)
+								   .SetMessage("Отсутствует аптека!")
+								   .SetCancelable(false)
+								   .SetPositiveButton(@"OK", (dialog, args) => {
+									   if (dialog is Dialog) {
+										   ((Dialog)dialog).Dismiss();
+									   }
+								   })
+								   .Show();
+
+			} else {
+				RecreateAdapter();
 			}
-			else {
+		}
 
-				Transaction transaction = MainDatabase.BeginTransaction();
+		void RecreateAdapter()
+		{
+			HospitalDatas = MainDatabase.GetPharmacyDatas<HospitalData>(Pharmacy.UUID);
 
-				hospitals = MainDatabase.GetHospitals(pharmacy.UUID);
-
-				foreach (var item in hospitals)
-				{
-					item.LastSyncResult = MainDatabase.GetSyncResult(item.UUID);
-				}
-
-				transaction.Commit();
-
-				adapter = new HospitalAdapter(this, hospitals);
-
-				listView.Adapter = adapter;
-			}
+			HospitalTable.Adapter = new HospitalDataAdapter(this, HospitalDatas);
 		}
 
 		protected override void OnPause()
@@ -132,13 +163,6 @@ namespace CRMLite
 		protected override void OnStop()
 		{
 			base.OnStop();
-
-			if (pharmacy != null)
-			{
-				listView.Adapter = null;
-				adapter = null;
-			}
-
 		}
 	}
 }

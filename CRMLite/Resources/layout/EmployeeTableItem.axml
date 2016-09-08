@@ -5,12 +5,24 @@
     android:layout_height="50dp"
     android:background="@android:color/white"
     android:weightSum="100">
+    <RelativeLayout
+        android:id="@+id/etiDeleteRL"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:background="#ffe57373">
+        <ImageView
+            android:src="@drawable/ic_delete_white_36dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
     <TextView
         android:text="Text"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/etiNameTV"
-        android:layout_weight="30"
+        android:layout_weight="15"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
@@ -18,42 +30,79 @@
     <TextView
         android:text="Text"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/etiPositionTV"
-        android:layout_weight="20"
+        android:layout_weight="15"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
         android:focusableInTouchMode="false" />
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="6">
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/etiIsCustomerCB"
+            android:layout_centerInParent="true"
+            android:textAppearance="@style/rowTextForPharmacy"
+            android:enabled="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+    </RelativeLayout>
     <TextView
         android:text="Text"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/etiBirthDateTV"
-        android:layout_weight="20"
-        android:gravity="center"
-        android:textAppearance="@style/rowTextForPharmacy"
-        android:focusable="false"
-        android:focusableInTouchMode="false" />
-    <TextView
-        android:text="Text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/etiPhoneTV"
-        android:layout_weight="20"
-        android:gravity="center"
-        android:textAppearance="@style/rowTextForPharmacy"
-        android:focusable="false"
-        android:focusableInTouchMode="false" />
-    <CheckBox
-        android:text="Text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/etiIsCustomerCB"
         android:layout_weight="10"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
-        android:enabled="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/etiPhoneTV"
+        android:layout_weight="11"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/etiEmailTV"
+        android:layout_weight="12"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="6">
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/etiCanParticipateCB"
+            android:layout_centerInParent="true"
+            android:textAppearance="@style/rowTextForPharmacy"
+            android:enabled="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+    </RelativeLayout>
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/etiCommentTV"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
         android:focusableInTouchMode="false" />
 </LinearLayout>

@@ -17,9 +17,9 @@ namespace CRMLite.Entities
 
 		public bool IsExistence { get; set; }
 
-		public float Count { get; set; }
+		public int Count { get; set; }
 
-		public float Price { get; set; }
+		public int Price { get; set; }
 
 		public bool IsPresence { get; set; }
 

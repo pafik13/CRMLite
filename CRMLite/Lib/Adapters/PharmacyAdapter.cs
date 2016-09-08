@@ -71,15 +71,14 @@ namespace CRMLite.Adapters
 			showEmployee.Click += ShowEmployeeClickEventHandler;
 
 
-			var startAttendance = view.FindViewById<Button>(Resource.Id.ptiNextAttendanceB);
-			startAttendance.SetTag(Resource.String.PharmacyUUID, item.UUID);
-			startAttendance.Text = item.NextAttendanceDate.HasValue ? 
+			var nexttAttendance = view.FindViewById<Button>(Resource.Id.ptiNextAttendanceB);
+			nexttAttendance.SetTag(Resource.String.PharmacyUUID, item.UUID);
+			nexttAttendance.Text = item.NextAttendanceDate.HasValue ? 
 				item.NextAttendanceDate.Value.ToString(@"dd.MM.yyyy") : DateTimeOffset.Now.ToString(@"dd.MM.yyyy");
-			startAttendance.Click -= StartAttendanceClickEventHandler;
-			startAttendance.Click += StartAttendanceClickEventHandler;
+			nexttAttendance.Click -= NextAttendanceClickEventHandler;
+			nexttAttendance.Click += NextAttendanceClickEventHandler;
 
-			var lastAttendance = view.FindViewById<Button>(Resource.Id.ptiLastAttendanceDateB);
-			lastAttendance.SetTag(Resource.String.PharmacyUUID, item.UUID);
+			var lastAttendance = view.FindViewById<TextView>(Resource.Id.ptiLastAttendanceDateTV);
 			lastAttendance.Text = item.LastAttendanceDate.HasValue ? 
 				item.LastAttendanceDate.Value.ToString(@"dd.MM.yyyy") : @"<нет визита>";
 
@@ -113,7 +112,7 @@ namespace CRMLite.Adapters
 			{
 				var pharmacyUUID = ((ImageView)sender).GetTag(Resource.String.PharmacyUUID).ToString();
 				var hospitalAcivity = new Intent(context, typeof(HospitalActivity));
-				hospitalAcivity.PutExtra(@"UUID", pharmacyUUID);
+				hospitalAcivity.PutExtra(HospitalActivity.C_PHARMACY_UUID, pharmacyUUID);
 				context.StartActivity(hospitalAcivity);
 			}
 		}
@@ -124,12 +123,12 @@ namespace CRMLite.Adapters
 			{
 				var pharmacyUUID = ((ImageView)sender).GetTag(Resource.String.PharmacyUUID).ToString();
 				var employeeAcivity = new Intent(context, typeof(EmployeeActivity));
-				employeeAcivity.PutExtra(@"UUID", pharmacyUUID);
+				employeeAcivity.PutExtra(EmployeeActivity.C_PHARMACY_UUID, pharmacyUUID);
 				context.StartActivity(employeeAcivity);
 			}
 		}
 
-		void StartAttendanceClickEventHandler(object sender, EventArgs e)
+		void NextAttendanceClickEventHandler(object sender, EventArgs e)
 		{
 			if (sender is Button)
 			{

@@ -1,30 +1,27 @@
 ﻿using System;
+using System.Linq;
 
 using Android.App;
-using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
 
-using Realms;
-using Newtonsoft.Json;
-
 using CRMLite.Entities;
 using CRMLite.Suggestions;
-using System.Linq;
 
 namespace CRMLite.Dialogs
 {
 	public class HospitalDialog : DialogFragment
 	{
+		public const string TAG = "HospitalDialog";
 
 		public event EventHandler AfterSaved;
 
-		Activity context = null;
-		Pharmacy pharmacy = null;
-		Hospital hospital = null;
+		readonly Pharmacy Pharmacy;
+		readonly HospitalData HospitalData;
 
-		Transaction transaction = null;
+		Hospital Hospital;
+		SuggestClient Api;
 
 		protected virtual void OnAfterSaved(EventArgs e)
 		{
@@ -34,14 +31,14 @@ namespace CRMLite.Dialogs
 			}
 		}
 
-		public HospitalDialog(Activity context, Pharmacy pharmacy, Hospital hospital = null)
+		public HospitalDialog(Pharmacy pharmacy, HospitalData hospitalData = null)
 		{
-			if (context == null || pharmacy == null) {
-				throw new ArgumentNullException();
+			if (pharmacy == null) {
+				throw new ArgumentNullException(nameof(pharmacy));
 			}
-			this.context = context;
-			this.pharmacy = pharmacy;
-			this.hospital = hospital;
+			Pharmacy = pharmacy;
+			HospitalData = hospitalData;
+			Api = new SuggestClient(Secret.DadataApiToken, Secret.DadataApiURL);
 		}
 
 		public override void OnCreate(Bundle savedInstanceState)
@@ -55,89 +52,82 @@ namespace CRMLite.Dialogs
 		{
 			Dialog.SetCanceledOnTouchOutside(false);
 
-			transaction = MainDatabase.BeginTransaction();
-
 			var caption = string.Empty;
-			if (hospital == null)
+			if (HospitalData == null)
 			{
-				//Dialog.SetTitle("НОВЫЙ СОТРУДНИК");
 				caption = "НОВОЕ ЛПУ";
-				hospital = MainDatabase.CreateHospital(pharmacy.UUID);
-				hospital.Address = "Москва";
-			}
-			else
-			{
-				//Dialog.SetTitle("СОТРУДНИК : " + employee.Name);
-				caption = "ЛПУ : " + hospital.Name;
-
-				if (hospital.LastSyncResult != null)
-				{
-					caption += string.Format(" (синхр. {0} в {1})"
-											 , hospital.LastSyncResult.createdAt.ToLocalTime().ToString("dd.MM.yy")
-											 , hospital.LastSyncResult.createdAt.ToLocalTime().ToString("HH:mm:ss")
-											);
-				}
+			} else {
+				Hospital = MainDatabase.GetEntity<Hospital>(HospitalData.Hospital);
+				caption = "ЛПУ : " + Hospital.Name;
 			}
 
 			Dialog.SetTitle(caption);
 
 			View view = inflater.Inflate(Resource.Layout.HospitalDialog, container, false);
 
-			view.FindViewById<EditText>(Resource.Id.hdNameET).Text = hospital.Name;
+			view.FindViewById<EditText>(Resource.Id.hdNameET).Append(Hospital == null ? string.Empty : Hospital.Name);
 
-
-			var token = Secret.DadataApiToken;
-			var url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs";
-			var api = new SuggestClient(token, url);
-			AutoCompleteTextView text = view.FindViewById<AutoCompleteTextView>(Resource.Id.hdAddressACTV);
-			text.Text = hospital.Address;
-			text.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
+			AutoCompleteTextView addressACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.hdAddressACTV);
+			addressACTV.Append(Hospital == null ? @"Москва" : Hospital.Address);
+			addressACTV.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
 			{
-				if (text.Text.Contains(" "))
+				if (addressACTV.Text.Contains(" "))
 				{
-					var response = api.QueryAddress(text.Text);
+					var response = Api.QueryAddress(addressACTV.Text);
 					var suggestions = response.suggestionss.Select(x => x.value).ToArray();
-					text.Adapter = new ArrayAdapter<string>(context, Android.Resource.Layout.SimpleDropDownItem1Line, suggestions); ;
-					(text.Adapter as ArrayAdapter<string>).NotifyDataSetChanged();
-					if (text.IsShown)
-					{
-						text.DismissDropDown();
+					addressACTV.Adapter = new ArrayAdapter<string>(
+						Activity, Android.Resource.Layout.SimpleDropDownItem1Line, suggestions
+					);
+					(addressACTV.Adapter as ArrayAdapter<string>).NotifyDataSetChanged();
+					if (addressACTV.IsShown) {
+						addressACTV.DismissDropDown();
 					}
-					text.ShowDropDown();
+					addressACTV.ShowDropDown();
 				}
 			};
 
-			view.FindViewById<Button>(Resource.Id.hdCloseB).Click += delegate
-			{
-				if (hospital.CreatedAt == null)
-				{
-					MainDatabase.DeleteHospital(hospital);
-				}
-
-				transaction.Commit();
-
+			view.FindViewById<Button>(Resource.Id.hdCloseB).Click += (s, e) => {
 				Dismiss();
 			};
 
-			view.FindViewById<Button>(Resource.Id.hdSaveB).Click += delegate
-			{
-				//Toast.MakeText(context, "SAVE BUTTON CLICKED", ToastLength.Short).Show();
-				hospital.CreatedAt = DateTimeOffset.Now;
-				hospital.Name = view.FindViewById<EditText>(Resource.Id.hdNameET).Text;
-				hospital.Address = view.FindViewById<EditText>(Resource.Id.hdAddressACTV).Text;
+			view.FindViewById<Button>(Resource.Id.hdSaveB).Click += (s, e) => {
+				//Toast.MakeText(context, "SAVE BUTTON CLICKED", ToastLength.Short).Show()
+
+				var transaction = MainDatabase.BeginTransaction();
+				if (HospitalData == null) {
+					var hospital = MainDatabase.Create<Hospital>();
+					hospital.CreatedAt = DateTimeOffset.Now;
+					hospital.UpdatedAt = DateTimeOffset.Now;
+					hospital.Name = view.FindViewById<EditText>(Resource.Id.hdNameET).Text;
+					hospital.Address = view.FindViewById<EditText>(Resource.Id.hdAddressACTV).Text;
+
+					var hospitalData = MainDatabase.Create<HospitalData>();
+					hospitalData.Pharmacy = Pharmacy.UUID;
+					hospitalData.Hospital = hospital.UUID;
+				} else {
+					//var hospital = MainDatabase.GetEntity<Hospital>(HospitalData.Hospital);
+					//hospital.UpdatedAt = DateTimeOffset.Now;
+					//hospital.Name = view.FindViewById<EditText>(Resource.Id.hdNameET).Text;
+					//hospital.Address = view.FindViewById<EditText>(Resource.Id.hdAddressACTV).Text;
+
+					Hospital.UpdatedAt = DateTimeOffset.Now;
+					Hospital.Name = view.FindViewById<EditText>(Resource.Id.hdNameET).Text;
+					Hospital.Address = view.FindViewById<EditText>(Resource.Id.hdAddressACTV).Text;
+
+					if (!Hospital.IsManaged) MainDatabase.SaveEntity(transaction, Hospital);
+				}
 
 				transaction.Commit();
+				//var sync = new SyncItem()
+				//{
+				//	Path = @"Hospital",
+				//	ObjectUUID = hospital.UUID,
+				//	JSON = JsonConvert.SerializeObject(hospital)
+				//};
 
-				var sync = new SyncItem()
-				{
-					Path = @"Hospital",
-					ObjectUUID = hospital.UUID,
-					JSON = JsonConvert.SerializeObject(hospital)
-				};
+				//MainDatabase.AddToQueue(sync);
 
-				MainDatabase.AddToQueue(sync);
-
-				context.StartService(new Intent("com.xamarin.SyncService"));
+				//Context.StartService(new Intent("com.xamarin.SyncService"));
 
 				OnAfterSaved(EventArgs.Empty);
 
@@ -150,9 +140,6 @@ namespace CRMLite.Dialogs
 		public override void OnDestroyView()
 		{
 			base.OnDestroyView();
-			context = null;
-			pharmacy = null;
-			hospital = null;
 		}
 	}
 }

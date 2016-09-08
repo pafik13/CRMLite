@@ -8,7 +8,10 @@
   <color name="Light_Green_500">#FF8BC34A</color>
   <color name="Light_Blue_500">#FF03A9F4</color>
 
-  
+  <color name="FinanceInfo">#FFFF5722</color>
+  <color name="FinanceData">#FF8BC34A</color>
+  <color name="SaleData">#FF03A9F4</color>
+	
   <color name="pressed_color">#f0f</color>
   <color name="focused_color">#ff0</color>
   <color name="default_color">#000</color>

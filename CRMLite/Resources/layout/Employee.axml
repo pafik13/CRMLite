@@ -3,16 +3,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minWidth="25px"
-    android:minHeight="64px"
     android:background="@color/Grey_300">
     <RelativeLayout
-        android:id="@+id/haUpPanelRL"
+        android:id="@+id/eaUpPanelRL"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="25px"
-        android:minHeight="64px"
         android:background="@drawable/bottomline">
         <TextView
             android:text="СОТРУДНИКИ АПТЕКИ {0}"
@@ -44,18 +40,16 @@
             android:src="@drawable/ic_add_circle_outline_black_48dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/eaAdd"
+            android:id="@+id/eaAddIV"
             android:layout_toLeftOf="@+id/eaCloseB"
             android:layout_marginTop="7dp"
             android:layout_marginBottom="9dp"
             android:layout_marginRight="10dp" />
     </RelativeLayout>
     <RelativeLayout
-        android:minWidth="25px"
-        android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/haUpPanelRL"
+        android:layout_below="@id/eaUpPanelRL"
         android:background="@color/Grey_300">
         <LinearLayout
             android:minWidth="25px"
@@ -72,7 +66,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_weight="20" />
+                android:layout_weight="5" />
         <!--	Таблица сотрудников		-->
             <ListView
                 android:minWidth="25px"
@@ -84,22 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:id="@+id/eaEmployeeTable"
-                android:layout_weight="60" />
-        <!--            <ScrollView
-                android:minWidth="25px"
-                android:minHeight="25px"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/paMainSV"
-                android:layout_centerHorizontal="true"
-                android:layout_weight="60">
-                <LinearLayout
-                    android:minWidth="25px"
-                    android:minHeight="25px"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical" />
-            </ScrollView>-->
+                android:layout_weight="90" />
         <!--	Правый отступ	-->
             <LinearLayout
                 android:minWidth="25px"
@@ -107,7 +86,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_weight="20" />
+                android:layout_weight="5" />
         </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

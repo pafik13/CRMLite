@@ -25,11 +25,11 @@
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
         android:focusableInTouchMode="false" />
-    <Button
+    <TextView
         android:text="Text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:id="@+id/ptiLastAttendanceDateB"
+        android:id="@+id/ptiLastAttendanceDateTV"
         android:layout_weight="10"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"

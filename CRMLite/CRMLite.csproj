@@ -79,7 +79,7 @@
     <Compile Include="Lib\Adapters\EmployeeAdapter.cs" />
     <Compile Include="Lib\Dialogs\EmployeeDialog.cs" />
     <Compile Include="Lib\Entities\Hospital.cs" />
-    <Compile Include="Lib\Adapters\HospitalAdapter.cs" />
+    <Compile Include="Lib\Adapters\HospitalDataAdapter.cs" />
     <Compile Include="Lib\Dialogs\HospitalDialog.cs" />
     <Compile Include="HospitalActivity.cs" />
     <Compile Include="Lib\Entities\Net.cs" />
@@ -131,6 +131,13 @@
     <Compile Include="Lib\Entities\ResumeData.cs" />
     <Compile Include="Lib\Fragments\PhotoFragment.cs" />
     <Compile Include="Lib\Entities\FinanceDataByQuarter.cs" />
+    <Compile Include="Lib\EmptyClass.cs" />
+    <Compile Include="Lib\Entities\Material.cs" />
+    <Compile Include="Lib\Entities\ListedHospital.cs" />
+    <Compile Include="Lib\Dialogs\ListedHospitalDialog.cs" />
+    <Compile Include="MaterialActivity.cs" />
+    <Compile Include="Lib\Entities\HospitalData.cs" />
+    <Compile Include="Lib\Adapters\ListedHospitalAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -277,6 +284,38 @@
     <AndroidResource Include="Resources\layout\InfoCoterieData.axml" />
     <AndroidResource Include="Resources\layout\FinanceDialogTableItem.axml" />
     <AndroidResource Include="Resources\layout\FinanceDialogTableHeader.axml" />
+    <AndroidResource Include="Resources\layout\Material.axml" />
+    <AndroidResource Include="Resources\drawable\ic_list_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable\ic_subscriptions_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_list_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_subscriptions_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_list_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_subscriptions_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_list_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_subscriptions_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_list_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_subscriptions_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_list_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_subscriptions_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_delete_white_36dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_delete_white_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_delete_white_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_delete_white_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_delete_white_36dp.png" />
+    <AndroidResource Include="Resources\layout\HospitalTableHeader.axml" />
+    <AndroidResource Include="Resources\layout\ListedHospitalDialog.axml" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_local_hospital_white_18dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_youtube_searched_for_white_36dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_local_hospital_white_18dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_youtube_searched_for_white_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_local_hospital_white_18dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_youtube_searched_for_white_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_local_hospital_white_18dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_youtube_searched_for_white_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_local_hospital_white_18dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_youtube_searched_for_white_36dp.png" />
+    <AndroidResource Include="Resources\layout\ListedHospitalTableItem.axml" />
+    <AndroidResource Include="Resources\layout\EmployeeTableHeader.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

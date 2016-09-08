@@ -62,7 +62,29 @@ namespace CRMLite
 			if (FindViewById<CheckBox>(Resource.Id.saLoadPhotoTypesCB).Checked) LoadPhotoTypes(client);
 			if (FindViewById<CheckBox>(Resource.Id.saContractsCB).Checked) LoadContracts(client);
 			if (FindViewById<CheckBox>(Resource.Id.saWorkTypesCB).Checked) LoadWorkTypes(client);
+			if (FindViewById<CheckBox>(Resource.Id.saMaterialsCB).Checked) LoadMaterials(client);
+			if (FindViewById<CheckBox>(Resource.Id.saListedHospitalsCB).Checked) LoadListedHospitals(client);
 
+		}
+
+		void LoadListedHospitals(RestClient client)
+		{
+			var request = new RestRequest(@"ListedHospital?limit=300&populate=false", Method.GET);
+			var response = client.Execute<List<ListedHospital>>(request);
+			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+				SD.Debug.WriteLine(string.Format(@"Получено ListedHospital {0}", response.Data.Count));
+				MainDatabase.SaveItems(response.Data);
+			}
+		}
+
+		void LoadMaterials(RestClient client)
+		{
+			var request = new RestRequest(@"Material?limit=300&populate=false", Method.GET);
+			var response = client.Execute<List<Material>>(request);
+			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+				SD.Debug.WriteLine(string.Format(@"Получено Material {0}", response.Data.Count));
+				MainDatabase.SaveItems(response.Data);
+			}		
 		}
 
 		void LoadWorkTypes(RestClient client)

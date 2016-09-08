@@ -5,12 +5,24 @@
     android:layout_height="50dp"
     android:background="@android:color/white"
     android:weightSum="100">
+    <RelativeLayout
+        android:id="@+id/htiDeleteRL"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:background="#ffe57373">
+        <ImageView
+            android:src="@drawable/ic_delete_white_36dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
     <TextView
         android:text="Text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiNameTV"
-        android:layout_weight="40"
+        android:layout_weight="35"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"

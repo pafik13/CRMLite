@@ -1,78 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:minWidth="25px"
-    android:minHeight="25px">
-    <Button
-        android:text="Generate Data"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaGenerateDataB" />
-    <TextView
-        android:text="tdaPharmacies"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaPharmacies" />
-    <TextView
-        android:text="tdaAttendances"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaAttendances" />
-    <TextView
-        android:text="tdaDistributions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaDistributions" />
-    <TextView
-        android:text="tdaFinanceDatas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaFinanceDatas" />
-    <TextView
-        android:text="tdaPresentationDatas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaPresentationDatas" />
-    <TextView
-        android:text="tdaCoteriaDatas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaCoteriaDatas" />
-    <TextView
-        android:text="tdaPromotionDatas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaPromotionDatas" />
-    <TextView
-        android:text="tdaCompetitorDatas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaCompetitorDatas" />
-    <TextView
-        android:text="tdaMessageDatas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaMessageDatas" />
-    <TextView
-        android:text="tdaResumeDatas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaResumeDatas" />
-    <TextView
-        android:text="tdaSaleDatas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaSaleDatas" />
-    <TextView
-        android:text="tdaPhotoDatas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaPhotoDatas" />
-    <Button
-        android:text="Custom Action"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tdaCustomActionB" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:minWidth="25px"
+        android:minHeight="25px">
+        <Button
+            android:text="Generate Data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaGenerateDataB" />
+        <TextView
+            android:text="tdaPharmacies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaPharmacies" />
+        <TextView
+            android:text="tdaAttendances"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaAttendances" />
+        <TextView
+            android:text="tdaDistributions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaDistributions" />
+        <TextView
+            android:text="tdaFinanceDatas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaFinanceDatas" />
+        <TextView
+            android:text="tdaPresentationDatas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaPresentationDatas" />
+        <TextView
+            android:text="tdaCoteriaDatas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaCoteriaDatas" />
+        <TextView
+            android:text="tdaPromotionDatas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaPromotionDatas" />
+        <TextView
+            android:text="tdaCompetitorDatas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaCompetitorDatas" />
+        <TextView
+            android:text="tdaMessageDatas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaMessageDatas" />
+        <TextView
+            android:text="tdaResumeDatas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaResumeDatas" />
+        <TextView
+            android:text="tdaSaleDatas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaSaleDatas" />
+        <TextView
+            android:text="tdaPhotoDatas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaPhotoDatas" />
+        <Button
+            android:text="Custom Action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaCustomActionB" />
+        <Button
+            android:text="Clear DB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaClearB" />
+    </LinearLayout>
+</ScrollView>

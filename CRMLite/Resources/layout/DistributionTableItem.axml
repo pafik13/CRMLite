@@ -39,8 +39,8 @@
         android:background="@drawable/bottomline"
         android:textColorHint="@color/Grey_300"
         android:textColor="@android:color/black"
-        android:hint="0.00"
-        android:inputType="numberDecimal"
+        android:hint="0"
+        android:inputType="number"
         android:gravity="center" />
     <EditText
         android:enabled="false"
@@ -53,8 +53,8 @@
         android:background="@drawable/bottomline"
         android:textColorHint="@color/Grey_300"
         android:textColor="@android:color/black"
-        android:hint="0.00"
-        android:inputType="numberDecimal"
+        android:hint="0"
+        android:inputType="number"
         android:gravity="center" />
     <RelativeLayout
         android:layout_width="0dp"

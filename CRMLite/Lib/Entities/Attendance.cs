@@ -15,6 +15,8 @@ namespace CRMLite
 		public string Pharmacy { get; set; }
 
 		public DateTimeOffset When { get; set; }
+
+		public int Duration { get; set; }
 	}
 }
 

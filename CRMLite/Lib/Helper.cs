@@ -5,6 +5,8 @@ namespace CRMLite
 {
 	public static class Helper
 	{
+
+
 		public static int? ToInt(string value, int divider = 1)
 		{
 			if (string.IsNullOrEmpty(value)) return null;
@@ -39,6 +41,16 @@ namespace CRMLite
 			float.TryParse(value.Replace(',', '.'), NumberStyles.Float, new CultureInfo("en-US").NumberFormat, out result);
 
 			if (float.IsInfinity(result) || Math.Abs(result) < 0.01f) return 0.0f; ;
+
+			return result;
+		}
+
+		public static int ToIntExeptNull(string value)
+		{
+			if (string.IsNullOrEmpty(value)) return 0;
+
+			int result;
+			int.TryParse(value.Replace(',', '.'), NumberStyles.Integer, new CultureInfo("en-US").NumberFormat, out result);
 
 			return result;
 		}

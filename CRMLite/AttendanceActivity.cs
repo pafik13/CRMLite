@@ -1,23 +1,26 @@
 ﻿using System;
 using System.Linq;
-using Android.App;
-using Android.OS;
-using V4App = Android.Support.V4.App;
-using Android.Support.V4.View;
-using Android.Views;
-using Android.Widget;
-
-using CRMLite.Dialogs;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using Android.OS;
+using Android.App;
+using Android.Views;
+using Android.Widget;
 using Android.Content;
+using Android.Views.InputMethods;
+using V4App = Android.Support.V4.App;
+using Android.Support.V4.View;
+
+using CRMLite.Dialogs;
 
 namespace CRMLite
 {
-	[Activity(Label = "AttendanceActivity")]
+	[Activity(Label = "AttendanceActivity", ScreenOrientation=Android.Content.PM.ScreenOrientation.Landscape)]
 	public class AttendanceActivity : V4App.FragmentActivity, ViewPager.IOnPageChangeListener
 	{
-		public const int NUM_PAGES = 4;
+		public const int C_NUM_PAGES = 4;
 
 		ViewPager Pager;
 		TextView FragmentTitle;
@@ -25,6 +28,8 @@ namespace CRMLite
 		ImageView Contracts;
 		ImageView Finance;
 		ImageView History;
+		ImageView Material;
+		IList<Material> Materials;
 
 		string PharmacyUUID;
 
@@ -78,6 +83,8 @@ namespace CRMLite
 			AttendanceLast = MainDatabase.GetAttendaces(PharmacyUUID).OrderByDescending(i => i.When).FirstOrDefault();
 			var attendanceLastUUID = AttendanceLast == null ? string.Empty : AttendanceLast.UUID;
 
+			Materials = MainDatabase.GetItems<Material>();
+
 			FragmentTitle = FindViewById<TextView>(Resource.Id.aaTitleTV);
 			FragmentTitle.Text = @"АПТЕКА";
 
@@ -86,7 +93,8 @@ namespace CRMLite
 			Pager.OffscreenPageLimit = 3;
 			Pager.Adapter = new AttendancePagerAdapter(SupportFragmentManager, PharmacyUUID, attendanceLastUUID);
 
-			FindViewById<Button>(Resource.Id.aaStartOrStopAttendanceB).Click += (sender, e) =>
+			var btnStartStop = FindViewById<Button>(Resource.Id.aaStartOrStopAttendanceB);
+			btnStartStop.Click += (sender, e) =>
 			{
 				if (AttendanceStart == null) {
 					AttendanceStart = DateTimeOffset.Now;
@@ -95,7 +103,7 @@ namespace CRMLite
 						FragmentTitle.Text = @"СОБИРАЕМАЯ ИНФОРМАЦИЯ";
 					}
 
-					for (int f = 0; f < NUM_PAGES; f++) {
+					for (int f = 0; f < C_NUM_PAGES; f++) {
 						var fragment = GetFragment(f);
 						if (fragment is IAttendanceControl) {
 							(fragment as IAttendanceControl).OnAttendanceStart(AttendanceStart);
@@ -114,10 +122,19 @@ namespace CRMLite
 					var historyParams = History.LayoutParameters as RelativeLayout.LayoutParams;
 					historyParams.AddRule(LayoutRules.LeftOf, Resource.Id.aaFinanceIV);
 
+					Material.Visibility = ViewStates.Visible;
+					var materialParams = Material.LayoutParameters as RelativeLayout.LayoutParams;
+					materialParams.AddRule(LayoutRules.LeftOf, Resource.Id.aaHistoryIV);
+
 					var button = sender as Button;
 					button.SetBackgroundResource(Resource.Color.Deep_Orange_500);
 					button.Text = "ЗАКОНЧИТЬ ВИЗИТ";
 					return;
+				}
+
+				if (CurrentFocus != null) {
+					var imm = (InputMethodManager)GetSystemService(InputMethodService);
+					imm.HideSoftInputFromWindow(CurrentFocus.WindowToken, HideSoftInputFlags.None);
 				}
 
 				var fragmentTransaction = SupportFragmentManager.BeginTransaction();
@@ -140,9 +157,10 @@ namespace CRMLite
 						var attendance = MainDatabase.Create<Attendance>();
 						attendance.Pharmacy = PharmacyUUID;
 						attendance.When = AttendanceStart.Value;
+						attendance.Duration = (DateTimeOffset.Now - AttendanceStart.Value).Milliseconds;
 
 						// Оповещаем фрагменты о завершении визита
-						for (int f = 0; f < NUM_PAGES; f++) {
+						for (int f = 0; f < C_NUM_PAGES; f++) {
 							var fragment = GetFragment(f);
 							if (fragment is IAttendanceControl) {
 								(fragment as IAttendanceControl).OnAttendanceStop(transaction, attendance);
@@ -155,7 +173,11 @@ namespace CRMLite
 					});
 				}).Start();
 			};
-
+			if (AttendanceLast != null) {
+				if (AttendanceLast.When.Date == DateTimeOffset.UtcNow.Date) {
+					btnStartStop.Visibility = ViewStates.Gone;
+				}
+			}
 
 			Close = FindViewById<Button>(Resource.Id.aaCloseB);
 			Close.Click += (sender, e) =>
@@ -164,6 +186,7 @@ namespace CRMLite
 			};
 
 			Contracts = FindViewById<ImageView>(Resource.Id.aaContractsIV);
+
 			Finance = FindViewById<ImageView>(Resource.Id.aaFinanceIV);
 			Finance.Click += (sender, e) => {
 				var financeAcivity = new Intent(this, typeof(FinanceActivity));
@@ -176,6 +199,20 @@ namespace CRMLite
 				var historyAcivity = new Intent(this, typeof(HistoryActivity));
 				historyAcivity.PutExtra(@"UUID", PharmacyUUID);
 				StartActivity(historyAcivity);
+			};
+
+			Material = FindViewById<ImageView>(Resource.Id.aaMaterialIV);
+			Material.Click += (sender, e) => {
+				new AlertDialog.Builder(this)
+				               .SetTitle("Выберите материал для показа:")
+				               .SetCancelable(true)
+				               .SetItems(Materials.Select(item => item.name).ToArray(), (caller, arguments) => {
+								   var materialAcivity = new Intent(this, typeof(MaterialActivity));
+								   materialAcivity.PutExtra(MaterialActivity.C_MATERIAL_UUID, Materials[arguments.Which].uuid);
+								   StartActivity(materialAcivity);
+								   //Toast.MakeText(this, Materials[arguments.Which].name, ToastLength.Short).Show();
+							   })
+				               .Show();
 			};
 		}
 
@@ -191,9 +228,9 @@ namespace CRMLite
 
 		public override void OnBackPressed()
 		{
-			if (AttendanceStart == null) {
-				base.OnBackPressed();
-			}
+			if (AttendanceStart.HasValue) return;
+
+			base.OnBackPressed();
 		}
 
 		/**
@@ -234,7 +271,7 @@ namespace CRMLite
 
 			public override int Count {
 				get {
-					return NUM_PAGES;
+					return C_NUM_PAGES;
 				}
 			}
 

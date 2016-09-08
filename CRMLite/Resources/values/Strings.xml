@@ -11,7 +11,15 @@
 	<string name="DrugSKUUUID">DrugSKUUUID</string>
 	<string name="IsChanged">IsChanged</string>
 	<string name="SaleDataUUID">SaleDataUUID</string>
-	
+	<string name="HospitalDataUUID">HospitalDataUUID</string>
+	<string name="EmployeeUUID">EmployeeUUID</string>
+	<string name="ContractUUID">ContractUUID</string>
+	<string name="SubwayUUID">SubwayUUID</string>
+	<string name="RegionUUID">RegionUUID</string>
+	<string name="PlaceUUID">PlaceUUID</string>
+	<string name="CategoryUUID">CategoryUUID</string>
+
+
 	<string name="PDEmployee">PDEmployee</string>
 	<string name="PDBrand">PDBrand</string>
 	<string name="PDWorkTypes">PDWorkTypes</string>

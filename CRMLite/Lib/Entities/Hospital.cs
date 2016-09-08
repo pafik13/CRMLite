@@ -7,7 +7,7 @@ namespace CRMLite.Entities
 	/// <summary>
 	/// ЛПУ - Лечебно-профилактические учреждение.
 	/// </summary>
-	public class Hospital: RealmObject
+	public class Hospital: RealmObject, IEntity
 	{
 		/// <summary>
 		/// Уникальный идентификатор ЛПУ. Используется Guid.
@@ -15,13 +15,6 @@ namespace CRMLite.Entities
 		/// <value>The UUID.</value>
 		[ObjectId]
 		public string UUID { get; set; }
-
-		/// <summary>
-		/// Ссылка на аптеку. UUID класса Pharmacy.
-		/// </summary>
-		/// <value>The pharmacy.</value>
-		[Indexed]
-		public string Pharmacy { get; set; }
 
 		/// <summary>
 		/// ФИО работника аптеки.
@@ -35,7 +28,9 @@ namespace CRMLite.Entities
 		/// <value>The address.</value>
 		public string Address { get; set; }
 
-		public DateTimeOffset? CreatedAt { get; set; }
+		public DateTimeOffset CreatedAt { get; set; }
+
+		public DateTimeOffset UpdatedAt { get; set; }
 
 		public SyncResult LastSyncResult { get; set; }
 	}

@@ -15,6 +15,7 @@ namespace CRMLite
 	{
 		Button GenerateData;
 		Button CustomAction;
+		Button Clear;
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
@@ -30,7 +31,33 @@ namespace CRMLite
 
 			CustomAction.Click += CustomAction_Click;
 
+			Clear = FindViewById<Button>(Resource.Id.tdaClearB);
+			Clear.Click += Clear_Click;
+
 			RefreshView();
+		}
+
+		void Clear_Click(object sender, EventArgs e)
+		{
+			var transaction = MainDatabase.BeginTransaction();
+
+			MainDatabase.DeleteAttendancies();
+			MainDatabase.DeleteDistributions();
+			MainDatabase.DeleteFinanceData();
+			MainDatabase.DeleteSaleData();
+
+			MainDatabase.DeleteItems<CoterieData>();
+			MainDatabase.DeleteItems<PresentationData>();
+			MainDatabase.DeleteItems<Employee>();
+			MainDatabase.DeleteItems<PromotionData>();
+			MainDatabase.DeleteItems<CompetitorData>();
+			MainDatabase.DeleteItems<MessageData>();
+			MainDatabase.DeleteItems<ResumeData>();
+			MainDatabase.DeleteItems<PhotoData>();
+			MainDatabase.DeleteItems<Material>();
+			MainDatabase.DeleteItems<ListedHospital>();
+
+			transaction.Commit();
 		}
 
 		void CustomAction_Click(object sender, EventArgs e)
@@ -99,7 +126,7 @@ namespace CRMLite
 							distribution.DrugSKU = SKU.uuid;
 							distribution.IsExistence = rnd.NextDouble() > 0.5;
 							distribution.Count = rnd.Next(0, 10);
-							distribution.Price = (float)(rnd.NextDouble() * 200);
+							distribution.Price = (int)(rnd.NextDouble() * 200);
 							distribution.IsPresence = rnd.NextDouble() > 0.5;
 							distribution.HasPOS = rnd.NextDouble() > 0.5;
 							distribution.Order = @"Order " + SKU.uuid;

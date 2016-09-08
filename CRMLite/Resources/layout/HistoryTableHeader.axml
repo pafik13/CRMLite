@@ -16,15 +16,13 @@
     <TextView
         android:text="Date1"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/htiDate1"
         android:layout_weight="4"
         android:gravity="center"
-        android:textAppearance="@style/rowTextForPharmacy"
-        android:rotation="-90" />
+        android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date2"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate2"
@@ -33,7 +31,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date3"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate3"
@@ -42,7 +39,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date4"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate4"
@@ -51,7 +47,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date5"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate5"
@@ -60,7 +55,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date6"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate6"
@@ -69,7 +63,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date7"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate7"
@@ -78,7 +71,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date8"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate8"
@@ -87,7 +79,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date9"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate9"
@@ -96,7 +87,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date10"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate10"
@@ -105,7 +95,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date11"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate11"
@@ -114,7 +103,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date12"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate12"
@@ -123,7 +111,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date13"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate13"
@@ -132,7 +119,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date14"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate14"
@@ -141,7 +127,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date15"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate15"
@@ -150,7 +135,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date16"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate16"
@@ -159,7 +143,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date17"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate17"
@@ -168,7 +151,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date18"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate18"
@@ -177,7 +159,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date19"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate19"
@@ -186,7 +167,6 @@
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
         android:text="Date20"
-        android:rotation="-90"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate20"

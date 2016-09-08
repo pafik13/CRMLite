@@ -10,6 +10,8 @@ using Android.Support.V4.App;
 using Realms;
 
 using CRMLite.Entities;
+using Android.Text;
+using InputFilterForEditText;
 
 namespace CRMLite
 {
@@ -484,9 +486,10 @@ namespace CRMLite
 				row.FindViewById<TextView>(Resource.Id.stiDrugSKUTV).Text = SKU.name;
 
 				for (int c = 1; c < row.ChildCount; c++) {
-					var rView = (TextView)row.GetChildAt(c);
+					var rView = (EditText)row.GetChildAt(c);
 					rView.SetTag(Resource.String.IsChanged, false);
 					rView.AfterTextChanged += RView_AfterTextChanged;
+					rView.SetFilters(new IInputFilter[] { new DecimalPlaceFilter(3, 1) });
 
 					key = string.Format("{0}-{1}", SKU.uuid, SaleDataMonths[c - 1].ToString(formatForKey));
 					SaleDataTextViews.Add(key, rView);
@@ -832,8 +835,8 @@ namespace CRMLite
 				var distr = MainDatabase.CreateData<DistributionData>(current.UUID);
 				distr.DrugSKU = (string)row.GetTag(Resource.String.DrugSKUUUID);
 				distr.IsExistence = row.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked;
-				distr.Count = Helper.ToFloatExeptNull(row.FindViewById<EditText>(Resource.Id.dtiCountET).Text);
-				distr.Price = Helper.ToFloatExeptNull(row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text);
+				distr.Count = Helper.ToIntExeptNull(row.FindViewById<EditText>(Resource.Id.dtiCountET).Text);
+				distr.Price = Helper.ToIntExeptNull(row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text);
 				distr.IsPresence = row.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked;
 				distr.HasPOS = row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked;
 				distr.Order = row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text;

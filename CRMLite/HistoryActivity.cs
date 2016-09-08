@@ -103,7 +103,9 @@ namespace CRMLite
 				}
 				var hView = header.GetChildAt(d + 1);
 				if (hView is TextView) {
-					(hView as TextView).Text = dates[d].ToString("dd.MM.yy");
+					(hView as TextView).Text = dates[d].ToString(
+						string.Format("dd{0}MMM{1}yyyy",System.Environment.NewLine,System.Environment.NewLine)
+					);
 				}
 			}
 
@@ -134,24 +136,24 @@ namespace CRMLite
 			// 2. Вставляем данные 
 			foreach (var attendance in attendances) {
 				var distributions = MainDatabase.GetItems<DistributionData>().Where(i => i.Attendance == attendance.UUID);
-				foreach (var distribution in distributions) {;
+				foreach (var distribution in distributions) {
 					// IsExistence
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditIsExistence, attendance.When.ToString(format));
 					TextViews[dict_key].Text = distribution.IsExistence ? @"+" : @"-";
 
-					// Counte
+					// Count
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditCount, attendance.When.ToString(format));
 					TextViews[dict_key].Text = distribution.Count.ToString();
 
-					// public float Price { get; set; }
+					// Price
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditPrice, attendance.When.ToString(format));
 					TextViews[dict_key].Text = distribution.Price.ToString();
 
-					// public bool IsPresence { get; set; }
+					// IsPresence
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditIsPresence, attendance.When.ToString(format));
 					TextViews[dict_key].Text = distribution.IsPresence ? @"+" : @"-";
 
-					// public bool HasPOS { get; set; }
+					// HasPOS
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditHasPOS, attendance.When.ToString(format));
 					TextViews[dict_key].Text = distribution.HasPOS ? @"+" : @"-";
 				}

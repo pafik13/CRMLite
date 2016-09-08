@@ -61,6 +61,11 @@ namespace CRMLite
 			}
 		}
 
+		internal static IList<T> GetPharmacyDatas<T>(string pharmacyUUID) where T: RealmObject, IPharmacyData
+		{
+			return Me.DB.All<T>().Where(item => item.Pharmacy == pharmacyUUID).ToList();
+		}
+
 		internal static void DeleteDistributions()
 		{
 			foreach (var item in Me.DB.All<DistributionData>().ToList()) {
@@ -172,6 +177,34 @@ namespace CRMLite
 		public static T GetEntity<T>(string uuid) where T : RealmObject, IEntity
 		{
 			return Me.DB.All<T>().Single(item => item.UUID == uuid);
+		}
+
+		public static void DeleteEntity<T>(string uuid) where T : RealmObject, IEntity
+		{
+			using (var trans = Me.DB.BeginWrite()) {
+				var item = GetEntity<T>(uuid);
+
+				Me.DB.Remove(item);
+
+				trans.Commit();
+			}
+		}
+
+		public static void DeleteEntity<T>(Transaction openedTransaction, T item) where T : RealmObject, IEntity
+		{
+			if (openedTransaction == null) {
+				throw new ArgumentNullException(nameof(openedTransaction));
+			}
+			Me.DB.Remove(item);
+		}
+
+		internal static void SaveEntity<T>(Transaction openedTransaction, T item) where T : RealmObject, IEntity
+		{
+			if (openedTransaction == null) {
+				throw new ArgumentNullException(nameof(openedTransaction));
+			}
+
+			Me.DB.Manage(item);
 		}
 
 		public static List<T> GetItems<T>() where T : RealmObject
@@ -437,23 +470,23 @@ namespace CRMLite
 		#endregion
 
 		#region Hospital
-		public static Hospital CreateHospital(string pharmacyUUID)
-		{
-			var hospital = Me.DB.CreateObject<Hospital>();
-			hospital.UUID = Guid.NewGuid().ToString();
-			hospital.Pharmacy = pharmacyUUID;
-			return hospital;
-		}
+		//public static Hospital CreateHospital(string pharmacyUUID)
+		//{
+		//	var hospital = Me.DB.CreateObject<Hospital>();
+		//	hospital.UUID = Guid.NewGuid().ToString();
+		//	hospital.Pharmacy = pharmacyUUID;
+		//	return hospital;
+		//}
 
-		public static void DeleteHospital(Hospital hospital)
-		{
-			Me.DB.Remove(hospital);
-		}
+		//public static void DeleteHospital(Hospital hospital)
+		//{
+		//	Me.DB.Remove(hospital);
+		//}
 
-		public static IList<Hospital> GetHospitals(string pharmacyUUID)
-		{
-			return Me.DB.All<Hospital>().Where(item => item.Pharmacy == pharmacyUUID).ToList();
-		}
+		//public static IList<Hospital> GetHospitals(string pharmacyUUID)
+		//{
+		//	return Me.DB.All<Hospital>().Where(item => item.Pharmacy == pharmacyUUID).ToList();
+		//}
 		#endregion
 
 		public static void ManageQueue()
