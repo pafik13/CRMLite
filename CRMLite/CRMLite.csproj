@@ -333,6 +333,7 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_directions_black_48dp.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_swap_vert_black_48dp.png" />
     <AndroidResource Include="Resources\layout\Route.axml" />
+    <AndroidResource Include="Resources\layout\InfoPresentationSubItem.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

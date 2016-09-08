@@ -561,43 +561,32 @@ namespace CRMLite
 					 .Where(pd => pd.Attendance == attendanceUUID)
 					 .ToList();
 		}
-		//IQueryable<IGrouping<ananinous type<string Employee, string Brand>, string>
 
-		public class PDGroups
-		{
-			public PresentationDataKey PDKey { get; set; }
-			public List<string> WorkTypes { get; set;}
-		}
-		internal static IDictionary<PresentationDataKey, List<WorkType>> GetPresentationDatasForView(string attendanceUUID)
+		// Employee -> Brand -> WorkTypes
+		internal static Dictionary<string, Dictionary<string, List<WorkType>>> GetGroupedPresentationDatas(string attendanceUUID)
 		{
 			var presentations = Me.DB.All<PresentationData>()
-						   .Where(pd => pd.Attendance == attendanceUUID);
+			                      .Where(pd => pd.Attendance == attendanceUUID);
 
-			var result = new Dictionary<PresentationDataKey, List<WorkType>>();
-			bool keyFound;
+			var result = new Dictionary<string, Dictionary<string, List<WorkType>>>();
 			foreach (var presentation in presentations) {
-				keyFound = false;
-				foreach (var key in result.Keys) {
-					if ((presentation.Employee == key.Employee.UUID) && (presentation.Brand == key.Brand.uuid)) 
-					{
-						result[key].Add(GetItem<WorkType>(presentation.WorkType));
-						keyFound = true;
-						break;
+				if (result.ContainsKey(presentation.Employee)) {
+					if (result[presentation.Employee].ContainsKey(presentation.Brand)) {
+						result[presentation.Employee][presentation.Brand].Add(GetItem<WorkType>(presentation.WorkType));
+					} else {
+						result[presentation.Employee].Add(presentation.Brand, new List<WorkType>());
+						result[presentation.Employee][presentation.Brand].Add(GetItem<WorkType>(presentation.WorkType));
 					}
+				} else {
+					result.Add(presentation.Employee, new Dictionary<string, List<WorkType>>());
+					result[presentation.Employee].Add(presentation.Brand, new List<WorkType>());
+					result[presentation.Employee][presentation.Brand].Add(GetItem<WorkType>(presentation.WorkType));
 				}
-
-				if (keyFound) continue;
-
-				var pdkey = new PresentationDataKey {
-					Brand = GetItem<DrugBrand>(presentation.Brand),
-					Employee = GetEntity<Employee>(presentation.Employee)
-				};
-				result.Add(pdkey, new List<WorkType>());
-				result[pdkey].Add(GetItem<WorkType>(presentation.WorkType));
 			}
 
 			return result;
 		}
+
 
 		internal static CoterieDataGrouped GetCoterieDataGrouped(string attendanceUUID)
 		{

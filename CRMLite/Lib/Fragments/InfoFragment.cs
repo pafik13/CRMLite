@@ -59,8 +59,6 @@ namespace CRMLite
 		TextView CoterieBrands;
 		TextView CoterieEmployees;
 
-		Employee PresentetionEmployeeLast;
-
 		public static InfoFragment create(string pharmacyUUID, string attendanceLastUUID)
 		{
 			InfoFragment fragment = new InfoFragment();
@@ -127,37 +125,138 @@ namespace CRMLite
 			var presentation = Inflater.Inflate(Resource.Layout.InfoPresentationItem, PresentationTable, false);
 			var employee = presentation.FindViewById<TextView>(Resource.Id.ipiEmployeeTV);
 			employee.Click += (object sender, EventArgs e) => {
+				var usedEmployees = new List<string>();
+				for (int c = 0; c < PresentationTable.ChildCount; c++) {
+					var row = PresentationTable.GetChildAt(c) as LinearLayout;
+					var employeeUUID = (string) row.GetTag(Resource.String.PDEmployee);
+					if (string.IsNullOrEmpty(employeeUUID)) continue;
+					usedEmployees.Add(employeeUUID);
+				}
+
+				var availEmployees = Employees.Where(emp => !usedEmployees.Contains(emp.UUID)).ToList();
+
 				new Android.App.AlertDialog.Builder(Activity)
 						   .SetTitle("Выберите сотрудника аптеки:")
 						   .SetCancelable(true)
-						   .SetItems(Employees.Select(item => item.Name).ToArray(), (caller, arguments) => {
-							    employee.SetTag(Resource.String.PDEmployee, Employees[arguments.Which].UUID);
-								employee.Text = Employees[arguments.Which].Name;
-								PresentetionEmployeeLast = Employees[arguments.Which];
-						   })
+						   .SetItems(
+					           availEmployees.Select(item => item.Name).ToArray(),
+					           (caller, arguments) => {
+									presentation.SetTag(Resource.String.PDEmployee, availEmployees[arguments.Which].UUID);
+									employee.Text = availEmployees[arguments.Which].Name;
+								}
+					          )
 						   .Show();
 			};
-			if (PresentetionEmployeeLast != null) {
-				employee.SetTag(Resource.String.PDEmployee, PresentetionEmployeeLast.UUID);
-				employee.Text = PresentetionEmployeeLast.Name;
+
+
+			var brandTable = presentation.FindViewById<LinearLayout>(Resource.Id.ipiBrandTable);
+
+			var brandRow = Inflater.Inflate(Resource.Layout.InfoPresentationSubItem, brandTable, false);
+
+			brandRow.FindViewById<TextView>(Resource.Id.ipsiBrandTV).Click += Brand_Click;
+
+			brandRow.FindViewById<TextView>(Resource.Id.ipsiWorkTypesTV).Click += WorkTypes_Click;
+
+			brandTable.AddView(brandRow);
+
+			PresentationTable.AddView(presentation);
+		}
+
+		void Brand_Click(object sender, EventArgs e)
+		{
+			var tv = (TextView)sender;
+			var brandTable = tv.Parent.Parent as LinearLayout;
+
+			var cacheBrands = new List<string>();
+			for (int c = 0; c < brandTable.ChildCount; c++) {
+				var row = brandTable.GetChildAt(c) as LinearLayout;
+				var brandUUID = (string)row.GetTag(Resource.String.PDBrand);
+				if (string.IsNullOrEmpty(brandUUID)) continue;
+				cacheBrands.Add(brandUUID);
 			}
 
+			bool isCacheBrandsWasEmpty = cacheBrands.Count == 0;
+			bool[] checkedItems = new bool[Brands.Count];
+			if (!isCacheBrandsWasEmpty) {
+				for (int i = 0; i < Brands.Count; i++) {
+					checkedItems[i] = cacheBrands.Contains(Brands[i].uuid);
+				}
+			}
 
-			var brand = presentation.FindViewById<TextView>(Resource.Id.ipiBrandTV);
-			brand.Click += (object sender, EventArgs e) => {
-				new Android.App.AlertDialog.Builder(Activity)
-						   .SetTitle("Выберите бренд препарата:")
-						   .SetCancelable(true)
-				           .SetItems(Brands.Select(item => item.name).ToArray(), (caller, arguments) => {
-								brand.SetTag(Resource.String.PDBrand, Brands[arguments.Which].uuid);
-								brand.Text = Brands[arguments.Which].name;
-						   })
-						   .Show();
-			};
+			new Android.App.AlertDialog.Builder(Activity)
+					   .SetTitle("Выберите виды работ:")
+					   .SetCancelable(false)
+					   .SetMultiChoiceItems(
+				           Brands.Select(item => item.name).ToArray(),
+						   checkedItems,
+						   (caller, arguments) => {
+							   if (arguments.IsChecked) {
+								   cacheBrands.Add(Brands[arguments.Which].uuid);
+							   } else {
+								   cacheBrands.Remove(Brands[arguments.Which].uuid);
+							   }
+						   }
+					   )
+						.SetPositiveButton(
+						   @"Сохранить",
+						   (caller, arguments) => {
+							   if (isCacheBrandsWasEmpty) {
+								   brandTable.RemoveAllViews();
 
-			var workTypes = presentation.FindViewById<TextView>(Resource.Id.ipiWorkTypesTV);
-			workTypes.Click += WorkTypes_Click;
-			PresentationTable.AddView(presentation);
+								   foreach (var brandUUID in cacheBrands) {
+									   var row = Inflater.Inflate(Resource.Layout.InfoPresentationSubItem, brandTable, false);
+									   row.SetTag(Resource.String.PDBrand, brandUUID);
+									   row.FindViewById<TextView>(Resource.Id.ipsiBrandTV).Text = Brands.Single(b => b.uuid == brandUUID).name;
+									   row.FindViewById<TextView>(Resource.Id.ipsiBrandTV).Click += Brand_Click;
+									   row.FindViewById<TextView>(Resource.Id.ipsiWorkTypesTV).Click += WorkTypes_Click;
+									   brandTable.AddView(row);
+								   }
+							   } else {
+								   if (cacheBrands.Count > 0) {
+									   var viewsWhichDelete = new List<View>();
+									    for (int c = 0; c < brandTable.ChildCount; c++) {
+											var row = brandTable.GetChildAt(c);
+										    var brandUUID = (string)row.GetTag(Resource.String.PDBrand);
+										  	if (string.IsNullOrEmpty(brandUUID)) continue;
+										   	bool isExists = false;
+										    foreach (var item in cacheBrands) {
+												if (brandUUID == item) {
+											   		cacheBrands.Remove(item);
+											   		isExists = true;
+											   		break;
+												}
+											}
+										   if (!isExists) {
+											   viewsWhichDelete.Add(row);
+										   }
+									    }
+										
+										foreach (var view in viewsWhichDelete) {
+											brandTable.RemoveView(view);
+									   }
+
+									   foreach (var brandUUID in cacheBrands) {
+											var row = Inflater.Inflate(Resource.Layout.InfoPresentationSubItem, brandTable, false);
+										    row.SetTag(Resource.String.PDBrand, brandUUID);
+										    row.FindViewById<TextView>(Resource.Id.ipsiBrandTV).Text = Brands.Single(b => b.uuid == brandUUID).name;
+										    row.FindViewById<TextView>(Resource.Id.ipsiBrandTV).Click += Brand_Click;
+										    row.FindViewById<TextView>(Resource.Id.ipsiWorkTypesTV).Click += WorkTypes_Click;
+										    brandTable.AddView(row);
+									    }
+
+								   } else {
+									    brandTable.RemoveAllViews();
+									    var emptyRow = Inflater.Inflate(Resource.Layout.InfoPresentationSubItem, brandTable, false);
+										emptyRow.FindViewById<TextView>(Resource.Id.ipsiBrandTV).Click += Brand_Click;
+									    emptyRow.FindViewById<TextView>(Resource.Id.ipsiWorkTypesTV).Click += WorkTypes_Click;
+									    brandTable.AddView(emptyRow);
+								   }
+							   }
+								(caller as Android.App.Dialog).Dispose();
+						   }
+						)
+						.SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Android.App.Dialog).Dispose(); })
+						.Show();
 		}
 
 		void WorkTypes_Click(object sender, EventArgs e)
@@ -285,29 +384,37 @@ namespace CRMLite
 				return;
 			}
 
-			var presentationsDict = MainDatabase.GetPresentationDatasForView(attendanceLast.UUID);
-			if (presentationsDict.Count > 0) {
-				View presentationView = Inflater.Inflate(
+			var presentationsGrouped = MainDatabase.GetGroupedPresentationDatas(attendanceLast.UUID);
+			if (presentationsGrouped.Count > 0) {
+				View presentationMainView = Inflater.Inflate(
 												Resource.Layout.InfoPresentationData,
 												AttendanceTypeContent, 
 												false);
 				
-				var addView = presentationView.FindViewById<ImageView>(Resource.Id.ipdPresentationAddIV);
+				var addView = presentationMainView.FindViewById<Button>(Resource.Id.ipdPresentationAddB);
 				addView.Visibility = ViewStates.Gone;
 
-				PresentationTable = presentationView.FindViewById<LinearLayout>(Resource.Id.ipdPresentationTable);
+				PresentationTable = presentationMainView.FindViewById<LinearLayout>(Resource.Id.ipdPresentationTable);
 
-				foreach (var item in presentationsDict) {
-					var workTypes = string.Join(System.Environment.NewLine, item.Value.Select(wt => wt.name));
+				foreach (var employee in presentationsGrouped) {
+					var presentationItem = Inflater.Inflate(Resource.Layout.InfoPresentationItem, PresentationTable, false);
+					presentationItem.FindViewById<TextView>(Resource.Id.ipiEmployeeTV).Text = 
+						MainDatabase.GetEntity<Employee>(employee.Key).Name;
+					var brandTable = presentationItem.FindViewById<LinearLayout>(Resource.Id.ipiBrandTable);
 
-					var presentation = Inflater.Inflate(Resource.Layout.InfoPresentationItem, PresentationTable, false);
-					presentation.FindViewById<TextView>(Resource.Id.ipiEmployeeTV).Text = item.Key.Employee.Name;
-					presentation.FindViewById<TextView>(Resource.Id.ipiBrandTV).Text = item.Key.Brand.name;
-					presentation.FindViewById<TextView>(Resource.Id.ipiWorkTypesTV).Text = workTypes;
-					PresentationTable.AddView(presentation);
+					foreach (var brand in employee.Value) {
+						var brandRow = Inflater.Inflate(Resource.Layout.InfoPresentationSubItem, brandTable, false);
+						brandRow.FindViewById<TextView>(Resource.Id.ipsiBrandTV).Text =
+							        MainDatabase.GetItem<DrugBrand>(brand.Key).name;
+						brandRow.FindViewById<TextView>(Resource.Id.ipsiWorkTypesTV).Text =
+							        string.Join(System.Environment.NewLine, brand.Value.Select(wt => wt.name));
+						brandTable.AddView(brandRow);
+					}
+
+					PresentationTable.AddView(presentationItem);
 				}
 
-				AttendanceTypeContent.AddView(presentationView);
+				AttendanceTypeContent.AddView(presentationMainView);
 
 				//TODO: uncomment
 				//return;
@@ -407,7 +514,7 @@ namespace CRMLite
 			MessageLayout = view.FindViewById<LinearLayout>(Resource.Id.ifMessageLL);
 			MessageDivider = view.FindViewById<View>(Resource.Id.ifMessageDividerV);
 			MessageTable = view.FindViewById<LinearLayout>(Resource.Id.ifMessageTable);
-			var messageAdd = view.FindViewById<ImageView>(Resource.Id.ifMessageAddIV);
+			var messageAdd = view.FindViewById<Button>(Resource.Id.ifMessageAddB);
 			messageAdd.Visibility = ViewStates.Gone;
 
 			if (attendanceLast == null) {
@@ -731,17 +838,17 @@ namespace CRMLite
 			AttendanceTypeContent.RemoveAllViews();
 
 			// 2.1 Презентация
-			View presentationView = Inflater.Inflate(
+			View presentationMainView = Inflater.Inflate(
 											Resource.Layout.InfoPresentationData,
 											AttendanceTypeContent,
 											false);
-			presentationView.FindViewById<ImageView>(Resource.Id.ipdPresentationAddIV).Click += (s, e) => {
+			presentationMainView.FindViewById<Button>(Resource.Id.ipdPresentationAddB).Click += (s, e) => {
 				AddPresentationView();
 			};
 
-			PresentationTable = presentationView.FindViewById<LinearLayout>(Resource.Id.ipdPresentationTable);
+			PresentationTable = presentationMainView.FindViewById<LinearLayout>(Resource.Id.ipdPresentationTable);
 			AddPresentationView();
-			AttendanceTypeContent.AddView(presentationView);
+			AttendanceTypeContent.AddView(presentationMainView);
 
 			// 2.1 Фарм-кружок
 			CoterieLayout = Inflater.Inflate(
@@ -794,7 +901,7 @@ namespace CRMLite
 
 			// 5. Сообщения
 			MessageTable.RemoveAllViews();
-			var messageAdd = MessageLayout.FindViewById<ImageView>(Resource.Id.ifMessageAddIV);
+			var messageAdd = MessageLayout.FindViewById<Button>(Resource.Id.ifMessageAddB);
 			messageAdd.Visibility = ViewStates.Visible;
 			messageAdd.Click += (s, e) => {
 				AddMessageView();
@@ -847,21 +954,25 @@ namespace CRMLite
 
 			// 2.1 Презентация
 			for (int c = 0; c < PresentationTable.ChildCount; c++) {
-				var row = (LinearLayout)PresentationTable.GetChildAt(c);
-				var employeeUUID = (string)row.FindViewById<TextView>(Resource.Id.ipiEmployeeTV).GetTag(Resource.String.PDEmployee);
+				var row = PresentationTable.GetChildAt(c);
+				var employeeUUID = (string)row.GetTag(Resource.String.PDEmployee);
 				if (string.IsNullOrEmpty(employeeUUID)) continue;
 
-				var brandUUID = (string)row.FindViewById<TextView>(Resource.Id.ipiBrandTV).GetTag(Resource.String.PDBrand);
-				if (string.IsNullOrEmpty(brandUUID)) continue;
+				var brandTable = row.FindViewById<LinearLayout>(Resource.Id.ipiBrandTable);
+				for (int cc = 0; cc < brandTable.ChildCount; cc++) {
+					var subRow = (LinearLayout)brandTable.GetChildAt(cc);
+					var brandUUID = (string)subRow.GetTag(Resource.String.PDBrand);
+					if (string.IsNullOrEmpty(brandUUID)) continue;
 
-				var workTypes = (string)row.FindViewById<TextView>(Resource.Id.ipiWorkTypesTV).GetTag(Resource.String.PDWorkTypes);
-				if (string.IsNullOrEmpty(workTypes)) continue;
+					var workTypes = (string)subRow.FindViewById<TextView>(Resource.Id.ipsiWorkTypesTV).GetTag(Resource.String.PDWorkTypes);
+					if (string.IsNullOrEmpty(workTypes)) continue;
 
-				foreach (var workType in workTypes.Split(';')) {
-					var presentationData = MainDatabase.CreateData<PresentationData>(current.UUID);
-					presentationData.Employee = employeeUUID;
-					presentationData.Brand = brandUUID;
-					presentationData.WorkType = workType;
+					foreach (var workType in workTypes.Split(';')) {
+						var presentationData = MainDatabase.CreateData<PresentationData>(current.UUID);
+						presentationData.Employee = employeeUUID;
+						presentationData.Brand = brandUUID;
+						presentationData.WorkType = workType;
+					}
 				}
 			}
 

@@ -158,7 +158,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="left"
-                    android:textSize="24sp"
+                    android:textSize="32sp"
                     android:textColor="@android:color/black"
                     android:focusable="false"
                     android:focusableInTouchMode="false" />
@@ -168,14 +168,11 @@
                     android:orientation="vertical"
                     android:id="@+id/ifMessageTable"
                     android:animateLayoutChanges="true" />
-                <ImageView
-                    android:id="@+id/ifMessageAddIV"
-                    android:src="@drawable/ic_add_circle_outline_black_48dp"
+                <Button
+                    android:text="Добавить сообщение"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/Grey_500"
-                    android:paddingTop="4dp"
-                    android:paddingBottom="4dp" />
+                    android:id="@+id/ifMessageAddB" />
             </LinearLayout>
             <View
                 android:id="@+id/ifMessageDividerV"
@@ -192,7 +189,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="left"
-                    android:textSize="24sp"
+                    android:textSize="32sp"
                     android:textColor="@android:color/black"
                     android:focusable="false"
                     android:focusableInTouchMode="false" />

@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
-        android:textSize="24sp"
+        android:textSize="32sp"
         android:textColor="@android:color/black"
         android:focusable="false"
         android:focusableInTouchMode="false" />
@@ -18,12 +18,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:animateLayoutChanges="true" />
-    <ImageView
-        android:id="@+id/ipdPresentationAddIV"
-        android:src="@drawable/ic_add_circle_outline_black_48dp"
+    <Button
+        android:text="Добавить"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Grey_500"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp" />
+        android:id="@+id/ipdPresentationAddB" />
 </LinearLayout>
