@@ -547,15 +547,15 @@ namespace CRMLite
 			base.OnResume();
 			if (Pharmacy == null) {
 				new Android.App.AlertDialog.Builder(Context)
-								   .SetTitle(Resource.String.error_caption)
-								   .SetMessage("Отсутствует аптека!")
-								   .SetCancelable(false)
-								   .SetPositiveButton(@"OK", (dialog, args) => {
-									   if (dialog is Android.App.Dialog) {
-										   ((Android.App.Dialog)dialog).Dismiss();
-									   }
-								   })
-								   .Show();
+						   .SetTitle(Resource.String.error_caption)
+						   .SetMessage("Отсутствует аптека!")
+						   .SetCancelable(false)
+						   .SetPositiveButton(@"OK", (dialog, args) => {
+							   if (dialog is Android.App.Dialog) {
+								   ((Android.App.Dialog)dialog).Dismiss();
+							   }
+						   })
+						   .Show();
 
 			} else if (AttendanceStart == null) {
 				Locker.Visibility = ViewStates.Visible;
