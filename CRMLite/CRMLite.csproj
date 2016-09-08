@@ -138,6 +138,7 @@
     <Compile Include="MaterialActivity.cs" />
     <Compile Include="Lib\Entities\HospitalData.cs" />
     <Compile Include="Lib\Adapters\ListedHospitalAdapter.cs" />
+    <Compile Include="RouteActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -316,6 +317,22 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_youtube_searched_for_white_36dp.png" />
     <AndroidResource Include="Resources\layout\ListedHospitalTableItem.axml" />
     <AndroidResource Include="Resources\layout\EmployeeTableHeader.axml" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_visibility_off_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_visibility_off_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_visibility_off_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_visibility_off_black_36dp.png" />
+    <AndroidResource Include="Resources\layout\ContractTableHeader.axml" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_directions_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_swap_vert_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_directions_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_swap_vert_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_directions_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_swap_vert_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_directions_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_swap_vert_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_directions_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_swap_vert_black_48dp.png" />
+    <AndroidResource Include="Resources\layout\Route.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

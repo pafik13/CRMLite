@@ -5,19 +5,34 @@
     android:layout_height="60dp"
     android:background="@drawable/bottomline"
     android:weightSum="100">
-    <ImageView
-        android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_local_library_black_48dp"
+    <RelativeLayout
+        android:id="@+id/ctiDeleteRL"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/ctiIsFilePresentsIV"
-        android:layout_weight="10" />
+        android:layout_height="match_parent"
+        android:layout_weight="6"
+        android:background="#ffe57373">
+        <ImageView
+            android:src="@drawable/ic_delete_white_36dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
     <TextView
         android:text="Text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/ctiNameTV"
-        android:layout_weight="20"
+        android:layout_weight="18"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ctiTimeTV"
+        android:layout_weight="10"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
@@ -28,9 +43,21 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/ctiDescriptionTV"
-        android:layout_weight="70"
+        android:layout_weight="60"
         android:gravity="center_vertical"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
         android:focusableInTouchMode="false" />
+    <RelativeLayout
+        android:id="@+id/ctiCanShowFileRL"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="6">
+        <ImageView
+            android:id="@+id/ctiCanShowFileIV"
+            android:src="@drawable/ic_visibility_off_black_36dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 </LinearLayout>

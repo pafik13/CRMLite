@@ -60,7 +60,8 @@ namespace CRMLite
 						@"СОБИРАЕМАЯ ИНФОРМАЦИЯ" : string.Format(@"ИНФОРМАЦИЯ С ВИЗИТА ОТ {0}", AttendanceLast.When);
 					break;
 				case 3:
-					FragmentTitle.Text = @"ФОТО НА ВИЗИТЕ";
+					FragmentTitle.Text = (AttendanceLast == null) || AttendanceStart.HasValue ?
+						@"ФОТО НА ВИЗИТЕ" : string.Format(@"ФОТО С ВИЗИТА ОТ {0}", AttendanceLast.When);
 					break;
 				default:
 					FragmentTitle.Text = @"СТРАНИЦА " + (position + 1);
@@ -101,6 +102,10 @@ namespace CRMLite
 
 					if (Pager.CurrentItem == 2) {
 						FragmentTitle.Text = @"СОБИРАЕМАЯ ИНФОРМАЦИЯ";
+					}
+
+					if (Pager.CurrentItem == 3) {
+						FragmentTitle.Text = @"ФОТО НА ВИЗИТЕ";
 					}
 
 					for (int f = 0; f < C_NUM_PAGES; f++) {
@@ -186,6 +191,11 @@ namespace CRMLite
 			};
 
 			Contracts = FindViewById<ImageView>(Resource.Id.aaContractsIV);
+			Contracts.Click += (sender, e) => {
+				var contractActivity = new Intent(this, typeof(ContractActivity));
+				contractActivity.PutExtra(ContractActivity.C_PHARMACY_UUID, PharmacyUUID);
+				StartActivity(contractActivity);
+			};
 
 			Finance = FindViewById<ImageView>(Resource.Id.aaFinanceIV);
 			Finance.Click += (sender, e) => {
@@ -285,7 +295,7 @@ namespace CRMLite
 					case 2:
 					return InfoFragment.create(PharmacyUUID, AttendanceLastUUID);
 					case 3:
-						return PhotoFragment.create(PharmacyUUID);
+						return PhotoFragment.create(PharmacyUUID, AttendanceLastUUID);
 					default:
 						return ScreenSlidePageFragment.create(position, false);
 				}

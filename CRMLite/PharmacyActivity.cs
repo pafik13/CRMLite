@@ -25,7 +25,7 @@ namespace CRMLite
 		Spinner State;
 		IList<string> States;
 
-		IList<Net> Nets;
+		List<Net> Nets;
 		string NetUUID;
 		AutoCompleteTextView NetName;
 
@@ -69,43 +69,50 @@ namespace CRMLite
 					item = MainDatabase.Create<Pharmacy>();
 					item.CreatedAt = DateTimeOffset.Now;
 
-
+					/* Contracts */
 					if (!string.IsNullOrEmpty(ContractsNames.Text)) {
-						var contractUUID = (string)ContractsNames.GetTag(Resource.String.ContractUUID);
-						if (!string.IsNullOrEmpty(contractUUID)) {
-							var contractData = MainDatabase.Create<ContractData>();
-							contractData.Pharmacy = item.UUID;
-							contractData.Contract = contractUUID;
+						var ll = ContractsNames.Parent as LinearLayout;
+						var contractUUIDs = (string)ll.GetTag(Resource.String.ContractUUIDs);
+						if (!string.IsNullOrEmpty(contractUUIDs)) {
+							foreach (var contract in contractUUIDs.Split(';')) {
+								var contractData = MainDatabase.Create<ContractData>();
+								contractData.Pharmacy = item.UUID;
+								contractData.Contract = contract; 
+							}
 						}
 					}
+					/* ./Contracts */
 				} else {
 					item = Pharmacy;
 
+					/* Contracts */
 					if (string.IsNullOrEmpty(ContractsNames.Text)) {
 						var contractDatas = MainDatabase.GetPharmacyDatas<ContractData>(item.UUID);
 						foreach (var contractData in contractDatas) {
 							MainDatabase.DeleteEntity(transaction, contractData);;
 						}
+						contractDatas = null;
 					} else {
-						var contractUUID = (string)ContractsNames.GetTag(Resource.String.ContractUUID);
-						if (!string.IsNullOrEmpty(contractUUID)) {
+						var ll = ContractsNames.Parent as LinearLayout;
+						var contractUUIDs = (string)ll.GetTag(Resource.String.ContractUUIDs);
+						if (!string.IsNullOrEmpty(contractUUIDs)) {
+							var contracts = contractUUIDs.Split(';');
 							var contractDatas = MainDatabase.GetPharmacyDatas<ContractData>(item.UUID);
-							bool isExists = false;
 							foreach (var contractData in contractDatas) {
-								if (contractData.Contract == contractUUID) {
-									isExists = true;
-									break;
-								}
+								MainDatabase.DeleteEntity(transaction, contractData); ;
 							}
-							if (!isExists) {
+							contractDatas = null;
+							foreach (var contract in contractUUIDs.Split(';')) {
 								var contractData = MainDatabase.Create<ContractData>();
 								contractData.Pharmacy = item.UUID;
-								contractData.Contract = contractUUID;
+								contractData.Contract = contract;
 							}
 						}
 					}
+					/* ./Contracts */
 				}
 
+				item.UpdatedAt = DateTimeOffset.Now;
 				item.SetState((PharmacyState)State.SelectedItemPosition);
 				item.Brand = FindViewById<EditText>(Resource.Id.paBrandET).Text;
 				item.NumberName = FindViewById<EditText>(Resource.Id.paNumberNameET).Text;
@@ -205,7 +212,7 @@ namespace CRMLite
 
 			ContractsNames = FindViewById<AutoCompleteTextView>(Resource.Id.paContractsACTV);
 			ContractsChoice = FindViewById<Button>(Resource.Id.paContractsB);
-
+			ContractsChoice.Click += ContractsChoice_Click;
 
 			Address = FindViewById<AutoCompleteTextView>(Resource.Id.paAddressACTV);
 
@@ -241,13 +248,19 @@ namespace CRMLite
 			FindViewById<EditText>(Resource.Id.paNumberNameET).Text = Pharmacy.NumberName;
 			FindViewById<EditText>(Resource.Id.paLegalNameET).Text = Pharmacy.LegalName;
 
-			NetName.Text = string.IsNullOrEmpty(Pharmacy.Net) ?
-				string.Empty : MainDatabase.GetNet(Pharmacy.Net).name;
+			//NetName.Text = string.IsNullOrEmpty(Pharmacy.Net) ?
+			//	string.Empty : MainDatabase.GetNet(Pharmacy.Net).name;
+			//NetUUID = Pharmacy.Net;
+
+			SetNet(Nets.FindIndex(net => string.Compare(net.uuid, Pharmacy.Net) == 0));
 
 			ContractDatas = MainDatabase.GetPharmacyDatas<ContractData>(Pharmacy.UUID);
 			if (ContractDatas.Count > 0) {
-				FindViewById<EditText>(Resource.Id.paContractsACTV).Text =
-					 string.Join(", ", ContractDatas.Select(cd => MainDatabase.GetItem<Contract>(cd.Contract).name).ToArray());
+				ContractsNames.Text = string.Join(", ", ContractDatas.Select(cd => MainDatabase.GetItem<Contract>(cd.Contract).name).ToArray());
+				var ll = ContractsNames.Parent as LinearLayout;
+				ll.SetTag(Resource.String.ContractUUIDs, 
+				          string.Join(@";", ContractDatas.Select(cd => cd.Contract).ToArray())
+				         );
 			}
 			Address.Text = Pharmacy.Address;
 
@@ -376,22 +389,67 @@ namespace CRMLite
 					Contracts = MainDatabase.GetItems<Contract>().Where(c => c.net == NetUUID).ToList();
 					ContractsChoice.Enabled = (Contracts.Count > 0);
 
-					ContractsChoice.Click -= ContractsChoice_Click;
-					ContractsChoice.Click += ContractsChoice_Click;
+					//ContractsChoice.Click -= ContractsChoice_Click;
 				}
 			}
 		}
 
 		void ContractsChoice_Click(object sender, EventArgs e)
 		{
-			new AlertDialog.Builder(this)
-			               .SetTitle("Контракты")
-						   .SetCancelable(true)
-						   .SetItems(Contracts.Select(item => item.name).ToArray(), (caller, arguments) => {
-							   ContractsNames.Text = Contracts[arguments.Which].name;
-							   ContractsNames.SetTag(Resource.String.ContractUUID, Contracts[arguments.Which].uuid);
-						   })
-						   .Show();
+			if (sender is Button) {
+				var ll = ((Button)sender).Parent as LinearLayout;
+
+				var contractUUIDs = (string)ll.GetTag(Resource.String.ContractUUIDs);
+				var cacheContracts = string.IsNullOrEmpty(contractUUIDs) ? new List<string>() : contractUUIDs.Split(';').ToList();
+
+				bool[] checkedItems = new bool[Contracts.Count];
+				if (cacheContracts.Count > 0) {
+					for (int i = 0; i < Contracts.Count; i++) {
+						checkedItems[i] = cacheContracts.Contains(Contracts[i].uuid);
+					}
+				}
+
+				new AlertDialog.Builder(this)
+				               .SetTitle("Выберите контракты:")
+				               .SetCancelable(false)
+				               .SetMultiChoiceItems(
+					               Contracts.Select(item => item.name).ToArray(),
+					               checkedItems,
+					               (caller, arguments) => {
+										if (arguments.IsChecked) {
+									cacheContracts.Add(Contracts[arguments.Which].uuid);
+										   } else {
+									cacheContracts.Remove(Contracts[arguments.Which].uuid);
+										   }
+									   }
+					              )
+				               .SetPositiveButton(
+								   @"Сохранить",
+								   (caller, arguments) => {
+									   ll.SetTag(Resource.String.ContractUUIDs, string.Join(@";", cacheContracts));
+									   if (cacheContracts.Count > 0) {
+										   ContractsNames.Text = string.Join(@", ",
+								                                             Contracts.Where(c => cacheContracts.Contains(c.uuid))
+																		   .Select(c => c.name).ToArray()
+																  );
+									   } else {
+											ContractsNames.Text = string.Empty;
+									   }
+										(caller as Dialog).Dispose();
+								   }
+								)
+				               .SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Dialog).Dispose(); })
+				               .Show();
+
+				//new AlertDialog.Builder(this)
+				//			   .SetTitle("Контракты")
+				//			   .SetCancelable(true)
+				//			   .SetItems(Contracts.Select(item => item.name).ToArray(), (caller, arguments) => {
+				//				   ContractsNames.Text = Contracts[arguments.Which].name;
+				//				   ContractsNames.SetTag(Resource.String.ContractUUID, Contracts[arguments.Which].uuid);
+				//			   })
+				//			   .Show();
+			}
 		}
 	}
 }

@@ -1,13 +1,8 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
@@ -16,21 +11,30 @@ using CRMLite.Adapters;
 
 namespace CRMLite
 {
-	[Activity(Label = "ContractActivity")]
+	[Activity(Label = "ContractActivity", ScreenOrientation=Android.Content.PM.ScreenOrientation.Landscape)]
 	public class ContractActivity : Activity
 	{
+		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";
+
 		Pharmacy Pharmacy;
 		ListView ContractTable;
-		List<ContractData> Datas;
+		IList<ContractData> ContractDatas;
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
 
 			RequestWindowFeature(WindowFeatures.NoTitle);
+			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
 
 			// Create your application here
-			var pharmacyUUID = Intent.GetStringExtra("UUID");
+			SetContentView(Resource.Layout.Contract);
+
+			FindViewById<Button>(Resource.Id.caCloseB).Click += (s, e) => {
+				Finish();
+			};
+
+			var pharmacyUUID = Intent.GetStringExtra(C_PHARMACY_UUID);
 			if (string.IsNullOrEmpty(pharmacyUUID)) return;
 
 			Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
@@ -38,6 +42,9 @@ namespace CRMLite
 			FindViewById<TextView>(Resource.Id.caInfoTV).Text = "КОНТРАКТЫ АПТЕКИ: " + Pharmacy.GetName();
 
 			ContractTable = FindViewById<ListView>(Resource.Id.caContractTable);
+
+			var header = LayoutInflater.Inflate(Resource.Layout.ContractTableHeader, ContractTable, false);
+			ContractTable.AddHeaderView(header);
 		}
 
 		protected override void OnResume()
@@ -57,10 +64,18 @@ namespace CRMLite
 							   })
 							   .Show();
 			} else {
-				Datas = new List<ContractData>();//MainDatabase.(Pharmacy.UUID);
 
-				ContractTable.Adapter = new ContractAdapter(this, Datas ?? new List<ContractData>());
+				RecreateAdapter();
 			}
+		}
+
+		void RecreateAdapter()
+		{
+			ContractDatas = MainDatabase.GetPharmacyDatas<ContractData>(Pharmacy.UUID);
+
+			if (ContractDatas.Count == 0) return;
+
+			ContractTable.Adapter = new ContractAdapter(this, ContractDatas);
 		}
 
 		protected override void OnPause()
@@ -71,12 +86,6 @@ namespace CRMLite
 		protected override void OnStop()
 		{
 			base.OnStop();
-
-			if (Pharmacy != null) {
-				ContractTable.Adapter = null;
-				Datas = null;
-			}
-
 		}
 	}
 }

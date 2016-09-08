@@ -98,7 +98,13 @@ namespace CRMLite.Entities
 		/// Дата заведения сотрудника. Присваивается при сохранении.
 		/// </summary>
 		/// <value>The created date.</value>
-		public DateTimeOffset? CreatedAt { get; set; }
+		public DateTimeOffset CreatedAt { get; set; }
+
+		/// <summary>
+		/// Дата обновления сотрудника. Присваивается при сохранении.
+		/// </summary>
+		/// <value>The updated date.</value>
+		public DateTimeOffset UpdatedAt { get; set; }
 
 		/// <summary>
 		/// Последний результат синхронизации.

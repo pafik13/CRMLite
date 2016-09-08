@@ -13,7 +13,10 @@
 	<string name="SaleDataUUID">SaleDataUUID</string>
 	<string name="HospitalDataUUID">HospitalDataUUID</string>
 	<string name="EmployeeUUID">EmployeeUUID</string>
-	<string name="ContractUUID">ContractUUID</string>
+	<string name="ContractDataUUID">ContractDataUUID</string>
+
+	<string name="ContractUUIDs">ContractUUIDs</string>
+
 	<string name="SubwayUUID">SubwayUUID</string>
 	<string name="RegionUUID">RegionUUID</string>
 	<string name="PlaceUUID">PlaceUUID</string>

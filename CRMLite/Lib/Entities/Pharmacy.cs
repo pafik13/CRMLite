@@ -132,7 +132,13 @@ namespace CRMLite.Entities
 		/// Дата заведения аптеки. Присваивается при сохранении.
 		/// </summary>
 		/// <value>The created date.</value>
-		public DateTimeOffset? CreatedAt { get; set; }
+		public DateTimeOffset CreatedAt { get; set; }
+
+		/// <summary>
+		/// Дата обновления аптеки. Присваивается при сохранении.
+		/// </summary>
+		/// <value>The created date.</value>
+		public DateTimeOffset UpdatedAt { get; set; }
 
 		/// <summary>
 		/// Последний результат синхронизации.

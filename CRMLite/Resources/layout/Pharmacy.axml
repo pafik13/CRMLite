@@ -197,7 +197,7 @@
                         android:hint="Например, ООО 'АПТЕКА'"
                         android:enabled="true"
                         android:layout_marginRight="24dp"
-                        android:inputType="textCapSentences"
+                        android:inputType="textCapCharacters"
                         android:layout_height="match_parent"
                         android:layout_width="match_parent" />
                 </TableRow>

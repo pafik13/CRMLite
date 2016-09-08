@@ -60,54 +60,39 @@ namespace CRMLite.Dialogs
 
 			view.FindViewById<Button>(Resource.Id.edSaveB).Click += (s, e) => {
 				var transaction = MainDatabase.BeginTransaction();
+
+				Employee item;
 				if (Employee == null) {
-					var employee = MainDatabase.Create<Employee>();
-					employee.Pharmacy = Pharmacy.UUID;
-					employee.CreatedAt = DateTimeOffset.Now;
-					//employee.UpdatedAt = DateTimeOffset.Now;
-					employee.Name = view.FindViewById<EditText>(Resource.Id.edNameET).Text;
-					employee.Position = Positions[Position.SelectedItemPosition].uuid;
-					employee.IsCustomer = view.FindViewById<CheckBox>(Resource.Id.edIsCustomerCB).Checked;
-
-					string birthDate = view.FindViewById<EditText>(Resource.Id.edBirthDateET).Text;
-
-					DateTimeFormatInfo fmt = new CultureInfo("ru-RU").DateTimeFormat;
-					if (!string.IsNullOrEmpty(birthDate)) {
-						DateTimeOffset dtoBirthDate;
-						if (DateTimeOffset.TryParse(birthDate, fmt, DateTimeStyles.None, out dtoBirthDate)) {
-							employee.BirthDate = dtoBirthDate;
-						}
-					}
-
-					employee.Phone = view.FindViewById<EditText>(Resource.Id.edPhoneET).Text;
-					employee.Email = view.FindViewById<EditText>(Resource.Id.edEmailET).Text;
-					employee.CanParticipate = view.FindViewById<CheckBox>(Resource.Id.edCanParticipateCB).Checked;
-					employee.Comment = view.FindViewById<EditText>(Resource.Id.edCommentET).Text;
+					item = MainDatabase.Create<Employee>();
+					item.Pharmacy = Pharmacy.UUID;
+					item.CreatedAt = DateTimeOffset.Now;
+				
 				} else {
-					//employee.Pharmacy = Pharmacy.UUID;
-					//employee.CreatedAt = DateTimeOffset.Now;
-					//employee.UpdatedAt = DateTimeOffset.Noww
-					Employee.Name = view.FindViewById<EditText>(Resource.Id.edNameET).Text;
-					Employee.Position = Positions[Position.SelectedItemPosition].uuid;
-					Employee.IsCustomer = view.FindViewById<CheckBox>(Resource.Id.edIsCustomerCB).Checked;
-
-					string birthDate = view.FindViewById<EditText>(Resource.Id.edBirthDateET).Text;
-
-					DateTimeFormatInfo fmt = new CultureInfo("ru-RU").DateTimeFormat;
-					if (!string.IsNullOrEmpty(birthDate)) {
-						DateTimeOffset dtoBirthDate;
-						if (DateTimeOffset.TryParse(birthDate, fmt, DateTimeStyles.None, out dtoBirthDate)) {
-							Employee.BirthDate = dtoBirthDate;
-						}
-					}
-
-					Employee.Phone = view.FindViewById<EditText>(Resource.Id.edPhoneET).Text;
-					Employee.Email = view.FindViewById<EditText>(Resource.Id.edEmailET).Text;
-					Employee.CanParticipate = view.FindViewById<CheckBox>(Resource.Id.edCanParticipateCB).Checked;
-					Employee.Comment = view.FindViewById<EditText>(Resource.Id.edCommentET).Text;
-
-					if (!Employee.IsManaged) MainDatabase.SaveEntity(transaction, Employee);
+					item = Employee;
 				}
+				item.UpdatedAt = DateTimeOffset.Now;
+
+				item.Name = view.FindViewById<EditText>(Resource.Id.edNameET).Text;
+				item.Position = Positions[Position.SelectedItemPosition].uuid;
+				item.IsCustomer = view.FindViewById<CheckBox>(Resource.Id.edIsCustomerCB).Checked;
+
+				/* BirthDate */
+				string birthDate = view.FindViewById<EditText>(Resource.Id.edBirthDateET).Text;
+				DateTimeFormatInfo fmt = new CultureInfo("ru-RU").DateTimeFormat;
+				if (!string.IsNullOrEmpty(birthDate)) {
+					DateTimeOffset dtoBirthDate;
+					if (DateTimeOffset.TryParse(birthDate, fmt, DateTimeStyles.None, out dtoBirthDate)) {
+						item.BirthDate = dtoBirthDate;
+					}
+				}
+				/* ./BirthDate */
+
+				item.Phone = view.FindViewById<EditText>(Resource.Id.edPhoneET).Text;
+				item.Email = view.FindViewById<EditText>(Resource.Id.edEmailET).Text;
+				item.CanParticipate = view.FindViewById<CheckBox>(Resource.Id.edCanParticipateCB).Checked;
+				item.Comment = view.FindViewById<EditText>(Resource.Id.edCommentET).Text;
+
+				if (!item.IsManaged) MainDatabase.SaveEntity(transaction, item);
 
 				transaction.Commit();
 
@@ -152,7 +137,7 @@ namespace CRMLite.Dialogs
 			view.FindViewById<EditText>(Resource.Id.edNameET).Append(Employee.Name);
 			if (!string.IsNullOrEmpty(Employee.Position)) {
 				Position.SetSelection(Positions.FindIndex(item => string.Compare(item.uuid, Employee.Position) == 0));
-			};
+			}
 			view.FindViewById<CheckBox>(Resource.Id.edIsCustomerCB).Checked = Employee.IsCustomer;
 
 			if (Employee.BirthDate.HasValue) {

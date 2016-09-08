@@ -9,10 +9,14 @@ namespace CRMLite.Entities
 
 		public string name { get; set; }
 
+		public string time { get; set; }
+
 		public string description { get; set; }
 
 		[Indexed]
 		public string net { get; set; }
+
+		public string FilePath { get; set; } 
 	}
 }
 

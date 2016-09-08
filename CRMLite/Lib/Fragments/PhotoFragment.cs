@@ -22,6 +22,8 @@ namespace CRMLite
 	{
 
 		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";
+		public const string C_ATTENDANCE_LAST_UUID = @"C_ATTENDANCE_LAST_UUID";
+
 		public const int C_REQUEST_PHOTO = 100;
 
 		LayoutInflater Inflater;
@@ -48,11 +50,12 @@ namespace CRMLite
 		/**
 		 * Factory method for this fragment class. Constructs a new fragment for the given page number.
 		 */
-		public static PhotoFragment create(string UUID)
+		public static PhotoFragment create(string pharmacyUUID, string attendanceLastUUID)
 		{
 			PhotoFragment fragment = new PhotoFragment();
 			Bundle arguments = new Bundle();
-			arguments.PutString(C_PHARMACY_UUID, UUID);
+			arguments.PutString(C_PHARMACY_UUID, pharmacyUUID);
+			arguments.PutString(C_ATTENDANCE_LAST_UUID, attendanceLastUUID);
 			fragment.Arguments = arguments;
 			return fragment;
 		}
@@ -79,9 +82,14 @@ namespace CRMLite
 			// Inflate the layout containing a title and body text.
 			View view = inflater.Inflate(Resource.Layout.PhotoFragment, container, false);
 
-			if (Photos == null) {
-				Photos = new List<PhotoData>();
-			}
+			//if (Photos == null) {
+			//	Photos = new List<PhotoData>();
+			//}
+			var attendanceLastUUID = Arguments.GetString(C_ATTENDANCE_LAST_UUID);
+			var attendanceLast = string.IsNullOrEmpty(attendanceLastUUID) ? null : MainDatabase.GetEntity<Attendance>(attendanceLastUUID);
+
+			Photos = (attendanceLast == null) ? 
+				new List<PhotoData>() : MainDatabase.GetDatas<PhotoData>(attendanceLastUUID) ?? new List<PhotoData>();
 
 			PhotoTable = view.FindViewById<LinearLayout>(Resource.Id.pfPhotoTableLL);
 			RefreshPhotoList();
@@ -103,7 +111,7 @@ namespace CRMLite
 			//		subtype = Transliteration.Front(subtype, TransliterationType.Gost).Substring(0, Math.Min(5, subtype.Length)).ToUpper();
 					string stamp = DateTime.Now.ToString(@"yyyyMMddHHmmsszz");
 					File = new Java.IO.File(PhotoDir, string.Format("PHOTO_{0}.jpg", stamp));
-					Intent intent = new Intent(MediaStore.ActionImageCapture);
+					var intent = new Intent(MediaStore.ActionImageCapture);
 					intent.PutExtra(MediaStore.ExtraOutput, Android.Net.Uri.FromFile(File));
 					StartActivityForResult(intent, C_REQUEST_PHOTO);
 			//	}
@@ -186,8 +194,7 @@ namespace CRMLite
 				photo.PhotoType = photoType.uuid;
 
 				if (photoType.isNeedBrand) {
-					var brand = Brands[Brand.SelectedItemPosition - 1];
-					photo.Brand = brand.uuid;
+					photo.Brand = Brands[Brand.SelectedItemPosition - 1].uuid;
 				}
 
 				//Latitude and Longitudee
@@ -263,6 +270,17 @@ namespace CRMLite
 				}
 			};
 			PhotoType.SetSelection(0);
+			Brand.ItemSelected += (sender, e) => {
+				if (sender is Spinner) {
+					if (((Spinner)sender).Clickable) {
+						if (e.Position > 0) {
+							AddPhoto.Enabled = true;
+						} else {
+							AddPhoto.Enabled = false;
+						}
+					}
+				}
+			};
 		}
 
 		public void OnAttendanceStop(Transaction openedTransaction, Attendance current)

@@ -55,6 +55,11 @@ namespace CRMLite
 			lib.Click += delegate {
 				StartActivity(new Intent(this, typeof(TestDataActivity)));
 			};
+
+			var route = FindViewById<ImageView>(Resource.Id.maRoute);
+			route.Click += delegate {
+				StartActivity(new Intent(this, typeof(RouteActivity)));
+			}; 
 		}
 
 		void OnListItemClick(object sender, AdapterView.ItemClickEventArgs e)
