@@ -31,6 +31,7 @@ namespace CRMLite
 		Pharmacy Pharmacy;
 		DateTimeOffset? AttendanceStart;
 		TextView Locker;
+		ImageView Arrow;
 
 		IList<PhotoType> PhotoTypes;
 		Spinner PhotoType;
@@ -118,6 +119,13 @@ namespace CRMLite
 			};
 
 			Locker = view.FindViewById<TextView>(Resource.Id.locker);
+			Arrow = view.FindViewById<ImageView>(Resource.Id.arrow);
+
+			if (attendanceLast != null) {
+				if (attendanceLast.When.Date == DateTimeOffset.UtcNow.Date) {
+					Arrow.Visibility = ViewStates.Gone;
+				}
+			}
 
 			return view;
 		}
@@ -239,6 +247,7 @@ namespace CRMLite
 		public void OnAttendanceStart(DateTimeOffset? start)
 		{
 			AttendanceStart = start;
+			Arrow.Visibility = ViewStates.Gone;
 			Locker.Visibility = ViewStates.Gone;
 
 			var brandsList = new List<DrugBrand>();

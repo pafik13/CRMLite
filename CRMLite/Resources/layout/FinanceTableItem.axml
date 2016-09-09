@@ -44,7 +44,8 @@
         android:id="@+id/htiDate4"
         android:layout_weight="7"
         android:gravity="center"
-        android:textAppearance="@style/rowTextForPharmacy" />
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:background="@color/Grey_300" />
     <TextView
         android:text="Date5"
         android:layout_width="0dp"
@@ -76,7 +77,8 @@
         android:id="@+id/htiDate8"
         android:layout_weight="7"
         android:gravity="center"
-        android:textAppearance="@style/rowTextForPharmacy" />
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:background="@color/Grey_300" />
     <TextView
         android:text="Date9"
         android:layout_width="0dp"
@@ -108,5 +110,6 @@
         android:id="@+id/htiDate10"
         android:layout_weight="7"
         android:gravity="center"
-        android:textAppearance="@style/rowTextForPharmacy" />
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:background="@color/Grey_300" />
 </LinearLayout>

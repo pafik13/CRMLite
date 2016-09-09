@@ -12,6 +12,7 @@ using Realms;
 using CRMLite.Entities;
 using Android.Text;
 using InputFilterForEditText;
+using System.Diagnostics;
 
 namespace CRMLite
 {
@@ -33,6 +34,8 @@ namespace CRMLite
 		DateTimeOffset? AttendanceStart;
 
 		TextView Locker;
+
+		ImageView Arrow;
 
 		LinearLayout DistributionTable;
 
@@ -116,6 +119,13 @@ namespace CRMLite
 			InitResume(mainView, attendanceLast);
 
 			Locker = mainView.FindViewById<TextView>(Resource.Id.locker);
+			Arrow = mainView.FindViewById<ImageView>(Resource.Id.arrow);
+
+			if (attendanceLast != null) {
+				if (attendanceLast.When.Date == DateTimeOffset.UtcNow.Date) {
+					Arrow.Visibility = ViewStates.Gone;
+				}
+			}
 
 			return mainView;
 		}
@@ -376,8 +386,7 @@ namespace CRMLite
 			ChangeAttendanceType.Click += (sender, e) => {
 				AttendanceTypeContent.ShowNext();
 			};
-			// TODO: uncomment
-			//ChangeAttendanceType.Visibility = ViewStates.Gone;
+			ChangeAttendanceType.Visibility = ViewStates.Gone;
 
 			if (attendanceLast == null) {
 				AttendanceTypeContent.Visibility = ViewStates.Gone;
@@ -416,8 +425,7 @@ namespace CRMLite
 
 				AttendanceTypeContent.AddView(presentationMainView);
 
-				//TODO: uncomment
-				//return;
+				return;
 			}
 
 			var coterieDataGrouped = MainDatabase.GetCoterieDataGrouped(attendanceLast.UUID);
@@ -434,14 +442,12 @@ namespace CRMLite
 
 				AttendanceTypeContent.AddView(CoterieLayout);
 
-				//TODO: uncomment
-				//return;
+				return;
 			}
 
-			//TODO: uncommen
 			// если ничего нет, то спрятать
-			//AttendanceTypeContent.Visibility = ViewStates.Gone;
-			//ChangeAttendanceType.Visibility = ViewStates.Gone;
+			AttendanceTypeContent.Visibility = ViewStates.Gone;
+			ChangeAttendanceType.Visibility = ViewStates.Gone;
 		}
 
 		void InitPromotion(View view, Attendance attendanceLast)
@@ -582,7 +588,7 @@ namespace CRMLite
 			SaleTable.AddView(divider);
 
 			var key = string.Empty;
-			var formatForKey = @"MMyy";
+			var formatForKey = @"MMyyyy";
 			SaleDataTextViews = new Dictionary<string, TextView>();
 			foreach (var SKU in SKUs) {
 				var row = (Inflater.Inflate(
@@ -617,11 +623,15 @@ namespace CRMLite
 				return;
 			}
 
+			TextView txt;
 			foreach (var sale in saleDatas) {
-				key = string.Format("{0}-{1}", sale.DrugSKU, sale.Month.ToString(formatForKey));
-				var textView = SaleDataTextViews[key];
-				textView.SetTag(Resource.String.SaleDataUUID, sale.UUID);
-				textView.Text = sale.Sale == null ? string.Empty : sale.Sale.ToString();
+				//key = string.Format("{0}-{1}", sale.DrugSKU, sale.Month.ToString(formatForKey));
+				key = string.Format("{0}-{1}{2}", sale.DrugSKU, sale.Month.ToString("D2"), sale.Year);
+				if (SaleDataTextViews.ContainsKey(key)) {
+					txt = SaleDataTextViews[key];
+					txt.SetTag(Resource.String.SaleDataUUID, sale.UUID);
+					txt.Text = sale.Sale == null ? string.Empty : sale.Sale.ToString();
+				}
 			}
 		}
 
@@ -807,6 +817,7 @@ namespace CRMLite
 		public void OnAttendanceStart(DateTimeOffset? start)
 		{
 			AttendanceStart = start;
+			Arrow.Visibility = ViewStates.Gone;
 			Locker.Visibility = ViewStates.Gone;
 
 			// 1. Дистрибьюция
@@ -1029,19 +1040,86 @@ namespace CRMLite
 						Console.WriteLine("Info: sku = {0}, value = {1}, sale = {2}", skuUUID, Helper.ToFloat(rView.Text), saleUUID);
 
 						if (string.IsNullOrEmpty(saleUUID)) {
-							var sale = MainDatabase.CreateData<SaleData>(current.UUID);
+							var sale = MainDatabase.CreateData<SaleDataByMonth>(current.UUID);
 							sale.Pharmacy = Pharmacy.UUID;
 							sale.DrugSKU = skuUUID;
-							sale.Month = SaleDataMonths[m];
+							sale.Year = SaleDataMonths[m].Year;
+							sale.Month = SaleDataMonths[m].Month;
 							sale.Sale = Helper.ToFloat(rView.Text);
 						} else {
-							var sale = MainDatabase.GetEntity<SaleData>(saleUUID);
-							Console.WriteLine("Info: sku = {0}, month = {1}", sale.DrugSKU == skuUUID, sale.Month.Month == SaleDataMonths[m].Month);
+							var sale = MainDatabase.GetEntity<SaleDataByMonth>(saleUUID);
+							Console.WriteLine("Info: sku = {0}, month = {1}", sale.DrugSKU == skuUUID, sale.Month == SaleDataMonths[m].Month);
 							sale.Sale = Helper.ToFloat(rView.Text);
 						}
 					}
 				}
 			}
+
+			// 6.1 Собираем данные в кварталы
+			var calcQuraters = new Stopwatch();
+			calcQuraters.Start();
+			var datas = MainDatabase.GetPharmacyDatas<SaleDataByMonth>(Pharmacy.UUID);
+			var dict = new Dictionary<string, Dictionary<int, List<SaleDataByMonth>[]>>();
+			foreach (var item in datas) {
+				if (dict.ContainsKey(item.DrugSKU)) {
+					if (dict[item.DrugSKU].ContainsKey(item.Year)) {
+						dict[item.DrugSKU][item.Year][(item.Month - 1) / 3].Add(item);
+					} else {
+						dict[item.DrugSKU].Add(item.Year, new List<SaleDataByMonth>[4]);
+						dict[item.DrugSKU][item.Year][0] = new List<SaleDataByMonth>();
+						dict[item.DrugSKU][item.Year][1] = new List<SaleDataByMonth>();
+						dict[item.DrugSKU][item.Year][2] = new List<SaleDataByMonth>();
+						dict[item.DrugSKU][item.Year][3] = new List<SaleDataByMonth>();
+						dict[item.DrugSKU][item.Year][(item.Month - 1) / 3].Add(item);
+					}
+				} else {
+					dict.Add(item.DrugSKU, new Dictionary<int, List<SaleDataByMonth>[]>());
+					dict[item.DrugSKU].Add(item.Year, new List<SaleDataByMonth>[4]);
+					dict[item.DrugSKU][item.Year][0] = new List<SaleDataByMonth>();
+					dict[item.DrugSKU][item.Year][1] = new List<SaleDataByMonth>();
+					dict[item.DrugSKU][item.Year][2] = new List<SaleDataByMonth>();
+					dict[item.DrugSKU][item.Year][3] = new List<SaleDataByMonth>();
+					dict[item.DrugSKU][item.Year][(item.Month - 1) / 3].Add(item);}
+			}
+
+			var oldQuarters = MainDatabase.GetPharmacyDatas<SaleDataByQuarter>(Pharmacy.UUID);
+			int newQuarters = 0;
+			foreach (var sku in dict) {
+				foreach (var year in sku.Value) {
+					for (int q = 1; q <= 4; q++) {
+						if (year.Value[q - 1].Count == 3) {
+							newQuarters++;
+							var oldQuarter = oldQuarters.SingleOrDefault(oq => oq.DrugSKU == sku.Key && oq.Year == year.Key && oq.Quarter == q);
+							if (oldQuarter == null) {
+								var quarter = MainDatabase.Create<SaleDataByQuarter>();
+								quarter.Attendance = current.UUID;
+								quarter.Pharmacy = Pharmacy.UUID;
+								quarter.DrugSKU = sku.Key;
+								quarter.Year = year.Key;
+								quarter.Quarter = q;
+								quarter.Sale = 0.0f;
+								foreach (var item in year.Value[q - 1]) {
+									quarter.Sale += item.Sale;
+								}
+								if (quarter.Sale.HasValue) {
+									if (Math.Abs(quarter.Sale.Value) < 0.01) quarter.Sale = null;
+								}
+							} else {
+								oldQuarter.Sale = 0.0f;
+								foreach (var item in year.Value[q - 1]) {
+									oldQuarter.Sale += item.Sale;
+								}
+								if (oldQuarter.Sale.HasValue) {
+									if (Math.Abs(oldQuarter.Sale.Value) < 0.01) oldQuarter.Sale = null;
+								}
+							}
+						}
+					}
+				}
+			}
+			calcQuraters.Stop();
+			Console.WriteLine(@"Calc: {0}, Count: {1}, oldQuarters: {2}, newQuarters: {3}", calcQuraters.ElapsedMilliseconds, datas.Count, oldQuarters.Count, newQuarters);
+
 
 			// 7. Резюме визита
 			var resumeText = ResumeLayout.FindViewById<EditText>(Resource.Id.ifResumeET);

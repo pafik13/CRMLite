@@ -117,7 +117,7 @@
     <Compile Include="TestDataActivity.cs" />
     <Compile Include="Lib\Entities\FinanceData.cs" />
     <Compile Include="FinanceActivity.cs" />
-    <Compile Include="Lib\Entities\SaleData.cs" />
+    <Compile Include="Lib\Entities\SaleDataByMonth.cs" />
     <Compile Include="Lib\Dialogs\FinanceDialog.cs" />
     <Compile Include="Lib\IPharmacyData.cs" />
     <Compile Include="Lib\Entities\Contract.cs" />
@@ -140,6 +140,7 @@
     <Compile Include="Lib\Adapters\ListedHospitalAdapter.cs" />
     <Compile Include="RouteActivity.cs" />
     <Compile Include="Lib\Entities\FinanceDataByMonth.cs" />
+    <Compile Include="Lib\Entities\SaleDataByQuarter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -335,6 +336,9 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_swap_vert_black_48dp.png" />
     <AndroidResource Include="Resources\layout\Route.axml" />
     <AndroidResource Include="Resources\layout\InfoPresentationSubItem.axml" />
+    <AndroidResource Include="Resources\drawable\img_arrow.png" />
+    <AndroidResource Include="Resources\drawable\img_arrow_correct.png" />
+    <AndroidResource Include="Resources\drawable\img_arrow2.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

@@ -11,6 +11,7 @@ using Realms;
 
 using CRMLite.Entities;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace CRMLite.Dialogs
 {
@@ -162,20 +163,111 @@ namespace CRMLite.Dialogs
 					var period = DateTimeOffset.Now.AddMonths(-12 + startMonth.SelectedItemPosition - 1);
 					Transaction = MainDatabase.BeginTransaction();
 
-
-
 					for (int c = 2; c < FinanceTable.ChildCount; c = c + 2) {
 						var row = (LinearLayout)FinanceTable.GetChildAt(c);
 
-						var financeData = MainDatabase.Create<FinanceData>();
+						var sale = Helper.ToFloat(row.FindViewById<EditText>(Resource.Id.fdtiSaleET).Text);
+						var purchase = Helper.ToFloat(row.FindViewById<EditText>(Resource.Id.fdtiPurchaseET).Text);
+						var remain = Helper.ToFloat(row.FindViewById<EditText>(Resource.Id.fdtiRemainET).Text);
+
+						if (sale == null && purchase == null && remain == null) continue;
+
+						var financeData = MainDatabase.Create<FinanceDataByMonth>();
 						financeData.Pharmacy = Pharmacy.UUID;
 						financeData.DrugSKU = (string)row.GetTag(Resource.String.DrugSKUUUID);
-						financeData.Period = period;
-						financeData.Sale = Helper.ToFloat(row.FindViewById<EditText>(Resource.Id.fdtiSaleET).Text);
-						financeData.Purchase = Helper.ToFloat(row.FindViewById<EditText>(Resource.Id.fdtiPurchaseET).Text);
-						financeData.Remain = Helper.ToFloat(row.FindViewById<EditText>(Resource.Id.fdtiRemainET).Text);
-						financeDatas.Add(financeData);
+						financeData.Year = period.Year;
+						financeData.Month = period.Month;
+						financeData.Sale = sale;
+						financeData.Purchase = purchase;
+						financeData.Remain = remain;
 					}
+
+					// 6.1 Собираем данные в кварталы
+					var calcQuraters = new Stopwatch();
+					calcQuraters.Start();
+					var datas = MainDatabase.GetPharmacyDatas<FinanceDataByMonth>(Pharmacy.UUID);
+					var dict = new Dictionary<string, Dictionary<int, List<FinanceDataByMonth>[]>>();
+					foreach (var item in datas) {
+						if (dict.ContainsKey(item.DrugSKU)) {
+							if (dict[item.DrugSKU].ContainsKey(item.Year)) {
+								dict[item.DrugSKU][item.Year][(item.Month - 1) / 3].Add(item);
+							} else {
+								dict[item.DrugSKU].Add(item.Year, new List<FinanceDataByMonth>[4]);
+								dict[item.DrugSKU][item.Year][0] = new List<FinanceDataByMonth>();
+								dict[item.DrugSKU][item.Year][1] = new List<FinanceDataByMonth>();
+								dict[item.DrugSKU][item.Year][2] = new List<FinanceDataByMonth>();
+								dict[item.DrugSKU][item.Year][3] = new List<FinanceDataByMonth>();
+								dict[item.DrugSKU][item.Year][(item.Month - 1) / 3].Add(item);
+							}
+						} else {
+							dict.Add(item.DrugSKU, new Dictionary<int, List<FinanceDataByMonth>[]>());
+							dict[item.DrugSKU].Add(item.Year, new List<FinanceDataByMonth>[4]);
+							dict[item.DrugSKU][item.Year][0] = new List<FinanceDataByMonth>();
+							dict[item.DrugSKU][item.Year][1] = new List<FinanceDataByMonth>();
+							dict[item.DrugSKU][item.Year][2] = new List<FinanceDataByMonth>();
+							dict[item.DrugSKU][item.Year][3] = new List<FinanceDataByMonth>();
+							dict[item.DrugSKU][item.Year][(item.Month - 1) / 3].Add(item);
+						}
+					}
+
+					var oldQuarters = MainDatabase.GetPharmacyDatas<FinanceDataByQuarter>(Pharmacy.UUID);
+					int newQuarters = 0;
+					foreach (var sku in dict) {
+						foreach (var year in sku.Value) {
+							for (int q = 1; q <= 4; q++) {
+								if (year.Value[q - 1].Count == 3) {
+									newQuarters++;
+									var oldQuarter = oldQuarters.SingleOrDefault(oq => oq.DrugSKU == sku.Key && oq.Year == year.Key && oq.Quarter == q);
+									if (oldQuarter == null) {
+										var quarter = MainDatabase.Create<FinanceDataByQuarter>();
+										quarter.Pharmacy = Pharmacy.UUID;
+										quarter.DrugSKU = sku.Key;
+										quarter.Year = year.Key;
+										quarter.Quarter = q;
+										quarter.Sale = 0.0f;
+										quarter.Purchase = 0.0f;
+										quarter.Remain = 0.0f;
+										foreach (var item in year.Value[q - 1]) {
+											quarter.Sale += item.Sale;
+											quarter.Purchase += item.Purchase;
+											quarter.Remain += item.Remain;
+										}
+										if (quarter.Sale.HasValue) { 
+											if (Math.Abs(quarter.Sale.Value) < 0.01) quarter.Sale = null; 
+										}
+										if (quarter.Purchase.HasValue) {
+											if (Math.Abs(quarter.Purchase.Value) < 0.01) quarter.Purchase = null;
+										}
+										if (quarter.Remain.HasValue) { 
+											if (Math.Abs(quarter.Remain.Value) < 0.01) quarter.Remain = null; 
+										}
+
+									} else {
+										oldQuarter.Sale = 0.0f;
+										oldQuarter.Purchase = 0.0f;
+										oldQuarter.Remain = 0.0f;
+										foreach (var item in year.Value[q - 1]) {
+											oldQuarter.Sale += item.Sale;
+											oldQuarter.Purchase += item.Purchase;
+											oldQuarter.Remain += item.Remain;
+										}
+										if (oldQuarter.Sale.HasValue) {
+											if (Math.Abs(oldQuarter.Sale.Value) < 0.01) oldQuarter.Sale = null;
+										}
+										if (oldQuarter.Purchase.HasValue) {
+											if (Math.Abs(oldQuarter.Purchase.Value) < 0.01) oldQuarter.Purchase = null;
+										}
+										if (oldQuarter.Remain.HasValue) {
+											if (Math.Abs(oldQuarter.Remain.Value) < 0.01) oldQuarter.Remain = null;
+										}
+									}
+								}
+							}
+						}
+					}
+					calcQuraters.Stop();
+					Console.WriteLine(@"Calc: {0}, Count: {1}, oldQuarters: {2}, newQuarters: {3}", calcQuraters.ElapsedMilliseconds, datas.Count, oldQuarters.Count, newQuarters);
+
 
 					Transaction.Commit();
 				}

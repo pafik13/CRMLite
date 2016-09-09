@@ -139,4 +139,12 @@
         android:background="@color/translucent_black"
         android:gravity="center"
         tools:visibility="gone" />
+    <ImageView xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/arrow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:src="@drawable/img_arrow2"
+        tools:visibility="gone" />
 </FrameLayout>

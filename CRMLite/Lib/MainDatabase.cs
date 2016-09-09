@@ -125,7 +125,7 @@ namespace CRMLite
 
 		internal static void DeleteSaleData()
 		{
-			foreach (var item in Me.DB.All<SaleData>().ToList()) {
+			foreach (var item in Me.DB.All<SaleDataByMonth>().ToList()) {
 				Me.DB.Remove(item);
 			}
 		}
@@ -635,14 +635,21 @@ namespace CRMLite
 			return Me.DB.All<T>().Where(item => item.Attendance == attendanceUUID).ToList();
 		}
 
-		internal static IEnumerable<SaleData> GetSaleDatas(string pharmacyUUID, DateTimeOffset[] dates)
+		internal static IEnumerable<SaleDataByMonth> GetSaleDatas(string pharmacyUUID, DateTimeOffset[] dates)
 		{
-			var formatForMonthCompare = @"yyyyMM";
-			var months = dates.Select(m => m.ToString(formatForMonthCompare));
-			return Me.DB.All<SaleData>()
+			var months = dates.Select(m => m.Month).Distinct();
+			var years = dates.Select(m => m.Year).Distinct();
+			//var months = new List<int>();
+			//months.Add(6);
+			//months.Add(7);
+
+			//var years = new List<int>();
+			//years.Add(2016);
+
+			return Me.DB.All<SaleDataByMonth>()
 				     .Where(sd => sd.Pharmacy == pharmacyUUID)
 				     .ToList()
-				     .Where(sd => months.Contains(sd.Month.ToString(formatForMonthCompare)));
+				     .Where(sd => months.Contains(sd.Month) && years.Contains(sd.Year));
 		}
 	}
 }

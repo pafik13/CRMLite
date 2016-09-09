@@ -78,9 +78,10 @@ namespace CRMLite
 
 					//Table.RemoveAllViews();
 
-					//RefreshView();
+					RefreshView();
 					//MainDatabase.SaveItems(arguments.FinanceDatas);
-					SetValues(arguments.FinanceDatas);
+					//SetValues(arguments.FinanceDatas);
+
 				};
 			};
 			var switcher = FindViewById<ViewSwitcher>(Resource.Id.faSwitchViewTypeVS);
@@ -128,6 +129,8 @@ namespace CRMLite
 
 		void RefreshView()
 		{
+			Table.RemoveAllViews();
+
 			TextViews = new Dictionary<string, TextView>();
 
 			// TODO: remove Stopwatchers
@@ -211,74 +214,102 @@ namespace CRMLite
 			var setValues = new Stopwatch();
 			setValues.Start();
 
-			string UUID = @"Pharmcay#" + 237;//string.Empty;
-
 			var key = string.Empty;
-			var monthDatas = MainDatabase.GetPharmacyDatas<FinanceDataByMonth>(UUID);
-			// 2. Вставляем данные за месяц 
-			foreach (var financeData in monthDatas) {
-				TextView txt;
-				string datePart = string.Format("{0}{1}", financeData.Month.ToString("D2"), financeData.Year);
-				// Salee
-				key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitSale, datePart);
+			// 2. Данные
+			TextView txt;
+
+			// 2.1 Данные с визита
+			// 2.1.1 Вставляем данные за месяц
+			var sdMonths = MainDatabase.GetPharmacyDatas<SaleDataByMonth>(Pharmacy.UUID);
+			foreach (var data in sdMonths) {
+				string datePart = string.Format("{0}{1}", data.Month.ToString("D2"), data.Year);
+				// Sale
+				key = string.Format("{0}-{1}-{2}", data.DrugSKU, FinanceInfoType.fitSale, datePart);
 				if (TextViews.ContainsKey(key)) {
 					txt = TextViews[key];
-					txt.Text = financeData.Sale.ToString();
+					txt.Text = data.Sale.ToString();
+					txt.SetTextColor(Android.Graphics.Color.DarkOrange);
+				}
+			}
+			// 2.1.2 Вставляем данные за квартал
+			var sdQuarters = MainDatabase.GetPharmacyDatas<SaleDataByQuarter>(Pharmacy.UUID);
+			foreach (var data in sdQuarters) {
+				string datePart = string.Format("4{0}{1}", data.Quarter, data.Year);
+				// Sale
+				key = string.Format("{0}-{1}-{2}", data.DrugSKU, FinanceInfoType.fitSale, datePart);
+				if (TextViews.ContainsKey(key)) {
+					txt = TextViews[key];
+					txt.Text = data.Sale.ToString();
+					txt.SetTextColor(Android.Graphics.Color.DarkOrange);
+				}
+			}
+
+			// 2.2 Данные от сетей введенные
+			// 2.2.1 Вставляем данные за месяц 
+			var fdMonths = MainDatabase.GetPharmacyDatas<FinanceDataByMonth>(Pharmacy.UUID);
+			foreach (var data in fdMonths) {
+				string datePart = string.Format("{0}{1}", data.Month.ToString("D2"), data.Year);
+				// Salee
+				key = string.Format("{0}-{1}-{2}", data.DrugSKU, FinanceInfoType.fitSale, datePart);
+				if (TextViews.ContainsKey(key)) {
+					txt = TextViews[key];
+					txt.Text = data.Sale.ToString();
 					txt.SetTextColor(Android.Graphics.Color.Blue);
 				}
 				//TextViewsBySKU[key].Text = financeData.Sale.ToString();
 				// Purchase
-				key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitPurchase, datePart);
+				key = string.Format("{0}-{1}-{2}", data.DrugSKU, FinanceInfoType.fitPurchase, datePart);
 				if (TextViews.ContainsKey(key)) {
 					txt = TextViews[key];
-					txt.Text = financeData.Purchase.ToString();
+					txt.Text = data.Purchase.ToString();
 					txt.SetTextColor(Android.Graphics.Color.Blue);
 				}
 				//TextViewsBySKU[key].Text = financeData.Purchase.ToString();
 
 				// Remain 
-				key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitRemain, datePart);
+				key = string.Format("{0}-{1}-{2}", data.DrugSKU, FinanceInfoType.fitRemain, datePart);
 				if (TextViews.ContainsKey(key)) {
 					txt = TextViews[key];
-					txt.Text = financeData.Remain.ToString();
+					txt.Text = data.Remain.ToString();
 					txt.SetTextColor(Android.Graphics.Color.Blue);
 				}
 				//TextViewsBySKU[key].Text = financeData.Remain.ToString();
-
 			}
 
-
-			var quarterDatas = MainDatabase.GetPharmacyDatas<FinanceDataByQuarter>(UUID);
-			// 3. Вставляем данные за месяц
-			foreach (var data in quarterDatas) {
+			// 2.2.2 Вставляем данные за квартал
+			var fdQuarters = MainDatabase.GetPharmacyDatas<FinanceDataByQuarter>(Pharmacy.UUID);
+			foreach (var data in fdQuarters) {
 				string datePart = string.Format("4{0}{1}", data.Quarter, data.Year);
 				// Sale
 				key = string.Format("{0}-{1}-{2}", data.DrugSKU, FinanceInfoType.fitSale, datePart);
 				if (TextViews.ContainsKey(key)) {
-					TextViews[key].Text = data.Sale.ToString();
+					txt = TextViews[key];
+					txt.Text = data.Sale.ToString();
+					txt.SetTextColor(Android.Graphics.Color.Blue);
 				}
 				//TextViewsBySKU[key].Text = financeData.Sale.ToString();
 				// Purchas
 				key = string.Format("{0}-{1}-{2}", data.DrugSKU, FinanceInfoType.fitPurchase, datePart);
 				if (TextViews.ContainsKey(key)) {
-					TextViews[key].Text = data.Purchase.ToString();
-				}
+					txt = TextViews[key];
+					txt.Text = data.Purchase.ToString();
+					txt.SetTextColor(Android.Graphics.Color.Blue);				}
 				//TextViewsBySKU[key].Text = financeData.Purchase.ToString();
 
 				// Remain
 				key = string.Format("{0}-{1}-{2}", data.DrugSKU, FinanceInfoType.fitRemain, datePart);
 				if (TextViews.ContainsKey(key)) {
-					TextViews[key].Text = data.Remain.ToString();
-				}
+					txt = TextViews[key];
+					txt.Text = data.Remain.ToString();
+					txt.SetTextColor(Android.Graphics.Color.Blue);				}
 				//TextViewsBySKU[key].Text = financeData.Remain.ToString();
-
 			}
-			setValues.Stop();
 
+			setValues.Stop();
 			Console.WriteLine(
-				"FinanceData: SetValues={0}-{1}-{2}",
+				"FinanceData: SetValues={0}-{1}-{2}-{3}-{4}",
 				setValues.ElapsedMilliseconds,
-				monthDatas.Count, quarterDatas.Count);
+				sdMonths.Count, sdQuarters.Count, fdMonths.Count, fdQuarters.Count);
 
 			//RefreshViewBySKU(financeDatas, dates, infoTypes, drugSKUs);
 		}
@@ -304,7 +335,6 @@ namespace CRMLite
 				key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitRemain, financeData.Period.ToString(PeriodFormatForKey));
 				TextViews[key].Text = financeData.Remain.ToString();
 				TextViewsBySKU[key].Text = financeData.Remain.ToString();
-
 			}
 
 			setValues.Stop();

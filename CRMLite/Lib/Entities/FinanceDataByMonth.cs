@@ -14,11 +14,11 @@ namespace CRMLite
 		[Indexed]
 		public string Pharmacy { get; set; }
 
+		public string DrugSKU { get; set; }
+
 		public int Year { get; set; }
 
 		public int Month { get; set; }
-
-		public string DrugSKU { get; set; }
 
 		public float? Sale { get; set; }
 

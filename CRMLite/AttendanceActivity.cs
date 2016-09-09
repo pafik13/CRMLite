@@ -179,11 +179,11 @@ namespace CRMLite
 				}).Start();
 			};
 			// TODO: uncomment
-			//if (AttendanceLast != null) {
-			//	if (AttendanceLast.When.Date == DateTimeOffset.UtcNow.Date) {
-			//		btnStartStop.Visibility = ViewStates.Gone;
-			//	}
-			//}
+			if (AttendanceLast != null) {
+				if (AttendanceLast.When.Date == DateTimeOffset.UtcNow.Date) {
+					btnStartStop.Visibility = ViewStates.Gone;
+				}
+			}
 
 			Close = FindViewById<Button>(Resource.Id.aaCloseB);
 			Close.Click += (sender, e) =>
