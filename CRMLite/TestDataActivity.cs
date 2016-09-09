@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Threading;
+using System.Diagnostics;
 
 using Android.App;
 using Android.OS;
@@ -62,24 +64,90 @@ namespace CRMLite
 
 		void CustomAction_Click(object sender, EventArgs e)
 		{
-			var rnd = new Random();
-			rnd.Next();
-			var promotions = MainDatabase.GetItems<Promotion>();
-			var pharmacies = MainDatabase.GetItems<Pharmacy>();
-			var transaction = MainDatabase.BeginTransaction();
-			rnd.Next();
-			foreach (var pharmacy in pharmacies) {
-				var attendanceLast = MainDatabase.GetAttendaces(pharmacy.UUID).OrderByDescending(i => i.When).FirstOrDefault();
-				//var promotionData = MainDatabase.CreateData<PromotionData>(attendanceLast.UUID);
-				//promotionData.Promotion = promotions[rnd.Next(promotions.Count - 1)].uuid;
-				//promotionData.Text = @"promotionData";
-				//var competitorData = MainDatabase.CreateData<CompetitorData>(attendanceLast.UUID);
-				//competitorData.Text = @"competitorData";
-				var resumeData = MainDatabase.CreateData<ResumeData>(attendanceLast.UUID);
-				resumeData.Text = @"resumeData";
+			//using (var transaction = MainDatabase.BeginTransaction()) {
+			//	MainDatabase.DeleteItems<FinanceDataByMonth>();
+			//	MainDatabase.DeleteItems<FinanceDataByQuarter>();
+			//	transaction.Commit();
+			//}
+			string UUID = @"Pharmcay#" + 237;//string.Empty;
+			//var rnd = new Random();
+			//rnd.Next();
+			//var gen = new Stopwatch();
+			//gen.Start();
+			//var SKUs = MainDatabase.GetItems<DrugSKU>();
+			//var trans = MainDatabase.BeginTransaction();
+			//for (int i = 0; i < 500; i++) {
+			//	var uuid = @"Pharmcay#" + i;
+			//	foreach (var sku in SKUs) {
+			//		for (int m = 1; m <= 12; m++) {
+			//			var financeData = MainDatabase.Create<FinanceDataByMonth>();
+			//			financeData.Pharmacy = uuid;
+			//			financeData.DrugSKU = sku.uuid;
+			//			financeData.Year = 2016;
+			//			financeData.Month = m;
+			//			financeData.Sale = rnd.NextDouble() < 0.2 ? null : (float?)(rnd.NextDouble() * 60);
+			//			financeData.Purchase = rnd.NextDouble() < 0.2 ? null : (float?)(rnd.NextDouble() * 40);
+			//			financeData.Remain = rnd.NextDouble() < 0.2 ? null : (float?)(rnd.NextDouble() * 20);
+			//		}	
+			//	}
+			//}
+			//trans.Commit();
+			//gen.Stop();
+			//Console.WriteLine(@"Gen: {0}", gen.ElapsedMilliseconds);
+
+			var calc = new Stopwatch();
+			calc.Start();
+			var datas = MainDatabase.GetPharmacyDatas<FinanceDataByMonth>(UUID);
+			// datas.OrderBy(d => d.DrugSKU).ThenBy(d => d.Year).ThenBy(d =>d.Month
+			var dict = new Dictionary<string, Dictionary<int, List<FinanceDataByMonth>[]>>();
+			foreach (var item in datas) {
+				if (dict.ContainsKey(item.DrugSKU)) {
+					if (dict[item.DrugSKU].ContainsKey(item.Year)) {
+						dict[item.DrugSKU][item.Year][(item.Month - 1) / 3].Add(item);
+					} else {
+						dict[item.DrugSKU].Add(item.Year, new List<FinanceDataByMonth>[4]);
+						dict[item.DrugSKU][item.Year][0] = new List<FinanceDataByMonth>();
+						dict[item.DrugSKU][item.Year][1] = new List<FinanceDataByMonth>();
+						dict[item.DrugSKU][item.Year][2] = new List<FinanceDataByMonth>();
+						dict[item.DrugSKU][item.Year][3] = new List<FinanceDataByMonth>();
+						dict[item.DrugSKU][item.Year][(item.Month - 1) / 3].Add(item);
+					}
+				} else {
+					dict.Add(item.DrugSKU, new Dictionary<int, List<FinanceDataByMonth>[]>());
+					dict[item.DrugSKU].Add(item.Year, new List<FinanceDataByMonth>[4]);
+					dict[item.DrugSKU][item.Year][0] = new List<FinanceDataByMonth>();
+					dict[item.DrugSKU][item.Year][1] = new List<FinanceDataByMonth>();
+					dict[item.DrugSKU][item.Year][2] = new List<FinanceDataByMonth>();
+					dict[item.DrugSKU][item.Year][3] = new List<FinanceDataByMonth>();
+					dict[item.DrugSKU][item.Year][(item.Month - 1) / 3].Add(item);
+				} 
 			}
-			transaction.Commit();
-			//var presentationDatas = MainDatabase.GetItems<PresentationData>();
+
+			var oldQuarters = MainDatabase.GetPharmacyDatas<FinanceDataByQuarter>(UUID);
+			var trans = MainDatabase.BeginTransaction(); 
+			foreach (var sku in dict) {
+				foreach (var year in sku.Value) {
+					for (int q = 1; q <= 4; q++) {
+						if (year.Value[q - 1].Count == 3) {
+							if (oldQuarters.SingleOrDefault(oq => oq.DrugSKU == sku.Key && oq.Year == year.Key && oq.Quarter == q) == null) {
+								var quarter = MainDatabase.Create<FinanceDataByQuarter>();
+								quarter.Pharmacy = UUID;
+								quarter.DrugSKU = sku.Key;
+								quarter.Year = year.Key;
+								quarter.Quarter = q;
+								foreach (var item in year.Value[q - 1]) {
+									quarter.Sale += item.Sale;
+									quarter.Purchase += item.Purchase;
+									quarter.Remain += item.Remain;
+								}
+							}
+						}
+					}
+				}
+			}
+			trans.Commit();
+			calc.Stop();
+			Console.WriteLine(@"Calc: {0}, Count: {1}, oldQuarters: {2}", calc.ElapsedMilliseconds, datas.Count, oldQuarters.Count);
 		}
 
 		void GenerateData_Click(object sender, EventArgs e)

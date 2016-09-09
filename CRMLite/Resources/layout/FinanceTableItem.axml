@@ -10,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/ftiDrugSKUTV"
-        android:layout_weight="20"
+        android:layout_weight="16"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
@@ -18,7 +18,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/htiDate1"
-        android:layout_weight="8"
+        android:layout_weight="7"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
@@ -26,7 +26,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate2"
-        android:layout_weight="8"
+        android:layout_weight="7"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
@@ -34,7 +34,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate3"
-        android:layout_weight="8"
+        android:layout_weight="7"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
@@ -42,7 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate4"
-        android:layout_weight="8"
+        android:layout_weight="7"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
@@ -50,7 +50,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate5"
-        android:layout_weight="8"
+        android:layout_weight="7"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
@@ -58,7 +58,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate6"
-        android:layout_weight="8"
+        android:layout_weight="7"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
@@ -66,7 +66,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate7"
-        android:layout_weight="8"
+        android:layout_weight="7"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
@@ -74,7 +74,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate8"
-        android:layout_weight="8"
+        android:layout_weight="7"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
@@ -82,7 +82,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate9"
-        android:layout_weight="8"
+        android:layout_weight="7"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy" />
     <TextView
@@ -90,7 +90,23 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/htiDate10"
-        android:layout_weight="8"
+        android:layout_weight="7"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Date11"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/htiDate9"
+        android:layout_weight="7"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Date12"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/htiDate10"
+        android:layout_weight="7"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy" />
 </LinearLayout>

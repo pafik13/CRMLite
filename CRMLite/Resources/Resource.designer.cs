@@ -1727,8 +1727,8 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c001c
 			public const int collapseActionView = 2131492892;
 			
-			// aapt resource value: 0x7f0c00b2
-			public const int content = 2131493042;
+			// aapt resource value: 0x7f0c00b4
+			public const int content = 2131493044;
 			
 			// aapt resource value: 0x7f0c0031
 			public const int contentPanel = 2131492913;
@@ -1976,35 +1976,35 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c00a1
 			public const int fdtiSaleET = 2131493025;
 			
-			// aapt resource value: 0x7f0c00af
-			public const int ftiDrugSKUTV = 2131493039;
-			
-			// aapt resource value: 0x7f0c00b0
-			public const int ftsTitle = 2131493040;
-			
 			// aapt resource value: 0x7f0c00b1
-			public const int ftshTypeName = 2131493041;
+			public const int ftiDrugSKUTV = 2131493041;
+			
+			// aapt resource value: 0x7f0c00b2
+			public const int ftsTitle = 2131493042;
+			
+			// aapt resource value: 0x7f0c00b3
+			public const int ftshTypeName = 2131493043;
 			
 			// aapt resource value: 0x7f0c00c4
 			public const int haAddIV = 2131493060;
 			
-			// aapt resource value: 0x7f0c00b7
-			public const int haCloseB = 2131493047;
+			// aapt resource value: 0x7f0c00b9
+			public const int haCloseB = 2131493049;
 			
 			// aapt resource value: 0x7f0c00c6
 			public const int haHospitalTable = 2131493062;
 			
-			// aapt resource value: 0x7f0c00b6
-			public const int haInfoTV = 2131493046;
+			// aapt resource value: 0x7f0c00b8
+			public const int haInfoTV = 2131493048;
 			
 			// aapt resource value: 0x7f0c00c5
 			public const int haListIV = 2131493061;
 			
-			// aapt resource value: 0x7f0c00b8
-			public const int haTable = 2131493048;
+			// aapt resource value: 0x7f0c00ba
+			public const int haTable = 2131493050;
 			
-			// aapt resource value: 0x7f0c00b5
-			public const int haUpPanelRL = 2131493045;
+			// aapt resource value: 0x7f0c00b7
+			public const int haUpPanelRL = 2131493047;
 			
 			// aapt resource value: 0x7f0c00cc
 			public const int hdAddressACTV = 2131493068;
@@ -2057,11 +2057,11 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c00ae
 			public const int htiDate10 = 2131493038;
 			
-			// aapt resource value: 0x7f0c00b9
-			public const int htiDate11 = 2131493049;
+			// aapt resource value: 0x7f0c00af
+			public const int htiDate11 = 2131493039;
 			
-			// aapt resource value: 0x7f0c00ba
-			public const int htiDate12 = 2131493050;
+			// aapt resource value: 0x7f0c00b0
+			public const int htiDate12 = 2131493040;
 			
 			// aapt resource value: 0x7f0c00bb
 			public const int htiDate13 = 2131493051;
@@ -2270,11 +2270,11 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c0028
 			public const int list_item = 2131492904;
 			
-			// aapt resource value: 0x7f0c00b4
-			public const int lock_message = 2131493044;
+			// aapt resource value: 0x7f0c00b6
+			public const int lock_message = 2131493046;
 			
-			// aapt resource value: 0x7f0c00b3
-			public const int locker = 2131493043;
+			// aapt resource value: 0x7f0c00b5
+			public const int locker = 2131493045;
 			
 			// aapt resource value: 0x7f0c010e
 			public const int mMaterialTV = 2131493134;

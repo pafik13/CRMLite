@@ -139,6 +139,7 @@
     <Compile Include="Lib\Entities\HospitalData.cs" />
     <Compile Include="Lib\Adapters\ListedHospitalAdapter.cs" />
     <Compile Include="RouteActivity.cs" />
+    <Compile Include="Lib\Entities\FinanceDataByMonth.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

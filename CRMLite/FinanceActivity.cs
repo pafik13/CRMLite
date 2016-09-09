@@ -20,7 +20,7 @@ namespace CRMLite
 	[Activity(Label = "FinanceActivity")]
 	public class FinanceActivity : Activity
 	{
-		const string PeriodFormatForKey = @"MMyy";
+		const string PeriodFormatForKey = @"MMyyyy";
 
 		Pharmacy Pharmacy;
 		LinearLayout Table;
@@ -134,23 +134,37 @@ namespace CRMLite
 			var generateViews = new Stopwatch();
 			generateViews.Start();
 
-			var financeDatas = MainDatabase.GetItems<FinanceData>().Where(i => i.Pharmacy == Pharmacy.UUID).ToList();
+			//var financeDatas = MainDatabase.GetItems<FinanceData>().Where(i => i.Pharmacy == Pharmacy.UUID).ToList();
 			var dict_key = string.Empty;
 
 			// 1. Рисуем таблицу
-			int monthesCount = 10;
-			DateTimeOffset[] financeDatasDates = financeDatas.Select(i => i.Period).Distinct().OrderBy(i => i).ToArray();
-			DateTimeOffset[] dates = new DateTimeOffset[monthesCount];
-			var header = (LinearLayout)LayoutInflater.Inflate(Resource.Layout.FinanceTableHeader, Table, false);
-			for (int m = 0; m < monthesCount; m++) {
-				if (m < financeDatasDates.Length) {
-					dates[m] = financeDatasDates[m];
-				} else {
-					dates[m] = m == 0 ? DateTimeOffset.Now : dates[m - 1].AddMonths(1);
+			int monthesCount = 9;
+			DateTimeOffset[] months = new DateTimeOffset[monthesCount];
+			int quartersCount = monthesCount / 3;
+			int[] quarters = new int[quartersCount];
+
+			DateTimeOffset baseDate = DateTimeOffset.Now.AddMonths(2);
+
+			int highMonth = ((baseDate.Month + 2) / 3 * 3);
+			DateTimeOffset highDate = baseDate.AddMonths(highMonth - baseDate.Month);
+			for (int m = 0, q = 1; m < monthesCount; m++, q++) {
+				months[m] = highDate.AddMonths(m - monthesCount + 1);
+
+				if ((q % 3) == 0) {
+					quarters[(q / 3) - 1] = (months[m].Month + 2) / 3;
 				}
-				var hView = header.GetChildAt(m + 1);
+			}
+
+			var header = (LinearLayout)LayoutInflater.Inflate(Resource.Layout.FinanceTableHeader, Table, false);
+			for (int col = 0; col < (monthesCount + quartersCount); col++) {
+				
+				var hView = header.GetChildAt(col + 1);
 				if (hView is TextView) {
-					(hView as TextView).Text = dates[m].ToString(string.Format(@"MMMM{0}yyyy", System.Environment.NewLine));
+					if ((col + 1) % 4 == 0) {
+						(hView as TextView).Text = months[col - (col / 4) - 1].ToString(string.Format(@"{0} кв.{1}yyyy", quarters[col / 4], System.Environment.NewLine));
+					} else {
+						(hView as TextView).Text = months[col - (col / 4)].ToString(string.Format(@"MMMM{0}yyyy", System.Environment.NewLine));
+					}
 				}
 			}
 
@@ -166,14 +180,23 @@ namespace CRMLite
 				foreach (var SKU in drugSKUs) {
 					var row = (LinearLayout)LayoutInflater.Inflate(Resource.Layout.FinanceTableItem, Table, false);
 					row.FindViewById<TextView>(Resource.Id.ftiDrugSKUTV).Text = SKU.name;
-					for (int v = 1; v <= monthesCount; v++) {
-						dict_key = string.Format("{0}-{1}-{2}", SKU.uuid, type, dates[v - 1].ToString(PeriodFormatForKey));
-						var view = row.GetChildAt(v);
+					for (int col = 0; col < (monthesCount + quartersCount); col++) {
+						var view = row.GetChildAt(col + 1);
 						if (view is TextView) {
 							(view as TextView).Text = string.Empty;
+
+							if ((col + 1) % 4 == 0) {
+								string datePart = months[col - (col / 4) - 1].ToString(string.Format(@"4{0}yyyy", quarters[col / 4]));
+								dict_key = string.Format("{0}-{1}-{2}", SKU.uuid, type, datePart);
+							} else {
+								string datePart = months[col - (col / 4)].ToString(PeriodFormatForKey);
+								dict_key = string.Format("{0}-{1}-{2}", SKU.uuid, type, datePart);
+							}
+
 							TextViews.Add(dict_key, (view as TextView));
 						}
 					}
+
 					Table.AddView(row);
 				}
 			}
@@ -185,7 +208,79 @@ namespace CRMLite
 				generateViews.ElapsedMilliseconds,
 				TextViews.Count);
 
-			RefreshViewBySKU(financeDatas, dates, infoTypes, drugSKUs);
+			var setValues = new Stopwatch();
+			setValues.Start();
+
+			string UUID = @"Pharmcay#" + 237;//string.Empty;
+
+			var key = string.Empty;
+			var monthDatas = MainDatabase.GetPharmacyDatas<FinanceDataByMonth>(UUID);
+			// 2. Вставляем данные за месяц 
+			foreach (var financeData in monthDatas) {
+				TextView txt;
+				string datePart = string.Format("{0}{1}", financeData.Month.ToString("D2"), financeData.Year);
+				// Salee
+				key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitSale, datePart);
+				if (TextViews.ContainsKey(key)) {
+					txt = TextViews[key];
+					txt.Text = financeData.Sale.ToString();
+					txt.SetTextColor(Android.Graphics.Color.Blue);
+				}
+				//TextViewsBySKU[key].Text = financeData.Sale.ToString();
+				// Purchase
+				key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitPurchase, datePart);
+				if (TextViews.ContainsKey(key)) {
+					txt = TextViews[key];
+					txt.Text = financeData.Purchase.ToString();
+					txt.SetTextColor(Android.Graphics.Color.Blue);
+				}
+				//TextViewsBySKU[key].Text = financeData.Purchase.ToString();
+
+				// Remain 
+				key = string.Format("{0}-{1}-{2}", financeData.DrugSKU, FinanceInfoType.fitRemain, datePart);
+				if (TextViews.ContainsKey(key)) {
+					txt = TextViews[key];
+					txt.Text = financeData.Remain.ToString();
+					txt.SetTextColor(Android.Graphics.Color.Blue);
+				}
+				//TextViewsBySKU[key].Text = financeData.Remain.ToString();
+
+			}
+
+
+			var quarterDatas = MainDatabase.GetPharmacyDatas<FinanceDataByQuarter>(UUID);
+			// 3. Вставляем данные за месяц
+			foreach (var data in quarterDatas) {
+				string datePart = string.Format("4{0}{1}", data.Quarter, data.Year);
+				// Sale
+				key = string.Format("{0}-{1}-{2}", data.DrugSKU, FinanceInfoType.fitSale, datePart);
+				if (TextViews.ContainsKey(key)) {
+					TextViews[key].Text = data.Sale.ToString();
+				}
+				//TextViewsBySKU[key].Text = financeData.Sale.ToString();
+				// Purchas
+				key = string.Format("{0}-{1}-{2}", data.DrugSKU, FinanceInfoType.fitPurchase, datePart);
+				if (TextViews.ContainsKey(key)) {
+					TextViews[key].Text = data.Purchase.ToString();
+				}
+				//TextViewsBySKU[key].Text = financeData.Purchase.ToString();
+
+				// Remain
+				key = string.Format("{0}-{1}-{2}", data.DrugSKU, FinanceInfoType.fitRemain, datePart);
+				if (TextViews.ContainsKey(key)) {
+					TextViews[key].Text = data.Remain.ToString();
+				}
+				//TextViewsBySKU[key].Text = financeData.Remain.ToString();
+
+			}
+			setValues.Stop();
+
+			Console.WriteLine(
+				"FinanceData: SetValues={0}-{1}-{2}",
+				setValues.ElapsedMilliseconds,
+				monthDatas.Count, quarterDatas.Count);
+
+			//RefreshViewBySKU(financeDatas, dates, infoTypes, drugSKUs);
 		}
 
 		void SetValues(List<FinanceData> financeDatas)
