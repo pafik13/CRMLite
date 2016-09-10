@@ -20,6 +20,8 @@ namespace CRMLite
 		public const string TAG = @"FilterDialog";
 		public const string C_FILTER_PREFS = @"CRMLITE_FILTER";
 
+		public event EventHandler AfterSaved;
+
 		IList<Subway> Subways;
 		AutoCompleteTextView Subway;
 		IList<Region> Regions;
@@ -28,6 +30,13 @@ namespace CRMLite
 		AutoCompleteTextView Net;
 
 		EditText Brand;
+
+		protected virtual void OnAfterSaved(EventArgs e)
+		{
+			if (AfterSaved != null) {
+				AfterSaved(this, e);
+			}
+		}
 
 		public override void OnCreate(Bundle savedInstanceState)
 		{
@@ -116,9 +125,9 @@ namespace CRMLite
 
 			edit.Commit();
 
-			Dismiss();
+			OnAfterSaved(EventArgs.Empty);
 
-			// AfteSave();
+			Dismiss();
 		}
 
 		void InitViews()

@@ -119,6 +119,9 @@ namespace CRMLite
 
 				var filterDialog = new FilterDialog();
 				filterDialog.Show(fragmentTransaction, FilterDialog.TAG);
+				filterDialog.AfterSaved += (caller, arguments) => {
+					RecreateAdapter();
+				};
 			};
 
 			FilterContent = FindViewById<TextView>(Resource.Id.maFilterTV);

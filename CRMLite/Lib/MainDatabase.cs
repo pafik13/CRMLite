@@ -13,11 +13,11 @@ namespace CRMLite
 {
 	public class MainDatabase
 	{
-		Realm DB = null;
+		readonly Realm DB;
 
-		ConcurrentDictionary<SyncItem, SyncItem> SyncDictionary = null;
+		ConcurrentDictionary<SyncItem, SyncItem> SyncDictionary;
 
-		ConcurrentDictionary<string, SyncResult> ResultDictionary = null;
+		ConcurrentDictionary<string, SyncResult> ResultDictionary;
 
 		//int QueueMaxSize = 20;
 

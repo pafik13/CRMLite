@@ -252,7 +252,9 @@ namespace CRMLite
 			//	string.Empty : MainDatabase.GetNet(Pharmacy.Net).name;
 			//NetUUID = Pharmacy.Net;
 
-			SetNet(Nets.FindIndex(net => string.Compare(net.uuid, Pharmacy.Net) == 0));
+			if (!string.IsNullOrEmpty(Pharmacy.Net)) {
+				SetNet(Nets.FindIndex(net => string.Compare(net.uuid, Pharmacy.Net) == 0));
+			}
 
 			ContractDatas = MainDatabase.GetPharmacyDatas<ContractData>(Pharmacy.UUID);
 			if (ContractDatas.Count > 0) {
