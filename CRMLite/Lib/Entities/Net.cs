@@ -5,7 +5,7 @@ namespace CRMLite.Entities
 	/// <summary>
 	/// Аптечная сеть.
 	/// </summary>
-	public class Net : RealmObject
+	public class Net : RealmObject, IEntiryFromServer
 	{
 		/// <summary>
 		/// Уникальный идентификатор аптечной сети. Используется Guid.

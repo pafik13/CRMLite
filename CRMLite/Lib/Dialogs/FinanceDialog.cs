@@ -296,22 +296,6 @@ namespace CRMLite.Dialogs
 			editText.SetTag(Resource.String.IsChanged, true);
 		}
 
-		float? ConvertToFloat(string value, int divider = 1)
-		{
-			if (string.IsNullOrEmpty(value)) return null;
-
-			float result;
-			float.TryParse(value.Replace(',', '.'), NumberStyles.Float, new CultureInfo("en-US").NumberFormat, out result);
-
-			if (float.IsInfinity(result) || result == 0.0f) return null;
-
-			result /= divider;
-
-			if (float.IsInfinity(result) || result == 0.0f) return null;
-
-			return result;
-		}
-
 		public override void OnDestroyView()
 		{
 			base.OnDestroyView();

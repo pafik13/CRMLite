@@ -525,7 +525,7 @@ namespace CRMLite
 			return Me.DB.All<Pharmacy>().Single(item => item.UUID == UUID);
 		}
 
-		public static IList<Pharmacy> GetPharmacies()
+		public static List<Pharmacy> GetPharmacies()
 		{
 			return Me.DB.All<Pharmacy>().ToList();
 		}

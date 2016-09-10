@@ -22,4 +22,7 @@
   <color name="sign_in_skip_button">#F44336</color>
 
   <color name="translucent_black">#80000000</color>
+
+  <color name="translucent_black_dark">#BF000000</color>
+
 </resources>

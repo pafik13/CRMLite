@@ -4,6 +4,9 @@
 	<string name="app_name">CRMLite</string>
 	<string name="error_caption">Ошибка!</string>
 
+	<string name="IsFilterOn">IsFilterOn</string>
+
+	<string name="NetUUID">NetUUID</string>
 	<string name="PharmacyUUID">PharmacyUUID</string>
 	<string name="PresentationDataUUID">PresentationDataUUID</string>
 	<string name="CoterieDataUUID">CoterieDataUUID</string>

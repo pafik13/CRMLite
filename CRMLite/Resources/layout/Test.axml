@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="25px"
+    android:minHeight="25px">
+    <ImageView
+        android:src="@drawable/ic_youtube_searched_for_white_36dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:id="@+id/imageView1"
+        android:background="@drawable/semicircle_left"
+        android:layout_gravity="center" />
+    <ImageView
+        android:src="@drawable/ic_delete_white_36dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:id="@+id/imageView1"
+        android:background="@drawable/semicircle_right"
+        android:layout_gravity="center" />
+</LinearLayout>

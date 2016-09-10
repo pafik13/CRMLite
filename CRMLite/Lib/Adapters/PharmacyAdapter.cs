@@ -12,18 +12,20 @@ namespace CRMLite.Adapters
 {
 	public class PharmacyAdapter : BaseAdapter<Pharmacy>
 	{
-		Activity context = null;
-		IList<Pharmacy> pharmacies = new List<Pharmacy>();
+		readonly Activity Context;
+		readonly IList<Pharmacy> Pharmacies;
 
 		public PharmacyAdapter(Activity context, IList<Pharmacy> pharmacies) : base()
 		{
-			this.context = context;
-			this.pharmacies = pharmacies;
+			Context = context;
+			Pharmacies = pharmacies;
 		}
 
 		public override Pharmacy this[int position]
 		{
-			get { return pharmacies[position]; }
+			get { 
+				return Pharmacies[position]; 
+			}
 		}
 
 		public override long GetItemId(int position)
@@ -33,22 +35,23 @@ namespace CRMLite.Adapters
 
 		public override int Count
 		{
-			get { return pharmacies.Count; }
+			get { 
+				return Pharmacies.Count; 
+			}
 		}
 
 		public override View GetView(int position, View convertView, ViewGroup parent)
 		{
 			// Get our object for position
-			var item = pharmacies[position];
+			var item = Pharmacies[position];
 
-			var view = (convertView ??
-								context.LayoutInflater.Inflate(
-				            	Resource.Layout.PharmacyTableItem,
-								parent,
-								false)) as LinearLayout;
+			var view = (convertView ?? Context.LayoutInflater.Inflate(Resource.Layout.PharmacyTableItem, parent, false)
+			           ) as LinearLayout;
 
-			view.FindViewById<TextView>(Resource.Id.ptiNameTV).Text = string.IsNullOrEmpty(item.Brand) ? @"<нет бренда>" : item.Brand;
-			view.FindViewById<TextView>(Resource.Id.ptiAddressTV).Text = string.IsNullOrEmpty(item.Address) ? @"<нет адреса>" : item.Address;
+			view.FindViewById<TextView>(Resource.Id.ptiNameTV).Text = 
+				string.IsNullOrEmpty(item.Brand) ? @"<нет бренда>" : item.Brand;
+			view.FindViewById<TextView>(Resource.Id.ptiAddressTV).Text = 
+				string.IsNullOrEmpty(item.Address) ? @"<нет адреса>" : item.Address;
 
 			var showFinance = view.FindViewById<ImageView>(Resource.Id.ptiContractIV);
 			showFinance.SetTag(Resource.String.PharmacyUUID, item.UUID);
@@ -90,9 +93,9 @@ namespace CRMLite.Adapters
 		{
 			if (sender is ImageView) {
 				var pharmacyUUID = ((ImageView)sender).GetTag(Resource.String.PharmacyUUID).ToString();
-				var financeAcivity = new Intent(context, typeof(FinanceActivity));
+				var financeAcivity = new Intent(Context, typeof(FinanceActivity));
 				financeAcivity.PutExtra(@"UUID", pharmacyUUID);
-				context.StartActivity(financeAcivity);
+				Context.StartActivity(financeAcivity);
 			}
 		}
 
@@ -100,9 +103,9 @@ namespace CRMLite.Adapters
 		{
 			if (sender is ImageView) {
 				var pharmacyUUID = ((ImageView)sender).GetTag(Resource.String.PharmacyUUID).ToString();
-				var historyAcivity = new Intent(context, typeof(HistoryActivity));
+				var historyAcivity = new Intent(Context, typeof(HistoryActivity));
 				historyAcivity.PutExtra(@"UUID", pharmacyUUID);
-				context.StartActivity(historyAcivity);
+				Context.StartActivity(historyAcivity);
 			}		
 		}
 
@@ -111,9 +114,9 @@ namespace CRMLite.Adapters
 			if (sender is ImageView)
 			{
 				var pharmacyUUID = ((ImageView)sender).GetTag(Resource.String.PharmacyUUID).ToString();
-				var hospitalAcivity = new Intent(context, typeof(HospitalActivity));
+				var hospitalAcivity = new Intent(Context, typeof(HospitalActivity));
 				hospitalAcivity.PutExtra(HospitalActivity.C_PHARMACY_UUID, pharmacyUUID);
-				context.StartActivity(hospitalAcivity);
+				Context.StartActivity(hospitalAcivity);
 			}
 		}
 
@@ -122,9 +125,9 @@ namespace CRMLite.Adapters
 			if (sender is ImageView)
 			{
 				var pharmacyUUID = ((ImageView)sender).GetTag(Resource.String.PharmacyUUID).ToString();
-				var employeeAcivity = new Intent(context, typeof(EmployeeActivity));
+				var employeeAcivity = new Intent(Context, typeof(EmployeeActivity));
 				employeeAcivity.PutExtra(EmployeeActivity.C_PHARMACY_UUID, pharmacyUUID);
-				context.StartActivity(employeeAcivity);
+				Context.StartActivity(employeeAcivity);
 			}
 		}
 
@@ -133,9 +136,9 @@ namespace CRMLite.Adapters
 			if (sender is Button)
 			{
 				var pharmacyUUID = ((Button)sender).GetTag(Resource.String.PharmacyUUID).ToString();
-				var attendanceAcivity = new Intent(context, typeof(AttendanceActivity));
+				var attendanceAcivity = new Intent(Context, typeof(AttendanceActivity));
 				attendanceAcivity.PutExtra(@"UUID", pharmacyUUID);
-				context.StartActivity(attendanceAcivity);
+				Context.StartActivity(attendanceAcivity);
 			}
 		}
 	}
