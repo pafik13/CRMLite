@@ -179,6 +179,10 @@ namespace CRMLite
 				//MainDatabase.AddToQueue(sync);
 
 				//StartService(new Intent("com.xamarin.SyncService"));
+				GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
+					.Edit()
+					.PutString(MainActivity.C_SAVED_PHARMACY_UUID, Pharmacy.UUID)
+					.Commit();
 
 				Finish();
 			};

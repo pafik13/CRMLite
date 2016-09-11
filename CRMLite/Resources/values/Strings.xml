@@ -6,6 +6,7 @@
 
 	<string name="IsFilterOn">IsFilterOn</string>
 
+	<string name="PositionUUID">PositionUUID</string>
 	<string name="NetUUID">NetUUID</string>
 	<string name="PharmacyUUID">PharmacyUUID</string>
 	<string name="PresentationDataUUID">PresentationDataUUID</string>

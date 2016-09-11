@@ -9,15 +9,17 @@ using Android.App;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
+using Android.Content.PM;
 using Android.Views.InputMethods;
 using V4App = Android.Support.V4.App;
 using Android.Support.V4.View;
 
 using CRMLite.Dialogs;
+using System.Diagnostics;
 
 namespace CRMLite
 {
-	[Activity(Label = "AttendanceActivity", ScreenOrientation=Android.Content.PM.ScreenOrientation.Landscape)]
+	[Activity(Label = "AttendanceActivity", ScreenOrientation=ScreenOrientation.Landscape, WindowSoftInputMode=SoftInput.AdjustPan)]
 	public class AttendanceActivity : V4App.FragmentActivity, ViewPager.IOnPageChangeListener
 	{
 		public const int C_NUM_PAGES = 4;
@@ -58,6 +60,18 @@ namespace CRMLite
 				case 2:
 					FragmentTitle.Text = (AttendanceLast == null) || AttendanceStart.HasValue ? 
 						@"СОБИРАЕМАЯ ИНФОРМАЦИЯ" : string.Format(@"ИНФОРМАЦИЯ С ВИЗИТА ОТ {0}", AttendanceLast.When);
+					var w = new Stopwatch();
+					w.Start();
+					var emp = GetFragment(1);
+					if (emp is EmployeeFragment) {
+						((EmployeeFragment)emp).SaveAllEmployees();
+					}
+					var info = GetFragment(2);
+					if (info is InfoFragment) {
+						((InfoFragment)info).RefreshEmployees();
+					}
+					w.Stop();
+					Console.WriteLine("OnPageSelected: {0}", w.ElapsedMilliseconds);
 					break;
 				case 3:
 					FragmentTitle.Text = (AttendanceLast == null) || AttendanceStart.HasValue ?

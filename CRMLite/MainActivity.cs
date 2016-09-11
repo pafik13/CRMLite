@@ -12,18 +12,26 @@ using Realms;
 using CRMLite.Entities;
 using CRMLite.Adapters;
 using System.Globalization;
+using System.Diagnostics;
+using System;
+using Android.Views.InputMethods;
 
 namespace CRMLite
 {
 	[Activity(Label = "Main")]
 	public class MainActivity : Activity
 	{
+		public const string C_MAIN_PREFS = @"C_MAIN_PREFS";
+		public const string C_SAVED_PHARMACY_UUID = @"C_SAVED_PHARMACY_UUID";
+		public const int C_ITEMS_IN_RESULT = 10;
 
 		IList<Pharmacy> Pharmacies;
 		ListView PharmacyTable;
 		TextView FilterContent;
 		EditText SearchInput;
 		ListView SearchTable;
+		Dictionary<string, SearchItem> SearchItems;
+
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
@@ -66,6 +74,11 @@ namespace CRMLite
 
 			var searchView = FindViewById<RelativeLayout>(Resource.Id.maSearchRL);
 			searchView.Click += (sender, e) => {
+				if (CurrentFocus != null) {
+					var imm = (InputMethodManager)GetSystemService(InputMethodService);
+					imm.HideSoftInputFromWindow(CurrentFocus.WindowToken, HideSoftInputFlags.None);
+				}
+
 				searchView.Visibility = ViewStates.Gone;
 			};
 			var search = FindViewById<ImageView>(Resource.Id.maSearch);
@@ -84,6 +97,39 @@ namespace CRMLite
 			};
 
 			SearchTable = FindViewById<ListView>(Resource.Id.maSearchTable);
+			SearchTable.ItemClick += (sender, e) => {
+				if (sender is ListView) {
+					var lv = ((ListView)sender);
+
+					var cb = e.View.FindViewById<CheckBox>(Resource.Id.sriIsCheckedCB);
+					cb.Checked = lv.IsItemChecked(e.Position);
+
+					//e.View.Selected = lv.IsItemChecked(e.Position);
+					//lv.SetItemChecked(e.Position, true);
+					if (lv.Adapter is SearchResultAdapter) {
+						var adapter = (SearchResultAdapter)lv.Adapter;
+
+						var newList = new List<Pharmacy>();
+						var sparseArray = lv.CheckedItemPositions;
+						for (var i = 0; i < sparseArray.Size(); i++) {
+							if (sparseArray.ValueAt(i)) {
+								newList.Add(MainDatabase.GetEntity<Pharmacy>(adapter[sparseArray.KeyAt(i)].UUID));
+							}
+						}
+
+						RecreateAdapter(newList);
+					}
+				}
+			};
+			SearchTable.ItemSelected += (sender, e) => {
+				if (sender is ListView) {
+					var lv = ((ListView)sender);
+					if (lv.Adapter is SearchResultAdapter) {
+						var adapter = (SearchResultAdapter)lv.Adapter;
+						var obj = adapter[(int)e.Id];
+					}
+				}				
+			};
 
 			var filter = FindViewById<ImageView>(Resource.Id.maFilter);
 			filter.Click += (sender, e) => {
@@ -129,7 +175,7 @@ namespace CRMLite
 
 		void OnListItemClick(object sender, AdapterView.ItemClickEventArgs e)
 		{
-			if (e.Position > 0)
+			if (e.Position > 0) 
 			{
 				var showPharmacy = new Intent(this, typeof(PharmacyActivity));
 				showPharmacy.PutExtra(@"UUID", Pharmacies[e.Position - 1].UUID);
@@ -137,8 +183,16 @@ namespace CRMLite
 			}
 		}
 
-		void RecreateAdapter()
+		void RecreateAdapter(List<Pharmacy> inputList = null)
 		{
+			if (inputList != null) {
+				if (inputList.Count > 0) {
+					Pharmacies = inputList;
+					PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies);
+					return;
+				}
+			}
+
 			var list = MainDatabase.GetItems<Pharmacy>(); 
 
 			var prefs = GetSharedPreferences(FilterDialog.C_FILTER_PREFS, FileCreationMode.Private);
@@ -179,59 +233,118 @@ namespace CRMLite
 			}
 
 			Pharmacies = list.Take(14).ToList();
-			PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies); 
-
+			PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies);
 		}
 
 		void Search(string text)
 		{
 			if (string.IsNullOrEmpty(text)) {
 				SearchTable.Adapter = null;
+				RecreateAdapter();
 				return;
 			}
 
-			// 1 насыщениeе
-			var searchItems = new List<SearchItem>();
-			var pharmacies = MainDatabase.GetItems<Pharmacy>();
-			foreach (var item in pharmacies) {
-				searchItems.Add(
-					new SearchItem(
-						item.UUID,
-						item.GetName(),
-						MainDatabase.GetItem<Subway>(item.Subway).name,
-						MainDatabase.GetItem<Region>(item.Region).name
-					)
-				);
-			}
+			//Console.WriteLine(@"Search: startmemory{0}", System.Diagnostics.Process.GetCurrentProcess().WorkingSet64);
 
+			var w = new Stopwatch();
+			w.Start();
+			// 1 насыщениe
+			//var searchItems = new List<SearchItem>()
+			if (SearchItems == null) {
+				SearchItems = new Dictionary<string, SearchItem>();
+				var pharmacies = MainDatabase.GetItems<Pharmacy>();
+				foreach (var item in pharmacies) {
+					SearchItems.Add(
+						item.UUID,
+						new SearchItem(
+							item.UUID,
+							item.GetName(),
+							MainDatabase.GetItem<Subway>(item.Subway).name,
+							MainDatabase.GetItem<Region>(item.Region).name,
+							item.Brand
+						)
+					);
+				}
+			}
+			w.Stop();
+			Console.WriteLine(@"Search: насыщение={0}", w.ElapsedMilliseconds);
+
+			w.Restart();
 			var matchFormat = @"Совпадение: {0}";
 			var result = new List<SearchItem>();
 			var culture = CultureInfo.GetCultureInfo("ru-RU");
 			// 2 поиск
-			foreach (var item in searchItems) {
-				if (culture.CompareInfo.IndexOf(item.Subway, text, CompareOptions.IgnoreCase) >= 0) {
-					item.Match = string.Format(matchFormat, @"метро=" + item.Subway);
-					result.Add(item);
-					if (result.Count > 4) break;
+			foreach (var item in SearchItems) {
+				if (culture.CompareInfo.IndexOf(item.Value.Subway, text, CompareOptions.IgnoreCase) >= 0) {
+					item.Value.Match = string.Format(matchFormat, @"метро=" + item.Value.Subway);
+					result.Add(item.Value);
+					if (result.Count > C_ITEMS_IN_RESULT) break;
 					continue;
 				}
 
-				if (culture.CompareInfo.IndexOf(item.Region, text, CompareOptions.IgnoreCase) >= 0) {
-					item.Match = string.Format(matchFormat, @"район=" + item.Region);
-					result.Add(item);
-					if (result.Count > 4) break;
+				if (culture.CompareInfo.IndexOf(item.Value.Region, text, CompareOptions.IgnoreCase) >= 0) {
+					item.Value.Match = string.Format(matchFormat, @"район=" + item.Value.Region);
+					result.Add(item.Value);
+					if (result.Count > C_ITEMS_IN_RESULT) break;
+					continue;
+				}
+
+				if (culture.CompareInfo.IndexOf(item.Value.Brand, text, CompareOptions.IgnoreCase) >= 0) {
+					item.Value.Match = string.Format(matchFormat, @"бренд=" + item.Value.Brand);
+					result.Add(item.Value);
+					if (result.Count > C_ITEMS_IN_RESULT) break;
 					continue;
 				}
 			}
+			w.Stop();
+			Console.WriteLine(@"Search: поиск={0}", w.ElapsedMilliseconds);
+
+			w.Restart();
 			// 3 показ
 			SearchTable.Adapter = new SearchResultAdapter(this, result);
+			//SearchTable.Adapter = new ArrayAdapter<string>(
+			//	this, Android.Resource.Layout.SimpleListItemMultipleChoice, result.Select(si => si.Name).ToArray()
+			//);
+			w.Stop();
+			Console.WriteLine(@"Search: показ={0}", w.ElapsedMilliseconds);
+			//Console.WriteLine(@"Search: endmemory{0}", System.Diagnostics.Process.GetCurrentProcess().WorkingSet64);
 		}
 
 		protected override void OnResume()
 		{
 			base.OnResume();
 
-			RecreateAdapter();
+			var sparseArray = SearchTable.CheckedItemPositions;
+			bool hasCheckedItemInSearchTable = false;
+			for (var i = 0; i < sparseArray.Size(); i++) {
+				if (sparseArray.ValueAt(i)) {
+					hasCheckedItemInSearchTable = true;
+					break;
+				}
+			}
+
+			if (!hasCheckedItemInSearchTable) {
+				RecreateAdapter();
+			}
+
+			var prefs = GetSharedPreferences(C_MAIN_PREFS, FileCreationMode.Private);
+			var uuid = prefs.GetString(C_SAVED_PHARMACY_UUID, string.Empty);
+			if (string.IsNullOrEmpty(uuid)) return;
+
+			if (SearchItems == null) return;
+
+			var w = new Stopwatch();
+			w.Start();
+			var pharmacy = MainDatabase.GetEntity<Pharmacy>(uuid);
+			SearchItems[uuid] = new SearchItem(
+				pharmacy.UUID,
+				pharmacy.GetName(),
+				MainDatabase.GetItem<Subway>(pharmacy.Subway).name,
+				MainDatabase.GetItem<Region>(pharmacy.Region).name,
+				pharmacy.Brand
+			);
+			w.Stop();
+			Console.WriteLine(@"Search: обновление={0}", w.ElapsedMilliseconds);
 		}
 
 		protected override void OnPause()

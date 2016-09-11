@@ -144,6 +144,7 @@
     <Compile Include="Lib\Dialogs\FilterDialog.cs" />
     <Compile Include="Lib\Adapters\SearchResultAdapter.cs" />
     <Compile Include="Lib\Entities\SearchItem.cs" />
+    <Compile Include="Lib\Adapters\EmployeeEditAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -436,6 +437,8 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_store_black_36dp.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_subway_black_36dp.png" />
     <AndroidResource Include="Resources\layout\SearchResultItem.axml" />
+    <AndroidResource Include="Resources\drawable\bk_key.xml" />
+    <AndroidResource Include="Resources\layout\EmployeeEditTableItem.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

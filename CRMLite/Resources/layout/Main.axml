@@ -225,6 +225,7 @@
             android:orientation="vertical"
             android:divider="@color/translucent_black_dark"
             android:dividerHeight="2dp"
+            android:choiceMode="multipleChoice"
             android:layout_width="500dp"
             android:layout_height="wrap_content" />
     </RelativeLayout>

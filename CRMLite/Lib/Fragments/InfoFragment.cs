@@ -814,6 +814,11 @@ namespace CRMLite
 			MessageTable.AddView(message);
 		}
 
+		public void RefreshEmployees()
+		{
+			Employees = MainDatabase.GetEmployees(Pharmacy.UUID);
+		}
+
 		public void OnAttendanceStart(DateTimeOffset? start)
 		{
 			AttendanceStart = start;

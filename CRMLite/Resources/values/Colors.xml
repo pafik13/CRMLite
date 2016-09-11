@@ -25,4 +25,7 @@
 
   <color name="translucent_black_dark">#BF000000</color>
 
+  <color name="pressed_color">#4d90fe</color>
+  <color name="default_color">#ffffff</color>
+	
 </resources>
