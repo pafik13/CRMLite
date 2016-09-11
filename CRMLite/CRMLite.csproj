@@ -145,6 +145,8 @@
     <Compile Include="Lib\Adapters\SearchResultAdapter.cs" />
     <Compile Include="Lib\Entities\SearchItem.cs" />
     <Compile Include="Lib\Adapters\EmployeeEditAdapter.cs" />
+    <Compile Include="Lib\Entities\RouteItem.cs" />
+    <Compile Include="Lib\Adapters\RoutePharmacyAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -440,6 +442,7 @@
     <AndroidResource Include="Resources\drawable\bk_key.xml" />
     <AndroidResource Include="Resources\layout\EmployeeEditTableItem.axml" />
     <AndroidResource Include="Resources\layout\EmployeeEditTableHeader.axml" />
+    <AndroidResource Include="Resources\layout\RoutePharmacyItem.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

@@ -3,11 +3,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Grey_300">
-    <TextView
-        android:text="ЗДЕСЬ СКОРО БУДЕТ МАРШРУТ"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/raPlaceholderTV"
-        android:layout_centerInParent="true" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="100">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:background="@drawable/rightline">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Аптеки"
+                style="@android:style/TextAppearance.Material.Large"
+                android:gravity="center" />
+            <ListView
+                android:minHeight="40dp"
+                android:id="@+id/raPharmacyTable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:dividerHeight="2dp"
+                android:divider="@color/Grey_300" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Маршрут"
+                style="@android:style/TextAppearance.Material.Large"
+                android:gravity="center" />
+            <LinearLayout
+                android:id="@+id/raRouteTable"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>
