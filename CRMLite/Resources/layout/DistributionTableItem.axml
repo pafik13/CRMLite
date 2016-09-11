@@ -19,8 +19,7 @@
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="8"
-        android:background="@drawable/bottomline">
+        android:layout_weight="8">
         <CheckBox
             android:enabled="false"
             android:layout_width="wrap_content"
@@ -59,8 +58,7 @@
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="8"
-        android:background="@drawable/bottomline">
+        android:layout_weight="8">
         <CheckBox
             android:enabled="false"
             android:layout_width="wrap_content"
@@ -71,8 +69,7 @@
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="8"
-        android:background="@drawable/bottomline">
+        android:layout_weight="8">
         <CheckBox
             android:enabled="false"
             android:layout_width="wrap_content"

@@ -21,7 +21,8 @@ namespace CRMLite
 
 		Pharmacy Pharmacy;
 		IList<Employee> Employees;
-		ListView EmployeeTable;
+		List<Position> Positions;
+		LinearLayout EmployeeTable;
 
 		public static EmployeeFragment create(string pharmacyUUID)
 		{
@@ -52,36 +53,22 @@ namespace CRMLite
 			if (string.IsNullOrEmpty(pharmacyUUID)) return view;
 
 			Pharmacy = MainDatabase.GetEntity<Pharmacy>(pharmacyUUID);
+			Positions = MainDatabase.GetItems<Position>();
 
-			EmployeeTable = view.FindViewById<ListView>(Resource.Id.efEmployeeTable);
+			EmployeeTable = view.FindViewById<LinearLayout>(Resource.Id.efEmployeeTable);
 
-			//listView.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
-			//{
-			//	FragmentTransaction fragmentTransaction = FragmentManager.BeginTransaction();
-			//	EmployeeDialog employeeDialog = new EmployeeDialog(this, pharmacy, employees[e.Position]);
-			//	employeeDialog.Show(fragmentTransaction, "EmployeeDialog");
-			//	employeeDialog.AfterSaved += delegate
-			//	{
-			//		Console.WriteLine("Event {0} was called", "AfterSaved");
-			//		//employees = MainDatabase.GetEmployees(pharmacy.UUID);
+			var header = Activity.LayoutInflater.Inflate(Resource.Layout.EmployeeEditTableHeader, EmployeeTable, false);
 
-			//		//adapter = new EmployeeAdapter(this, employees);
-
-			//		//listView.Adapter = adapter;
-
-			//		if (listView.Adapter is EmployeeAdapter)
-			//		{
-			//			((EmployeeAdapter)listView.Adapter).NotifyDataSetChanged();
-			//		}
-			//	};
-			//};
+			EmployeeTable.AddView(header);
 
 			view.FindViewById<Button>(Resource.Id.efAddB).Click += (sender, e) => {
 				using (var trans = MainDatabase.BeginTransaction()) {
-					Employees.Add(MainDatabase.CreateEmployee(Pharmacy.UUID));
+					var newEmployee = MainDatabase.CreateEmployee(Pharmacy.UUID);
 					trans.Commit();
+
+					Employees.Add(newEmployee);
+					AddEmployeeToTable(newEmployee);
 				}
-				(EmployeeTable.Adapter as EmployeeEditAdapter).NotifyDataSetChanged();
 			}; 
 
 			return view;
@@ -111,8 +98,99 @@ namespace CRMLite
 		void RecreateAdapter()
 		{
 			Employees = MainDatabase.GetPharmacyDatas<Employee>(Pharmacy.UUID);
+			foreach (var employee in Employees) {
+				AddEmployeeToTable(employee);
+			}
+		}
 
-			EmployeeTable.Adapter = new EmployeeEditAdapter(Activity, Employees);
+		public void AddEmployeeToTable(Employee employee)
+		{
+			var view = Activity.LayoutInflater.Inflate(Resource.Layout.EmployeeEditTableItem, EmployeeTable, false) as LinearLayout;
+
+			view.SetTag(Resource.String.EmployeeUUID, employee.UUID);
+			view.SetTag(Resource.String.IsChanged, false);
+
+			var name = view.FindViewById<EditText>(Resource.Id.eetiNameET);
+			name.Text = string.IsNullOrEmpty(employee.Name) ? string.Empty : employee.Name;
+			name.AfterTextChanged -= ET_AfterTextChanged;
+			name.AfterTextChanged += ET_AfterTextChanged;
+
+
+			/* <Position> */
+			var pos = view.FindViewById<Spinner>(Resource.Id.eetiPositionS);
+			var positionAdapter = new ArrayAdapter(
+				Context, Android.Resource.Layout.SimpleSpinnerItem, Positions.Select(x => x.name).ToArray()
+			);
+			positionAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
+			pos.Adapter = positionAdapter;
+			pos.ItemSelected -= Pos_ItemSelected;
+			pos.ItemSelected += Pos_ItemSelected;
+			/* </Position> */
+			if (!string.IsNullOrEmpty(employee.Position)) {
+				pos.SetSelection(Positions.FindIndex(e => string.Compare(e.uuid, employee.Position) == 0));
+			}
+
+			var isCustomer = view.FindViewById<CheckBox>(Resource.Id.eetiIsCustomerCB);
+			isCustomer.Checked = employee.IsCustomer;
+			isCustomer.CheckedChange -= CB_CheckedChange;
+			isCustomer.CheckedChange += CB_CheckedChange;
+
+			var birthDate = view.FindViewById<EditText>(Resource.Id.eetiBirthDateET);
+			birthDate.Text = employee.BirthDate.HasValue ? employee.BirthDate.Value.ToString("dd.MM.yyyy") : string.Empty;
+			birthDate.AfterTextChanged -= ET_AfterTextChanged;
+			birthDate.AfterTextChanged += ET_AfterTextChanged;
+
+			var phone = view.FindViewById<EditText>(Resource.Id.eetiPhoneET);
+			phone.Text = string.IsNullOrEmpty(employee.Phone) ? string.Empty : employee.Phone;
+			phone.AfterTextChanged -= ET_AfterTextChanged;
+			phone.AfterTextChanged += ET_AfterTextChanged;
+
+			var email = view.FindViewById<EditText>(Resource.Id.eetiEmailET);
+			email.Text = string.IsNullOrEmpty(employee.Email) ? string.Empty : employee.Email;
+			email.AfterTextChanged -= ET_AfterTextChanged;
+			email.AfterTextChanged += ET_AfterTextChanged;
+
+			var canParticipate = view.FindViewById<CheckBox>(Resource.Id.eetiCanParticipateCB);
+			canParticipate.Checked = employee.CanParticipate;
+			canParticipate.CheckedChange -= CB_CheckedChange;
+			canParticipate.CheckedChange += CB_CheckedChange;
+
+			var comment = view.FindViewById<EditText>(Resource.Id.eetiCommentET);
+			comment.Text = string.IsNullOrEmpty(employee.Comment) ? string.Empty : employee.Comment;
+			comment.AfterTextChanged -= ET_AfterTextChanged;
+			comment.AfterTextChanged += ET_AfterTextChanged;
+
+			EmployeeTable.AddView(view);
+
+			//var divider = Activity.LayoutInflater.Inflate(Resource.Layout.Divider, EmployeeTable, false);
+
+			//EmployeeTable.AddView(divider);
+		}
+
+		void Pos_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
+		{
+			if (sender is Spinner) {
+				var spinner = ((Spinner)sender);
+				var row = (LinearLayout)spinner.Parent;
+				row.SetTag(Resource.String.IsChanged, true);
+				spinner.SetTag(Resource.String.PositionUUID, Positions[spinner.SelectedItemPosition].uuid);
+			}
+		}
+
+		void ET_AfterTextChanged(object sender, Android.Text.AfterTextChangedEventArgs e)
+		{
+			if (sender is EditText) {
+				var row = (LinearLayout)((EditText)sender).Parent;
+				row.SetTag(Resource.String.IsChanged, true);
+			}
+		}
+
+		void CB_CheckedChange(object sender, CompoundButton.CheckedChangeEventArgs e)
+		{
+			if (sender is CheckBox) {
+				var row = (LinearLayout)((CheckBox)sender).Parent.Parent;
+				row.SetTag(Resource.String.IsChanged, true);
+			}
 		}
 
 		public void SaveAllEmployees()

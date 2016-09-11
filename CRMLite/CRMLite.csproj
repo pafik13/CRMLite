@@ -439,6 +439,7 @@
     <AndroidResource Include="Resources\layout\SearchResultItem.axml" />
     <AndroidResource Include="Resources\drawable\bk_key.xml" />
     <AndroidResource Include="Resources\layout\EmployeeEditTableItem.axml" />
+    <AndroidResource Include="Resources\layout\EmployeeEditTableHeader.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />
