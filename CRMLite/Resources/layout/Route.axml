@@ -14,12 +14,47 @@
             android:layout_height="match_parent"
             android:layout_weight="50"
             android:background="@drawable/rightline">
-            <TextView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="Аптеки"
-                style="@android:style/TextAppearance.Material.Large"
-                android:gravity="center" />
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/raSearchIV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_search_black_48dp"
+                    android:background="@android:color/white" />
+                <ViewSwitcher
+                    android:layout_marginRight="2dp"
+                    android:id="@+id/raSearchVS"
+                    android:layout_toRightOf="@id/raSearchIV"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:textColor="@color/Light_Blue_500"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="Аптеки"
+                        style="@android:style/TextAppearance.Material.Large"
+                        android:gravity="center" />
+                    <EditText
+                        android:textCursorDrawable="@null"
+                        android:id="@+id/raSearchET"
+                        android:textSize="16sp"
+                        android:background="@drawable/bottomline"
+                        android:textColorHint="@color/Grey_300"
+                        android:textColor="@android:color/black"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:hint="Начните вводить текст..."
+                        android:enabled="true"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginRight="6dp"
+                        android:inputType="textCapWords"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent" />
+                </ViewSwitcher>
+            </RelativeLayout>
             <ListView
                 android:minHeight="40dp"
                 android:id="@+id/raPharmacyTable"

@@ -443,6 +443,13 @@
     <AndroidResource Include="Resources\layout\EmployeeEditTableItem.axml" />
     <AndroidResource Include="Resources\layout\EmployeeEditTableHeader.axml" />
     <AndroidResource Include="Resources\layout\RoutePharmacyItem.axml" />
+    <AndroidResource Include="Resources\values\Integers.xml" />
+    <AndroidResource Include="Resources\anim\card_flip_left_in.xml" />
+    <AndroidResource Include="Resources\anim\card_flip_left_out.xml" />
+    <AndroidResource Include="Resources\anim\card_flip_right_in.xml" />
+    <AndroidResource Include="Resources\anim\card_flip_right_out.xml" />
+    <AndroidResource Include="Resources\anim\card_flip_up_out.xml" />
+    <AndroidResource Include="Resources\anim\card_flip_up_in.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />
@@ -459,6 +466,7 @@
     <Folder Include="Lib\Suggestions\" />
     <Folder Include="Lib\Dialogs\" />
     <Folder Include="Lib\Fragments\" />
+    <Folder Include="Resources\anim\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="realm">
