@@ -28,6 +28,7 @@ namespace CRMLite
 		IList<Pharmacy> Pharmacies;
 		ListView PharmacyTable;
 		TextView FilterContent;
+		TextView AttendanceCount;
 		EditText SearchInput;
 		ListView SearchTable;
 		Dictionary<string, SearchItem> SearchItems;
@@ -171,6 +172,7 @@ namespace CRMLite
 			};
 
 			FilterContent = FindViewById<TextView>(Resource.Id.maFilterTV);
+			AttendanceCount = FindViewById<TextView>(Resource.Id.maAttendanceCountTV);
 		}
 
 		void OnListItemClick(object sender, AdapterView.ItemClickEventArgs e)
@@ -313,6 +315,14 @@ namespace CRMLite
 		protected override void OnResume()
 		{
 			base.OnResume();
+			var w = new Stopwatch();
+
+			w.Restart();
+			int count = MainDatabase.GetItems<Attendance>()
+									.Count(att => att.When.LocalDateTime.Date == DateTimeOffset.Now.Date);
+			AttendanceCount.Text = string.Format(@"СЕГОДНЯ ВИЗИТОВ: {0}", count);
+			w.Stop();
+			Console.WriteLine(@"OnResume: подсчет визитов={0}", w.ElapsedMilliseconds);
 
 			var sparseArray = SearchTable.CheckedItemPositions;
 			bool hasCheckedItemInSearchTable = false;
@@ -333,7 +343,6 @@ namespace CRMLite
 
 			if (SearchItems == null) return;
 
-			var w = new Stopwatch();
 			w.Start();
 			var pharmacy = MainDatabase.GetEntity<Pharmacy>(uuid);
 			SearchItems[uuid] = new SearchItem(

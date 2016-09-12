@@ -18,6 +18,7 @@ using System.Globalization;
 using System.Diagnostics;
 using Android.Views.Animations;
 using Android.Animation;
+using Android.Graphics;
 
 namespace CRMLite
 {
@@ -89,7 +90,57 @@ namespace CRMLite
 				}
 				row.FindViewById<TextView>(Resource.Id.sriPharmacyTV).Text = item.Name;
 				row.SetTag(Resource.String.RouteItemOrder, RouteTable.ChildCount);
-				row.Click += Row_Click;
+				//row.Click += Row_Click
+				row.LongClick += (caller, args) => {
+					if (caller is LinearLayout) {
+						var view = caller as LinearLayout;
+						var index = (int)view.GetTag(Resource.String.RouteItemOrder);
+
+						//var data = ClipData.NewPlainText(@"data", @"my_data");
+						var data = ClipData.NewPlainText(@"RouteItemOrder", index.ToString());
+						//var shadow = new MyShadowBuilder(view);
+						var shadow = new View.DragShadowBuilder(view);
+						view.StartDrag(data, shadow, null, 0);
+					}
+				};
+
+				row.Drag += (caller, args) => {
+					if (caller is LinearLayout) {
+						var view = caller as LinearLayout;
+						switch (args.Event.Action) {
+							case DragAction.Started:
+								args.Handled = true;
+								break;
+							case DragAction.Entered:
+								view.Visibility = ViewStates.Invisible;
+								break;
+							case DragAction.Exited:
+								view.Visibility = ViewStates.Visible;
+								break;
+							case DragAction.Ended:
+								view.Visibility = ViewStates.Visible;
+								args.Handled = true;
+								break;
+							case DragAction.Drop:
+								int clipedIndex = int.Parse(args.Event.ClipData.GetItemAt(0).Text);
+								var index = (int)view.GetTag(Resource.String.RouteItemOrder);
+								if (clipedIndex != index) {
+									var dragedView = RouteTable.GetChildAt(clipedIndex);
+									RouteTable.RemoveView(dragedView);
+									RouteTable.RemoveView(view);
+									RouteTable.AddView(dragedView, index);
+									RouteTable.AddView(view, clipedIndex);
+
+									dragedView.SetTag(Resource.String.RouteItemOrder, index);
+									view.SetTag(Resource.String.RouteItemOrder, clipedIndex);
+								}
+								view.Visibility = ViewStates.Visible;
+								args.Handled = true;
+								break;
+						}
+					}
+				};
+
 				RouteTable.AddView(row);
 			};
 
@@ -101,7 +152,7 @@ namespace CRMLite
 						item.UUID,
 						item.GetName(),
 						MainDatabase.GetItem<Subway>(item.Subway).name,
-						MainDatabase.GetItem<Region>(item.Region).name,
+						MainDatabase.GetItem<Entities.Region>(item.Region).name,
 						item.Brand
 					)
 				);
@@ -233,6 +284,63 @@ namespace CRMLite
 			base.OnResume();
 
 			PharmacyTable.Adapter = new RoutePharmacyAdapter(this, SearchItems);
+		}
+	}
+
+	class MyShadowBuilder : View.DragShadowBuilder
+	{
+		const int centerOffset = 52;
+		int width, height;
+
+		public MyShadowBuilder(View baseView) : base(baseView)
+		{
+		}
+
+		public override void OnProvideShadowMetrics(Point shadowSize, Point shadowTouchPoint)
+		{
+			width = View.Width;
+			height = View.Height;
+
+			// This is the overall dimension of your drag shadow
+			shadowSize.Set(width * 2, height * 2);
+			// This one tells the system how to translate your shadow on the screen so
+			// that the user fingertip is situated on that point of your canvas.
+			// In my case, the touch point is in the middle of the (height, width) top-right rect
+			shadowTouchPoint.Set(width + width / 2 - centerOffset, height / 2 + centerOffset);
+		}
+
+		public override void OnDrawShadow(Canvas canvas)
+		{
+			const float sepAngle = (float)Math.PI / 16;
+			const float circleRadius = 2f;
+
+			// Draw the shadow circles in the top-right corner
+			float centerX = width + width / 2 - centerOffset;
+			float centerY = height / 2 + centerOffset;
+
+			var baseColor = Color.Black;
+			var paint = new Paint() {
+				AntiAlias = true,
+				Color = baseColor
+			};
+
+			// draw a dot where the center of the touch point (i.e. your fingertip) is
+			canvas.DrawCircle(centerX, centerY, circleRadius + 1, paint);
+			for (int radOffset = 70; centerX + radOffset < canvas.Width; radOffset += 20) {
+				// Vary the alpha channel based on how far the dot is
+				baseColor.A = (byte)(128 * (2f * (width / 2f - 1.3f * radOffset + 60) / width) + 100);
+				paint.Color = baseColor;
+				// Draw the dots along a circle of radius radOffset and centered on centerX,centerY
+				for (float angle = 0; angle < Math.PI * 2; angle += sepAngle) {
+					var pointX = centerX + (float)Math.Cos(angle) * radOffset;
+					var pointY = centerY + (float)Math.Sin(angle) * radOffset;
+					canvas.DrawCircle(pointX, pointY, circleRadius, paint);
+				}
+			}
+
+			//View.Dra
+			// Draw the dragged view in the bottom-left corner
+			//canvas.DrawBitmap(View.DrawingCache, 0, height, null);
 		}
 	}
 }
