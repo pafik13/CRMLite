@@ -147,6 +147,9 @@
     <Compile Include="Lib\Adapters\EmployeeEditAdapter.cs" />
     <Compile Include="Lib\Entities\RouteItem.cs" />
     <Compile Include="Lib\Adapters\RoutePharmacyAdapter.cs" />
+    <Compile Include="Lib\Entities\RouteSearchItem.cs" />
+    <Compile Include="Lib\Dialogs\DatePickerFragment.cs" />
+    <Compile Include="Lib\Fragments\RouteFragment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -450,6 +453,8 @@
     <AndroidResource Include="Resources\anim\card_flip_right_out.xml" />
     <AndroidResource Include="Resources\anim\card_flip_up_out.xml" />
     <AndroidResource Include="Resources\anim\card_flip_up_in.xml" />
+    <AndroidResource Include="Resources\layout\RouteItem.axml" />
+    <AndroidResource Include="Resources\layout\RouteFragment.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\mipmap-mdpi\" />

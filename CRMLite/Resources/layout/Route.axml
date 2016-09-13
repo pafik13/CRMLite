@@ -3,83 +3,155 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Grey_300">
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/raUpPanelRL"
         android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="25px"
+        android:minHeight="64px"
+        android:background="@drawable/bottomline">
+        <TextView
+            android:text="ПЛАНИРОВАНИЕ МАРШРУТА"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/raInfoTV"
+            android:gravity="center"
+            android:textColor="@color/Light_Blue_500"
+            android:height="64dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp" />
+        <Button
+            android:text="ЗАКРЫТЬ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:id="@+id/raCloseB"
+            android:background="@color/Deep_Orange_500"
+            android:typeface="monospace"
+            android:width="150dp"
+            android:height="62dp"
+            android:textColor="@android:color/white"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            android:minHeight="62dp"
+            android:layout_marginBottom="2dp" />
+        <ImageView
+            android:src="@drawable/ic_sync_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/raSwitchIV"
+            android:layout_toLeftOf="@id/raCloseB"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginRight="10dp" />
+    </RelativeLayout>
+<!--	Тип визита	-->
+    <ViewSwitcher
+        android:minWidth="25px"
+        android:minHeight="25px"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="100">
+        android:layout_height="wrap_content"
+        android:id="@+id/raSwitchViewVS"
+        android:layout_below="@id/raUpPanelRL">
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="50"
-            android:background="@drawable/rightline">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/raSearchIV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_search_black_48dp"
-                    android:background="@android:color/white" />
-                <ViewSwitcher
-                    android:layout_marginRight="2dp"
-                    android:id="@+id/raSearchVS"
-                    android:layout_toRightOf="@id/raSearchIV"
+            android:weightSum="100">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="50"
+                android:background="@drawable/rightline">
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@android:color/white">
-                    <TextView
-                        android:textColor="@color/Light_Blue_500"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/raSearchIV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_search_black_48dp"
+                        android:background="@android:color/white" />
+                    <ViewSwitcher
+                        android:layout_marginRight="2dp"
+                        android:id="@+id/raSearchVS"
+                        android:layout_toRightOf="@id/raSearchIV"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="Аптеки"
+                        android:background="@android:color/white">
+                        <TextView
+                            android:textColor="@color/Light_Blue_500"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:text="Аптеки"
+                            style="@android:style/TextAppearance.Material.Large"
+                            android:gravity="center" />
+                        <EditText
+                            android:textCursorDrawable="@null"
+                            android:id="@+id/raSearchET"
+                            android:textSize="16sp"
+                            android:background="@drawable/bottomline"
+                            android:textColorHint="@color/Grey_300"
+                            android:textColor="@android:color/black"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:hint="Начните вводить текст..."
+                            android:enabled="true"
+                            android:layout_marginLeft="6dp"
+                            android:layout_marginRight="6dp"
+                            android:inputType="textCapWords"
+                            android:layout_height="match_parent"
+                            android:layout_width="match_parent" />
+                    </ViewSwitcher>
+                </RelativeLayout>
+                <ListView
+                    android:minHeight="40dp"
+                    android:id="@+id/raPharmacyTable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:dividerHeight="2dp"
+                    android:divider="@color/Grey_300" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="50">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp">
+                    <TextView
+                        android:layout_margin="6dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Маршрут"
                         style="@android:style/TextAppearance.Material.Large"
                         android:gravity="center" />
-                    <EditText
-                        android:textCursorDrawable="@null"
-                        android:id="@+id/raSearchET"
-                        android:textSize="16sp"
-                        android:background="@drawable/bottomline"
-                        android:textColorHint="@color/Grey_300"
-                        android:textColor="@android:color/black"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:hint="Начните вводить текст..."
-                        android:enabled="true"
-                        android:layout_marginLeft="6dp"
-                        android:layout_marginRight="6dp"
-                        android:inputType="textCapWords"
+                <!--                <DatePicker
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="match_parent"
+	                    android:id="@+id/raDateDP" />-->
+                    <Button
+                        android:text="Button"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_width="match_parent" />
-                </ViewSwitcher>
-            </RelativeLayout>
-            <ListView
-                android:minHeight="40dp"
-                android:id="@+id/raPharmacyTable"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:dividerHeight="2dp"
-                android:divider="@color/Grey_300" />
+                        android:id="@+id/raSelectDateB" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/raRouteTable"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="50">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="Маршрут"
-                style="@android:style/TextAppearance.Material.Large"
-                android:gravity="center" />
-            <LinearLayout
-                android:id="@+id/raRouteTable"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-    </LinearLayout>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/raContainerVP"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ViewSwitcher>
 </RelativeLayout>

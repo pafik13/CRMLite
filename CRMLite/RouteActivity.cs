@@ -19,17 +19,24 @@ using System.Diagnostics;
 using Android.Views.Animations;
 using Android.Animation;
 using Android.Graphics;
+using Android.Support.V4.App;
+using Android.Support.V4.View;
 
 namespace CRMLite
 {
 	[Activity(Label = "RouteActivity", ScreenOrientation=Android.Content.PM.ScreenOrientation.Landscape)]
-	public class RouteActivity : Activity
+	public class RouteActivity : FragmentActivity, ViewPager.IOnPageChangeListener
 	{
 		public const int C_ITEMS_IN_RESULT = 10;
+		public const int C_FRAGMENTS_COUNT = 5;
 
-		List<SearchItem> SearchItems;
-		List<SearchItem> SearchedItems;
+		DateTimeOffset SelectedDate;
+
+		List<RouteSearchItem> RouteSearchItemsSource;
+		List<RouteSearchItem> RouteSearchItems;
+		List<RouteSearchItem> SearchedItems;
 		ListView PharmacyTable;
+		RoutePharmacyAdapter RoutePharmacyAdapter;
 		LinearLayout RouteTable;
 
 		ViewSwitcher SearchSwitcher;
@@ -50,8 +57,28 @@ namespace CRMLite
 		//Animator cardFlipUpOutForSwapedView;
 		//Animator cardFlipUpInForClickedView;
 		//Animator cardFlipUpInForSwapedView;
-
+		TextView Info;
 		//LinearLayout Animated;
+
+		public void OnPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+		{
+			return;
+		}
+
+		public void OnPageScrollStateChanged(int state)
+		{
+			return;
+		}
+
+		public void OnPageSelected(int position)
+		{
+			switch (position) {
+				default:
+					Info.Text = string.Format(@"Фрагмент {0}", position);
+					break; ;
+			}
+		}
+
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
@@ -80,16 +107,37 @@ namespace CRMLite
 
 			PharmacyTable = FindViewById<ListView>(Resource.Id.raPharmacyTable);
 			PharmacyTable.ItemClick += (sender, e) => {
-				var row = LayoutInflater.Inflate(Resource.Layout.RoutePharmacyItem, RouteTable, false);
+				var ll = (ListView)sender;
+				var adapter = (RoutePharmacyAdapter)ll.Adapter;
+				adapter.SwitchVisibility(e.Position);
 
-				SearchItem item;
+				var row = LayoutInflater.Inflate(Resource.Layout.RouteItem, RouteTable, false);
+				row.SetTag(Resource.String.Position, e.Position);
+
+				RouteSearchItem item;
 				if (string.IsNullOrEmpty(SearchEditor.Text)) {
-					item = SearchItems[e.Position];
+					item = RouteSearchItems[e.Position];
 				} else {
 					item = SearchedItems[e.Position];
 				}
-				row.FindViewById<TextView>(Resource.Id.sriPharmacyTV).Text = item.Name;
+				row.SetTag(Resource.String.PharmacyUUID, item.UUID);
+
+				row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text = item.Name;
 				row.SetTag(Resource.String.RouteItemOrder, RouteTable.ChildCount);
+				row.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (RouteTable.ChildCount + 1).ToString();
+				row.FindViewById<ImageView>(Resource.Id.riDeleteIV).Click += (caller, args) => {
+					var rowForDelete = (LinearLayout)((ImageView)caller).Parent;
+					int pos = (int) rowForDelete.GetTag(Resource.String.Position);
+					int index = (int)rowForDelete.GetTag(Resource.String.RouteItemOrder);
+					for (int c = index; c < RouteTable.ChildCount; c++) {
+						var rowForUpdate = (LinearLayout)RouteTable.GetChildAt(c);
+						rowForUpdate.SetTag(Resource.String.RouteItemOrder, c - 1);
+						rowForUpdate.FindViewById<TextView>(Resource.Id.riOrderTV).Text = c.ToString();
+					}
+					RouteTable.RemoveView(rowForDelete);
+					adapter.SwitchVisibility(pos);
+				};
+
 				//row.Click += Row_Click
 				row.LongClick += (caller, args) => {
 					if (caller is LinearLayout) {
@@ -127,12 +175,17 @@ namespace CRMLite
 								if (clipedIndex != index) {
 									var dragedView = RouteTable.GetChildAt(clipedIndex);
 									RouteTable.RemoveView(dragedView);
-									RouteTable.RemoveView(view);
 									RouteTable.AddView(dragedView, index);
+									RouteTable.RemoveView(view);
 									RouteTable.AddView(view, clipedIndex);
 
-									dragedView.SetTag(Resource.String.RouteItemOrder, index);
-									view.SetTag(Resource.String.RouteItemOrder, clipedIndex);
+									for (int c = 0; c < RouteTable.ChildCount; c++) {
+										var rowForUpdate = (LinearLayout)RouteTable.GetChildAt(c);
+										rowForUpdate.SetTag(Resource.String.RouteItemOrder, c);
+										rowForUpdate.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (c + 1).ToString();
+									}
+									//dragedView.SetTag(Resource.String.RouteItemOrder, index);
+									//view.SetTag(Resource.String.RouteItemOrder, clipedIndex);
 								}
 								view.Visibility = ViewStates.Visible;
 								args.Handled = true;
@@ -144,11 +197,11 @@ namespace CRMLite
 				RouteTable.AddView(row);
 			};
 
-			SearchItems = new List<SearchItem>();
+			RouteSearchItemsSource = new List<RouteSearchItem>();
 			var pharmacies = MainDatabase.GetItems<Pharmacy>();
 			foreach (var item in pharmacies) {
-				SearchItems.Add(
-					new SearchItem(
+				RouteSearchItemsSource.Add(
+					new RouteSearchItem(
 						item.UUID,
 						item.GetName(),
 						MainDatabase.GetItem<Subway>(item.Subway).name,
@@ -157,7 +210,7 @@ namespace CRMLite
 					)
 				);
 			}
-			SearchedItems = new List<SearchItem>();
+			SearchedItems = new List<RouteSearchItem>();
 			SearchSwitcher = FindViewById<ViewSwitcher>(Resource.Id.raSearchVS);
 			SearchSwitcher.SetInAnimation(this, Android.Resource.Animation.SlideInLeft);
 			SearchSwitcher.SetOutAnimation(this, Android.Resource.Animation.SlideOutRight);
@@ -178,39 +231,41 @@ namespace CRMLite
 				var text = e.Editable.ToString();
 
 				if (string.IsNullOrEmpty(text)) {
-					foreach (var item in SearchItems) {
+					foreach (var item in RouteSearchItems) {
 						item.Match = string.Empty; 
 					}
-					PharmacyTable.Adapter = new RoutePharmacyAdapter(this, SearchItems);
+					PharmacyTable.Adapter = new RoutePharmacyAdapter(this, RouteSearchItems);
 					return;
 				}
 
 				var w = new Stopwatch();
 				w.Start();
-				SearchedItems = new List<SearchItem>();
+				SearchedItems = new List<RouteSearchItem>();
 				var matchFormat = @"Совпадение: {0}";
 				var culture = CultureInfo.GetCultureInfo("ru-RU");
 				// 2 поиск
-				foreach (var item in SearchItems) {
-					if (culture.CompareInfo.IndexOf(item.Subway, text, CompareOptions.IgnoreCase) >= 0) {
-						item.Match = string.Format(matchFormat, @"метро=" + item.Subway);
-						SearchedItems.Add(item);
-						if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
-						continue;
-					}
+				foreach (var item in RouteSearchItems) {
+					if (item.IsVisible) {
+						if (culture.CompareInfo.IndexOf(item.Subway, text, CompareOptions.IgnoreCase) >= 0) {
+							item.Match = string.Format(matchFormat, @"метро=" + item.Subway);
+							SearchedItems.Add(item);
+							if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
+							continue;
+						}
 
-					if (culture.CompareInfo.IndexOf(item.Region, text, CompareOptions.IgnoreCase) >= 0) {
-						item.Match = string.Format(matchFormat, @"район=" + item.Region);
-						SearchedItems.Add(item);
-						if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
-						continue;
-					}
+						if (culture.CompareInfo.IndexOf(item.Region, text, CompareOptions.IgnoreCase) >= 0) {
+							item.Match = string.Format(matchFormat, @"район=" + item.Region);
+							SearchedItems.Add(item);
+							if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
+							continue;
+						}
 
-					if (culture.CompareInfo.IndexOf(item.Brand, text, CompareOptions.IgnoreCase) >= 0) {
-						item.Match = string.Format(matchFormat, @"бренд=" + item.Brand);
-						SearchedItems.Add(item);
-						if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
-						continue;
+						if (culture.CompareInfo.IndexOf(item.Brand, text, CompareOptions.IgnoreCase) >= 0) {
+							item.Match = string.Format(matchFormat, @"бренд=" + item.Brand);
+							SearchedItems.Add(item);
+							if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
+							continue;
+						}
 					}
 				}
 				w.Stop();
@@ -220,6 +275,25 @@ namespace CRMLite
 			};
 
 			RouteTable = FindViewById<LinearLayout>(Resource.Id.raRouteTable);
+
+			FindViewById<Button>(Resource.Id.raSelectDateB).Click += (sender, e) => {
+				DatePickerFragment frag = DatePickerFragment.NewInstance(delegate (DateTime date) {
+					Console.WriteLine("DatePicker:{0}", date.ToLongDateString());
+					Console.WriteLine("DatePicker:{0}", new DateTimeOffset(date));
+					SelectedDate = new DateTimeOffset(date, new TimeSpan(0, 0, 0)); ;
+					RecreateAdapter();
+				});
+				frag.Show(FragmentManager, DatePickerFragment.TAG);
+			};
+
+			Info = FindViewById<TextView>(Resource.Id.raInfoTV);
+			var switcher = FindViewById<ViewSwitcher>(Resource.Id.raSwitchViewVS);
+			FindViewById<ImageView>(Resource.Id.raSwitchIV).Click += (sender, e) => {
+				var pager = FindViewById<ViewPager>(Resource.Id.raContainerVP);
+				pager.AddOnPageChangeListener(this);
+				pager.Adapter = new RoutePagerAdapter(SupportFragmentManager);
+				switcher.ShowNext();
+			};
 		}
 
 		void Row_Click(object sender, EventArgs e)
@@ -283,7 +357,152 @@ namespace CRMLite
 		{
 			base.OnResume();
 
-			PharmacyTable.Adapter = new RoutePharmacyAdapter(this, SearchItems);
+			SelectedDate = DateTimeOffset.Now;
+			RecreateAdapter();
+		}
+
+		void RecreateAdapter()
+		{
+			FindViewById<Button>(Resource.Id.raSelectDateB).Text = SelectedDate.UtcDateTime.Date.ToLongDateString();
+
+			var routeItemsPharmacies = MainDatabase.GetEarlyRouteItems(SelectedDate).Select(ri => ri.Pharmacy);
+			RouteSearchItems = RouteSearchItemsSource.Where(rsi => !routeItemsPharmacies.Contains(rsi.UUID)).ToList(); 
+
+			RoutePharmacyAdapter = new RoutePharmacyAdapter(this, RouteSearchItems);
+			PharmacyTable.Adapter = RoutePharmacyAdapter;
+
+			for (int i = 0; i < RouteSearchItems.Count; i++) {
+				RoutePharmacyAdapter.ChangeVisibility(i, true);
+			}
+
+			RouteTable.RemoveAllViews();
+			foreach (var item in MainDatabase.GetRouteItems(SelectedDate)) {
+				int position = RouteSearchItems.FindIndex(rsi => string.Compare(rsi.UUID, item.Pharmacy) == 0);
+				RoutePharmacyAdapter.ChangeVisibility(position, false);
+
+				var row = LayoutInflater.Inflate(Resource.Layout.RouteItem, RouteTable, false);
+				row.SetTag(Resource.String.Position, position);
+				row.SetTag(Resource.String.PharmacyUUID, item.UUID);
+
+				row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text = RouteSearchItems[position].Name;
+				row.SetTag(Resource.String.RouteItemOrder, item.Order);
+				row.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (item.Order + 1).ToString();
+				row.FindViewById<ImageView>(Resource.Id.riDeleteIV).Click += (caller, args) => {
+					var rowForDelete = (LinearLayout)((ImageView)caller).Parent;
+					int pos = (int)rowForDelete.GetTag(Resource.String.Position);
+					int index = (int)rowForDelete.GetTag(Resource.String.RouteItemOrder);
+					for (int c = index; c < RouteTable.ChildCount; c++) {
+						var rowForUpdate = (LinearLayout)RouteTable.GetChildAt(c);
+						rowForUpdate.SetTag(Resource.String.RouteItemOrder, c - 1);
+						rowForUpdate.FindViewById<TextView>(Resource.Id.riOrderTV).Text = c.ToString();
+					}
+					RouteTable.RemoveView(rowForDelete);
+					RoutePharmacyAdapter.SwitchVisibility(pos);
+				};
+
+				//row.Click += Row_Clic
+				row.LongClick += (caller, args) => {
+					if (caller is LinearLayout) {
+						var view = caller as LinearLayout;
+						var index = (int)view.GetTag(Resource.String.RouteItemOrder);
+
+						//var data = ClipData.NewPlainText(@"data", @"my_data")
+						var data = ClipData.NewPlainText(@"RouteItemOrder", index.ToString());
+						//var shadow = new MyShadowBuilder(view)
+						var shadow = new View.DragShadowBuilder(view);
+						view.StartDrag(data, shadow, null, 0);
+					}
+				};
+
+				row.Drag += (caller, args) => {
+					if (caller is LinearLayout) {
+						var view = caller as LinearLayout;
+						switch (args.Event.Action) {
+							case DragAction.Started:
+								args.Handled = true;
+								break;
+							case DragAction.Entered:
+								view.Visibility = ViewStates.Invisible;
+								break;
+							case DragAction.Exited:
+								view.Visibility = ViewStates.Visible;
+								break;
+							case DragAction.Ended:
+								view.Visibility = ViewStates.Visible;
+								args.Handled = true;
+								break;
+							case DragAction.Drop:
+								int clipedIndex = int.Parse(args.Event.ClipData.GetItemAt(0).Text);
+								var index = (int)view.GetTag(Resource.String.RouteItemOrder);
+								if (clipedIndex != index) {
+									var dragedView = RouteTable.GetChildAt(clipedIndex);
+									RouteTable.RemoveView(dragedView);
+									RouteTable.AddView(dragedView, index);
+									RouteTable.RemoveView(view);
+									RouteTable.AddView(view, clipedIndex);
+
+									for (int c = 0; c < RouteTable.ChildCount; c++) {
+										var rowForUpdate = (LinearLayout)RouteTable.GetChildAt(c);
+										rowForUpdate.SetTag(Resource.String.RouteItemOrder, c);
+										rowForUpdate.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (c + 1).ToString();
+									}
+									//dragedView.SetTag(Resource.String.RouteItemOrder, index);
+									//view.SetTag(Resource.String.RouteItemOrder, clipedIndex)
+								}
+								view.Visibility = ViewStates.Visible;
+								args.Handled = true;
+								break;
+						}
+					}
+				};
+
+				RouteTable.AddView(row);
+			}
+		}
+
+		protected override void OnPause()
+		{
+			base.OnPause();
+
+			var transaction = MainDatabase.BeginTransaction();
+			for (int c = 0; c < RouteTable.ChildCount; c++) {
+				var row = (LinearLayout)RouteTable.GetChildAt(c);
+				var pharmacyUUID = (string)row.GetTag(Resource.String.PharmacyUUID);
+				if (string.IsNullOrEmpty(pharmacyUUID)) continue;
+
+				int order = (int)row.GetTag(Resource.String.RouteItemOrder);
+				var newItem = MainDatabase.Create<RouteItem>();
+				newItem.Pharmacy = pharmacyUUID;
+				newItem.Date = SelectedDate;
+				newItem.Order = order;
+			}
+			transaction.Commit();
+		}
+
+
+		/**
+		 * A pager adapter that represents <NUM_PAGES> fragments, in sequence.
+		 */
+		class RoutePagerAdapter : FragmentPagerAdapter
+		{
+			public RoutePagerAdapter(Android.Support.V4.App.FragmentManager fm) : base(fm)
+			{
+			}
+
+			public override int Count {
+				get {
+					return C_FRAGMENTS_COUNT;
+				}
+			}
+
+			public override Android.Support.V4.App.Fragment GetItem(int position)
+			{
+				switch (position) {
+					default:
+					return RouteFragment.create(position);
+				}
+
+			}
 		}
 	}
 

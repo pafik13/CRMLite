@@ -1,10 +1,13 @@
 ﻿using System;
 using Realms;
 
-namespace CRMLite
+namespace CRMLite.Entities
 {
-	public class RouteItem: RealmObject, IPharmacyData
+	public class RouteItem : RealmObject, IPharmacyData, IEntity
 	{
+		[ObjectId]
+		public string UUID { get; set; }
+
 		[Indexed]
 		public string Pharmacy { get; set; }
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:background="@android:color/white">
+    <TextView
+        android:layout_margin="6dp"
+        android:id="@+id/riOrderTV"
+        android:text="Порядок"
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/searchName"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <TextView
+        android:id="@+id/riPharmacyTV"
+        android:text="Аптека"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/searchName"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <ImageView
+        android:id="@+id/riDeleteIV"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_delete" />
+</LinearLayout>

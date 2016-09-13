@@ -525,6 +525,27 @@ namespace CRMLite
 			return Me.DB.All<Pharmacy>().Single(item => item.UUID == UUID);
 		}
 
+		internal static List<RouteItem> GetEarlyRouteItems(DateTimeOffset selectedDate)
+		{
+			var lowDate = selectedDate.AddDays(-14).UtcDateTime.Date;
+			var highDate = selectedDate.AddDays(-1).UtcDateTime.Date;
+
+			return Me.DB.All<RouteItem>()
+				     .ToList()
+					 .Where(ri => highDate >= ri.Date.Date && ri.Date.Date >= lowDate)
+				     .ToList();
+		}
+
+		internal static List<RouteItem> GetRouteItems(DateTimeOffset selectedDate)
+		{
+			var date = selectedDate.UtcDateTime.Date;
+
+			return Me.DB.All<RouteItem>()
+				     .ToList()
+					 .Where(ri => ri.Date.Date == date)
+					 .ToList();
+		}
+
 		public static List<Pharmacy> GetPharmacies()
 		{
 			return Me.DB.All<Pharmacy>().ToList();
