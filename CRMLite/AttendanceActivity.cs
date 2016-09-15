@@ -16,6 +16,8 @@ using Android.Support.V4.View;
 
 using CRMLite.Dialogs;
 using System.Diagnostics;
+using System.IO;
+using Android.Net;
 
 namespace CRMLite
 {
@@ -37,6 +39,12 @@ namespace CRMLite
 
 		DateTimeOffset? AttendanceStart;
 		Attendance AttendanceLast;
+
+		public static string PhotoDir {
+			get {
+				return Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, @"MyTempDir");
+			}
+		}
 
 		public void OnPageScrolled(int position, float positionOffset, int positionOffsetPixels)
 		{
@@ -232,9 +240,14 @@ namespace CRMLite
 				               .SetTitle("Выберите материал для показа:")
 				               .SetCancelable(true)
 				               .SetItems(Materials.Select(item => item.name).ToArray(), (caller, arguments) => {
-								   var materialAcivity = new Intent(this, typeof(MaterialActivity));
-								   materialAcivity.PutExtra(MaterialActivity.C_MATERIAL_UUID, Materials[arguments.Which].uuid);
-								   StartActivity(materialAcivity);
+									var file = new Java.IO.File(PhotoDir, @"kv-present.pdf");
+									var intent = new Intent(Intent.ActionView);
+								   intent.SetDataAndType(Android.Net.Uri.FromFile(file), "application/pdf");
+								   intent.SetFlags(ActivityFlags.NoHistory);
+								   StartActivity(intent);
+								   //var materialAcivity = new Intent(this, typeof(MaterialActivity));
+								   //materialAcivity.PutExtra(MaterialActivity.C_MATERIAL_UUID, Materials[arguments.Which].uuid);
+								   //StartActivity(materialAcivity);
 								   //Toast.MakeText(this, Materials[arguments.Which].name, ToastLength.Short).Show();
 							   })
 				               .Show();

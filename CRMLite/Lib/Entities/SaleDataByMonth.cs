@@ -11,7 +11,7 @@ namespace CRMLite.Entities
 		/// Уникальный идентификатор продаж. Используется Guid.
 		/// </summary>
 		/// <value>The UUID.</value>
-		[ObjectId]
+		[PrimaryKey]
 		public string UUID { get; set; }
 
 		[Indexed]

@@ -11,7 +11,7 @@ namespace CRMLite
 		/// Уникальный идентификатор квартальных данных по продажам. Используется Guid.
 		/// </summary>
 		/// <value>The UUID.</value>
-		[ObjectId]
+		[PrimaryKey]
 		public string UUID { get; set; }
 
 		[Indexed]

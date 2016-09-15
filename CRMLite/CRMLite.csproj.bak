@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -8,14 +8,14 @@
     <OutputType>Library</OutputType>
     <RootNamespace>CRMLite</RootNamespace>
     <AssemblyName>CRMLite</AssemblyName>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -159,7 +159,6 @@
     <Compile Include="Lib\Entities\RouteSearchItem.cs" />
     <Compile Include="Lib\Dialogs\DatePickerFragment.cs" />
     <Compile Include="Lib\Fragments\RouteFragment.cs" />
-    <Compile Include="ProfileActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -468,18 +467,24 @@
     <AndroidResource Include="Resources\layout\Profile.axml" />
     <AndroidResource Include="Resources\layout\AttendanceByWeekTableHeader.axml" />
     <AndroidResource Include="Resources\layout\AttendanceByWeekTableItem.axml" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_account_box_black_48dp.png" />
-    <AndroidResource Include="Resources\drawable-mdpi\ic_account_box_black_48dp.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\ic_account_box_black_48dp.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\ic_account_box_black_48dp.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_account_box_black_48dp.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_message_black_36dp.png" />
-    <AndroidResource Include="Resources\drawable-mdpi\ic_message_black_36dp.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\ic_message_black_36dp.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\ic_message_black_36dp.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_message_black_36dp.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Resources\mipmap-mdpi\" />
+    <Folder Include="Resources\mipmap-hdpi\" />
+    <Folder Include="Resources\drawable-hdpi\" />
+    <Folder Include="Resources\drawable-mdpi\" />
+    <Folder Include="Resources\drawable-xhdpi\" />
+    <Folder Include="Resources\drawable-xxhdpi\" />
+    <Folder Include="Resources\drawable-xxxhdpi\" />
+    <Folder Include="Lib\" />
+    <Folder Include="Lib\Entities\" />
+    <Folder Include="Lib\Adapters\" />
+    <Folder Include="Lib\Services\" />
+    <Folder Include="Lib\Suggestions\" />
+    <Folder Include="Lib\Dialogs\" />
+    <Folder Include="Lib\Fragments\" />
+    <Folder Include="Resources\anim\" />
+  </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="realm">
       <Version>0.74.1</Version>

@@ -11,6 +11,7 @@ namespace CRMLite.Entities
 		/// Уникальный идентификатор вида работы. Используется Guid.
 		/// </summary>
 		/// <value>The UUID.</value>
+		[PrimaryKey]
 		public string uuid { get; set; }
 
 		/// <summary>

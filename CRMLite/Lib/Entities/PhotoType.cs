@@ -4,7 +4,7 @@ namespace CRMLite
 {
 	public class PhotoType : RealmObject, IEntiryFromServer
 	{
-		[ObjectId]
+		[PrimaryKey]
 		public string uuid { get; set; }
 
 		public string name { get; set; }

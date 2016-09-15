@@ -4,7 +4,7 @@ namespace CRMLite
 {
 	public class Promotion : RealmObject, IEntiryFromServer
 	{
-		[ObjectId]
+		[PrimaryKey]
 		public string uuid { get; set; }
 
 		public string name { get; set; }

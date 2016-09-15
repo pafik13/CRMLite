@@ -5,7 +5,7 @@ namespace CRMLite.Entities
 {
 	public class RouteItem : RealmObject, IPharmacyData, IEntity
 	{
-		[ObjectId]
+		[PrimaryKey]
 		public string UUID { get; set; }
 
 		[Indexed]

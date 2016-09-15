@@ -53,6 +53,11 @@ namespace CRMLite
 			PharmacyTable.Clickable = true;
 			PharmacyTable.ItemClick += OnListItemClick;
 
+			var profile = FindViewById<ImageView>(Resource.Id.maProfile);
+			profile.Click += (sender, e) => {
+				StartActivity(new Intent(this, typeof(ProfileActivity)));
+			};
+
 			var add = FindViewById<ImageView>(Resource.Id.maAdd);
 			add.Click += delegate {
 				StartActivity(new Intent(this, typeof(PharmacyActivity)));
@@ -234,7 +239,7 @@ namespace CRMLite
 				FilterContent.Visibility = ViewStates.Gone;
 			}
 
-			Pharmacies = list.Take(14).ToList();
+			Pharmacies = list; //.Take(14).ToList();
 			PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies);
 		}
 
@@ -320,7 +325,7 @@ namespace CRMLite
 			w.Restart();
 			int count = MainDatabase.GetItems<Attendance>()
 									.Count(att => att.When.LocalDateTime.Date == DateTimeOffset.Now.Date);
-			AttendanceCount.Text = string.Format(@"СЕГОДНЯ ВИЗИТОВ: {0}", count);
+			AttendanceCount.Text = string.Format(@"РЕЖИМ РАБОТЫ: {0};  СЕГОДНЯ ВИЗИТОВ: {1}", @"Строго по маршруту", count);
 			w.Stop();
 			Console.WriteLine(@"OnResume: подсчет визитов={0}", w.ElapsedMilliseconds);
 

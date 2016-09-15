@@ -20,7 +20,7 @@ namespace CRMLite.Entities
 		/// Уникальный идентификатор аптеки. Используется Guid.
 		/// </summary>
 		/// <value>The /.</value>
-		[ObjectId]
+		[PrimaryKey]
 		public string UUID { get; set; }
 
 		/// <summary>

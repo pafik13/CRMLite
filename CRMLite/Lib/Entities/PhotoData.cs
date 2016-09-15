@@ -9,7 +9,7 @@ namespace CRMLite
 		/// Уникальный идентификатор фотографии. Используется Guid.
 		/// </summary>
 		/// <value>The UUID.</value>
-		[ObjectId]
+		[PrimaryKey]
 		public string UUID { get; set; }
 
 		public DateTimeOffset Stamp { get; set; }

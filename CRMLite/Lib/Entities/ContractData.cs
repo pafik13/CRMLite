@@ -9,7 +9,7 @@ namespace CRMLite
 		/// Уникальный идентификатор контракта. Используется Guid.
 		/// </summary>
 		/// <value>The UUID.</value>
-		[ObjectId]
+		[PrimaryKey]
 		public string UUID { get; set; }
 
 		/// <summary>

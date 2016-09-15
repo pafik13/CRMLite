@@ -8,7 +8,7 @@ namespace CRMLite.Entities
 		/// Уникальный идентификатор презентации. Используется Guid.
 		/// </summary>
 		/// <value>The UUID.</value>
-		[ObjectId]
+		[PrimaryKey]
 		public string UUID { get; set; }
 
 		[Indexed]

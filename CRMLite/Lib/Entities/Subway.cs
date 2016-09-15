@@ -4,7 +4,7 @@ namespace CRMLite.Entities
 {
 	public class Subway : RealmObject, IEntiryFromServer
 	{
-		[Indexed]
+		[PrimaryKey]
 		public string uuid { get; set; }
 
 		public string name { get; set; }

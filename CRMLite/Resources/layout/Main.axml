@@ -24,13 +24,14 @@
                 android:textColor="@color/Light_Blue_500"
                 android:height="64dp"
                 android:paddingLeft="24dp"
-                android:paddingRight="24dp" />
+                android:paddingRight="24dp"
+                android:visibility="gone" />
             <ImageView
-                android:src="@drawable/ic_exit_to_app_black_48dp"
+                android:src="@drawable/ic_account_box_black_48dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/maInfoText"
-                android:id="@+id/maLogOut"
+                android:id="@+id/maProfile"
                 android:layout_marginTop="7dp"
                 android:layout_marginBottom="9dp"
                 android:layout_marginLeft="18dp" />
@@ -38,7 +39,7 @@
                 android:src="@drawable/ic_search_black_48dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/maLogOut"
+                android:layout_toRightOf="@id/maProfile"
                 android:id="@+id/maSearch"
                 android:layout_marginTop="7dp"
                 android:layout_marginBottom="9dp"
@@ -139,35 +140,14 @@
                 android:paddingRight="32dp"
                 android:paddingLeft="24dp"
                 android:layout_alignParentLeft="true" />
-            <TextView
-                android:text="СТРАНИЦА : "
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/maPageText"
-                android:gravity="center"
-                android:textColor="@color/Light_Blue_500"
-                android:height="56dp"
-                android:paddingRight="32dp"
-                android:paddingLeft="24dp"
-                android:layout_toLeftOf="@+id/maPrevImage" />
             <ImageView
-                android:src="@drawable/ic_navigate_before_black_24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/maPrevImage"
-                android:paddingRight="24dp"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/maNextImage"
-                android:minHeight="56dp" />
-            <ImageView
-                android:src="@drawable/ic_navigate_next_black_24dp"
+                android:src="@drawable/ic_message_black_36dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/maNextImage"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:paddingRight="14dp"
+                android:layout_marginRight="10dp"
                 android:minHeight="56dp" />
         </RelativeLayout>
     </RelativeLayout>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@drawable/bottomline"
+    android:weightSum="100">
+    <TextView
+        android:text=""
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwtPharmacyTV"
+        android:layout_weight="30"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek1"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek2"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek3"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week4"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek4"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week5"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek5"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week6"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek6"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week7"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek7"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week8"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek8"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week9"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek9"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week10"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek10"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week11"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek11"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week12"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek12"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week13"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek13"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Week14"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/abwthWeek14"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+</LinearLayout>

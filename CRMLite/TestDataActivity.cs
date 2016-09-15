@@ -64,6 +64,9 @@ namespace CRMLite
 			MainDatabase.DeleteItems<Material>();
 			MainDatabase.DeleteItems<ListedHospital>();
 
+			MainDatabase.DeleteItems<RouteItem>();
+
+
 			transaction.Commit();
 		}
 

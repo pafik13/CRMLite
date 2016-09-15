@@ -105,6 +105,10 @@ namespace CRMLite
 			// Create your application here
 			SetContentView(Resource.Layout.Route);
 
+			FindViewById<Button>(Resource.Id.raCloseB).Click += (s, e) => {
+				Finish();
+			};
+
 			PharmacyTable = FindViewById<ListView>(Resource.Id.raPharmacyTable);
 			PharmacyTable.ItemClick += (sender, e) => {
 				var ll = (ListView)sender;
@@ -377,14 +381,15 @@ namespace CRMLite
 
 			RouteTable.RemoveAllViews();
 			foreach (var item in MainDatabase.GetRouteItems(SelectedDate)) {
+				var row = LayoutInflater.Inflate(Resource.Layout.RouteItem, RouteTable, false);
+				row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text = MainDatabase.GetEntity<Pharmacy>(item.Pharmacy).GetName();
+
 				int position = RouteSearchItems.FindIndex(rsi => string.Compare(rsi.UUID, item.Pharmacy) == 0);
 				RoutePharmacyAdapter.ChangeVisibility(position, false);
 
-				var row = LayoutInflater.Inflate(Resource.Layout.RouteItem, RouteTable, false);
 				row.SetTag(Resource.String.Position, position);
 				row.SetTag(Resource.String.PharmacyUUID, item.UUID);
 
-				row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text = RouteSearchItems[position].Name;
 				row.SetTag(Resource.String.RouteItemOrder, item.Order);
 				row.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (item.Order + 1).ToString();
 				row.FindViewById<ImageView>(Resource.Id.riDeleteIV).Click += (caller, args) => {
