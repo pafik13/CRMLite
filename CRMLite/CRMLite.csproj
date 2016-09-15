@@ -160,6 +160,9 @@
     <Compile Include="Lib\Dialogs\DatePickerFragment.cs" />
     <Compile Include="Lib\Fragments\RouteFragment.cs" />
     <Compile Include="ProfileActivity.cs" />
+    <Compile Include="Lib\Dialogs\MessageDialog.cs" />
+    <Compile Include="Lib\Entities\Message.cs" />
+    <Compile Include="MessageActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -478,6 +481,8 @@
     <AndroidResource Include="Resources\drawable-xhdpi\ic_message_black_36dp.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_message_black_36dp.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_message_black_36dp.png" />
+    <AndroidResource Include="Resources\layout\MessageDialog.axml" />
+    <AndroidResource Include="Resources\layout\Message.axml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

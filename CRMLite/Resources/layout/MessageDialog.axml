@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+    <LinearLayout
+        android:minWidth="600dp"
+        android:minHeight="80dp"
+        android:background="@drawable/bottomline"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="100">
+        <ImageView
+            android:layout_weight="18"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            android:src="@drawable/ic_copyright_black_36dp" />
+        <EditText
+            android:textCursorDrawable="@null"
+            android:id="@+id/mdTextET"
+            android:background="@drawable/bottomline"
+            android:textColorHint="@color/Grey_300"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:hint="Бренд"
+            android:inputType="textCapSentences"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:lines="5"
+            android:layout_weight="82" />
+    </LinearLayout>
+    <LinearLayout
+        android:minWidth="600dp"
+        android:minHeight="50dp"
+        android:background="@android:color/white"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="100">
+        <Button
+            android:layout_weight="50"
+            android:text="Закрыть"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/Close" />
+        <Button
+            android:layout_weight="50"
+            android:text="Сохранить"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/Save" />
+    </LinearLayout>
+</LinearLayout>

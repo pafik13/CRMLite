@@ -138,28 +138,7 @@ namespace CRMLite
 			};
 
 			var filter = FindViewById<ImageView>(Resource.Id.maFilter);
-			filter.Click += (sender, e) => {
-				if (sender is ImageView) {
-					var img = sender as ImageView;
-
-					var isFilterOn = (bool)img.GetTag(Resource.String.IsFilterOn);
-					isFilterOn = !isFilterOn;
-					GetSharedPreferences(FilterDialog.C_FILTER_PREFS, FileCreationMode.Private)
-						.Edit()
-						.PutBoolean(@"IS_ON", isFilterOn)
-						.Commit();
-
-					if (isFilterOn) {
-						img.SetBackgroundColor(Android.Graphics.Color.LightGreen);
-					} else {
-						img.SetBackgroundColor(Android.Graphics.Color.Transparent);
-					}
-					img.Invalidate();
-					img.SetTag(Resource.String.IsFilterOn, isFilterOn);
-
-					RecreateAdapter();
-				}
-			};
+			filter.Click += Filter_Click;
 
 			filter.LongClick += (sender, e) => {
 				var fragmentTransaction = FragmentManager.BeginTransaction();
@@ -172,12 +151,56 @@ namespace CRMLite
 				var filterDialog = new FilterDialog();
 				filterDialog.Show(fragmentTransaction, FilterDialog.TAG);
 				filterDialog.AfterSaved += (caller, arguments) => {
-					RecreateAdapter();
+					Filter_Click(sender, e);
 				};
+			};
+
+			var message = FindViewById<ImageView>(Resource.Id.maMessage);
+			message.Click += (sender, e) => {
+				var fragmentTransaction = FragmentManager.BeginTransaction();
+				var prev = FragmentManager.FindFragmentByTag(MessageDialog.TAG);
+				if (prev != null) {
+					fragmentTransaction.Remove(prev);
+				}
+				fragmentTransaction.AddToBackStack(null);
+
+				var messageDialog = new MessageDialog();
+				messageDialog.Show(fragmentTransaction, MessageDialog.TAG);
+				messageDialog.AfterSaved += (caller, arguments) => {
+					Toast.MakeText(this, @"Message saved", ToastLength.Short).Show();
+				};
+			};
+
+			message.LongClick += (sender, e) => {
+				StartActivity(new Intent(this, typeof(MessageActivity)));
 			};
 
 			FilterContent = FindViewById<TextView>(Resource.Id.maFilterTV);
 			AttendanceCount = FindViewById<TextView>(Resource.Id.maAttendanceCountTV);
+		}
+
+		void Filter_Click(object sender, EventArgs e)
+		{
+			if (sender is ImageView) {
+				var img = sender as ImageView;
+
+				var isFilterOn = (bool)img.GetTag(Resource.String.IsFilterOn);
+				isFilterOn = !isFilterOn;
+				GetSharedPreferences(FilterDialog.C_FILTER_PREFS, FileCreationMode.Private)
+					.Edit()
+					.PutBoolean(@"IS_ON", isFilterOn)
+					.Commit();
+
+				if (isFilterOn) {
+					img.SetBackgroundColor(Android.Graphics.Color.LightGreen);
+				} else {
+					img.SetBackgroundColor(Android.Graphics.Color.Transparent);
+				}
+				img.Invalidate();
+				img.SetTag(Resource.String.IsFilterOn, isFilterOn);
+
+				RecreateAdapter();
+			}
 		}
 
 		void OnListItemClick(object sender, AdapterView.ItemClickEventArgs e)
