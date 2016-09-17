@@ -74,7 +74,7 @@ namespace CRMLite
 		{
 			switch (position) {
 				default:
-					Info.Text = string.Format(@"Фрагмент {0}", position);
+					Info.Text = string.Format(@"Период планирования: {0} недели ({1} дней) Фрагмент {2}", Helper.WeekInRoute, Helper.WeekInRoute * 5, position);
 					break; ;
 			}
 		}

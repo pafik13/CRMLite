@@ -546,6 +546,44 @@ namespace CRMLite
 					 .ToList();
 		}
 
+		internal static List<RouteItem> GetRouteItems(DateTimeOffset selectedDate, DayOfWeek dayOfWeek)
+		{
+			var date = selectedDate.UtcDateTime.Date;
+
+			return Me.DB.All<RouteItem>()
+				     .ToList()
+					 .Where(ri => ri.Date.Date.Week == date.Week && ri.Date.DayOfWeek == dayOfWeek)
+					 .OrderBy(ri => ri.Order)
+					 .ToList();
+		}
+
+
+		internal static Dictionary<string, Dictionary<int, int>> GetProfileReportData(DateTimeOffset[] dates)
+		{
+			var result = new Dictionary<string, Dictionary<int, int>>();
+			foreach (var pharmacy in GetItems<Pharmacy>())
+			{
+				result.Add(pharmacy.UUID, new Dictionary<int, int>());
+				foreach (var date in dates)
+				{
+					var d = date.UtcDateTime.Date;
+					result[pharmacy.UUID].Add(d.Year * 100 + d.Week, 0);
+				}
+			}
+
+			foreach (var attendance in GetItems<Attendance>())
+			{
+				var d = attendance.When.UtcDateTime.Date;
+				int key = d.Year * 100 + d.Week;
+				if (result[attendance.Pharmacy].ContainsKey(key)){
+					result[attendance.Pharmacy][key]++;
+				}
+			}
+			
+			return result;
+		}
+
+
 		public static List<Pharmacy> GetPharmacies()
 		{
 			return Me.DB.All<Pharmacy>().ToList();

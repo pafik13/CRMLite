@@ -14,6 +14,16 @@ namespace CRMLite
 		int Offset;
 		LinearLayout RouteTable;
 		LayoutInflater Inflater;
+		DateTimeOffset Date;
+		DateTimeOffset[5] Dates;
+
+		LinearLayout MondayTable;
+		LinearLayout TuesdayTable;
+		LinearLayout WednesdayTable;
+		LinearLayout ThursdayTable;
+		LinearLayout FridayTable;
+
+
 		/**
 		 * Factory method for this fragment class. Constructs a new fragment for the given page number.
 		 */
@@ -32,6 +42,14 @@ namespace CRMLite
 
 			// Create your fragment heree
 			Offset = Arguments.GetInt(C_OFFSET);
+			Date = DateTimeOffset.UtcNow.(AddDays(7*Offset));
+			// Dates = new DateTimeOffset[5];
+			// var d = Date.UtcDateTime.Date;
+			// Dates[0] = d.AddDays(-(int)d.DayOfWeek + (int)DayOfWeek.Monday);
+			// Dates[1] = d.AddDays(-(int)d.DayOfWeek + (int)DayOfWeek.Tuesday);
+			// Dates[2] = d.AddDays(-(int)d.DayOfWeek + (int)DayOfWeek.Wednesday);
+			// Dates[3] = d.AddDays(-(int)d.DayOfWeek + (int)DayOfWeek.Thursday);
+			// Dates[4] = d.AddDays(-(int)d.DayOfWeek + (int)DayOfWeek.Friday);
 		}
 
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -40,13 +58,18 @@ namespace CRMLite
 			// return inflater.Inflate(Resource.Layout.YourFragment, container, false);
 
 			base.OnCreateView(inflater, container, savedInstanceState);
-			Inflater = inflater;
-			// Inflate the layout containing a title and body text.
-			ViewGroup rootView = (ViewGroup)inflater
-					.Inflate(Resource.Layout.RouteFragment, container, false);
+			// Inflater = inflater;
 
-			// Set the title view to show the page number.
-			RouteTable = rootView.FindViewById<LinearLayout>(Resource.Id.rfRouteTable);
+			// Inflate the layout
+			ViewGroup rootView = (ViewGroup)inflater
+					.Inflate(Resource.Layout.RouteWeek, container, false);
+			
+			// Find tables
+			MondayTable = rootView.FindByViewId<LinearLayout>(Resource.Id.rwMondayTable);
+			TuesdayTable = rootView.FindByViewId<LinearLayout>(Resource.Id.rwTuesdayTable);
+			WednesdayTable = rootView.FindByViewId<LinearLayout>(Resource.Id.rwWednesdayTable);
+			ThursdayTable = rootView.FindByViewId<LinearLayout>(Resource.Id.rwThursdayTable);
+			FridayTable = rootView.FindByViewId<LinearLayout>(Resource.Id.rwFridayTable);
 
 			return rootView;
 		}
@@ -55,16 +78,11 @@ namespace CRMLite
 		{
 			base.OnResume();
 
-			RouteTable.RemoveAllViews();
-			foreach (var item in MainDatabase.GetRouteItems(DateTimeOffset.UtcNow.AddDays(-Offset))) {
-
-				var row = Inflater.Inflate(Resource.Layout.RouteItem, RouteTable, false);
-
-				row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text = MainDatabase.GetEntity<Pharmacy>(item.Pharmacy).GetName();
-				row.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (item.Order + 1).ToString();
-
-				RouteTable.AddView(row);
-			}
+			MondayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(Date, DayOfWeek.Monday));
+			TuesdayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(Date, DayOfWeek.Tuesday));
+			WednesdayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(Date, DayOfWeek.Wednesday));
+			ThursdayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(Date, DayOfWeek.Thursday));
+			FridayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(Date, DayOfWeek.Friday));
 		}
 	}
 }
