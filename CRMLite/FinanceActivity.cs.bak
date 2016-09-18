@@ -21,8 +21,7 @@ namespace CRMLite
 	public class FinanceActivity : Activity
 	{
 		const string PeriodFormatForKey = @"MMyyyy";
-		public const string C_IS_CAN_ADD = @"C_IS_CAN_ADD";
-		
+
 		Pharmacy Pharmacy;
 		LinearLayout Table;
 		Dictionary<string, TextView> TextViews;
@@ -61,35 +60,30 @@ namespace CRMLite
 			TableBySKU = FindViewById<LinearLayout>(Resource.Id.faTableBySKU);
 
 			var add = FindViewById<ImageView>(Resource.Id.faAdd);
-			var isCanAdd = Intent.GetBooleanExtra(C_IS_CAN_ADD, true);
-			if (isCanAdd){
-				add.Click += (sender, e) => {
-					//Toast.MakeText(this, "ADD BUTTON CLICKED", ToastLength.Short).Show();
-					Console.WriteLine("Event {0} was called", "faAdd_Click");
-					FragmentTransaction fragmentTransaction = FragmentManager.BeginTransaction();
+			add.Click += (sender, e) => {
+				//Toast.MakeText(this, "ADD BUTTON CLICKED", ToastLength.Short).Show();
+				Console.WriteLine("Event {0} was called", "faAdd_Click");
+				FragmentTransaction fragmentTransaction = FragmentManager.BeginTransaction();
 
-					var prev = FragmentManager.FindFragmentByTag(FinanceDialog.TAG);
-					if (prev != null) {
-						fragmentTransaction.Remove(prev);
-					}
-					fragmentTransaction.AddToBackStack(null);
+				var prev = FragmentManager.FindFragmentByTag(FinanceDialog.TAG);
+				if (prev != null) {
+					fragmentTransaction.Remove(prev);
+				}
+				fragmentTransaction.AddToBackStack(null);
 
-					var financeDialog = new FinanceDialog(Pharmacy);
-					financeDialog.Show(fragmentTransaction, FinanceDialog.TAG);
-					financeDialog.AfterSaved += (caller, arguments) => {
-						Console.WriteLine("Event {0} was called. FinanceDatas count {1}", "AfterSaved", arguments.FinanceDatas.Count);
+				var financeDialog = new FinanceDialog(Pharmacy);
+				financeDialog.Show(fragmentTransaction, FinanceDialog.TAG);
+				financeDialog.AfterSaved += (caller, arguments) => {
+					Console.WriteLine("Event {0} was called. FinanceDatas count {1}", "AfterSaved", arguments.FinanceDatas.Count);
 
-						//Table.RemoveAllViews();
+					//Table.RemoveAllViews();
 
-						RefreshView();
-						//MainDatabase.SaveItems(arguments.FinanceDatas);
-						//SetValues(arguments.FinanceDatas);
-					};
+					RefreshView();
+					//MainDatabase.SaveItems(arguments.FinanceDatas);
+					//SetValues(arguments.FinanceDatas);
+
 				};
-			} else {
-				add.Visibility = ViewStates.Gone;
-			}
-			
+			};
 			var switcher = FindViewById<ViewSwitcher>(Resource.Id.faSwitchViewTypeVS);
 			var sw = FindViewById<ImageView>(Resource.Id.faSwitchIV);
 			sw.Click += (sender, e) => {
@@ -255,7 +249,7 @@ namespace CRMLite
 			var fdMonths = MainDatabase.GetPharmacyDatas<FinanceDataByMonth>(Pharmacy.UUID);
 			foreach (var data in fdMonths) {
 				string datePart = string.Format("{0}{1}", data.Month.ToString("D2"), data.Year);
-				// Sale
+				// Salee
 				key = string.Format("{0}-{1}-{2}", data.DrugSKU, FinanceInfoType.fitSale, datePart);
 				if (TextViews.ContainsKey(key)) {
 					txt = TextViews[key];

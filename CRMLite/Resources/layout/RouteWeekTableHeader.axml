@@ -5,14 +5,14 @@
     android:layout_height="48dp"
     android:background="@android:color/white">
     <TextView
-        android:layout_marginTop="6dp"
         android:id="@+id/rwthDateTV"
         android:layout_marginLeft="12dp"
         android:text="Дата"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:textAppearance="@style/rwtiPharmacy"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
         android:focusable="false"
         android:focusableInTouchMode="false" />
 </LinearLayout>

@@ -552,7 +552,7 @@ namespace CRMLite
 
 			return Me.DB.All<RouteItem>()
 				     .ToList()
-					 .Where(ri => ri.Date.Date.Week == date.Week && ri.Date.DayOfWeek == dayOfWeek)
+				     .Where(ri => Helper.GetIso8601WeekOfYear(ri.Date.Date) == Helper.GetIso8601WeekOfYear(date) && ri.Date.DayOfWeek == dayOfWeek)
 					 .OrderBy(ri => ri.Order)
 					 .ToList();
 		}
@@ -567,14 +567,14 @@ namespace CRMLite
 				foreach (var date in dates)
 				{
 					var d = date.UtcDateTime.Date;
-					result[pharmacy.UUID].Add(d.Year * 100 + d.Week, 0);
+					result[pharmacy.UUID].Add(d.Year * 100 + Helper.GetIso8601WeekOfYear(d), 0);
 				}
 			}
 
 			foreach (var attendance in GetItems<Attendance>())
 			{
 				var d = attendance.When.UtcDateTime.Date;
-				int key = d.Year * 100 + d.Week;
+				int key = d.Year * 100 + Helper.GetIso8601WeekOfYear(d);
 				if (result[attendance.Pharmacy].ContainsKey(key)){
 					result[attendance.Pharmacy][key]++;
 				}

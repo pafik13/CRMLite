@@ -7,7 +7,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
     <LinearLayout
-        android:minWidth="600dp"
+        android:minWidth="540dp"
         android:minHeight="60dp"
         android:background="@drawable/bottomline"
         android:orientation="horizontal"
@@ -110,17 +110,17 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:scaleType="center"
-            android:src="@drawable/ic_location_city_black_36dp" />
+            android:src="@drawable/ic_copyright_black_36dp" />
         <EditText
             android:textCursorDrawable="@null"
-            android:id="@+id/fdAddressET"
+            android:id="@+id/fdBrandET"
             android:background="@drawable/bottomline"
             android:textColorHint="@color/Grey_300"
             android:textColor="@android:color/black"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:hint="Адрес"
-            android:inputType="textCapWords"
+            android:hint="Бренд"
+            android:inputType="textCapSentences"
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_weight="82" />

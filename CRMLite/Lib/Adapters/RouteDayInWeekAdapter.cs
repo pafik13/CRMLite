@@ -15,7 +15,7 @@ namespace CRMLite.Adapters
 		readonly Activity Context;
 		readonly IList<RouteItem> RouteItems;
 
-		public RoutePharmacyAdapter(Activity context, IList<RouteItem> routeItems)
+		public RouteDayInWeekAdapter(Activity context, IList<RouteItem> routeItems)
 		{
 			Context = context;
 			RouteItems = routeItems;
@@ -43,8 +43,8 @@ namespace CRMLite.Adapters
 			// Get our object for position
 			var pharmacy = MainDatabase.GetEntity<Pharmacy>(RouteItems[position].Pharmacy);
             
-            view = (convertView ?? Context.LayoutInflater.Inflate(Resource.Layout.RouteWeekTableItem, parent, false)
-                   ) as LinearLayout; 
+            var view = (convertView ?? Context.LayoutInflater.Inflate(Resource.Layout.RouteWeekTableItem, parent, false)
+			           ) as LinearLayout; 
 
             view.FindViewById<TextView>(Resource.Id.rwtiPharmacyTV).Text = pharmacy.GetName();
             

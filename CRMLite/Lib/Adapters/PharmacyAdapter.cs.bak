@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 
 using Android.App;
@@ -15,13 +14,11 @@ namespace CRMLite.Adapters
 	{
 		readonly Activity Context;
 		readonly IList<Pharmacy> Pharmacies;
-		readonly string[] PharmaciesInRoute;
 
-		public PharmacyAdapter(Activity context, IList<Pharmacy> pharmacies, string[] pharmaciesInRoute = null) : base()
+		public PharmacyAdapter(Activity context, IList<Pharmacy> pharmacies) : base()
 		{
 			Context = context;
 			Pharmacies = pharmacies;
-			PharmaciesInRoute = pharmaciesInRoute;
 		}
 
 		public override Pharmacy this[int position]
@@ -80,29 +77,13 @@ namespace CRMLite.Adapters
 			var nexttAttendance = view.FindViewById<Button>(Resource.Id.ptiNextAttendanceB);
 			nexttAttendance.SetTag(Resource.String.PharmacyUUID, item.UUID);
 			nexttAttendance.Text = item.NextAttendanceDate.HasValue ? 
-				item.NextAttendanceDate.Value.ToString(@"dd.MM.yyyy") : @"Начать визит"; //DateTimeOffset.Now.ToString(@"dd.MM.yyyy");
+				item.NextAttendanceDate.Value.ToString(@"dd.MM.yyyy") : DateTimeOffset.Now.ToString(@"dd.MM.yyyy");
 			nexttAttendance.Click -= NextAttendanceClickEventHandler;
 			nexttAttendance.Click += NextAttendanceClickEventHandler;
 
 			var lastAttendance = view.FindViewById<TextView>(Resource.Id.ptiLastAttendanceDateTV);
 			lastAttendance.Text = item.LastAttendanceDate.HasValue ? 
 				item.LastAttendanceDate.Value.ToString(@"dd.MM.yyyy") : @"<нет визита>";
-
-			if (PharmaciesInRoute == null) return view;
-			if (PharmaciesInRoute.Length == 0) return view;
-
-			// wmOnlyRoute, wmRouteAndRecommendations, wmOnlyRecommendations
-			switch (Helper.WorkMode) {
-				case WorkMode.wmOnlyRoute:
-				case WorkMode.wmRouteAndRecommendations:
-					if (PharmaciesInRoute.Contains(item.UUID)) {
-						view.SetBackgroundResource(Resource.Color.Light_Green_100);
-						nexttAttendance.Text = @"Начать визит";
-					} else {
-						view.SetBackgroundColor(Android.Graphics.Color.White);
-					}
-					break;
-			}
 
 			//Finally return the view
 			return view;

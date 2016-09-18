@@ -3,8 +3,30 @@ using System.Globalization;
 
 namespace CRMLite
 {
+	public enum WorkMode
+	{
+		wmOnlyRoute, wmRouteAndRecommendations, wmOnlyRecommendations
+	}
+
 	public static class Helper
 	{
+		public static int WeeksInRoute = 3;
+
+		public static WorkMode WorkMode = WorkMode.wmOnlyRoute;
+
+		public static string GetWorkModeDesc(WorkMode workMode)
+		{
+			switch (workMode) {
+				case WorkMode.wmOnlyRoute:
+					return "Строго по маршруту";
+				case WorkMode.wmRouteAndRecommendations:
+					return "Маршрут и рекомендации";
+				case WorkMode.wmOnlyRecommendations:
+					return "Только рекомендации";
+				default:
+					return @"<Unknown>";
+			}
+		}
 
 		// This presumes that weeks start with Monday.
 		// Week 1 is the 1st week of the year with a Thursday in it.
@@ -71,4 +93,3 @@ namespace CRMLite
 		}
 	}
 }
-

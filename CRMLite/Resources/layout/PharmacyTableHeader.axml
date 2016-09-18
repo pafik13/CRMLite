@@ -6,11 +6,19 @@
     android:background="@android:color/white"
     android:weightSum="100">
     <TextView
+        android:text="Статус"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/pthNameTV"
+        android:layout_weight="10"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
         android:text="Аптека"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/pthNameTV"
-        android:layout_weight="24"
+        android:layout_weight="22"
         android:gravity="center"
         android:textAppearance="@style/headerTextForPharmacy" />
     <TextView
@@ -18,7 +26,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/pthAddressTV"
-        android:layout_weight="36"
+        android:layout_weight="34"
         android:gravity="center"
         android:textAppearance="@style/headerTextForPharmacy" />
     <TextView
@@ -26,7 +34,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/pthLastAttendanceDateTV"
-        android:layout_weight="10"
+        android:layout_weight="9"
         android:gravity="center"
         android:textAppearance="@style/headerTextForPharmacy" />
     <TextView
@@ -34,7 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/pthNextAttendanceTV"
-        android:layout_weight="10"
+        android:layout_weight="9"
         android:gravity="center"
         android:textAppearance="@style/headerTextForPharmacy" />
     <TextView
@@ -42,7 +50,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/pthAddInfoTV"
-        android:layout_weight="20"
+        android:layout_weight="16"
         android:gravity="center"
         android:textAppearance="@style/headerTextForPharmacy" />
 </LinearLayout>

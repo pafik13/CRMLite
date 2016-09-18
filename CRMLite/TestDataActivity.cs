@@ -18,6 +18,8 @@ namespace CRMLite
 		Button GenerateData;
 		Button CustomAction;
 		Button Clear;
+		Button ChangeWorkMode;
+
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
@@ -35,6 +37,21 @@ namespace CRMLite
 
 			Clear = FindViewById<Button>(Resource.Id.tdaClearB);
 			Clear.Click += Clear_Click;
+
+			ChangeWorkMode = FindViewById<Button>(Resource.Id.tdaChangeWorkModeB);
+			ChangeWorkMode.Click += (sender, e) => {
+				switch (Helper.WorkMode) {
+					case WorkMode.wmOnlyRoute:
+						Helper.WorkMode = WorkMode.wmRouteAndRecommendations;
+						break;
+					case WorkMode.wmRouteAndRecommendations:
+						Helper.WorkMode = WorkMode.wmOnlyRecommendations;
+						break;
+					case WorkMode.wmOnlyRecommendations:
+						Helper.WorkMode = WorkMode.wmOnlyRoute;
+						break;
+				}
+			};
 
 			RefreshView();
 		}
@@ -135,7 +152,9 @@ namespace CRMLite
 
 			transaction = MainDatabase.BeginTransaction();
 
+			//int count = 0;
 			foreach (var pharmacy in pharmacies) {
+				//count++;
 				// Визиты
 				if (true) {
 					for (int i = 0; i < visitsCount; i++) {

@@ -219,8 +219,7 @@ namespace CRMLite
 				}
 			}
 
-			var list = MainDatabase.GetItems<Pharmacy>();
-			string[] pharmaciesInRoute = null;
+			var list = MainDatabase.GetItems<Pharmacy>(); 
 
 			var prefs = GetSharedPreferences(FilterDialog.C_FILTER_PREFS, FileCreationMode.Private);
 			bool isOn = prefs.GetBoolean(@"IS_ON", false);
@@ -260,47 +259,12 @@ namespace CRMLite
 			} else {
 				FilterContent.Visibility = ViewStates.Gone;
 				Filter.SetBackgroundColor(Android.Graphics.Color.Transparent);
-
-				
-				// TODO: optimize work with route
-				var routeItems = MainDatabase.GetRouteItems(DateTimeOffset.Now);
-				pharmaciesInRoute = routeItems.Select(ri => ri.Pharmacy).ToArray();
-				// wmOnlyRoute, wmRouteAndRecommendations, wmOnlyRecommendations
-				switch (Helper.WorkMode) {
-					case WorkMode.wmOnlyRoute:
-						if (routeItems.Count == 0) {
-							list = new List<Pharmacy>();
-					    } else {
-							list = list.Where(ph => pharmaciesInRoute.Contains(ph.UUID)).ToList();
-					    }
-					    break;
-					case WorkMode.wmRouteAndRecommendations:
-						if (routeItems.Count == 0) {
-							list = list.OrderBy(ph => ph.NextAttendanceDate).ToList();
-					    } else {
-							var routeList = list.Where(ph => pharmaciesInRoute.Contains(ph.UUID)).ToList();
-							var nonRouteList = list.Where(ph => !pharmaciesInRoute.Contains(ph.UUID))
-							                       .OrderBy(ph => ph.NextAttendanceDate)
-							                       .ToList();
-							list = new List<Pharmacy>();
-							list.AddRange(routeList);
-							list.AddRange(nonRouteList);
-						}
-					    break;
-					case WorkMode.wmOnlyRecommendations:
-						list = list.OrderBy(ph => ph.NextAttendanceDate).ToList();
-						break;
-				}
-				
-			  //Pharmacies = list; //.Take(14).ToList();
-			  //PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies, pharmaciesInRout);
-			  //return;
 			}
 			Filter.Invalidate();
 
 
 			Pharmacies = list; //.Take(14).ToList();
-			PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies, pharmaciesInRoute);
+			PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies);
 		}
 
 		void Search(string text)
@@ -408,7 +372,7 @@ namespace CRMLite
 			w.Restart();
 			int count = MainDatabase.GetItems<Attendance>()
 									.Count(att => att.When.LocalDateTime.Date == DateTimeOffset.Now.Date);
-			AttendanceCount.Text = string.Format(@"РЕЖИМ РАБОТЫ: {0};  СЕГОДНЯ ВИЗИТОВ: {1}", Helper.GetWorkModeDesc(Helper.WorkMode), count);
+			AttendanceCount.Text = string.Format(@"РЕЖИМ РАБОТЫ: {0};  СЕГОДНЯ ВИЗИТОВ: {1}", @"Строго по маршруту", count);
 			w.Stop();
 			Console.WriteLine(@"OnResume: подсчет визитов={0}", w.ElapsedMilliseconds);
 

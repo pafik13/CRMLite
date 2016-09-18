@@ -12,14 +12,14 @@ using Android.Views;
 using Android.Widget;
 
 using CRMLite.Entities;
+using CRMLite.Adapters;
 
 namespace CRMLite
 {
 	[Activity(Label = "ProfileActivity")]
 	public class ProfileActivity : Activity
 	{
-		Pharmacy Pharmacy;
-		LinearLayout Table;
+		ListView Table;
 		DateTimeOffset[] Dates;
 		Dictionary<string, Dictionary<int, int>> ReportData;
 
@@ -33,11 +33,11 @@ namespace CRMLite
 			// Create your application here
 			SetContentView(Resource.Layout.Profile);
 
-			//FindViewById<Button>(Resource.Id.haCloseB).Click += (sender, e) => {
-			//	Finish();
-			//};
+			FindViewById<Button>(Resource.Id.paCloseB).Click += (sender, e) => {
+				Finish();
+			};
 
-			Table = FindViewById<LinearLayout>(Resource.Id.paAttendanceByWeekTable);
+			Table = FindViewById<ListView>(Resource.Id.paAttendanceByWeekTable);
 
 			int weeksCount = 14;
 			Dates = new DateTimeOffset[weeksCount];
@@ -49,22 +49,23 @@ namespace CRMLite
 					(hView as TextView).Text = Helper.GetIso8601WeekOfYear(Dates[w].UtcDateTime).ToString();
 				}
 			}
+			FindViewById<LinearLayout>(Resource.Id.paAttendanceByWeekLL).AddView(header, 1);
 
-			Table.AddView(header);
+			//Table.AddHeaderView(header);
 
-			var agentUUID = GetSharedPreferences(MainActivity.C_MAIN_PREFS)
-							.GetString(C_AGENT_UUID, string.Empty);
+			//var agentUUID = GetSharedPreferences(MainActivity.C_MAIN_PREFS)
+			//				.GetString(C_AGENT_UUID, string.Empty);
 
-			if (string.IsEmptyOrNull(agentUUID)) return;
+			//if (string.IsEmptyOrNull(agentUUID)) return;
 
-			var agent = MainDatabase.GetEntity<Agent>();
-			FindViewById<TextView>(Resource.Id.paAgentShortNameTV).Text = agent.ShortName;
-			FindViewById<TextView>(Resource.Id.paAgentBirthDateTV).Text = agent.BirthDate.ToLongString();
-			FindViewById<TextView>(Resource.Id.paAgentPositionTV).Text = agent.Position;
+			//var agent = MainDatabase.GetEntity<Agent>();
+			//FindViewById<TextView>(Resource.Id.paAgentShortNameTV).Text = agent.ShortName;
+			//FindViewById<TextView>(Resource.Id.paAgentBirthDateTV).Text = agent.BirthDate.ToLongString();
+			//FindViewById<TextView>(Resource.Id.paAgentPositionTV).Text = agent.Position;
 
-			FindViewById<Button>(Resource.Id.paExitApplicationB).Click += (sender, e) {
-				Exit_App();
-			}
+			//FindViewById<Button>(Resource.Id.paExitApplicationB).Click += (sender, e) => {
+			//	Exit_App();
+			//};
 		}
 
 		protected override void OnResume()

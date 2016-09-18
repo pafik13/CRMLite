@@ -5,6 +5,7 @@
 	<string name="error_caption">Ошибка!</string>
 
 	<string name="IsFilterOn">IsFilterOn</string>
+	<string name="RouteItemUUID">ContractDataUUID</string>
 	<string name="RouteItemOrder">RouteItemOrder</string>
 	<string name="Position">Position</string>
 

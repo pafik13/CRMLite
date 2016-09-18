@@ -74,11 +74,17 @@
             android:layout_height="wrap_content"
             android:id="@+id/tdaPhotoDatas" />
         <Button
+            android:text="Change WorkMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaChangeWorkModeB" />
+        <Button
             android:text="Custom Action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tdaCustomActionB" />
         <Button
+            android:layout_marginTop="20dp"
             android:text="Clear DB"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

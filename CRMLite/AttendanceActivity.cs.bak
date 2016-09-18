@@ -222,17 +222,16 @@ namespace CRMLite
 
 			Finance = FindViewById<ImageView>(Resource.Id.aaFinanceIV);
 			Finance.Click += (sender, e) => {
-				var financeActivity = new Intent(this, typeof(FinanceActivity));
-				financeActivity.PutExtra(@"UUID", PharmacyUUID);
-				financeActivity.PutExtra(FinanceActivity.C_IS_CAN_ADD, false);
-				StartActivity(financeActivity);
+				var financeAcivity = new Intent(this, typeof(FinanceActivity));
+				financeAcivity.PutExtra(@"UUID", PharmacyUUID);
+				StartActivity(financeAcivity);
 			};
 
 			History = FindViewById<ImageView>(Resource.Id.aaHistoryIV);
 			History.Click += (sender, e) => {
-				var historyActivity = new Intent(this, typeof(HistoryActivity));
-				historyActivity.PutExtra(@"UUID", PharmacyUUID);
-				StartActivity(historyActivity);
+				var historyAcivity = new Intent(this, typeof(HistoryActivity));
+				historyAcivity.PutExtra(@"UUID", PharmacyUUID);
+				StartActivity(historyAcivity);
 			};
 
 			Material = FindViewById<ImageView>(Resource.Id.aaMaterialIV);
@@ -246,9 +245,9 @@ namespace CRMLite
 								   intent.SetDataAndType(Android.Net.Uri.FromFile(file), "application/pdf");
 								   intent.SetFlags(ActivityFlags.NoHistory);
 								   StartActivity(intent);
-								   //var materialActivity = new Intent(this, typeof(MaterialActivity));
-								   //materialActivity.PutExtra(MaterialActivity.C_MATERIAL_UUID, Materials[arguments.Which].uuid);
-								   //StartActivity(materialActivity);
+								   //var materialAcivity = new Intent(this, typeof(MaterialActivity));
+								   //materialAcivity.PutExtra(MaterialActivity.C_MATERIAL_UUID, Materials[arguments.Which].uuid);
+								   //StartActivity(materialAcivity);
 								   //Toast.MakeText(this, Materials[arguments.Which].name, ToastLength.Short).Show();
 							   })
 				               .Show();

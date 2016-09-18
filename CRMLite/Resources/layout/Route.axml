@@ -124,13 +124,15 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp">
+                    android:layout_height="50dp"
+                    android:background="@drawable/bottomline">
                     <TextView
                         android:layout_margin="6dp"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="Маршрут"
-                        style="@android:style/TextAppearance.Material.Large"
+                        android:text="Маршрут на"
+                        android:textSize="20sp"
+                        android:textColor="@android:color/black"
                         android:gravity="center" />
                 <!--                <DatePicker
 	                    android:layout_width="wrap_content"
@@ -141,12 +143,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:id="@+id/raSelectDateB" />
+                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/spinner1" />
                 </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/raRouteTable"
-                    android:orientation="vertical"
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:id="@+id/raRouteTable"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </ScrollView>
             </LinearLayout>
         </LinearLayout>
         <android.support.v4.view.ViewPager

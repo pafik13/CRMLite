@@ -45,20 +45,7 @@ namespace CRMLite
 
 		EditText SearchEditor;
 
-		Animator card_flip_right_in;
-		Animator card_flip_right_out;
-		Animator card_flip_left_in;
-		Animator card_flip_left_out;
-
-		Animator card_flip_up_out;
-		Animator card_flip_up_in;
-
-		//Animator cardFlipUpOutForClickedView;
-		//Animator cardFlipUpOutForSwapedView;
-		//Animator cardFlipUpInForClickedView;
-		//Animator cardFlipUpInForSwapedView;
 		TextView Info;
-		//LinearLayout Animated;
 
 		public void OnPageScrolled(int position, float positionOffset, int positionOffsetPixels)
 		{
@@ -74,7 +61,10 @@ namespace CRMLite
 		{
 			switch (position) {
 				default:
-					Info.Text = string.Format(@"Период планирования: {0} недели ({1} дней) Фрагмент {2}", Helper.WeekInRoute, Helper.WeekInRoute * 5, position);
+					Info.Text = string.Format(
+						@"Период планирования: {0} недели ({1} дней) Фрагмент {2}",
+						Helper.WeeksInRoute, Helper.WeeksInRoute * 5, position
+					);
 					break; ;
 			}
 		}
@@ -86,21 +76,6 @@ namespace CRMLite
     
 			RequestWindowFeature(WindowFeatures.NoTitle);
 			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
-
-			card_flip_right_in = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_right_in);
-			card_flip_right_out = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_right_out);
-
-			card_flip_left_in = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_left_in);
-			card_flip_left_out = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_left_out);;
-
-			card_flip_up_out = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_up_out);
-			card_flip_up_in = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_up_in);
-
-			//cardFlipUpOutForClickedView = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_up_out);
-			//cardFlipUpOutForSwapedView = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_up_out);;
-
-			//cardFlipUpInForClickedView = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_up_in);
-			//cardFlipUpInForSwapedView = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_up_in);
 
 			// Create your application here
 			SetContentView(Resource.Layout.Route);
@@ -124,79 +99,25 @@ namespace CRMLite
 				} else {
 					item = SearchedItems[e.Position];
 				}
+				
+				//TODO: rename vars
+				using (var trans = MainDatabase.BeginTransaction()){
+					var newRouteItem = MainDatabase.Create<RouteItem>();
+					newRouteItem.Pharmacy = item.UUID;
+					newRouteItem.Order = RouteTable.ChildCount;
+					newRouteItem.Date = SelectedDate;
+					trans.Commit();
+					row.SetTag(Resource.String.RouteItemUUID, newRouteItem.UUID);
+				}
 				row.SetTag(Resource.String.PharmacyUUID, item.UUID);
 
 				row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text = item.Name;
 				row.SetTag(Resource.String.RouteItemOrder, RouteTable.ChildCount);
 				row.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (RouteTable.ChildCount + 1).ToString();
-				row.FindViewById<ImageView>(Resource.Id.riDeleteIV).Click += (caller, args) => {
-					var rowForDelete = (LinearLayout)((ImageView)caller).Parent;
-					int pos = (int) rowForDelete.GetTag(Resource.String.Position);
-					int index = (int)rowForDelete.GetTag(Resource.String.RouteItemOrder);
-					for (int c = index; c < RouteTable.ChildCount; c++) {
-						var rowForUpdate = (LinearLayout)RouteTable.GetChildAt(c);
-						rowForUpdate.SetTag(Resource.String.RouteItemOrder, c - 1);
-						rowForUpdate.FindViewById<TextView>(Resource.Id.riOrderTV).Text = c.ToString();
-					}
-					RouteTable.RemoveView(rowForDelete);
-					adapter.SwitchVisibility(pos);
-				};
 
-				//row.Click += Row_Click
-				row.LongClick += (caller, args) => {
-					if (caller is LinearLayout) {
-						var view = caller as LinearLayout;
-						var index = (int)view.GetTag(Resource.String.RouteItemOrder);
-
-						//var data = ClipData.NewPlainText(@"data", @"my_data");
-						var data = ClipData.NewPlainText(@"RouteItemOrder", index.ToString());
-						//var shadow = new MyShadowBuilder(view);
-						var shadow = new View.DragShadowBuilder(view);
-						view.StartDrag(data, shadow, null, 0);
-					}
-				};
-
-				row.Drag += (caller, args) => {
-					if (caller is LinearLayout) {
-						var view = caller as LinearLayout;
-						switch (args.Event.Action) {
-							case DragAction.Started:
-								args.Handled = true;
-								break;
-							case DragAction.Entered:
-								view.Visibility = ViewStates.Invisible;
-								break;
-							case DragAction.Exited:
-								view.Visibility = ViewStates.Visible;
-								break;
-							case DragAction.Ended:
-								view.Visibility = ViewStates.Visible;
-								args.Handled = true;
-								break;
-							case DragAction.Drop:
-								int clipedIndex = int.Parse(args.Event.ClipData.GetItemAt(0).Text);
-								var index = (int)view.GetTag(Resource.String.RouteItemOrder);
-								if (clipedIndex != index) {
-									var dragedView = RouteTable.GetChildAt(clipedIndex);
-									RouteTable.RemoveView(dragedView);
-									RouteTable.AddView(dragedView, index);
-									RouteTable.RemoveView(view);
-									RouteTable.AddView(view, clipedIndex);
-
-									for (int c = 0; c < RouteTable.ChildCount; c++) {
-										var rowForUpdate = (LinearLayout)RouteTable.GetChildAt(c);
-										rowForUpdate.SetTag(Resource.String.RouteItemOrder, c);
-										rowForUpdate.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (c + 1).ToString();
-									}
-									//dragedView.SetTag(Resource.String.RouteItemOrder, index);
-									//view.SetTag(Resource.String.RouteItemOrder, clipedIndex);
-								}
-								view.Visibility = ViewStates.Visible;
-								args.Handled = true;
-								break;
-						}
-					}
-				};
+				row.FindViewById<ImageView>(Resource.Id.riDeleteIV).Click += RowDelete_Click;
+				row.LongClick += Row_LongClick;
+				row.Drag += Row_Drag;
 
 				RouteTable.AddView(row);
 			};
@@ -285,76 +206,116 @@ namespace CRMLite
 					Console.WriteLine("DatePicker:{0}", date.ToLongDateString());
 					Console.WriteLine("DatePicker:{0}", new DateTimeOffset(date));
 					SelectedDate = new DateTimeOffset(date, new TimeSpan(0, 0, 0)); ;
-					RecreateAdapter();
+					RefreshTables();
 				});
 				frag.Show(FragmentManager, DatePickerFragment.TAG);
 			};
 
 			Info = FindViewById<TextView>(Resource.Id.raInfoTV);
+			Info.Text = string.Format(@"Период планирования: {0} недели ({1} дней)", Helper.WeeksInRoute, Helper.WeeksInRoute * 5);
+
 			var switcher = FindViewById<ViewSwitcher>(Resource.Id.raSwitchViewVS);
 			FindViewById<ImageView>(Resource.Id.raSwitchIV).Click += (sender, e) => {
-				var pager = FindViewById<ViewPager>(Resource.Id.raContainerVP);
-				pager.AddOnPageChangeListener(this);
-				pager.Adapter = new RoutePagerAdapter(SupportFragmentManager);
+				Console.WriteLine(@"switcher:{0}; Resource{1}", switcher.CurrentView.Id, Resource.Id.raContainerVP);
+				if (switcher.CurrentView.Id != Resource.Id.raContainerVP) {
+					var pager = FindViewById<ViewPager>(Resource.Id.raContainerVP);
+					pager.AddOnPageChangeListener(this);
+					pager.Adapter = new RoutePagerAdapter(SupportFragmentManager);
+				}
 				switcher.ShowNext();
 			};
 		}
 
-		void Row_Click(object sender, EventArgs e)
+		void RowDelete_Click(object sender, EventArgs e)
+		{
+			var adapter = (RoutePharmacyAdapter)PharmacyTable.Adapter;
+
+			var rowForDelete = (LinearLayout)((ImageView)sender).Parent;
+
+			string routeItemUUID = (string)rowForDelete.GetTag(Resource.String.RouteItemUUID);
+			MainDatabase.DeleteEntity<RouteItem>(routeItemUUID);
+
+			int pos = (int) rowForDelete.GetTag(Resource.String.Position);
+			int index = (int)rowForDelete.GetTag(Resource.String.RouteItemOrder);
+
+			RouteTable.RemoveView(rowForDelete);
+
+			using (var trans = MainDatabase.BeginTransaction()) {
+				for (int c = index; c < RouteTable.ChildCount; c++) {
+					var rowForUpdate = (LinearLayout)RouteTable.GetChildAt(c);
+					routeItemUUID = (string)rowForUpdate.GetTag(Resource.String.RouteItemUUID);
+					var updRouteItem = MainDatabase.GetEntity<RouteItem>(routeItemUUID);
+					updRouteItem.Order = c;
+					rowForUpdate.SetTag(Resource.String.RouteItemOrder, c);
+					rowForUpdate.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (c + 1).ToString();
+				}
+				trans.Commit();
+			}
+
+			adapter.SwitchVisibility(pos);
+		}
+
+		void Row_LongClick(object sender, View.LongClickEventArgs e)
 		{
 			if (sender is LinearLayout) {
-				var cardFlipUpOutForClickedView = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_up_out);
-				var cardFlipUpOutForSwapedView = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_up_out);
+				var view = sender as LinearLayout;
+				var index = (int)view.GetTag(Resource.String.RouteItemOrder);
 
-				var cardFlipUpInForClickedView = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_up_in);
-				var cardFlipUpInForSwapedView = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_up_in);
-
-				var clickedView = ((LinearLayout)sender);
-				var index = (int) clickedView.GetTag(Resource.String.RouteItemOrder);
-				if (index < 1) return;
-
-				var swapedView = RouteTable.GetChildAt(index - 1);
-
-				cardFlipUpOutForClickedView.SetTarget(clickedView);
-				cardFlipUpOutForClickedView.Start();
-				cardFlipUpOutForSwapedView.SetTarget(swapedView);
-				cardFlipUpOutForSwapedView.Start();
-				cardFlipUpOutForClickedView.AnimationEnd += (c, a) => {
-					RouteTable.RemoveView(clickedView);
-					RouteTable.AddView(clickedView, index - 1);
-					clickedView.SetTag(Resource.String.RouteItemOrder, index - 1);
-					swapedView.SetTag(Resource.String.RouteItemOrder, index);
-					cardFlipUpInForSwapedView.SetTarget(swapedView);
-					cardFlipUpInForSwapedView.Start();
-					cardFlipUpInForClickedView.SetTarget(clickedView);
-					cardFlipUpInForClickedView.Start();
-				};
-
-
-				//((LinearLayout)caller)s
-				//card_flip_left_in.SetTarget((Java.Lang.Object)caller);
-				//card_flip_left_in.Start();
-
-				//card_flip_left_out.SetTarget((Java.Lang.Object)caller);
-				//card_flip_left_out.Start()
-				//card_flip_right_out.SetTarget(Animated);
-				//card_flip_right_out.Start();
-				//card_flip_right_in.SetTarget(Animated);
-				//card_flip_right_in.Start();
-				//card_flip_right_out.AnimationEnd += Card_Flip_Right_Out_AnimationEnd;
-
-				//card_flip_out_out.SetTarget(Animated);
-				//card_flip_out_out.Start()
-
-
+				//var data = ClipData.NewPlainText(@"data", @"my_data");
+				var data = ClipData.NewPlainText(@"RouteItemOrder", index.ToString());
+				//var shadow = new MyShadowBuilder(view);
+				var shadow = new View.DragShadowBuilder(view);
+				view.StartDrag(data, shadow, null, 0);
 			}
 		}
 
-		void Card_Flip_Right_Out_AnimationEnd(object sender, EventArgs e)
+		void Row_Drag(object sender, View.DragEventArgs e)
 		{
-			//card_flip_right_in.SetTarget(Animated);
-			//card_flip_right_in.Start();
-			Console.WriteLine("Animation");
+			if (sender is LinearLayout) {
+				var view = sender as LinearLayout;
+				switch (e.Event.Action) {
+					case DragAction.Started:
+						e.Handled = true;
+						break;
+					case DragAction.Entered:
+						view.Visibility = ViewStates.Invisible;
+						break;
+					case DragAction.Exited:
+						view.Visibility = ViewStates.Visible;
+						break;
+					case DragAction.Ended:
+						view.Visibility = ViewStates.Visible;
+						e.Handled = true;
+						break;
+					case DragAction.Drop:
+						int clipedIndex = int.Parse(e.Event.ClipData.GetItemAt(0).Text);
+						var index = (int)view.GetTag(Resource.String.RouteItemOrder);
+						if (clipedIndex != index) {
+							var dragedView = RouteTable.GetChildAt(clipedIndex);
+							RouteTable.RemoveView(dragedView);
+							RouteTable.AddView(dragedView, index);
+							RouteTable.RemoveView(view);
+							RouteTable.AddView(view, clipedIndex);
+
+							using (var trans = MainDatabase.BeginTransaction()) {
+								for (int c = 0; c < RouteTable.ChildCount; c++) {
+									var rowForUpdate = (LinearLayout)RouteTable.GetChildAt(c);
+									string routeItemUUID = (string)rowForUpdate.GetTag(Resource.String.RouteItemUUID);
+									var updRouteItem = MainDatabase.GetEntity<RouteItem>(routeItemUUID);
+									updRouteItem.Order = c;
+									rowForUpdate.SetTag(Resource.String.RouteItemOrder, c);
+									rowForUpdate.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (c + 1).ToString();
+								}
+								trans.Commit();
+							}
+							//dragedView.SetTag(Resource.String.RouteItemOrder, index);
+							//view.SetTag(Resource.String.RouteItemOrder, clipedIndex);
+						}
+						view.Visibility = ViewStates.Visible;
+						e.Handled = true;
+						break;
+				}
+			}
 		}
 
 		protected override void OnResume()
@@ -362,10 +323,10 @@ namespace CRMLite
 			base.OnResume();
 
 			SelectedDate = DateTimeOffset.Now;
-			RecreateAdapter();
+			RefreshTables();
 		}
 
-		void RecreateAdapter()
+		void RefreshTables()
 		{
 			FindViewById<Button>(Resource.Id.raSelectDateB).Text = SelectedDate.UtcDateTime.Date.ToLongDateString();
 
@@ -388,78 +349,15 @@ namespace CRMLite
 				RoutePharmacyAdapter.ChangeVisibility(position, false);
 
 				row.SetTag(Resource.String.Position, position);
-				row.SetTag(Resource.String.PharmacyUUID, item.UUID);
+				row.SetTag(Resource.String.RouteItemUUID, item.UUID);
+				row.SetTag(Resource.String.PharmacyUUID, item.Pharmacy);
 
 				row.SetTag(Resource.String.RouteItemOrder, item.Order);
 				row.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (item.Order + 1).ToString();
-				row.FindViewById<ImageView>(Resource.Id.riDeleteIV).Click += (caller, args) => {
-					var rowForDelete = (LinearLayout)((ImageView)caller).Parent;
-					int pos = (int)rowForDelete.GetTag(Resource.String.Position);
-					int index = (int)rowForDelete.GetTag(Resource.String.RouteItemOrder);
-					for (int c = index; c < RouteTable.ChildCount; c++) {
-						var rowForUpdate = (LinearLayout)RouteTable.GetChildAt(c);
-						rowForUpdate.SetTag(Resource.String.RouteItemOrder, c - 1);
-						rowForUpdate.FindViewById<TextView>(Resource.Id.riOrderTV).Text = c.ToString();
-					}
-					RouteTable.RemoveView(rowForDelete);
-					RoutePharmacyAdapter.SwitchVisibility(pos);
-				};
 
-				//row.Click += Row_Clic
-				row.LongClick += (caller, args) => {
-					if (caller is LinearLayout) {
-						var view = caller as LinearLayout;
-						var index = (int)view.GetTag(Resource.String.RouteItemOrder);
-
-						//var data = ClipData.NewPlainText(@"data", @"my_data")
-						var data = ClipData.NewPlainText(@"RouteItemOrder", index.ToString());
-						//var shadow = new MyShadowBuilder(view)
-						var shadow = new View.DragShadowBuilder(view);
-						view.StartDrag(data, shadow, null, 0);
-					}
-				};
-
-				row.Drag += (caller, args) => {
-					if (caller is LinearLayout) {
-						var view = caller as LinearLayout;
-						switch (args.Event.Action) {
-							case DragAction.Started:
-								args.Handled = true;
-								break;
-							case DragAction.Entered:
-								view.Visibility = ViewStates.Invisible;
-								break;
-							case DragAction.Exited:
-								view.Visibility = ViewStates.Visible;
-								break;
-							case DragAction.Ended:
-								view.Visibility = ViewStates.Visible;
-								args.Handled = true;
-								break;
-							case DragAction.Drop:
-								int clipedIndex = int.Parse(args.Event.ClipData.GetItemAt(0).Text);
-								var index = (int)view.GetTag(Resource.String.RouteItemOrder);
-								if (clipedIndex != index) {
-									var dragedView = RouteTable.GetChildAt(clipedIndex);
-									RouteTable.RemoveView(dragedView);
-									RouteTable.AddView(dragedView, index);
-									RouteTable.RemoveView(view);
-									RouteTable.AddView(view, clipedIndex);
-
-									for (int c = 0; c < RouteTable.ChildCount; c++) {
-										var rowForUpdate = (LinearLayout)RouteTable.GetChildAt(c);
-										rowForUpdate.SetTag(Resource.String.RouteItemOrder, c);
-										rowForUpdate.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (c + 1).ToString();
-									}
-									//dragedView.SetTag(Resource.String.RouteItemOrder, index);
-									//view.SetTag(Resource.String.RouteItemOrder, clipedIndex)
-								}
-								view.Visibility = ViewStates.Visible;
-								args.Handled = true;
-								break;
-						}
-					}
-				};
+				row.FindViewById<ImageView>(Resource.Id.riDeleteIV).Click += RowDelete_Click;
+				row.LongClick += Row_LongClick;
+				row.Drag += Row_Drag;
 
 				RouteTable.AddView(row);
 			}
@@ -468,20 +366,6 @@ namespace CRMLite
 		protected override void OnPause()
 		{
 			base.OnPause();
-
-			var transaction = MainDatabase.BeginTransaction();
-			for (int c = 0; c < RouteTable.ChildCount; c++) {
-				var row = (LinearLayout)RouteTable.GetChildAt(c);
-				var pharmacyUUID = (string)row.GetTag(Resource.String.PharmacyUUID);
-				if (string.IsNullOrEmpty(pharmacyUUID)) continue;
-
-				int order = (int)row.GetTag(Resource.String.RouteItemOrder);
-				var newItem = MainDatabase.Create<RouteItem>();
-				newItem.Pharmacy = pharmacyUUID;
-				newItem.Date = SelectedDate;
-				newItem.Order = order;
-			}
-			transaction.Commit();
 		}
 
 
@@ -496,7 +380,7 @@ namespace CRMLite
 
 			public override int Count {
 				get {
-					return C_FRAGMENTS_COUNT;
+					return Helper.WeeksInRoute;
 				}
 			}
 
@@ -568,4 +452,3 @@ namespace CRMLite
 		}
 	}
 }
-

@@ -163,6 +163,8 @@
     <Compile Include="Lib\Dialogs\MessageDialog.cs" />
     <Compile Include="Lib\Entities\Message.cs" />
     <Compile Include="MessageActivity.cs" />
+    <Compile Include="Lib\Adapters\AttendanceByWeekAdapter.cs" />
+    <Compile Include="Lib\Adapters\RouteDayInWeekAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -483,6 +485,16 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_message_black_36dp.png" />
     <AndroidResource Include="Resources\layout\MessageDialog.axml" />
     <AndroidResource Include="Resources\layout\Message.axml" />
+    <AndroidResource Include="Resources\layout\RouteWeek.axml" />
+    <AndroidResource Include="Resources\layout\RouteWeekItem.axml" />
+    <AndroidResource Include="Resources\layout\RouteWeekTableHeader.axml" />
+    <AndroidResource Include="Resources\layout\RouteWeekTableItem.axml" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_location_city_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_location_city_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_location_city_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_location_city_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_location_city_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable\topline.xml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

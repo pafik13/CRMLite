@@ -113,6 +113,7 @@
         </RelativeLayout>
         <ListView
             android:layout_marginTop="64dp"
+            android:layout_marginBottom="56dp"
             android:minWidth="25px"
             android:minHeight="25px"
             android:orientation="vertical"
@@ -127,7 +128,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/bottomline">
+            android:background="@drawable/topline">
             <TextView
                 android:text="СЕГОДНЯ ВИЗИТОВ: "
                 android:textAppearance="?android:attr/textAppearanceMedium"

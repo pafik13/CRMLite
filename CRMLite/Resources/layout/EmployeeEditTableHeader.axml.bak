@@ -27,7 +27,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false" />
     <TextView
-        android:text="Зак."
+        android:text="З.?"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="5"
@@ -69,7 +69,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false" />
     <TextView
-        android:text="Конф."
+        android:text="К.?"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="5"

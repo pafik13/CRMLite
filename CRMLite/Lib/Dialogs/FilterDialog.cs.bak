@@ -29,7 +29,7 @@ namespace CRMLite
 		IList<Net> Nets;
 		AutoCompleteTextView Net;
 
-		EditText Address;
+		EditText Brand;
 
 		protected virtual void OnAfterSaved(EventArgs e)
 		{
@@ -75,8 +75,8 @@ namespace CRMLite
 				Net.Text = MainDatabase.GetItem<Net>(netUUID).name;
 				Net.SetTag(Resource.String.NetUUID, netUUID);
 			}
-			Address = view.FindViewById<EditText>(Resource.Id.fdAddressET);
-			Address.Text = prefs.GetString(@"ADDRESS", string.Empty);
+			Brand = view.FindViewById<EditText>(Resource.Id.fdBrandET);
+			Brand.Text = prefs.GetString(@"BRAND", string.Empty);
 
 			InitViews();
 
@@ -121,7 +121,7 @@ namespace CRMLite
 				}
 			}
 
-			edit.PutString(@"ADDRESS", Address.Text);
+			edit.PutString(@"BRAND", Brand.Text);
 
 			edit.Commit();
 

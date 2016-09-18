@@ -877,9 +877,8 @@ namespace CRMLite
 			CoterieEmployees.Click += CoterieEmployees_Click;
 			AttendanceTypeContent.AddView(CoterieLayout);
 
-			AttendanceTypeContent.Visibility = ViewStates.Visible;
-			ChangeAttendanceType.Visibility = ViewStates.Visible;
-    
+			AttendanceTypeContent.Visibility = ViewStates.Visible;;
+
 			// 3. Акция
 			var promotionText = PromotionLayout.FindViewById<EditText>(Resource.Id.ifPromotionET);
 			promotionText.Text = string.Empty;
