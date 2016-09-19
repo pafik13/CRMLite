@@ -1,20 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
+using System.Diagnostics;
+using System.Globalization;
+using System.Collections.Generic;
 
-using Android.App;
-using Android.Widget;
 using Android.OS;
+using Android.App;
 using Android.Views;
+using Android.Widget;
 using Android.Content;
+using Android.Views.InputMethods;
 
 using Realms;
 
 using CRMLite.Entities;
 using CRMLite.Adapters;
-using System.Globalization;
-using System.Diagnostics;
-using System;
-using Android.Views.InputMethods;
+using CRMLite.Dialogs;
+//using Android.Graphics;
 
 namespace CRMLite
 {
@@ -380,6 +382,27 @@ namespace CRMLite
 		protected override void OnResume()
 		{
 			base.OnResume();
+			
+			string username = GetSharedPreferences(C_MAIN_PREFS, FileCreationMode.Private).GetString(SigninDialog.C_USERNAME, string.Empty);
+			if (string.IsNullOrEmpty(username)) {
+				var fragmentTransaction = FragmentManager.BeginTransaction();
+				var prev = FragmentManager.FindFragmentByTag(SigninDialog.TAG);
+				if (prev != null) {
+					fragmentTransaction.Remove(prev);
+				}
+				fragmentTransaction.AddToBackStack(null);
+
+				var signinDialog = new SigninDialog(this);
+				signinDialog.Show(fragmentTransaction, SigninDialog.TAG);
+				signinDialog.SuccessSignedIn += (caller, arguments) => {
+					//Toast.MakeText(this, @"SuccessSignedIn", ToastLength.Short).Show();
+					Console.WriteLine(@"DBPath = {0}", MainDatabase.DBPath);
+				};
+
+				Console.WriteLine(@"username = IsNullOrEmpty");
+				return;
+			}
+			Helper.Username = username;
 
 			var w = new Stopwatch();
 

@@ -33,7 +33,7 @@
             android:width="150dp"
             android:height="62dp"
             android:textColor="@android:color/white"
-            android:textSize="24dp"
+            android:textSize="24sp"
             android:textStyle="bold"
             android:minHeight="62dp"
             android:layout_marginBottom="2dp" />
@@ -80,6 +80,20 @@
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/textView2"
                 android:id="@+id/textView3" />
+            <Button
+                android:text="Выйти"
+                android:layout_marginTop="6dp"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView3"
+                android:id="@+id/paExitAppB"
+                android:background="@color/Light_Blue_500"
+                android:typeface="monospace"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="2dp" />
         </RelativeLayout>
         <View
             android:layout_height="match_parent"

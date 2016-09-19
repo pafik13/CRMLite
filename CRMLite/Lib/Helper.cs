@@ -10,6 +10,10 @@ namespace CRMLite
 
 	public static class Helper
 	{
+		public const string C_DB_FILE_NAME = @"main.realm";
+
+		public static string Username = @"";
+
 		public static int WeeksInRoute = 3;
 
 		public static WorkMode WorkMode = WorkMode.wmOnlyRoute;

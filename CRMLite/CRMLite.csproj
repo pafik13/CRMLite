@@ -165,6 +165,7 @@
     <Compile Include="MessageActivity.cs" />
     <Compile Include="Lib\Adapters\AttendanceByWeekAdapter.cs" />
     <Compile Include="Lib\Adapters\RouteDayInWeekAdapter.cs" />
+    <Compile Include="Lib\Dialogs\SignInDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -495,6 +496,10 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_location_city_black_36dp.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_location_city_black_36dp.png" />
     <AndroidResource Include="Resources\drawable\topline.xml" />
+    <AndroidResource Include="Resources\layout\SignInDialog.axml" />
+    <AndroidResource Include="Resources\anim\slide_bottom.xml" />
+    <AndroidResource Include="Resources\anim\slide_right.xml" />
+    <AndroidResource Include="Resources\anim\slide_up.xml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

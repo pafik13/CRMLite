@@ -14,7 +14,7 @@ using Android.Widget;
 
 using CRMLite.Entities;
 
-namespace CRMLite
+namespace CRMLite.Dialogs
 {
 	public class MessageDialog : DialogFragment
 	{

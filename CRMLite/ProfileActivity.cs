@@ -11,7 +11,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-using CRMLite.Entities;
+using CRMLite.Dialogs;
 using CRMLite.Adapters;
 
 namespace CRMLite
@@ -34,6 +34,15 @@ namespace CRMLite
 			SetContentView(Resource.Layout.Profile);
 
 			FindViewById<Button>(Resource.Id.paCloseB).Click += (sender, e) => {
+				Finish();
+			};
+
+			FindViewById<Button>(Resource.Id.paExitAppB).Click += (sender, e) => {
+				GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
+					.Edit()
+					.PutString(SigninDialog.C_USERNAME, string.Empty)
+					.Commit();
+				
 				Finish();
 			};
 
@@ -66,6 +75,10 @@ namespace CRMLite
 			//FindViewById<Button>(Resource.Id.paExitApplicationB).Click += (sender, e) => {
 			//	Exit_App();
 			//};
+
+			FindViewById<TextView>(Resource.Id.textView1).Text = 
+				GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private).GetString(SigninDialog.C_USERNAME, string.Empty);
+
 		}
 
 		protected override void OnResume()

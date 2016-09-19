@@ -3,17 +3,18 @@ using System.Linq;
 using System.Collections.Concurrent;
 
 using Realms;
-using System.IO;
 
 using CRMLite.Entities;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 
 namespace CRMLite
 {
 	public class MainDatabase
 	{
 		readonly Realm DB;
+		readonly RealmConfiguration Config;
+
+		internal static string DBPath { get { return Me.DB.Config.DatabasePath; } }
 
 		ConcurrentDictionary<SyncItem, SyncItem> SyncDictionary;
 
@@ -30,8 +31,12 @@ namespace CRMLite
 
 		protected MainDatabase()
 		{
-			// instantiate the database	
-			DB = Realm.GetInstance();
+			// instantiate the database
+			var dbFileLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),  Helper.Username, Helper.C_DB_FILE_NAME);
+			new System.IO.FileInfo(dbFileLocation).Directory.Create();
+			//Config = new RealmConfiguration(Helper.C_DB_FILE_NAME);
+			Config = new RealmConfiguration(dbFileLocation, true);
+			DB = Realm.GetInstance(Config);
 
 			SyncDictionary = new ConcurrentDictionary<SyncItem, SyncItem>();
 
