@@ -24,15 +24,30 @@ namespace CRMLite
 
 		protected static MainDatabase Me;
 
-		static MainDatabase()
-		{
-			Me = new MainDatabase();
+		protected string _username;
+
+		public static string Username { 
+			set {
+				if (Me == null) {
+					Me = new MainDatabase(value);
+					Me._username = value;
+				} else if (!Me._username.Equals(value, StringComparison.Ordinal)) {
+					Me = new MainDatabase(value);
+					Me._username = value;
+				}
+			} 
+			get { return Me._username; } 
 		}
 
-		protected MainDatabase()
+		//static MainDatabase()
+		//{
+		//	Me = new MainDatabase();
+		//}
+
+		protected MainDatabase(string username)
 		{
 			// instantiate the database
-			var dbFileLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),  Helper.Username, Helper.C_DB_FILE_NAME);
+			var dbFileLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),  username, Helper.C_DB_FILE_NAME);
 			new System.IO.FileInfo(dbFileLocation).Directory.Create();
 			//Config = new RealmConfiguration(Helper.C_DB_FILE_NAME);
 			Config = new RealmConfiguration(dbFileLocation, true);
@@ -714,6 +729,12 @@ namespace CRMLite
 				     .Where(sd => sd.Pharmacy == pharmacyUUID)
 				     .ToList()
 				     .Where(sd => months.Contains(sd.Month) && years.Contains(sd.Year));
+		}
+
+		public static void Dispose()
+		{
+			if ((Me.DB != null) && (!Me.DB.IsClosed)) Me.DB.Close();
+			Me = null;
 		}
 	}
 }

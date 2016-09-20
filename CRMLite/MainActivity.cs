@@ -402,6 +402,8 @@ namespace CRMLite
 				Console.WriteLine(@"username = IsNullOrEmpty");
 				return;
 			}
+			MainDatabase.Username = username;
+
 			Helper.Username = username;
 
 			var w = new Stopwatch();

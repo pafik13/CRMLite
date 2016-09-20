@@ -184,7 +184,9 @@ namespace CRMLite.Dialogs
 				WriteSuccess(@"ВХОД ВЫПОЛНЕН УСПЕШНО", 3000);
 				Dismiss ();
 				OnSuccessSignedIn (EventArgs.Empty);
-//				MessageBox.Show();
+				//				MessageBox.Show();
+				MainDatabase.Dispose();
+				activity.RunOnUiThread(() => MainDatabase.Username = tvUsername.Text);
 			}
 			else
 			{
@@ -296,6 +298,8 @@ namespace CRMLite.Dialogs
 			WriteInfo (@"Подключение к серверу");
 
 			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+
+			MainDatabase.Username = username;
 
 			Helper.Username = username;
 			activity.GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)

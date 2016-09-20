@@ -89,36 +89,39 @@ namespace CRMLite
 
 		void CustomAction_Click(object sender, EventArgs e)
 		{
-			var gen = new Stopwatch();
-			gen.Start();
-			var rnd = new Random();
-			rnd.Next();
-			var subways = MainDatabase.GetItems<Subway>();
-			var region = MainDatabase.GetItems<Region>();
-			var categories = MainDatabase.GetItems<Category>();
+			MainDatabase.Dispose();
+			MainDatabase.GetNets();
 
-			using (var transaction = MainDatabase.BeginTransaction()) {
-				MainDatabase.DeleteItems<Pharmacy>();
-				transaction.Commit();
-			}
+			//var gen = new Stopwatch();
+			//gen.Start();
+			//var rnd = new Random();
+			//rnd.Next();
+			//var subways = MainDatabase.GetItems<Subway>();
+			//var region = MainDatabase.GetItems<Region>();
+			//var categories = MainDatabase.GetItems<Category>();
 
-			using (var transaction = MainDatabase.BeginTransaction()) {
-				for (int i = 0; i < 500; i++) {
-					var pharmacy = MainDatabase.CreatePharmacy();
-					pharmacy.Brand = @"Brand #" + i;
-					pharmacy.Address = @"Address #" + i;
-					pharmacy.Subway = subways[rnd.Next(0, subways.Count - 1)].uuid;
-					pharmacy.Region = region[rnd.Next(0, region.Count - 1)].uuid;
-					pharmacy.Category = categories[rnd.Next(0, categories.Count - 1)].uuid;
-				}
-				transaction.Commit();
-			}
+			//using (var transaction = MainDatabase.BeginTransaction()) {
+			//	MainDatabase.DeleteItems<Pharmacy>();
+			//	transaction.Commit();
+			//}
 
-			gen.Stop();
-			Console.WriteLine(
-				@"Calc: {0}, subways: {1}, region: {2}, categories: {3}", 
-				gen.ElapsedMilliseconds, subways.Count, region.Count, categories.Count
-			);
+			//using (var transaction = MainDatabase.BeginTransaction()) {
+			//	for (int i = 0; i < 500; i++) {
+			//		var pharmacy = MainDatabase.CreatePharmacy();
+			//		pharmacy.Brand = @"Brand #" + i;
+			//		pharmacy.Address = @"Address #" + i;
+			//		pharmacy.Subway = subways[rnd.Next(0, subways.Count - 1)].uuid;
+			//		pharmacy.Region = region[rnd.Next(0, region.Count - 1)].uuid;
+			//		pharmacy.Category = categories[rnd.Next(0, categories.Count - 1)].uuid;
+			//	}
+			//	transaction.Commit();
+			//}
+
+			//gen.Stop();
+			//Console.WriteLine(
+			//	@"Calc: {0}, subways: {1}, region: {2}, categories: {3}", 
+			//	gen.ElapsedMilliseconds, subways.Count, region.Count, categories.Count
+			//);
 		}
 
 		void GenerateData_Click(object sender, EventArgs e)
