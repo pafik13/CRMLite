@@ -385,6 +385,9 @@ namespace CRMLite
 			
 			string username = GetSharedPreferences(C_MAIN_PREFS, FileCreationMode.Private).GetString(SigninDialog.C_USERNAME, string.Empty);
 			if (string.IsNullOrEmpty(username)) {
+				Pharmacies = new List<Pharmacy>(); //.Take(14).ToList();
+				PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies);
+
 				var fragmentTransaction = FragmentManager.BeginTransaction();
 				var prev = FragmentManager.FindFragmentByTag(SigninDialog.TAG);
 				if (prev != null) {
@@ -396,7 +399,10 @@ namespace CRMLite
 				signinDialog.Show(fragmentTransaction, SigninDialog.TAG);
 				signinDialog.SuccessSignedIn += (caller, arguments) => {
 					//Toast.MakeText(this, @"SuccessSignedIn", ToastLength.Short).Show();
-					Console.WriteLine(@"DBPath = {0}", MainDatabase.DBPath);
+					RunOnUiThread(() => {
+						RecreateAdapter();
+						Console.WriteLine(@"DBPath = {0}", MainDatabase.DBPath);
+					});
 				};
 
 				Console.WriteLine(@"username = IsNullOrEmpty");

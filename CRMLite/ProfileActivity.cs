@@ -42,7 +42,7 @@ namespace CRMLite
 					.Edit()
 					.PutString(SigninDialog.C_USERNAME, string.Empty)
 					.Commit();
-				
+				MainDatabase.Dispose();
 				Finish();
 			};
 

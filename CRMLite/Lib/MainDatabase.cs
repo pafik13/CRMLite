@@ -244,6 +244,26 @@ namespace CRMLite
 			}
 		}
 
+		public static void SaveItems<T>(Transaction openedTransaction, IList<T> data) where T : RealmObject
+		{
+			Console.WriteLine(@"SaveItems: typeof={0}", typeof (T));
+			if (openedTransaction == null) {
+				throw new ArgumentNullException(nameof(openedTransaction));
+			}				
+
+			foreach (var item in data) {
+				Me.DB.Manage(item);
+			}
+		}
+
+		public static void DeleteAll<T>(Transaction openedTransaction) where T : RealmObject
+		{
+			if (openedTransaction == null) {
+				throw new ArgumentNullException(nameof(openedTransaction));
+			}
+			Me.DB.RemoveAll<T>();
+		}
+
 		public static T CreateData<T>(string attendanceUUID) where T : RealmObject, IAttendanceData, IEntity, new()
 		{
 			var item = Me.DB.CreateObject<T>();
@@ -733,6 +753,8 @@ namespace CRMLite
 
 		public static void Dispose()
 		{
+			if (Me == null) return;
+
 			if ((Me.DB != null) && (!Me.DB.IsClosed)) Me.DB.Close();
 			Me = null;
 		}

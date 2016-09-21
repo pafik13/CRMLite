@@ -27,6 +27,7 @@ namespace CRMLite.Dialogs
 	{
 		const char quote = '"';
 		public const string C_USERNAME = @"C_USERNAME";
+		public const string C_ACCESS_TOKEN = @"C_ACCESS_TOKEN";
 		public const string TAG = @"SigninDialog";
 
 		Button bSignUp = null;
@@ -48,8 +49,8 @@ namespace CRMLite.Dialogs
 
 		//User user = new User();
 
-		string cookieName = "";
-		string cookieValue = "";
+		//string cookieName = "";
+		//string cookieValue = "";
 
 		public event EventHandler SuccessSignedIn;
 
@@ -73,7 +74,7 @@ namespace CRMLite.Dialogs
 
 			base.OnCreateView (inflater, container, savedInstanceState);
 
-			Dialog.SetCanceledOnTouchOutside (true);
+			Dialog.SetCanceledOnTouchOutside (false);
 
 			var view = inflater.Inflate (Resource.Layout.SignInDialog, container, false);
 
@@ -181,17 +182,24 @@ namespace CRMLite.Dialogs
 					WriteDanger (@"ОШИБКА! ВХОД НЕ ВЫПОЛНЕН", 3000);
 					return;
 				}
-				WriteSuccess(@"ВХОД ВЫПОЛНЕН УСПЕШНО", 3000);
-				Dismiss ();
-				OnSuccessSignedIn (EventArgs.Empty);
-				//				MessageBox.Show();
+				WriteSuccess(@"ВХОД ВЫПОЛНЕН УСПЕШНО", 3000);;
 				MainDatabase.Dispose();
 				activity.RunOnUiThread(() => MainDatabase.Username = tvUsername.Text);
+				OnSuccessSignedIn(EventArgs.Empty);
+				Dismiss();
+				//				MessageBox.Show()
 			}
 			else
 			{
 				activity.RunOnUiThread(() => Toast.MakeText(context, @"NOT Authentificated", ToastLength.Short).Show());
 				WriteDanger (@"ОШИБКА! ВХОД НЕ ВЫПОЛНЕН", 3000);
+				MainDatabase.Dispose();
+
+				//activity.GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
+				//		.Edit()
+				//        .PutString(C_USERNAME, string.Empty)
+				//		.PutString(C_ACCESS_TOKEN, (response as IRestResponse<JsonWebToken>).Data.token)
+				//		.Commit();
 //				activity.RunOnUiThread (() => bSignUp.Visibility = ViewStates.Visible);
 //				MessageBox.Show(@"NOT Authentificated");
 			}
@@ -297,19 +305,49 @@ namespace CRMLite.Dialogs
 		{
 			WriteInfo (@"Подключение к серверу");
 
-			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+			//var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+			var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
+			client.CookieContainer = new CookieContainer();
+
+			IRestResponse response;
+			WriteInfo(@"Получение Access_Token", 2000);
+			try {
+				var request = new RestRequest(@"auth/login", Method.POST);
+				request.AddParameter(@"email", username + @"@" + @"sbl-crm.ru", ParameterType.GetOrPost);
+				request.AddParameter(@"password", password, ParameterType.GetOrPost);
+				response = client.Execute(request);
+				if (response.StatusCode != HttpStatusCode.OK) {
+					return false;
+				}
+
+				request = new RestRequest(@"user/jwt", Method.GET);
+				response = client.Execute<JsonWebToken>(request);
+				if (response.StatusCode != HttpStatusCode.OK) {
+					return false;
+				}
+
+				//activity.GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
+				//		.Edit()
+				//		.PutString(C_USERNAME, username)
+				//		.Commit();
+			} catch (Exception ex) {
+				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
+				return false;
+			}
 
 			MainDatabase.Username = username;
 
 			Helper.Username = username;
 			activity.GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
-			        .Edit()
-			        .PutString(C_USERNAME, username)
-			        .Commit();
+					.Edit()
+					.PutString(C_USERNAME, username)
+					.PutString(C_ACCESS_TOKEN, (response as IRestResponse<JsonWebToken>).Data.token)
+					.Commit();
 
-			WriteInfo (@"Получение LoadPositions", 2000);
+			WriteInfo(@"Получение LoadPositions", 2000);
 			try {
-				LoadPositions(client);
+				//LoadPositions(client);
+				LoadItems<Position>(client, 300);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -317,7 +355,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadNets", 2000);
 			try {
-				LoadNets(client);
+				//LoadNets(client);
+				LoadItems<Net>(client, 300);
 			} catch (Exception ex) {
 					WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -325,7 +364,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadSubways", 2000);
 			try {
-				LoadSubways(client);
+				//LoadSubways(client);
+				LoadItems<Subway>(client, 300);
 			} catch (Exception ex) {
 						WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -333,7 +373,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadRegions", 2000);
 			try {
-							LoadRegions(client);
+				//LoadRegions(client);
+				LoadItems<Region>(client, 300);
 			} catch (Exception ex) {
 							WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -341,7 +382,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadPlaces", 2000);
 			try {
-				LoadPlaces(client);
+				//LoadPlaces(client);
+				LoadItems<Place>(client, 300);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -349,7 +391,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadCategories", 2000);
 			try {
-				LoadCategories(client);
+				//LoadCategories(client);
+				LoadItems<Category>(client, 300);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -357,7 +400,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadDrugSKUs", 2000);
 			try {
-				LoadDrugSKUs(client);
+				//LoadDrugSKUs(client);
+				LoadItems<DrugSKU>(client, 300);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -365,7 +409,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadDrugBrands", 2000);
 			try {
-				LoadDrugBrands(client);
+				//LoadDrugBrands(client);
+				LoadItems<DrugBrand>(client, 300);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -373,7 +418,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadPromotions", 2000);
 			try {
-				LoadPromotions(client);
+				//LoadPromotions(client);
+				LoadItems<Promotion>(client, 300);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -381,7 +427,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadMessageTypes", 2000);
 			try {
-				LoadMessageTypes(client);
+				//LoadMessageTypes(client);
+				LoadItems<MessageType>(client, 300);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -389,7 +436,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadPhotoTypes", 2000);
 			try {
-				LoadPhotoTypes(client);
+				//LoadPhotoTypes(client);
+				LoadItems<PhotoType>(client, 300);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -397,7 +445,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadContracts", 2000);
 			try {
-				LoadContracts(client);
+				//LoadContracts(client);
+				LoadItems<Contract>(client, 300);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -405,7 +454,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadWorkTypes", 2000);
 			try {
-				LoadWorkTypes(client);
+				//LoadWorkTypes(client);
+				LoadItems<WorkType>(client, 300);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -413,7 +463,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadMaterials", 2000);
 			try {
-				LoadMaterials(client);
+				//LoadMaterials(client);
+				LoadItems<Material>(client, 300);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -421,7 +472,8 @@ namespace CRMLite.Dialogs
 
 			WriteInfo(@"Получение LoadListedHospitals", 2000);
 			try {
-				LoadListedHospitals(client);
+				//LoadListedHospitals(client);
+				LoadItems<ListedHospital>(client, 300);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -591,8 +643,30 @@ namespace CRMLite.Dialogs
 			var response = client.Execute<List<Position>>(request);
 			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
 				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SavePositions(response.Data);
+				using (var trans = MainDatabase.BeginTransaction()) {
+					MainDatabase.DeleteAll<Position>(trans);
+					MainDatabase.SaveItems(trans, response.Data);
+					trans.Commit();
+				}
 			}
+		}
+
+		void LoadItems<T>(RestClient client, int limit) where T: Realms.RealmObject
+		{
+			Console.WriteLine(@"LoadItems: typeof={0}", typeof(T));
+			string className = typeof(T).Name;
+			string path = string.Format(@"{0}?limit={1}", className, limit);
+			var request = new RestRequest(path, Method.GET);
+			var response = client.Execute<List<T>>(request);
+			if (response.StatusCode == HttpStatusCode.OK) {
+				Console.WriteLine(@"LoadItems: Data.Count={0}", response.Data.Count);
+				using (var trans = MainDatabase.BeginTransaction()) {
+					MainDatabase.DeleteAll<T>(trans);
+					MainDatabase.SaveItems(trans, response.Data);
+					trans.Commit();
+				}
+			}
+			Console.WriteLine(@"LoadItems: Done");
 		}
 
 		void LoadNets(RestClient client)
