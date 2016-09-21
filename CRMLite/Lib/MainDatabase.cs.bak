@@ -58,14 +58,6 @@ namespace CRMLite
 			ResultDictionary = new ConcurrentDictionary<string, SyncResult>();
 		}
 
-		internal static void ClearDB()
-		{
-			if (Me == null) return;
-			if (Me.DB == null) return;
-			if (Me.Config == null) return;
-			Realm.DeleteRealm(Me.Config);
-		}
-
 		#region Net
 		public static Net GetNet(string uuid)
 		{
@@ -239,11 +231,6 @@ namespace CRMLite
 		{
 			return Me.DB.All<T>().ToList();
 		}
-		
-		public static List<T> GetItemsToSync<T>() where T : RealmObject, ISync
-		{
-			return Me.DB.All<T>().Where(item => !item.IsSynced).ToList();
-		}
 
 		public static void SaveItems<T>(IList<T> data) where T : RealmObject
 		{
@@ -300,11 +287,11 @@ namespace CRMLite
 			return item;
 		}
 		
-		public static T Create2<T>() where T : RealmObject, IEntity, ISync, new()
+		public static T Create<T>() where T : RealmObject, IEntity, ISync, new()
 		{
 			var item = Me.DB.CreateObject<T>();
 			item.UUID = Guid.NewGuid().ToString();
-			item.CreatedBy = @"Agent";
+			item.CreateBy = @"Agent";
 			item.CreatedAt = DateTimeOffset.Now;
 			item.UpdatedAt = DateTimeOffset.Now;
 			return item;

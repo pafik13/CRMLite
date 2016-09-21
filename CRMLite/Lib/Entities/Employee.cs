@@ -14,7 +14,7 @@ namespace CRMLite.Entities
 	/// <summary>
 	/// Работник аптеки.
 	/// </summary>
-	public class Employee : RealmObject, IEntity, IPharmacyData
+	public class Employee : RealmObject, IEntity, IPharmacyData, ISync
 	{
 		/// <summary>
 		/// Уникальный идентификатор работника аптеки. Используется Guid.
@@ -111,6 +111,18 @@ namespace CRMLite.Entities
 		/// </summary>
 		/// <value>The result of last sync.</value>
 		public SyncResult LastSyncResult { get; set; }
+
+		public string CreatedBy { get; set; }
+
+		public SyncResult SyncResult { get; set; }
+
+		public bool IsSynced { get; set; }
+
+		//public bool ShouldSerializeName()
+		//{
+		//	// don't serialize the Manager property if an employee is their own manager
+		//	return false;
+		//}
 	}
 }
 

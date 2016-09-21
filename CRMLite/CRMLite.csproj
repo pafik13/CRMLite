@@ -167,6 +167,10 @@
     <Compile Include="Lib\Adapters\RouteDayInWeekAdapter.cs" />
     <Compile Include="Lib\Dialogs\SignInDialog.cs" />
     <Compile Include="Lib\Entities\JsonWebToken.cs" />
+    <Compile Include="LibraryActivity.cs" />
+    <Compile Include="LoadDataActivity.cs" />
+    <Compile Include="Lib\ISync.cs" />
+    <Compile Include="Lib\JSONSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -501,6 +505,10 @@
     <AndroidResource Include="Resources\anim\slide_bottom.xml" />
     <AndroidResource Include="Resources\anim\slide_right.xml" />
     <AndroidResource Include="Resources\anim\slide_up.xml" />
+    <AndroidResource Include="Resources\layout\Library.axml" />
+    <AndroidResource Include="Resources\layout\LoadData.axml" />
+    <AndroidResource Include="Resources\layout\MessageTableHeader.axml" />
+    <AndroidResource Include="Resources\layout\MessageTableItem.axml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

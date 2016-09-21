@@ -1,20 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
+using System.Diagnostics;
+using System.Globalization;
+using System.Collections.Generic;
 
-using Android.App;
-using Android.Widget;
 using Android.OS;
+using Android.App;
 using Android.Views;
+using Android.Widget;
 using Android.Content;
+using Android.Views.InputMethods;
 
 using Realms;
 
 using CRMLite.Entities;
 using CRMLite.Adapters;
-using System.Globalization;
-using System.Diagnostics;
-using System;
-using Android.Views.InputMethods;
+using CRMLite.Dialogs;
+//using Android.Graphics;
 
 namespace CRMLite
 {
@@ -41,10 +43,6 @@ namespace CRMLite
 			RequestWindowFeature(WindowFeatures.NoTitle);
 			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
 
-			if (Secret.IsNeedReCreateDB) {
-				Realm.DeleteRealm(RealmConfiguration.DefaultConfiguration);
-			}
-
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
 
@@ -60,22 +58,28 @@ namespace CRMLite
 			};
 
 			var add = FindViewById<ImageView>(Resource.Id.maAdd);
-			add.Click += delegate {
+			add.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(PharmacyActivity)));
 			};
 
 			var sync = FindViewById<ImageView>(Resource.Id.maSync);
-			sync.Click += delegate {
+			sync.Click += (sender, e) => {
+				StartActivity(new Intent(this, typeof(LoadDataActivity)));
+			};
+			sync.LongClick += (sender, e) => {
 				StartActivity(new Intent(this, typeof(SyncActivity)));
 			};
-
+			
 			var lib = FindViewById<ImageView>(Resource.Id.maLibrary);
-			lib.Click += delegate {
+			lib.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(TestDataActivity)));
+			};
+			lib.LongClick += (sender, e) => {
+				StartActivity(new Intent(this, typeof(LibraryActivity)));
 			};
 
 			var route = FindViewById<ImageView>(Resource.Id.maRoute);
-			route.Click += delegate {
+			route.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(RouteActivity)));
 			};
 
@@ -219,7 +223,8 @@ namespace CRMLite
 				}
 			}
 
-			var list = MainDatabase.GetItems<Pharmacy>(); 
+			var list = MainDatabase.GetItems<Pharmacy>();
+			string[] pharmaciesInRoute = null;
 
 			var prefs = GetSharedPreferences(FilterDialog.C_FILTER_PREFS, FileCreationMode.Private);
 			bool isOn = prefs.GetBoolean(@"IS_ON", false);
@@ -259,12 +264,47 @@ namespace CRMLite
 			} else {
 				FilterContent.Visibility = ViewStates.Gone;
 				Filter.SetBackgroundColor(Android.Graphics.Color.Transparent);
+
+				
+				// TODO: optimize work with route
+				var routeItems = MainDatabase.GetRouteItems(DateTimeOffset.Now);
+				pharmaciesInRoute = routeItems.Select(ri => ri.Pharmacy).ToArray();
+				// wmOnlyRoute, wmRouteAndRecommendations, wmOnlyRecommendations
+				switch (Helper.WorkMode) {
+					case WorkMode.wmOnlyRoute:
+						if (routeItems.Count == 0) {
+							list = new List<Pharmacy>();
+					    } else {
+							list = list.Where(ph => pharmaciesInRoute.Contains(ph.UUID)).ToList();
+					    }
+					    break;
+					case WorkMode.wmRouteAndRecommendations:
+						if (routeItems.Count == 0) {
+							list = list.OrderBy(ph => ph.NextAttendanceDate).ToList();
+					    } else {
+							var routeList = list.Where(ph => pharmaciesInRoute.Contains(ph.UUID)).ToList();
+							var nonRouteList = list.Where(ph => !pharmaciesInRoute.Contains(ph.UUID))
+							                       .OrderBy(ph => ph.NextAttendanceDate)
+							                       .ToList();
+							list = new List<Pharmacy>();
+							list.AddRange(routeList);
+							list.AddRange(nonRouteList);
+						}
+					    break;
+					case WorkMode.wmOnlyRecommendations:
+						list = list.OrderBy(ph => ph.NextAttendanceDate).ToList();
+						break;
+				}
+				
+			  //Pharmacies = list; //.Take(14).ToList();
+			  //PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies, pharmaciesInRout);
+			  //return;
 			}
 			Filter.Invalidate();
 
 
 			Pharmacies = list; //.Take(14).ToList();
-			PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies);
+			PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies, pharmaciesInRoute);
 		}
 
 		void Search(string text)
@@ -344,8 +384,50 @@ namespace CRMLite
 		protected override void OnResume()
 		{
 			base.OnResume();
+			
+			string username = GetSharedPreferences(C_MAIN_PREFS, FileCreationMode.Private).GetString(SigninDialog.C_USERNAME, string.Empty);
+			if (string.IsNullOrEmpty(username)) {
+				Pharmacies = new List<Pharmacy>(); //.Take(14).ToList();
+				PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies);
+
+				var fragmentTransaction = FragmentManager.BeginTransaction();
+				var prev = FragmentManager.FindFragmentByTag(SigninDialog.TAG);
+				if (prev != null) {
+					fragmentTransaction.Remove(prev);
+				}
+				fragmentTransaction.AddToBackStack(null);
+
+				var signinDialog = new SigninDialog(this);
+				signinDialog.Show(fragmentTransaction, SigninDialog.TAG);
+				signinDialog.SuccessSignedIn += (caller, arguments) => {
+					//Toast.MakeText(this, @"SuccessSignedIn", ToastLength.Short).Show();
+					RunOnUiThread(() => {
+						RecreateAdapter();
+						Console.WriteLine(@"DBPath = {0}", MainDatabase.DBPath);
+					});
+				};
+
+				Console.WriteLine(@"username = IsNullOrEmpty");
+				return;
+			}
+			MainDatabase.Username = username;
+
+
+			if (Secret.IsNeedReCreateDB) {
+				//Realm.DeleteRealm(RealmConfiguration.DefaultConfiguration);
+				MainDatabase.ClearDB();
+				//Secret.IsNeedReCreateDB = false;
+			}
+
+			Helper.Username = username;
 
 			var w = new Stopwatch();
+			
+			// TODO: сделать ветку автоматической синхронизации
+			// w.Restart();
+			// StartService(new Intent(@"SyncService"));
+			// w.Stop();
+			// Console.WriteLine(@"SyncService: запуск={0}", w.ElapsedMilliseconds);
 
 		    w.Restart();
 			var currentRouteItems = MainDatabase.GetRouteItems(DateTimeOffset.Now);
@@ -372,7 +454,7 @@ namespace CRMLite
 			w.Restart();
 			int count = MainDatabase.GetItems<Attendance>()
 									.Count(att => att.When.LocalDateTime.Date == DateTimeOffset.Now.Date);
-			AttendanceCount.Text = string.Format(@"РЕЖИМ РАБОТЫ: {0};  СЕГОДНЯ ВИЗИТОВ: {1}", @"Строго по маршруту", count);
+			AttendanceCount.Text = string.Format(@"РЕЖИМ РАБОТЫ: {0};  СЕГОДНЯ ВИЗИТОВ: {1}", Helper.GetWorkModeDesc(Helper.WorkMode), count);
 			w.Stop();
 			Console.WriteLine(@"OnResume: подсчет визитов={0}", w.ElapsedMilliseconds);
 

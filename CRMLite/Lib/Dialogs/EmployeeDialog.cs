@@ -63,9 +63,10 @@ namespace CRMLite.Dialogs
 
 				Employee item;
 				if (Employee == null) {
-					item = MainDatabase.Create<Employee>();
+					//item = MainDatabase.Create<Employee>();
+					item = MainDatabase.Create2<Employee>();
 					item.Pharmacy = Pharmacy.UUID;
-					item.CreatedAt = DateTimeOffset.Now;
+					//item.CreatedAt = DateTimeOffset.Now;
 				
 				} else {
 					item = Employee;

@@ -1,96 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@color/Grey_300">
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/saMainLL">
-        <CheckBox
-            android:text="LoadPositions"
-            android:layout_width="match_parent"
+        android:background="@color/Grey_300">
+        <RelativeLayout
+            android:id="@+id/saUpPanelRL"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/saLoadPositionsCB" />
-        <CheckBox
-            android:text="LoadNets"
-            android:layout_width="match_parent"
+            android:minWidth="25px"
+            android:minHeight="64px"
+            android:background="@drawable/bottomline">
+            <TextView
+                android:text="Информация"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/saInfoTV"
+                android:gravity="center"
+                android:textColor="@color/Light_Blue_500"
+                android:height="64dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp" />
+            <Button
+                android:text="Выход"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:id="@+id/saCloseB"
+                android:background="@color/Deep_Orange_500"
+                android:typeface="monospace"
+                android:width="150dp"
+                android:height="62dp"
+                android:textColor="@android:color/white"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                android:minHeight="62dp"
+                android:layout_marginBottom="2dp" />
+        </RelativeLayout>
+        <TextView
+            android:text="НЕОБХОДИМО СИНХРОНИЗИРОВАТЬ {0} ОБЪЕКТОВ"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/saLoadNetsCB" />
-        <CheckBox
-            android:text="LoadSubways"
-            android:layout_width="match_parent"
+            android:id="@+id/saSyncEntitiesCount"
+            android:layout_below="@id/saUpPanelRL"
+            android:layout_centerInParent="true" />
+        <TextView
+            android:text="НЕОБХОДИМО ОБНОВИТЬ {0} ОБЪЕКТОВ"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/saLoadSubwaysCB" />
-        <CheckBox
-            android:text="LoadRegions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/saLoadRegionsCB" />
-        <CheckBox
-            android:text="LoadPlaces"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/saLoadPlacesCB" />
-        <CheckBox
-            android:text="LoadCategories"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/saLoadCategoriesCB" />
-        <CheckBox
-            android:text="LoadDrugSKUs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/saLoadDrugSKUsCB" />
-        <CheckBox
-            android:text="LoadDrugBrands"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/saLoadDrugBrandsCB" />
-        <CheckBox
-            android:text="LoadPromotions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/saLoadPromotionsCB" />
-        <CheckBox
-            android:text="LoadMessageTypes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/saLoadMessageTypesCB" />
-        <CheckBox
-            android:text="LoadPhotoTypes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/saLoadPhotoTypesCB" />
-        <CheckBox
-            android:text="LoadContracts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/saContractsCB" />
-        <CheckBox
-            android:text="LoadWorkTypes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/saWorkTypesCB" />
-        <CheckBox
-            android:text="LoadMaterials"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/saMaterialsCB" />
-        <CheckBox
-            android:text="LoadListedHospitals"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/saListedHospitalsCB" />
+            android:id="@+id/saUpdateEntitiesCount"
+            android:layout_below="@id/saSyncEntitiesCount"
+            android:layout_centerInParent="true" />
         <Button
-            android:text="Button"
-            android:layout_width="match_parent"
+            android:text="СИНХРОНИЗИРОВАТЬ"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/saGetDataB" />
-        <Button
-            android:text="CheckAll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/saCheckAll" />
-    </LinearLayout>
-</ScrollView>
+            android:layout_below="@id/saUpdateEntitiesCount"
+            android:id="@+id/saSyncB"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+    <TextView
+        android:text="ИДЕТ СИНХРОНИЗАЦИЯ ДАННЫХ"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/locker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/translucent_black"
+        android:gravity="center"
+        android:visibility="gone" />
+</FrameLayout>

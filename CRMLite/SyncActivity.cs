@@ -1,5 +1,4 @@
 ﻿using System;
-using SD = System.Diagnostics;
 using System.Collections.Generic;
 
 using Android.App;
@@ -9,221 +8,174 @@ using Android.Widget;
 using RestSharp;
 
 using CRMLite.Entities;
+using Android.Views;
+using System.Threading;
+using Realms;
+using System.Net;
+using Android.Content;
+
+using CRMLite.Dialogs;
+using System.Threading.Tasks;
 
 namespace CRMLite
 {
 	[Activity(Label = "SyncActivity")]
 	public class SyncActivity : Activity
 	{
-		Button GetData;
-		Button CheckAll;
+		TextView Locker;
+		string ACCESS_TOKEN;
+
+		List<Employee> Employees;
+
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
 
+			RequestWindowFeature(WindowFeatures.NoTitle);
+			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
+
 			// Create your application here
 			SetContentView(Resource.Layout.Sync);
+			
+			Locker = FindViewById<TextView>(Resource.Id.locker);
+			
+			FindViewById<Button>(Resource.Id.saCloseB).Click += (s, e) => {
+				Finish();
+			};
+			
+			FindViewById<Button>(Resource.Id.saSyncB).Click += Sync_Click;
+			
+			RefreshView();
 
-			GetData = FindViewById<Button>(Resource.Id.saGetDataB);
+			ACCESS_TOKEN = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
+				.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
+		}
+		
+		void RefreshView(){
+									
+			//var pharmacies = MainDatabase.GetItemsToSync<Pharmacy>();
+			Employees = MainDatabase.GetItemsToSync<Employee>();
+			//var hospitals = MainDatabase.GetItemsToSync<Hospital>();
+			//var hospitalDatas = MainDatabase.GetItemsToSync<HospitalData>();
+			//var attendances = MainDatabase.GetItemsToSync<Attendance>();
+			//var competitorDatas = MainDatabase.GetItemsToSync<CompetitorData>();
+			//var contractDatas = MainDatabase.GetItemsToSync<ContractData>();
+			//var coterieDatas = MainDatabase.GetItemsToSync<CoterieData>();
 
-			GetData.Click += GetData_Click;
+			//var monthFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByMonth>();
+			//var quarterFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByQuarter>();
+			//var monthSaleDatas = MainDatabase.GetItemsToSync<SaleDataByMonth>();
+			//var quarterSaleDatas = MainDatabase.GetItemsToSync<SaleDataByQuarter>();
 
-			CheckAll = FindViewById<Button>(Resource.Id.saCheckAll);
+			//var messageDatas = MainDatabase.GetItemsToSync<MessageData>();
+			//var photoDatas = MainDatabase.GetItemsToSync<PhotoData>();
 
-			CheckAll.Click += CheckAll_Click;
+			//var presentationDatas = MainDatabase.GetItemsToSync<PresentationData>();
+			//var promotionDatas = MainDatabase.GetItemsToSync<PromotionData>();
+			//var resumeDatas = MainDatabase.GetItemsToSync<ResumeData>();
+			//var routeItems = MainDatabase.GetItemsToSync<RouteItem>();
+
+			FindViewById<TextView>(Resource.Id.saSyncEntitiesCount).Text = Employees.Count.ToString();
+				//pharmacies.Count + employees.Count + hospitals.Count + hospitalDatas.Count + attendances.Count + competitorDatas.Count +
+				//contractDatas.Count + coterieDatas.Count + monthFinanceDatas.Count + quarterFinanceDatas.Count + monthSaleDatas.Count +
+				//quarterSaleDatas.Count + messageDatas.Count + photoDatas.Count + presentationDatas.Count + promotionDatas.Count + 
+				//resumeDatas.Count + routeItems.Count;
+		}
+		
+		void Sync_Click(object sender, EventArgs e){
+			Toast.MakeText(this, @"saSyncB_Click", ToastLength.Short).Show();
+
+			//Locker.Visibility = ViewStates.Visible;
+
+			//Thread.Sleep(2000);
+
+			//var pharmacies = MainDatabase.GetItemsToSync<Pharmacy>();
+			//var employees = MainDatabase.GetItemsToSync<Employee>();
+			//var hospitals = MainDatabase.GetItemsToSync<Hospital>();
+			//var hospitalDatas = MainDatabase.GetItemsToSync<HospitalData>();
+			//var attendances = MainDatabase.GetItemsToSync<Attendance>();
+			//var competitorDatas = MainDatabase.GetItemsToSync<CompetitorData>();
+			//var contractDatas = MainDatabase.GetItemsToSync<ContractData>();
+			//var coterieDatas = MainDatabase.GetItemsToSync<CoterieData>();
+
+			//var monthFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByMonth>();
+			//var quarterFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByQuarter>();
+			//var monthSaleDatas = MainDatabase.GetItemsToSync<SaleDataByMonth>();
+			//var quarterSaleDatas = MainDatabase.GetItemsToSync<SaleDataByQuarter>();
+
+			//var messageDatas = MainDatabase.GetItemsToSync<MessageData>();
+			//var photoDatas = MainDatabase.GetItemsToSync<PhotoData>();
+
+			//var presentationDatas = MainDatabase.GetItemsToSync<PresentationData>();
+			//var promotionDatas = MainDatabase.GetItemsToSync<PromotionData>();
+			//var resumeDatas = MainDatabase.GetItemsToSync<ResumeData>();
+			//var routeItems = MainDatabase.GetItemsToSync<RouteItem>();
+
+			//Locker.Visibility = ViewStates.Gone;
+
+			var progress = ProgressDialog.Show(this, string.Empty, @"Синхронизация");
+
+			new Task(() => {
+				Thread.Sleep(2000); // иначе не успеет показаться диалог
+
+				RunOnUiThread(() => {
+					SyncEntities(Employees);
+					progress.Dismiss();;
+				});
+			}).Start();
 		}
 
-		void CheckAll_Click(object sender, EventArgs e)
+		protected override void OnResume()
 		{
-			var mainLL = FindViewById<LinearLayout>(Resource.Id.saMainLL);
-			for (int c = 0; c < mainLL.ChildCount; c++) {
-				var view = mainLL.GetChildAt(c);
-				if (view is CheckBox) {
-					((CheckBox)view).Checked = true;
+			base.OnResume();
+
+		}
+		
+		void SyncItems(List<ISync> items)
+		{
+			var firstItem = items[0];
+			string itemPath = firstItem.GetType().Name;
+			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+			
+			foreach (var item in items)
+			{
+				var request = new RestRequest(itemPath, Method.POST);
+				request.AddJsonBody(item);
+				var response = client.Execute<Entities.SyncResult>(request);
+				switch (response.StatusCode)
+				{
+					case HttpStatusCode.OK:
+					case HttpStatusCode.Created:
+						using (var trans = MainDatabase.BeginTransaction()) {
+							item.SyncResult = response.Data;
+							trans.Commit();
+						}
+						break;
 				}
+				Console.WriteLine(response.StatusDescription);
 			}
 		}
 
-		void GetData_Click(object sender, EventArgs e)
+		void SyncEntities<T>(List<T> items) where T : RealmObject, ISync
 		{
 			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
-			//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
+			string entityPath = typeof(T).Name;
 
-			if (FindViewById<CheckBox>(Resource.Id.saLoadPositionsCB).Checked) LoadPositions(client);
-			if (FindViewById<CheckBox>(Resource.Id.saLoadNetsCB).Checked) LoadNets(client);
-			if (FindViewById<CheckBox>(Resource.Id.saLoadSubwaysCB).Checked) LoadSubways(client);
-			if (FindViewById<CheckBox>(Resource.Id.saLoadRegionsCB).Checked) LoadRegions(client);
-			if (FindViewById<CheckBox>(Resource.Id.saLoadPlacesCB).Checked) LoadPlaces(client);
-			if (FindViewById<CheckBox>(Resource.Id.saLoadCategoriesCB).Checked) LoadCategories(client);
-			if (FindViewById<CheckBox>(Resource.Id.saLoadDrugSKUsCB).Checked) LoadDrugSKUs(client);
-			if (FindViewById<CheckBox>(Resource.Id.saLoadDrugBrandsCB).Checked) LoadDrugBrands(client);
-			if (FindViewById<CheckBox>(Resource.Id.saLoadPromotionsCB).Checked) LoadPromotions(client);
-			if (FindViewById<CheckBox>(Resource.Id.saLoadMessageTypesCB).Checked) LoadMessageTypes(client);
-			if (FindViewById<CheckBox>(Resource.Id.saLoadPhotoTypesCB).Checked) LoadPhotoTypes(client);
-			if (FindViewById<CheckBox>(Resource.Id.saContractsCB).Checked) LoadContracts(client);
-			if (FindViewById<CheckBox>(Resource.Id.saWorkTypesCB).Checked) LoadWorkTypes(client);
-			if (FindViewById<CheckBox>(Resource.Id.saMaterialsCB).Checked) LoadMaterials(client);
-			if (FindViewById<CheckBox>(Resource.Id.saListedHospitalsCB).Checked) LoadListedHospitals(client);
-
-		}
-
-		void LoadListedHospitals(RestClient client)
-		{
-			var request = new RestRequest(@"ListedHospital?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<ListedHospital>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(string.Format(@"Получено ListedHospital {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}
-		}
-
-		void LoadMaterials(RestClient client)
-		{
-			var request = new RestRequest(@"Material?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<Material>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(string.Format(@"Получено Material {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}		
-		}
-
-		void LoadWorkTypes(RestClient client)
-		{
-			var request = new RestRequest(@"WorkType?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<WorkType>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(string.Format(@"Получено WorkType {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}
-		}
-
-		void LoadContracts(RestClient client)
-		{
-			var request = new RestRequest(@"Contract?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<Contract>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(string.Format(@"Получено Contract {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}
-		}
-
-		void LoadPhotoTypes(RestClient client)
-		{
-			var request = new RestRequest(@"PhotoType?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<PhotoType>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(string.Format(@"Получено PhotoType {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}
-		}
-
-		void LoadMessageTypes(RestClient client)
-		{
-			var request = new RestRequest(@"MessageType?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<MessageType>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK)
-			{
-				SD.Debug.WriteLine(string.Format(@"Получено MessageType {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}	
-		}
-
-		void LoadPromotions(RestClient client)
-		{
-			var request = new RestRequest(@"Promotion?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<Promotion>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK)
-			{
-				SD.Debug.WriteLine(string.Format(@"Получено Promotion {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}
-		}
-
-		void LoadDrugSKUs(RestClient client)
-		{
-			var request = new RestRequest(@"DrugSKU?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<DrugSKU>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK)
-			{
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SaveDrugSKUs(response.Data);
-			}
-		}
-
-		void LoadDrugBrands(RestClient client)
-		{
-			var request = new RestRequest(@"DrugBrand?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<DrugBrand>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK)
-			{
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SaveDrugBrands(response.Data);
-			}		
-		}
-
-		void LoadPositions(RestClient client)
-		{
-			var request = new RestRequest(@"Position?limit=300", Method.GET);
-			var response = client.Execute<List<Position>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK)
-			{
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SavePositions(response.Data);
-			}
-		}
-
-		void LoadNets(RestClient client)
-		{
-			var request = new RestRequest(@"Net?limit=300", Method.GET);
-			var response = client.Execute<List<Net>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK)
-			{
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SaveNets(response.Data);
-			}
-		}
-
-		void LoadSubways(RestClient client)
-		{
-			var request = new RestRequest(@"Subway?limit=300", Method.GET);
-			var response = client.Execute<List<Subway>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK)
-			{
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SaveSubways(response.Data);
-			}
-		}
-
-		void LoadRegions(RestClient client)
-		{
-			var request = new RestRequest(@"Region?limit=300", Method.GET);
-			var response = client.Execute<List<Region>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK)
-			{
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SaveRegions(response.Data);
-			}
-		}
-
-		void LoadPlaces(RestClient client)
-		{
-			var request = new RestRequest(@"Place?limit=300", Method.GET);
-			var response = client.Execute<List<Place>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK)
-			{
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SavePlaces(response.Data);
-			}
-		}
-
-		void LoadCategories(RestClient client)
-		{
-			var request = new RestRequest(@"Category?limit=300", Method.GET);
-			var response = client.Execute<List<Category>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK)
-			{
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SaveCategories(response.Data);
+			using (var trans = MainDatabase.BeginTransaction()) {
+				foreach (var item in items) {
+					var request = new RestRequest(entityPath, Method.POST);
+					request.JsonSerializer = new NewtonsoftJsonSerializer();
+					request.AddJsonBody(item);
+					var response = client.Execute(request);
+					switch (response.StatusCode) {
+						case HttpStatusCode.OK:
+						case HttpStatusCode.Created:
+							item.IsSynced = true;
+							break;
+					}
+					Console.WriteLine(response.StatusDescription);
+				}
+				trans.Commit();
 			}
 		}
 	}

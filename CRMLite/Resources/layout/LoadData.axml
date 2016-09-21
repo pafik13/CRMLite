@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/saMainLL">
+        <CheckBox
+            android:text="LoadPositions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saLoadPositionsCB" />
+        <CheckBox
+            android:text="LoadNets"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saLoadNetsCB" />
+        <CheckBox
+            android:text="LoadSubways"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saLoadSubwaysCB" />
+        <CheckBox
+            android:text="LoadRegions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saLoadRegionsCB" />
+        <CheckBox
+            android:text="LoadPlaces"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saLoadPlacesCB" />
+        <CheckBox
+            android:text="LoadCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saLoadCategoriesCB" />
+        <CheckBox
+            android:text="LoadDrugSKUs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saLoadDrugSKUsCB" />
+        <CheckBox
+            android:text="LoadDrugBrands"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saLoadDrugBrandsCB" />
+        <CheckBox
+            android:text="LoadPromotions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saLoadPromotionsCB" />
+        <CheckBox
+            android:text="LoadMessageTypes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saLoadMessageTypesCB" />
+        <CheckBox
+            android:text="LoadPhotoTypes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saLoadPhotoTypesCB" />
+        <CheckBox
+            android:text="LoadContracts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saContractsCB" />
+        <CheckBox
+            android:text="LoadWorkTypes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saWorkTypesCB" />
+        <CheckBox
+            android:text="LoadMaterials"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saMaterialsCB" />
+        <CheckBox
+            android:text="LoadListedHospitals"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saListedHospitalsCB" />
+        <Button
+            android:text="Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saGetDataB" />
+        <Button
+            android:text="CheckAll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saCheckAll" />
+    </LinearLayout>
+</ScrollView>

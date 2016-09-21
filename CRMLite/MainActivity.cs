@@ -43,10 +43,6 @@ namespace CRMLite
 			RequestWindowFeature(WindowFeatures.NoTitle);
 			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
 
-			if (Secret.IsNeedReCreateDB) {
-				Realm.DeleteRealm(RealmConfiguration.DefaultConfiguration);
-			}
-
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
 
@@ -62,22 +58,28 @@ namespace CRMLite
 			};
 
 			var add = FindViewById<ImageView>(Resource.Id.maAdd);
-			add.Click += delegate {
+			add.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(PharmacyActivity)));
 			};
 
 			var sync = FindViewById<ImageView>(Resource.Id.maSync);
-			sync.Click += delegate {
+			sync.Click += (sender, e) => {
+				StartActivity(new Intent(this, typeof(LoadDataActivity)));
+			};
+			sync.LongClick += (sender, e) => {
 				StartActivity(new Intent(this, typeof(SyncActivity)));
 			};
-
+			
 			var lib = FindViewById<ImageView>(Resource.Id.maLibrary);
-			lib.Click += delegate {
+			lib.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(TestDataActivity)));
+			};
+			lib.LongClick += (sender, e) => {
+				StartActivity(new Intent(this, typeof(LibraryActivity)));
 			};
 
 			var route = FindViewById<ImageView>(Resource.Id.maRoute);
-			route.Click += delegate {
+			route.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(RouteActivity)));
 			};
 
@@ -410,9 +412,22 @@ namespace CRMLite
 			}
 			MainDatabase.Username = username;
 
+
+			if (Secret.IsNeedReCreateDB) {
+				//Realm.DeleteRealm(RealmConfiguration.DefaultConfiguration);
+				MainDatabase.ClearDB();
+				//Secret.IsNeedReCreateDB = false;
+			}
+
 			Helper.Username = username;
 
 			var w = new Stopwatch();
+			
+			// TODO: сделать ветку автоматической синхронизации
+			// w.Restart();
+			// StartService(new Intent(@"SyncService"));
+			// w.Stop();
+			// Console.WriteLine(@"SyncService: запуск={0}", w.ElapsedMilliseconds);
 
 		    w.Restart();
 			var currentRouteItems = MainDatabase.GetRouteItems(DateTimeOffset.Now);
@@ -483,6 +498,8 @@ namespace CRMLite
 		protected override void OnStop()
 		{
 			base.OnStop();
+			// TODO: сделать ветку автоматической синхронизации
+			// SaveToFileAllCache;
 		}
 	}
 }

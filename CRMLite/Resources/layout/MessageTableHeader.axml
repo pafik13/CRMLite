@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="58dp"
+    android:background="@android:color/white"
+    android:weightSum="100">
+    <TextView
+        android:text="Сообщение"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/mthMessageTV"
+        android:layout_weight="88"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Статус"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/mthIsSyncedTV"
+        android:layout_weight="4"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Отправить"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/mthSendAgainTV"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+</LinearLayout>
