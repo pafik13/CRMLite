@@ -67,23 +67,30 @@
         android:layout_height="wrap_content"
         android:id="@+id/faSwitchViewTypeVS"
         android:layout_below="@id/faUpPanelRL">
-        <ScrollView
+        <LinearLayout
+            android:id="@+id/faContentLL"
             android:minWidth="25px"
             android:minHeight="25px"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/faUpPanelRL"
-            android:background="@color/Grey_300">
-            <LinearLayout
-                android:id="@+id/faTable"
+            android:orientation="vertical"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
+            <ScrollView
                 android:minWidth="25px"
                 android:minHeight="25px"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp" />
-        </ScrollView>
+                android:background="@color/Grey_300">
+                <LinearLayout
+                    android:id="@+id/faTable"
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" />
+            </ScrollView>
+        </LinearLayout>
         <ScrollView
             android:minWidth="25px"
             android:minHeight="25px"

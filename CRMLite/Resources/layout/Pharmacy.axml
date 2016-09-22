@@ -442,7 +442,7 @@
                 <TableRow
                     android:id="@+id/paRowTurnOver">
                     <TextView
-                        android:text="Товарооборот по чекам"
+                        android:text="Товарооборот (кол-во чеков в день)"
                         android:layout_column="0"
                         android:background="@android:color/background_light"
                         android:gravity="end|center_vertical"

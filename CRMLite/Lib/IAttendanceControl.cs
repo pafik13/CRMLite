@@ -1,7 +1,7 @@
 ﻿using System;
 using Realms;
 
-namespace CRMLite
+namespace CRMLite.Entities
 {
 	public interface IAttendanceControl
 	{

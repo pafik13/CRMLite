@@ -215,6 +215,7 @@ namespace CRMLite
 
 		void RecreateAdapter(List<Pharmacy> inputList = null)
 		{
+			// ветка для фильтра
 			if (inputList != null) {
 				if (inputList.Count > 0) {
 					Pharmacies = inputList;
@@ -265,7 +266,13 @@ namespace CRMLite
 				FilterContent.Visibility = ViewStates.Gone;
 				Filter.SetBackgroundColor(Android.Graphics.Color.Transparent);
 
-				
+
+				var orderMapState = new Dictionary<string, int> {
+					{ PharmacyState.psActive.ToString("G"), 0 },
+					{ PharmacyState.psReserve.ToString("G"), 1 },
+					{ PharmacyState.psClose.ToString("G"), 2 },
+				};
+
 				// TODO: optimize work with route
 				var routeItems = MainDatabase.GetRouteItems(DateTimeOffset.Now);
 				pharmaciesInRoute = routeItems.Select(ri => ri.Pharmacy).ToArray();
@@ -282,9 +289,14 @@ namespace CRMLite
 						if (routeItems.Count == 0) {
 							list = list.OrderBy(ph => ph.NextAttendanceDate).ToList();
 					    } else {
-							var routeList = list.Where(ph => pharmaciesInRoute.Contains(ph.UUID)).ToList();
+							var orderMapRoute = routeItems.ToDictionary(ri => ri.Pharmacy, ri => ri.Order);  
+							var routeList = list.Where(ph => pharmaciesInRoute.Contains(ph.UUID))
+							                    .OrderBy(ph => orderMapRoute[ph.UUID])
+							                    .ToList();
+
 							var nonRouteList = list.Where(ph => !pharmaciesInRoute.Contains(ph.UUID))
-							                       .OrderBy(ph => ph.NextAttendanceDate)
+							                       .OrderBy(ph => orderMapState[ph.State])
+							                       .ThenBy(ph => ph.NextAttendanceDate)
 							                       .ToList();
 							list = new List<Pharmacy>();
 							list.AddRange(routeList);
@@ -292,7 +304,7 @@ namespace CRMLite
 						}
 					    break;
 					case WorkMode.wmOnlyRecommendations:
-						list = list.OrderBy(ph => ph.NextAttendanceDate).ToList();
+						list = list.OrderBy(ph => orderMapState[ph.State]).ThenBy(ph => ph.NextAttendanceDate).ToList();
 						break;
 				}
 				

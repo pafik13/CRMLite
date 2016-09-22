@@ -107,14 +107,48 @@
             android:id="@+id/paAttendanceByWeekLL"
             android:minWidth="25px"
             android:minHeight="25px">
-            <TextView
-                android:text="СТАТИСТИКА ПОСЕЩЕНИЙ"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:gravity="center"
-                android:textColor="@color/Light_Blue_500"
-                android:background="@android:color/white" />
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/paSearchIV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_search_black_48dp"
+                    android:background="@android:color/white" />
+                <ViewSwitcher
+                    android:layout_marginRight="2dp"
+                    android:id="@+id/paSearchVS"
+                    android:layout_toRightOf="@id/paSearchIV"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:text="СТАТИСТИКА ПОСЕЩЕНИЙ"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:gravity="center"
+                        android:textColor="@color/Light_Blue_500"
+                        android:background="@android:color/white" />
+                    <EditText
+                        android:textCursorDrawable="@null"
+                        android:id="@+id/paSearchET"
+                        android:textSize="16sp"
+                        android:background="@drawable/bottomline"
+                        android:textColorHint="@color/Grey_300"
+                        android:textColor="@android:color/black"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:hint="Начните вводить текст..."
+                        android:enabled="true"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginRight="6dp"
+                        android:inputType="textCapWords"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent" />
+                </ViewSwitcher>
+            </RelativeLayout>
             <ListView
                 android:minWidth="25px"
                 android:minHeight="25px"

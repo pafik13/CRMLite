@@ -13,15 +13,28 @@ using Android.Widget;
 
 using CRMLite.Dialogs;
 using CRMLite.Adapters;
+using CRMLite.Entities;
+using Android.Views.InputMethods;
 
 namespace CRMLite
 {
 	[Activity(Label = "ProfileActivity")]
 	public class ProfileActivity : Activity
 	{
+		LinearLayout Content;
 		ListView Table;
 		DateTimeOffset[] Dates;
 		Dictionary<string, Dictionary<int, int>> ReportData;
+
+		ViewSwitcher SearchSwitcher;
+
+		ImageView SearchImage;
+
+		EditText SearchEditor;
+
+		List<SearchItem> SearchItemsSource;
+		//List<SearchItem> SearchItems;
+		List<SearchItem> SearchedItems;
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
@@ -46,11 +59,13 @@ namespace CRMLite
 				Finish();
 			};
 
+			Content = FindViewById<LinearLayout>(Resource.Id.paAttendanceByWeekLL);
 			Table = FindViewById<ListView>(Resource.Id.paAttendanceByWeekTable);
 
 			int weeksCount = 14;
 			Dates = new DateTimeOffset[weeksCount];
 			var header = (LinearLayout)LayoutInflater.Inflate(Resource.Layout.AttendanceByWeekTableHeader, Table, false);
+			(header.GetChildAt(0) as TextView).Text = @"Недели";
 			for (int w = 0; w < weeksCount; w++) {
 				Dates[w] = DateTimeOffset.UtcNow.AddDays(-7 * (weeksCount - 1 - w));
 				var hView = header.GetChildAt(w + 1);
@@ -58,7 +73,7 @@ namespace CRMLite
 					(hView as TextView).Text = Helper.GetIso8601WeekOfYear(Dates[w].UtcDateTime).ToString();
 				}
 			}
-			FindViewById<LinearLayout>(Resource.Id.paAttendanceByWeekLL).AddView(header, 1);
+			Content.AddView(header, 1);
 
 			//Table.AddHeaderView(header);
 
@@ -79,6 +94,83 @@ namespace CRMLite
 			FindViewById<TextView>(Resource.Id.textView1).Text = 
 				GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private).GetString(SigninDialog.C_USERNAME, string.Empty);
 
+			SearchItemsSource = new List<SearchItem>();
+			var pharmacies = MainDatabase.GetItems<Pharmacy>();
+			foreach (var item in pharmacies) {
+				SearchItemsSource.Add(
+					new SearchItem(
+						item.UUID,
+						item.GetName(),
+						MainDatabase.GetItem<Subway>(item.Subway).name,
+						MainDatabase.GetItem<Region>(item.Region).name,
+						item.Brand
+					)
+				);
+			}
+			SearchedItems = new List<SearchItem>();
+			SearchSwitcher = FindViewById<ViewSwitcher>(Resource.Id.paSearchVS);
+			SearchSwitcher.SetInAnimation(this, Android.Resource.Animation.SlideInLeft);
+			SearchSwitcher.SetOutAnimation(this, Android.Resource.Animation.SlideOutRight);
+
+			SearchImage = FindViewById<ImageView>(Resource.Id.paSearchIV);
+			SearchImage.Click += (sender, e) => {
+				if (CurrentFocus != null) {
+					var imm = (InputMethodManager)GetSystemService(InputMethodService);
+					imm.HideSoftInputFromWindow(CurrentFocus.WindowToken, HideSoftInputFlags.None);
+				}
+
+				SearchSwitcher.ShowNext();
+			};
+
+			SearchEditor = FindViewById<EditText>(Resource.Id.paSearchET);
+
+			//SearchEditor.AfterTextChanged += (sender, e) => {
+			//	var text = e.Editable.ToString();
+
+			//	if (string.IsNullOrEmpty(text)) {
+			//		foreach (var item in SearchItems) {
+			//			item.Match = string.Empty;
+			//		}
+			//		PharmacyTable.Adapter = new RoutePharmacyAdapter(this, RouteSearchItems);
+			//		return;
+			//	}
+
+			//	var w = new Stopwatch();
+			//	w.Start();
+			//	SearchedItems = new List<RouteSearchItem>();
+			//	var matchFormat = @"Совпадение: {0}";
+			//	var culture = CultureInfo.GetCultureInfo("ru-RU");
+			//	// 2 поиск
+			//	foreach (var item in RouteSearchItems) {
+			//		if (item.IsVisible) {
+			//			if (culture.CompareInfo.IndexOf(item.Subway, text, CompareOptions.IgnoreCase) >= 0) {
+			//				item.Match = string.Format(matchFormat, @"метро=" + item.Subway);
+			//				SearchedItems.Add(item);
+			//				if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
+			//				continue;
+			//			}
+
+			//			if (culture.CompareInfo.IndexOf(item.Region, text, CompareOptions.IgnoreCase) >= 0) {
+			//				item.Match = string.Format(matchFormat, @"район=" + item.Region);
+			//				SearchedItems.Add(item);
+			//				if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
+			//				continue;
+			//			}
+
+			//			if (culture.CompareInfo.IndexOf(item.Brand, text, CompareOptions.IgnoreCase) >= 0) {
+			//				item.Match = string.Format(matchFormat, @"бренд=" + item.Brand);
+			//				SearchedItems.Add(item);
+			//				if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
+			//				continue;
+			//			}
+			//		}
+			//	}
+			//	w.Stop();
+			//	Console.WriteLine(@"Search: поиск={0}", w.ElapsedMilliseconds);
+
+			//	PharmacyTable.Adapter = new RoutePharmacyAdapter(this, SearchedItems);
+			//};
+
 		}
 
 		protected override void OnResume()
@@ -87,6 +179,25 @@ namespace CRMLite
 			var watch = new Stopwatch();
 			watch.Start();
 			ReportData = MainDatabase.GetProfileReportData(Dates);
+
+			int weeksCount = 14;
+			var summer = (LinearLayout)LayoutInflater.Inflate(Resource.Layout.AttendanceByWeekTableHeader, Table, false);
+			(summer.GetChildAt(0) as TextView).Text = @"Итого";
+			for (int w = 0; w < weeksCount; w++) {
+				var d = Dates[w].UtcDateTime.Date;
+				var key = d.Year * 100 + Helper.GetIso8601WeekOfYear(d);
+				var hView = summer.GetChildAt(w + 1);
+				if (hView is TextView) {
+					int sum = 0;
+					foreach (var item in ReportData) {
+						sum += item.Value[key];
+					}
+
+					(hView as TextView).Text = sum.ToString();
+				}
+			}
+			Content.AddView(summer, 2);
+
 			Table.Adapter = new AttendanceByWeekAdapter(this, ReportData, Dates);
 			
 			watch.Stop();

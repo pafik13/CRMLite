@@ -41,21 +41,29 @@
             android:minHeight="62dp"
             android:layout_marginBottom="2dp" />
     </RelativeLayout>
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/haContentLL"
+        android:layout_below="@id/haUpPanelRL"
         android:minWidth="25px"
         android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/haUpPanelRL"
-        android:background="@color/Grey_300">
-        <LinearLayout
-            android:id="@+id/haTable"
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+        <ScrollView
             android:minWidth="25px"
             android:minHeight="25px"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp" />
-    </ScrollView>
+            android:background="@color/Grey_300">
+            <LinearLayout
+                android:id="@+id/haTable"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" />
+        </ScrollView>
+    </LinearLayout>
 </RelativeLayout>

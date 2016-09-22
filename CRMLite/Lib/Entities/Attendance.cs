@@ -1,9 +1,10 @@
 ﻿using System;
 using Realms;
 
-namespace CRMLite
+namespace CRMLite.Entities
 {
-	public class Attendance : RealmObject, IEntity
+ 	// Attendancies
+	public class Attendance : RealmObject, IEntity, ISync
 	{
 		/// <summary>
 		/// Уникальный идентификатор работника аптеки. Используется Guid.
@@ -17,6 +18,16 @@ namespace CRMLite
 		public DateTimeOffset When { get; set; }
 
 		public int Duration { get; set; }
+
+		public string CreatedBy { get; set; }
+
+		public DateTimeOffset CreatedAt { get; set; }
+
+		public DateTimeOffset UpdatedAt { get; set; }
+
+		public SyncResult SyncResult { get; set; }
+
+		public bool IsSynced { get; set; }
 	}
 }
 

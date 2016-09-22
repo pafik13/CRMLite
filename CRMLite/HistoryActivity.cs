@@ -22,6 +22,7 @@ namespace CRMLite
 	public class HistoryActivity : Activity
 	{
 		Pharmacy Pharmacy;
+		LinearLayout Content;
 		LinearLayout Table;
 		Dictionary<string, TextView> TextViews;
 
@@ -42,22 +43,19 @@ namespace CRMLite
 			var pharmacyUUID = Intent.GetStringExtra("UUID");
 			if (string.IsNullOrEmpty(pharmacyUUID)) {
 				return;
-			} else {
-
-				Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
-				FindViewById<TextView>(Resource.Id.haInfoTV).Text = string.Format("ИСТОРИЯ ВИЗИТОВ: {0}", Pharmacy.GetName());
-
-//				var date1 = FindViewById<TextView>(Resource.Id.htiDate1);
-//				date1.Text = DateTimeOffset.Now.Date.ToString("dd.MM.yy");
-//
-//				var date2 = FindViewById<TextView>(Resource.Id.htiDate2);
-//				date2.Text = DateTimeOffset.Now.Date.AddDays(7).Date.ToString("dd.MM.yy");
-//
-				Table = FindViewById<LinearLayout>(Resource.Id.haTable);
-//				for (int i = 0; i < 60; i++) {
-//					var view = LayoutInflater.Inflate(Resource.Layout.HistoryTableItem, table, true);
-//				}
 			}
+
+			Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
+			FindViewById<TextView>(Resource.Id.haInfoTV).Text = string.Format("ИСТОРИЯ ВИЗИТОВ: {0}", Pharmacy.GetName());
+
+			//				var date1 = FindViewById<TextView>(Resource.Id.htiDate1);
+			//				date1.Text = DateTimeOffset.Now.Date.ToString("dd.MM.yy");
+			//
+			//				var date2 = FindViewById<TextView>(Resource.Id.htiDate2);
+			//				date2.Text = DateTimeOffset.Now.Date.AddDays(7).Date.ToString("dd.MM.yy");
+
+			Content = FindViewById<LinearLayout>(Resource.Id.haContentLL);
+			Table = FindViewById<LinearLayout>(Resource.Id.haTable);
 			TextViews = new Dictionary<string, TextView>();
 		}
 
@@ -109,7 +107,8 @@ namespace CRMLite
 				}
 			}
 
-			Table.AddView(header);
+			Content.AddView(header, 0);
+			//Table.AddView(header);
 
 			var infoTypes = Enum.GetValues(typeof(DistributionInfoType)).Cast<DistributionInfoType>();
 			var drugSKUs = MainDatabase.GetDrugSKUs();

@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Realms;
 
 namespace CRMLite.Entities
 {
-	public class CoterieData: RealmObject, IAttendanceData, IEntity
+	public class CoterieData: RealmObject, IAttendanceData, IEntity, ISync
 	{
 		/// <summary>
 		/// Уникальный идентификатор фарм-кружка. Используется Guid.
@@ -17,6 +18,16 @@ namespace CRMLite.Entities
 		public string Employee { get; set; }
 
 		public string Brand { get; set; }
+
+		public string CreatedBy { get; set; }
+
+		public DateTimeOffset CreatedAt { get; set; }
+
+		public DateTimeOffset UpdatedAt { get; set; }
+
+		public SyncResult SyncResult { get; set; }
+
+		public bool IsSynced { get; set; }
 	}
 
 	public class CoterieDataGrouped

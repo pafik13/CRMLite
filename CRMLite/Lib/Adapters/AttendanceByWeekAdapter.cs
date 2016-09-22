@@ -15,8 +15,9 @@ namespace CRMLite.Adapters
 		readonly Activity Context;
         readonly Dictionary<string, Dictionary<int, int>> Items;  // PharmacyUUID - YearWeek (Year * 100 + Week) - Count
         readonly int[] YearWeeks;
+		readonly Dictionary<string, string> Matches;
 
-		public AttendanceByWeekAdapter(Activity context, Dictionary<string, Dictionary<int, int>> items, DateTimeOffset[] dates)
+		public AttendanceByWeekAdapter(Activity context, Dictionary<string, Dictionary<int, int>> items, DateTimeOffset[] dates, Dictionary<string, string> matches = null)
 		{
 			Context = context;
 			Items = items;
@@ -26,6 +27,8 @@ namespace CRMLite.Adapters
             {
 				YearWeeks[d] = dates[d].Year * 100 + Helper.GetIso8601WeekOfYear(dates[d].DateTime);
             }
+
+			Matches = matches;
 		}
 
 		public override Dictionary<int, int> this[int position] {

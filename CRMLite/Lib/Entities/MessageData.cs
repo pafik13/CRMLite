@@ -1,8 +1,9 @@
-﻿using Realms;
+﻿using System;
+using Realms;
 
 namespace CRMLite.Entities
 {
-	public class MessageData : RealmObject, IAttendanceData, IEntity
+	public class MessageData : RealmObject, IAttendanceData, IEntity, ISync
 	{
 		/// <summary>
 		/// Уникальный идентификатор сообщения от аптеки. Используется Guid.
@@ -17,5 +18,14 @@ namespace CRMLite.Entities
 
 		public string Text { get; set; }
 
+		public string CreatedBy { get; set; }
+
+		public DateTimeOffset CreatedAt { get; set; }
+
+		public DateTimeOffset UpdatedAt { get; set; }
+
+		public SyncResult SyncResult { get; set; }
+
+		public bool IsSynced { get; set; }
 	}
 }

@@ -1,8 +1,9 @@
-﻿using Realms;
+﻿using System;
+using Realms;
 
 namespace CRMLite.Entities
 {
-	public class HospitalData: RealmObject, IEntity, IPharmacyData
+	public class HospitalData: RealmObject, IEntity, IPharmacyData, ISync
 	{
 		/// <summary>
 		/// Уникальный идентификатор ЛПУ. Используется Guid.
@@ -29,5 +30,15 @@ namespace CRMLite.Entities
 		/// </summary>
 		/// <value>The listed hospital.</value>
 		public string ListedHospital { get; set; }
+
+		public string CreatedBy{ get; set; }
+
+		public DateTimeOffset CreatedAt { get; set; }
+
+		public DateTimeOffset UpdatedAt { get; set; }
+
+		public SyncResult SyncResult { get; set; }
+
+		public bool IsSynced { get; set; }
 	}
 }

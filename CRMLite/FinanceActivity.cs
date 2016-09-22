@@ -24,6 +24,7 @@ namespace CRMLite
 		public const string C_IS_CAN_ADD = @"C_IS_CAN_ADD";
 		
 		Pharmacy Pharmacy;
+		LinearLayout Content;
 		LinearLayout Table;
 		Dictionary<string, TextView> TextViews;
 
@@ -57,6 +58,7 @@ namespace CRMLite
 			//				var date2 = FindViewById<TextView>(Resource.Id.htiDate2);
 			//				date2.Text = DateTimeOffset.Now.Date.AddDays(7).Date.ToString("dd.MM.yy");
 			//
+			Content = FindViewById<LinearLayout>(Resource.Id.faContentLL);
 			Table = FindViewById<LinearLayout>(Resource.Id.faTable);
 			TableBySKU = FindViewById<LinearLayout>(Resource.Id.faTableBySKU);
 
@@ -177,7 +179,8 @@ namespace CRMLite
 				}
 			}
 
-			Table.AddView(header);
+			Content.AddView(header, 0);
+			//Table.AddView(header);
 
 			var infoTypes = Enum.GetValues(typeof(FinanceInfoType)).Cast<FinanceInfoType>();
 			var drugSKUs = MainDatabase.GetDrugSKUs();

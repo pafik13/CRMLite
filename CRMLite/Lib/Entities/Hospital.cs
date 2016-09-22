@@ -7,7 +7,7 @@ namespace CRMLite.Entities
 	/// <summary>
 	/// ЛПУ - Лечебно-профилактические учреждение.
 	/// </summary>
-	public class Hospital: RealmObject, IEntity
+	public class Hospital: RealmObject, IEntity, ISync
 	{
 		/// <summary>
 		/// Уникальный идентификатор ЛПУ. Используется Guid.
@@ -33,6 +33,12 @@ namespace CRMLite.Entities
 		public DateTimeOffset UpdatedAt { get; set; }
 
 		public SyncResult LastSyncResult { get; set; }
+
+		public string CreatedBy { get; set; }
+
+		public SyncResult SyncResult { get; set; }
+
+		public bool IsSynced { get; set; }
 	}
 }
 

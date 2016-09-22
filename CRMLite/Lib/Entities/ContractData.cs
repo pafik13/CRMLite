@@ -1,9 +1,9 @@
 ﻿using System;
 using Realms;
 
-namespace CRMLite
+namespace CRMLite.Entities
 {
-	public class ContractData : RealmObject, IEntity, IPharmacyData
+	public class ContractData : RealmObject, IEntity, IPharmacyData, ISync
 	{
 		/// <summary>
 		/// Уникальный идентификатор контракта. Используется Guid.
@@ -25,6 +25,16 @@ namespace CRMLite
 		/// <value>The pharmacy.</value>
 		[Indexed]
 		public string Contract { get; set; }
+
+		public string CreatedBy { get; set; }
+
+		public DateTimeOffset CreatedAt { get; set; }
+
+		public DateTimeOffset UpdatedAt { get; set; }
+
+		public SyncResult SyncResult { get; set; }
+
+		public bool IsSynced { get; set; }
 	}
 }
 

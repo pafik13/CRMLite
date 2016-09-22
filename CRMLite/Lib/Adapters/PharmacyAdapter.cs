@@ -77,12 +77,12 @@ namespace CRMLite.Adapters
 			showEmployee.Click += ShowEmployeeClickEventHandler;
 
 
-			var nexttAttendance = view.FindViewById<Button>(Resource.Id.ptiNextAttendanceB);
-			nexttAttendance.SetTag(Resource.String.PharmacyUUID, item.UUID);
-			nexttAttendance.Text = item.NextAttendanceDate.HasValue ? 
+			var nextAttendance = view.FindViewById<Button>(Resource.Id.ptiNextAttendanceB);
+			nextAttendance.SetTag(Resource.String.PharmacyUUID, item.UUID);
+			nextAttendance.Text = item.NextAttendanceDate.HasValue ? 
 				item.NextAttendanceDate.Value.ToString(@"dd.MM.yyyy") : @"Начать визит"; //DateTimeOffset.Now.ToString(@"dd.MM.yyyy");
-			nexttAttendance.Click -= NextAttendanceClickEventHandler;
-			nexttAttendance.Click += NextAttendanceClickEventHandler;
+			nextAttendance.Click -= NextAttendanceClickEventHandler;
+			nextAttendance.Click += NextAttendanceClickEventHandler;
 
 			var lastAttendance = view.FindViewById<TextView>(Resource.Id.ptiLastAttendanceDateTV);
 			lastAttendance.Text = item.LastAttendanceDate.HasValue ? 
@@ -97,9 +97,40 @@ namespace CRMLite.Adapters
 				case WorkMode.wmRouteAndRecommendations:
 					if (PharmaciesInRoute.Contains(item.UUID)) {
 						view.SetBackgroundResource(Resource.Color.Light_Green_100);
-						nexttAttendance.Text = @"Начать визит";
+						if (item.LastAttendanceDate.HasValue) {
+							if (item.LastAttendanceDate.Value.UtcDateTime.Date == DateTimeOffset.UtcNow.Date) {
+								nextAttendance.Text = @"Пройдено!";
+							} else {
+								nextAttendance.Text = @"Начать визит";
+							}
+						} else {
+							nextAttendance.Text = @"Начать визит";
+						}
 					} else {
-						view.SetBackgroundColor(Android.Graphics.Color.White);
+						switch (item.GetState()) {
+							case PharmacyState.psActive:
+								view.SetBackgroundColor(Android.Graphics.Color.White);
+								break;
+							case PharmacyState.psReserve:
+								view.SetBackgroundResource(Resource.Color.Yellow_100);
+								break;
+							case PharmacyState.psClose:
+								view.SetBackgroundResource(Resource.Color.Red_100);
+								break;
+						}
+					}
+					break;
+				case WorkMode.wmOnlyRecommendations:
+					switch (item.GetState()) {
+						case PharmacyState.psActive:
+							view.SetBackgroundColor(Android.Graphics.Color.White);
+							break;
+						case PharmacyState.psReserve:
+							view.SetBackgroundResource(Resource.Color.Yellow_100);
+							break;
+						case PharmacyState.psClose:
+							view.SetBackgroundResource(Resource.Color.Red_100);
+							break;
 					}
 					break;
 			}

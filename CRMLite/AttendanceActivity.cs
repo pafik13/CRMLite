@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -15,9 +17,7 @@ using V4App = Android.Support.V4.App;
 using Android.Support.V4.View;
 
 using CRMLite.Dialogs;
-using System.Diagnostics;
-using System.IO;
-using Android.Net;
+using CRMLite.Entities;
 
 namespace CRMLite
 {

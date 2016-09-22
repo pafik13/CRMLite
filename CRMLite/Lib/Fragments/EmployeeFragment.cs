@@ -136,7 +136,7 @@ namespace CRMLite
 			isCustomer.CheckedChange += CB_CheckedChange;
 
 			var birthDate = view.FindViewById<EditText>(Resource.Id.eetiBirthDateET);
-			birthDate.Text = employee.BirthDate.HasValue ? employee.BirthDate.Value.ToString("dd.MM.yyyy") : string.Empty;
+			birthDate.Text = employee.BirthDate.HasValue ? employee.BirthDate.Value.ToString("dd.MM.yy") : string.Empty;
 			birthDate.AfterTextChanged -= ET_AfterTextChanged;
 			birthDate.AfterTextChanged += ET_AfterTextChanged;
 

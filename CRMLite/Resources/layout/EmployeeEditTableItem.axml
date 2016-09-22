@@ -53,7 +53,7 @@
         android:inputType="textEmailAddress"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:hint="ДД.ММ.ГГГГ"
+        android:hint="ДД.ММ.ГГ"
         android:enabled="true"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
