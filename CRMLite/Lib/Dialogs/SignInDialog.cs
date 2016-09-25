@@ -28,6 +28,8 @@ namespace CRMLite.Dialogs
 		const char quote = '"';
 		public const string C_USERNAME = @"C_USERNAME";
 		public const string C_ACCESS_TOKEN = @"C_ACCESS_TOKEN";
+		public const string C_AGENT_UUID = @"C_AGENT_UUID";
+
 		public const string TAG = @"SigninDialog";
 
 		Button bSignUp = null;
@@ -305,10 +307,11 @@ namespace CRMLite.Dialogs
 		{
 			WriteInfo (@"Подключение к серверу");
 
-			//var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
-			var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
+			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+			//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
 			client.CookieContainer = new CookieContainer();
 
+			string access_token = string.Empty;
 			IRestResponse response;
 			WriteInfo(@"Получение Access_Token", 2000);
 			try {
@@ -330,6 +333,7 @@ namespace CRMLite.Dialogs
 				//		.Edit()
 				//		.PutString(C_USERNAME, username)
 				//		.Commit();
+				access_token = (response as IRestResponse<JsonWebToken>).Data.token;
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -338,10 +342,32 @@ namespace CRMLite.Dialogs
 			MainDatabase.Username = username;
 
 			Helper.Username = username;
+
+			Agent agent;
+			WriteInfo(@"Получение Agent", 2000);
+			try {
+				string path = typeof(Agent).Name + @"/byjwt";
+
+				var request = new RestRequest(path, Method.GET);
+				request.AddQueryParameter(@"access_token", access_token);
+				response = client.Execute<Agent>(request);
+				agent = (response as IRestResponse<Agent>).Data;
+
+				using (var trans = MainDatabase.BeginTransaction()) {
+					MainDatabase.DeleteAll<Agent>(trans);
+					MainDatabase.SaveItem(trans, agent);
+					trans.Commit();
+				}
+			} catch (Exception ex) {
+				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
+				return false;
+			}
+
 			activity.GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
 					.Edit()
 					.PutString(C_USERNAME, username)
-					.PutString(C_ACCESS_TOKEN, (response as IRestResponse<JsonWebToken>).Data.token)
+					.PutString(C_ACCESS_TOKEN, access_token)
+					.PutString(C_AGENT_UUID, agent.uuid)
 					.Commit();
 
 			WriteInfo(@"Получение LoadPositions", 2000);

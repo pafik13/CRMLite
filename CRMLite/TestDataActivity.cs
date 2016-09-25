@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Widget;
 
 using CRMLite.Entities;
+using RestSharp;
 
 namespace CRMLite
 {
@@ -89,6 +90,12 @@ namespace CRMLite
 
 		void CustomAction_Click(object sender, EventArgs e)
 		{
+			//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
+			//string path = typeof(Agent).Name + @"/d3c6594e-41b3-4986-8afc-cf236413bd7e?populate=false";
+
+			//var request = new RestRequest(path, Method.GET);
+			//var response = client.Execute<Agent>(request);
+
 			//MainDatabase.Dispose();
 			//MainDatabase.GetNets();
 
@@ -96,6 +103,7 @@ namespace CRMLite
 			gen.Start();
 			var rnd = new Random();
 			rnd.Next();
+			var nets = MainDatabase.GetItems<Net>();
 			var subways = MainDatabase.GetItems<Subway>();
 			var region = MainDatabase.GetItems<Region>();
 			var categories = MainDatabase.GetItems<Category>();
@@ -110,6 +118,7 @@ namespace CRMLite
 					var pharmacy = MainDatabase.CreatePharmacy();
 					pharmacy.Brand = @"Brand #" + i;
 					pharmacy.Address = @"Address #" + i;
+					pharmacy.Net = nets[rnd.Next(0, nets.Count - 1)].uuid;
 					pharmacy.Subway = subways[rnd.Next(0, subways.Count - 1)].uuid;
 					pharmacy.Region = region[rnd.Next(0, region.Count - 1)].uuid;
 					pharmacy.Category = categories[rnd.Next(0, categories.Count - 1)].uuid;
@@ -119,8 +128,8 @@ namespace CRMLite
 
 			gen.Stop();
 			Console.WriteLine(
-				@"Calc: {0}, subways: {1}, region: {2}, categories: {3}", 
-				gen.ElapsedMilliseconds, subways.Count, region.Count, categories.Count
+				@"Calc: {0}, nets: {1}, subways: {2}, region: {3}, categories: {4}", 
+				gen.ElapsedMilliseconds, nets.Count, subways.Count, region.Count, categories.Count
 			);
 		}
 

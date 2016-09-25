@@ -24,6 +24,12 @@
 
 	<string name="ContractUUIDs">ContractUUIDs</string>
 
+	<string name="fias_id">fias_id</string>
+	<string name="qc_geo">qc_geo</string>
+	<string name="geo_lat">geo_lat</string>
+	<string name="geo_lon">geo_lon</string>
+
+
 	<string name="SubwayUUID">SubwayUUID</string>
 	<string name="RegionUUID">RegionUUID</string>
 	<string name="PlaceUUID">PlaceUUID</string>

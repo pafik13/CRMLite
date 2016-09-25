@@ -18,19 +18,22 @@ namespace CRMLite.Entities
 		/// Имя представителя/сотрудника.
 		/// </summary>
 		/// <value>The first name.</value>
-		public string FirstName { get; set; }
+		public string firstName { get; set; }
 
 		/// <summary>
 		/// Отчество представителя/сотрудника.
 		/// </summary>
 		/// <value>The name of the middle.</value>
-		public string MiddleName { get; set; }
+		public string middleName { get; set; }
 
 		/// <summary>
 		/// Фамилия представителя/сотрудника.
 		/// </summary>
 		/// <value>The last name.</value>
-		public string LastName { get; set; }
+		public string lastName { get; set; }
+
+		public string shortName { get; set; }
+		public string fullName { get; set; }
 
 		/// <summary>
 		/// Пол представителя/сотрудника.
@@ -46,55 +49,53 @@ namespace CRMLite.Entities
 		/// Дата приема на работу представителя/сотрудника.
 		/// </summary>
 		/// <value>The hire date.</value>
-		public DateTimeOffset HireDate { get; set; }
+		public DateTimeOffset hireDate { get; set; }
 
 		/// <summary>
 		/// Дата рождения представителя/сотрудника.
 		/// </summary>
 		/// <value>The birth date.</value>
-		public DateTimeOffset BirthDate { get; set; }
+		public DateTimeOffset birthDate { get; set; }
 
 		/// <summary>
 		/// Почтовый адрес представителя/сотрудника.
 		/// </summary>
 		/// <value>The post address.</value>
-		public string PostAddress { get; set; }
+		public string postAddress { get; set; }
 
 		/// <summary>
 		/// Контактный телефон представителя/сотрудника.
 		/// </summary>
 		/// <value>The phone.</value>
-		public string Phone { get; set; }
+		public string phone { get; set; }
 
 		/// <summary>
-		/// Ссылка на должность. UUID класса Position.
+		/// Электронная почта представителя/сотрудника.
 		/// </summary>
-		/// <value>The position.</value>
-		[Indexed]
-		public string Position { get; set; }
+		public string email { get; set; }
 
 		/// <summary>
-		/// Ссылка на менеджера. UUID класса Manager.
+		/// Город работы.
 		/// </summary>
-		/// <value>The manager.</value>
-		[Indexed]
-        public string Manager { get; set; }
+		public string city { get; set; }
 
 		/// <summary>
-		/// Ссылка на проект. UUID класса Project.
+		/// Количество недель в маршруте.
 		/// </summary>
-		/// <value>The project.</value>
-		[Indexed]
-        public string Project { get; set; }
+		public int weeksInRout { get; set; }
 
 		/// <summary>
-		/// Ссылка на территорию работы. UUID класса Territory.
+		/// Режим работ.
 		/// </summary>
-		/// <value>The territory.</value>
-		[Indexed]
-        public string Territory { get; set; }
+		public string workMode { get; set; }
 
-		//public int user { get; set; }
-		//public string job_role { get; set; }
+		public void SetWorkMode(WorkMode newWorkMode) { workMode = newWorkMode.ToString("G"); }
+
+		public WorkMode GetWorkMode() { return (WorkMode)Enum.Parse(typeof(WorkMode), workMode, true); }
+
+		/// <summary>
+		/// User.
+		/// </summary>
+    	public string user { get; set; }
 	}
 }

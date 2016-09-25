@@ -63,18 +63,18 @@ namespace CRMLite
 			};
 
 			var sync = FindViewById<ImageView>(Resource.Id.maSync);
-			sync.Click += (sender, e) => {
+			sync.LongClick += (sender, e) => {
 				StartActivity(new Intent(this, typeof(LoadDataActivity)));
 			};
-			sync.LongClick += (sender, e) => {
+			sync.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(SyncActivity)));
 			};
 			
 			var lib = FindViewById<ImageView>(Resource.Id.maLibrary);
-			lib.Click += (sender, e) => {
+			lib.LongClick += (sender, e) => {
 				StartActivity(new Intent(this, typeof(TestDataActivity)));
 			};
-			lib.LongClick += (sender, e) => {
+			lib.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(LibraryActivity)));
 			};
 
@@ -396,8 +396,10 @@ namespace CRMLite
 		protected override void OnResume()
 		{
 			base.OnResume();
-			
-			string username = GetSharedPreferences(C_MAIN_PREFS, FileCreationMode.Private).GetString(SigninDialog.C_USERNAME, string.Empty);
+
+			var shared = GetSharedPreferences(C_MAIN_PREFS, FileCreationMode.Private);
+
+			string username = shared.GetString(SigninDialog.C_USERNAME, string.Empty);
 			if (string.IsNullOrEmpty(username)) {
 				Pharmacies = new List<Pharmacy>(); //.Take(14).ToList();
 				PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies);
@@ -414,7 +416,7 @@ namespace CRMLite
 				signinDialog.SuccessSignedIn += (caller, arguments) => {
 					//Toast.MakeText(this, @"SuccessSignedIn", ToastLength.Short).Show();
 					RunOnUiThread(() => {
-						RecreateAdapter();
+						OnResume();
 						Console.WriteLine(@"DBPath = {0}", MainDatabase.DBPath);
 					});
 				};
@@ -424,14 +426,17 @@ namespace CRMLite
 			}
 			MainDatabase.Username = username;
 
+			var agentUUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
+			var agent = MainDatabase.GetItem<Agent>(agentUUID);
+			Helper.Username = username;
+			Helper.WeeksInRoute = agent.weeksInRout;
+			Helper.WorkMode = agent.GetWorkMode();
 
 			if (Secret.IsNeedReCreateDB) {
 				//Realm.DeleteRealm(RealmConfiguration.DefaultConfiguration);
 				MainDatabase.ClearDB();
 				//Secret.IsNeedReCreateDB = false;
 			}
-
-			Helper.Username = username;
 
 			var w = new Stopwatch();
 			

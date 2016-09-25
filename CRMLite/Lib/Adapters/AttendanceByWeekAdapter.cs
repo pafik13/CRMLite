@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 
 using Android.App;
@@ -13,14 +15,17 @@ namespace CRMLite.Adapters
 	public class AttendanceByWeekAdapter : BaseAdapter<Dictionary<int, int>>
 	{
 		readonly Activity Context;
-        readonly Dictionary<string, Dictionary<int, int>> Items;  // PharmacyUUID - YearWeek (Year * 100 + Week) - Count
+        readonly Dictionary<string, Dictionary<int, int>> Source; // PharmacyUUID - YearWeek (Year * 100 + Week) - Count
         readonly int[] YearWeeks;
-		readonly Dictionary<string, string> Matches;
 
-		public AttendanceByWeekAdapter(Activity context, Dictionary<string, Dictionary<int, int>> items, DateTimeOffset[] dates, Dictionary<string, string> matches = null)
+		readonly Dictionary<string, SearchItem> SearchItems;
+		Dictionary<string, Dictionary<int, int>> Items;
+		string Text;
+
+		public AttendanceByWeekAdapter(Activity context, Dictionary<string, Dictionary<int, int>> source, DateTimeOffset[] dates, Dictionary<string, string> matches = null)
 		{
 			Context = context;
-			Items = items;
+			Source = source;
 
 			YearWeeks = new int[14];
             for (int d = 0; d < 14; d++)
@@ -28,7 +33,22 @@ namespace CRMLite.Adapters
 				YearWeeks[d] = dates[d].Year * 100 + Helper.GetIso8601WeekOfYear(dates[d].DateTime);
             }
 
-			Matches = matches;
+			Items = Source;
+
+			SearchItems = new Dictionary<string, SearchItem>();
+			var pharmacies = MainDatabase.GetItems<Pharmacy>();
+			foreach (var item in pharmacies) {
+				SearchItems.Add(
+					item.UUID,
+					new SearchItem(
+						item.UUID,
+						item.GetName(),
+						MainDatabase.GetItem<Subway>(item.Subway).name,
+						MainDatabase.GetItem<Region>(item.Region).name,
+						item.Brand
+					)
+				);
+			}
 		}
 
 		public override Dictionary<int, int> this[int position] {
@@ -54,11 +74,19 @@ namespace CRMLite.Adapters
 			var key = Items.Keys.ElementAt(position);
 			var pharmacy = MainDatabase.GetEntity<Pharmacy>(key);
             var item = Items[key];
+			var searchItem = SearchItems[key];
 
             var view = (convertView ?? Context.LayoutInflater.Inflate(Resource.Layout.AttendanceByWeekTableItem, parent, false)
 			           ) as LinearLayout; 
 
             view.FindViewById<TextView>(Resource.Id.abwtiPharmacyTV).Text = pharmacy.GetName();
+
+			if (string.IsNullOrEmpty(Text)) {
+				view.FindViewById<TextView>(Resource.Id.abwtiMatchTV).Visibility = ViewStates.Gone;
+			} else {
+				view.FindViewById<TextView>(Resource.Id.abwtiMatchTV).Visibility = ViewStates.Visible;
+				view.FindViewById<TextView>(Resource.Id.abwtiMatchTV).Text = searchItem.Match;
+			}
 
 			view.FindViewById<TextView>(Resource.Id.abwtiWeek1).Text = item[YearWeeks[0]].ToString();
             view.FindViewById<TextView>(Resource.Id.abwtiWeek2).Text = item[YearWeeks[1]].ToString();
@@ -76,6 +104,49 @@ namespace CRMLite.Adapters
             view.FindViewById<TextView>(Resource.Id.abwtiWeek14).Text = item[YearWeeks[13]].ToString();
 
             return view;
+		}
+
+		public void SetSearchText(string text)
+		{
+			Text = text;
+
+			if (string.IsNullOrEmpty(text)) {
+				Items = Source;
+				NotifyDataSetChanged();
+				return;
+			}
+
+			var w = new Stopwatch();
+			w.Start();
+			var matchFormat = @"Совпадение: {0}";
+			var culture = CultureInfo.GetCultureInfo("ru-RU");
+			Items = new Dictionary<string, Dictionary<int, int>>();
+			foreach (var item in SearchItems) {
+
+				//  поиск
+				if (culture.CompareInfo.IndexOf(item.Value.Subway, text, CompareOptions.IgnoreCase) >= 0) {
+					item.Value.Match = string.Format(matchFormat, @"метро=" + item.Value.Subway);
+					Items.Add(item.Key, Source[item.Key]);
+					//if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
+					continue;
+				}
+
+				if (culture.CompareInfo.IndexOf(item.Value.Region, text, CompareOptions.IgnoreCase) >= 0) {
+					item.Value.Match = string.Format(matchFormat, @"район=" + item.Value.Region);
+					Items.Add(item.Key, Source[item.Key]);
+					//if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
+					continue;
+				}
+
+				if (culture.CompareInfo.IndexOf(item.Value.Name, text, CompareOptions.IgnoreCase) >= 0) {
+					Items.Add(item.Key, Source[item.Key]);
+					//if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
+					continue;
+				}
+			}
+			NotifyDataSetChanged();
+			w.Stop();
+			Console.WriteLine(@"Search: поиск={0}", w.ElapsedMilliseconds);
 		}
 	}
 }

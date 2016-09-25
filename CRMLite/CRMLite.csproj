@@ -171,6 +171,8 @@
     <Compile Include="LoadDataActivity.cs" />
     <Compile Include="Lib\ISync.cs" />
     <Compile Include="Lib\JSONSerializer.cs" />
+    <Compile Include="Lib\Adapters\AddressSuggestionAdapter.cs" />
+    <Compile Include="Lib\Adapters\MessageAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -509,6 +511,11 @@
     <AndroidResource Include="Resources\layout\LoadData.axml" />
     <AndroidResource Include="Resources\layout\MessageTableHeader.axml" />
     <AndroidResource Include="Resources\layout\MessageTableItem.axml" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_receipt_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_receipt_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_receipt_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_receipt_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_receipt_black_48dp.png" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

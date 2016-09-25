@@ -45,6 +45,8 @@ namespace CRMLite
 
 		public List<PromotionData> PromotionDatas { get; private set; }
 
+
+		public int Messages { get; private set; }
 
 		List<Employee> Employees;
 
@@ -75,7 +77,6 @@ namespace CRMLite
 		void RefreshView(){
 			//var pharmacies = MainDatabase.GetItemsToSync<Pharmacy>();
 
-
 			Attendancies = MainDatabase.GetItemsToSync<Attendance>();
 			CompetitorDatas = MainDatabase.GetItemsToSync<CompetitorData>();
 			ContractDatas = MainDatabase.GetItemsToSync<ContractData>();
@@ -99,11 +100,14 @@ namespace CRMLite
 			ResumeDatas = MainDatabase.GetItemsToSync<ResumeData>();
 			RouteItems = MainDatabase.GetItemsToSync<RouteItem>();
 
+			int count = 0;
+			count += MainDatabase.CountItemsToSync<Entities.Message>();
+
 			FindViewById<TextView>(Resource.Id.saSyncEntitiesCount).Text = 
 				( Attendancies.Count + + CompetitorDatas.Count + ContractDatas.Count + CoterieDatas.Count 
 				 + DistributionDatas.Count + Employees.Count + Hospitals.Count + HospitalDatas.Count
 				 + MessageDatas.Count + PresentationDatas.Count + PromotionDatas.Count + ResumeDatas.Count 
-				 + RouteItems.Count
+				 + RouteItems.Count + count
 				).ToString();
 				//pharmacies.Count + employees.Count + hospitals.Count + hospitalDatas.Count + attendances.Count + competitorDatas.Count +
 				//contractDatas.Count + coterieDatas.Count + monthFinanceDatas.Count + quarterFinanceDatas.Count + monthSaleDatas.Count +
@@ -156,6 +160,7 @@ namespace CRMLite
 					SyncEntities(Employees);
 					SyncEntities(Hospitals);
 					SyncEntities(HospitalDatas);
+					SyncEntities(MainDatabase.GetItemsToSync<Entities.Message>());
 					SyncEntities(MessageDatas);
 					SyncEntities(PresentationDatas);
 					SyncEntities(PromotionDatas);
@@ -178,8 +183,8 @@ namespace CRMLite
 		{
 			var firstItem = items[0];
 			string itemPath = firstItem.GetType().Name;
-			//var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
-			var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
+			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+			//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
 
 			foreach (var item in items)
 			{
@@ -202,8 +207,8 @@ namespace CRMLite
 
 		void SyncEntities<T>(List<T> items) where T : RealmObject, ISync
 		{
-			//var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
-			var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
+			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+			//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
 			string entityPath = typeof(T).Name;
 
 			using (var trans = MainDatabase.BeginTransaction()) {

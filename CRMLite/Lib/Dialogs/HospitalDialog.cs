@@ -7,7 +7,7 @@ using Android.Views;
 using Android.Widget;
 
 using CRMLite.Entities;
-using CRMLite.Suggestions;
+using CRMLite.DaData;
 
 namespace CRMLite.Dialogs
 {

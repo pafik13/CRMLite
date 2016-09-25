@@ -52,38 +52,24 @@
         android:layout_below="@id/maUpPanelRL"
         android:background="@color/Grey_300">
         <LinearLayout
+            android:id="@+id/maContentLL"
             android:minWidth="25px"
             android:minHeight="25px"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:background="@color/Grey_300"
-            android:weightSum="100">
-        <!--	Левый отступ	-->
-            <LinearLayout
-                android:minWidth="25px"
-                android:minHeight="25px"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="20" />
-        <!--	Таблица сотрудников		-->
-            <LinearLayout
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp">
+            <ListView
                 android:id="@+id/maMessageTable"
                 android:minWidth="25px"
                 android:minHeight="25px"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_weight="60" />
-        <!--	Правый отступ	-->
-            <LinearLayout
-                android:minWidth="25px"
-                android:minHeight="25px"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="20" />
+                android:divider="@color/Grey_300"
+                android:dividerHeight="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

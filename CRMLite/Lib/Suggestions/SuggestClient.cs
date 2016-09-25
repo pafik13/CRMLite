@@ -3,7 +3,8 @@ using System.Net;
 using System.Collections.Generic;
 using RestSharp;
 
-namespace CRMLite.Suggestions {
+namespace CRMLite.DaData 
+{
 
     public class SuggestClient {
         const string SUGGESTIONS_URL = "{0}/suggest";

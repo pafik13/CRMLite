@@ -8,7 +8,7 @@ using Android.Widget;
 
 using Android.Support.V4.App;
 using CRMLite.Entities;
-using CRMLite.Suggestions;
+using CRMLite.DaData;
 using Realms;
 
 namespace CRMLite

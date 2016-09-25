@@ -13,7 +13,8 @@ using Realms;
 using Newtonsoft.Json;
 
 using CRMLite.Entities;
-using CRMLite.Suggestions;
+using CRMLite.DaData;
+using CRMLite.Adapters;
 
 namespace CRMLite
 {
@@ -303,18 +304,30 @@ namespace CRMLite
 		{
 			#region Address
 			Address.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) => {
+				if (Address.IsPerformingCompletion) return;
+
 				if (Address.Text.Contains(" ")) {
 					var response = Api.QueryAddress(Address.Text);
-					var suggestions = response.suggestionss.Select(x => x.value).ToArray();
-					Address.Adapter = new ArrayAdapter<string>(
-						this, Android.Resource.Layout.SimpleDropDownItem1Line, suggestions
-					);
-					(Address.Adapter as ArrayAdapter<string>).NotifyDataSetChanged();
+					Address.Adapter = new AddressSuggestionAdapter(this, response.suggestionss);
+					//response.suggestionss
+					//Address.SetTag(Resource.String.SubwayUUID, response.suggestionss);
+					//var suggestions = response.suggestionss.Select(x => x.value).ToArray();
+					//Address.Adapter = new ArrayAdapter<string>(
+					//	this, Android.Resource.Layout.SimpleDropDownItem1Line, suggestions
+					//);
+					//(Address.Adapter as ArrayAdapter<string>).NotifyDataSetChanged();
 					if (Address.IsShown) {
 						Address.DismissDropDown();
 					}
 					Address.ShowDropDown();
 				}
+			};
+			Address.ItemClick += (sender, e) => {
+				var item = (((AutoCompleteTextView)sender).Adapter as AddressSuggestionAdapter)[e.Position];
+				((AutoCompleteTextView)sender).SetTag(Resource.String.fias_id, item.data.fias_id);
+				((AutoCompleteTextView)sender).SetTag(Resource.String.qc_geo, item.data.qc_geo);
+				((AutoCompleteTextView)sender).SetTag(Resource.String.geo_lat, item.data.geo_lat);
+				((AutoCompleteTextView)sender).SetTag(Resource.String.geo_lon, item.data.geo_lon);
 			};
 			#endregion
 

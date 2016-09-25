@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using RestSharp;
 
-namespace CRMLite.Suggestions {
+namespace CRMLite.DaData {
 
     public sealed class ContentType {
         readonly string name;

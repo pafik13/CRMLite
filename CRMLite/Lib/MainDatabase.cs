@@ -245,6 +245,11 @@ namespace CRMLite
 			return Me.DB.All<T>().Where(item => !item.IsSynced).ToList();
 		}
 
+		public static int CountItemsToSync<T>() where T : RealmObject, ISync
+		{
+			return Me.DB.All<T>().Count(item => !item.IsSynced);
+		}
+
 		public static void SaveItems<T>(IList<T> data) where T : RealmObject
 		{
 			using (var trans = Me.DB.BeginWrite())
@@ -253,6 +258,14 @@ namespace CRMLite
 				{
 					Me.DB.Manage(item);
 				}
+				trans.Commit();
+			}
+		}
+
+		public static void SaveItem<T>(T item) where T : RealmObject, IEntiryFromServer
+		{
+			using (var trans = Me.DB.BeginWrite()) {
+				Me.DB.Manage(item);
 				trans.Commit();
 			}
 		}
@@ -275,6 +288,14 @@ namespace CRMLite
 				throw new ArgumentNullException(nameof(openedTransaction));
 			}
 			Me.DB.RemoveAll<T>();
+		}
+
+		public static void SaveItem<T>(Transaction openedTransaction, T item) where T : RealmObject, IEntiryFromServer
+		{
+			if (openedTransaction == null) {
+				throw new ArgumentNullException(nameof(openedTransaction));
+			}				
+			Me.DB.Manage(item);
 		}
 
 		public static T CreateData<T>(string attendanceUUID) where T : RealmObject, IAttendanceData, IEntity, new()

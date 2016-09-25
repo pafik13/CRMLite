@@ -52,41 +52,32 @@
                 android:layout_width="200dp"
                 android:layout_height="300dp"
                 android:layout_centerHorizontal="true"
-                android:id="@+id/imageView1" />
+                android:id="@+id/paAvatarIV" />
             <TextView
                 android:layout_marginTop="6dp"
-                android:text="Medium Text"
+                android:text="Username"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@id/imageView1"
-                android:id="@+id/textView1" />
+                android:layout_below="@id/paAvatarIV"
+                android:id="@+id/paUsernameTV" />
             <TextView
                 android:layout_marginTop="6dp"
-                android:text="Medium Text"
+                android:text="ShortName"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@id/textView1"
-                android:id="@+id/textView2" />
-            <TextView
-                android:layout_marginTop="6dp"
-                android:text="Medium Text"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/textView2"
-                android:id="@+id/textView3" />
+                android:layout_below="@id/paUsernameTV"
+                android:id="@+id/paShortNameTV" />
             <Button
                 android:text="Выйти"
                 android:layout_marginTop="6dp"
                 android:layout_centerHorizontal="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textView3"
+                android:layout_below="@id/paShortNameTV"
                 android:id="@+id/paExitAppB"
                 android:background="@color/Light_Blue_500"
                 android:typeface="monospace"

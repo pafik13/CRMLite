@@ -1,18 +1,9 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 
 using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Util;
 using Android.Views;
 using Android.Widget;
-
-using CRMLite.Entities;
 
 namespace CRMLite.Dialogs
 {
@@ -66,7 +57,7 @@ namespace CRMLite.Dialogs
 		{
 
 			using (var trans = MainDatabase.BeginTransaction()) {
-				var message = MainDatabase.Create<Entities.Message>();
+				var message = MainDatabase.Create2<Entities.Message>();
 				message.Text = Text.Text;
 				trans.Commit();
 			}

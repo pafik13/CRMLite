@@ -75,24 +75,13 @@ namespace CRMLite
 			}
 			Content.AddView(header, 1);
 
-			//Table.AddHeaderView(header);
+			var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
 
-			//var agentUUID = GetSharedPreferences(MainActivity.C_MAIN_PREFS)
-			//				.GetString(C_AGENT_UUID, string.Empty);
+			FindViewById<TextView>(Resource.Id.paUsernameTV).Text = shared.GetString(SigninDialog.C_USERNAME, string.Empty);
 
-			//if (string.IsEmptyOrNull(agentUUID)) return;
-
-			//var agent = MainDatabase.GetEntity<Agent>();
-			//FindViewById<TextView>(Resource.Id.paAgentShortNameTV).Text = agent.ShortName;
-			//FindViewById<TextView>(Resource.Id.paAgentBirthDateTV).Text = agent.BirthDate.ToLongString();
-			//FindViewById<TextView>(Resource.Id.paAgentPositionTV).Text = agent.Position;
-
-			//FindViewById<Button>(Resource.Id.paExitApplicationB).Click += (sender, e) => {
-			//	Exit_App();
-			//};
-
-			FindViewById<TextView>(Resource.Id.textView1).Text = 
-				GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private).GetString(SigninDialog.C_USERNAME, string.Empty);
+			var agentUUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
+			var agent = MainDatabase.GetItem<Agent>(agentUUID);
+			FindViewById<TextView>(Resource.Id.paShortNameTV).Text = agent.shortName;
 
 			SearchItemsSource = new List<SearchItem>();
 			var pharmacies = MainDatabase.GetItems<Pharmacy>();
@@ -124,52 +113,11 @@ namespace CRMLite
 
 			SearchEditor = FindViewById<EditText>(Resource.Id.paSearchET);
 
-			//SearchEditor.AfterTextChanged += (sender, e) => {
-			//	var text = e.Editable.ToString();
+			SearchEditor.AfterTextChanged += (sender, e) => {
+				var text = e.Editable.ToString();
 
-			//	if (string.IsNullOrEmpty(text)) {
-			//		foreach (var item in SearchItems) {
-			//			item.Match = string.Empty;
-			//		}
-			//		PharmacyTable.Adapter = new RoutePharmacyAdapter(this, RouteSearchItems);
-			//		return;
-			//	}
-
-			//	var w = new Stopwatch();
-			//	w.Start();
-			//	SearchedItems = new List<RouteSearchItem>();
-			//	var matchFormat = @"Совпадение: {0}";
-			//	var culture = CultureInfo.GetCultureInfo("ru-RU");
-			//	// 2 поиск
-			//	foreach (var item in RouteSearchItems) {
-			//		if (item.IsVisible) {
-			//			if (culture.CompareInfo.IndexOf(item.Subway, text, CompareOptions.IgnoreCase) >= 0) {
-			//				item.Match = string.Format(matchFormat, @"метро=" + item.Subway);
-			//				SearchedItems.Add(item);
-			//				if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
-			//				continue;
-			//			}
-
-			//			if (culture.CompareInfo.IndexOf(item.Region, text, CompareOptions.IgnoreCase) >= 0) {
-			//				item.Match = string.Format(matchFormat, @"район=" + item.Region);
-			//				SearchedItems.Add(item);
-			//				if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
-			//				continue;
-			//			}
-
-			//			if (culture.CompareInfo.IndexOf(item.Brand, text, CompareOptions.IgnoreCase) >= 0) {
-			//				item.Match = string.Format(matchFormat, @"бренд=" + item.Brand);
-			//				SearchedItems.Add(item);
-			//				if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
-			//				continue;
-			//			}
-			//		}
-			//	}
-			//	w.Stop();
-			//	Console.WriteLine(@"Search: поиск={0}", w.ElapsedMilliseconds);
-
-			//	PharmacyTable.Adapter = new RoutePharmacyAdapter(this, SearchedItems);
-			//};
+				(Table.Adapter as AttendanceByWeekAdapter).SetSearchText(text);
+			};
 
 		}
 
