@@ -17,7 +17,7 @@
             android:minHeight="64px"
             android:background="@drawable/bottomline">
             <TextView
-                android:text="Информация"
+                android:text="СИНХРОНИЗАЦИЯ ДАННЫХ"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp" />
             <Button
-                android:text="Выход"
+                android:text="ЗАКРЫТЬ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -44,7 +44,7 @@
                 android:layout_marginBottom="2dp" />
         </RelativeLayout>
         <TextView
-            android:text="НЕОБХОДИМО СИНХРОНИЗИРОВАТЬ {0} ОБЪЕКТОВ"
+            android:text="Необходимо синхронизировать {0} объектов"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
             android:layout_below="@id/saUpPanelRL"
             android:layout_centerInParent="true" />
         <TextView
-            android:text="НЕОБХОДИМО ОБНОВИТЬ {0} ОБЪЕКТОВ"
+            android:text="Необходимо обновить {0} объектов"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,6 +65,14 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/saUpdateEntitiesCount"
             android:id="@+id/saSyncB"
+            android:layout_centerHorizontal="true" />
+        <Button
+            android:layout_marginTop="20dp"
+            android:text="ЗАГРУЗИТЬ ФОТО"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/saSyncB"
+            android:id="@+id/saUploadPhotoB"
             android:layout_centerHorizontal="true" />
     </RelativeLayout>
     <TextView

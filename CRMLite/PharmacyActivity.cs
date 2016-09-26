@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using CRMLite.Entities;
 using CRMLite.DaData;
 using CRMLite.Adapters;
+using CRMLite.Dialogs;
 
 namespace CRMLite
 {
@@ -182,7 +183,7 @@ namespace CRMLite
 				//StartService(new Intent("com.xamarin.SyncService"));
 				GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
 					.Edit()
-					.PutString(MainActivity.C_SAVED_PHARMACY_UUID, Pharmacy.UUID)
+					.PutString(MainActivity.C_SAVED_PHARMACY_UUID, item.UUID)
 					.Commit();
 
 				Finish();
@@ -229,11 +230,18 @@ namespace CRMLite
 
 			Category = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryACTV);
 
-
 			var pharmacyUUID = Intent.GetStringExtra("UUID");
 			if (string.IsNullOrEmpty(pharmacyUUID))
 			{
-				Address.Text = "Москва";
+				var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
+				var agentUUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
+				try {
+					var agent = MainDatabase.GetItem<Agent>(agentUUID);
+					Address.Text = agent.city;
+				} catch (Exception ex) {
+					Console.WriteLine(ex.Message);
+				}
+
 				FindViewById<TextView>(Resource.Id.paInfoTV).Text = @"ДОБАВЛЕНИЕ НОВОЙ АПТЕКИ";
 				FindViewById<TableRow>(Resource.Id.paRowLastAttendance).Visibility = ViewStates.Gone;
 				FindViewById<TableRow>(Resource.Id.paRowNextAttendanceDate).Visibility = ViewStates.Gone;
@@ -308,7 +316,7 @@ namespace CRMLite
 
 				if (Address.Text.Contains(" ")) {
 					var response = Api.QueryAddress(Address.Text);
-					Address.Adapter = new AddressSuggestionAdapter(this, response.suggestionss);
+					Address.Adapter = new AddressSuggestionAdapter(this, response.suggestionss ?? new List<SuggestAddressResponse.Suggestions>());
 					//response.suggestionss
 					//Address.SetTag(Resource.String.SubwayUUID, response.suggestionss);
 					//var suggestions = response.suggestionss.Select(x => x.value).ToArray();

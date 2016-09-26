@@ -80,8 +80,12 @@ namespace CRMLite
 			FindViewById<TextView>(Resource.Id.paUsernameTV).Text = shared.GetString(SigninDialog.C_USERNAME, string.Empty);
 
 			var agentUUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
-			var agent = MainDatabase.GetItem<Agent>(agentUUID);
-			FindViewById<TextView>(Resource.Id.paShortNameTV).Text = agent.shortName;
+			try {
+				var agent = MainDatabase.GetItem<Agent>(agentUUID);
+				FindViewById<TextView>(Resource.Id.paShortNameTV).Text = agent.shortName;
+			} catch (Exception ex) {
+				Console.WriteLine(ex.Message);
+			}
 
 			SearchItemsSource = new List<SearchItem>();
 			var pharmacies = MainDatabase.GetItems<Pharmacy>();

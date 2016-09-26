@@ -16,6 +16,8 @@ using Android.Content;
 
 using CRMLite.Dialogs;
 using System.Threading.Tasks;
+using System.Globalization;
+using System.IO;
 
 namespace CRMLite
 {
@@ -25,30 +27,28 @@ namespace CRMLite
 		TextView Locker;
 		string ACCESS_TOKEN;
 
-		List<Attendance> Attendancies;
-		List<CompetitorData> CompetitorDatas;
-		List<ContractData> ContractDatas;
-		List<CoterieData> CoterieDatas;
-		List<DistributionData> DistributionDatas;
+		public string USERNAME { get; private set; }
 
-		public List<Hospital> Hospitals { get; private set; }
 
-		public List<HospitalData> HospitalDatas { get; private set; }
+		//public List<Hospital> Hospitals { get; private set; }
 
-		public List<MessageData> MessageDatas { get; private set; }
+		//public List<HospitalData> HospitalDatas { get; private set; }
 
-		public List<PresentationData> PresentationDatas { get; private set; }
+		//public List<MessageData> MessageDatas { get; private set; }
 
-		public List<ResumeData> ResumeDatas { get; private set; }
+		//public List<PresentationData> PresentationDatas { get; private set; }
 
-		public List<RouteItem> RouteItems { get; private set; }
+		//public List<ResumeData> ResumeDatas { get; private set; }
 
-		public List<PromotionData> PromotionDatas { get; private set; }
+		//public List<RouteItem> RouteItems { get; private set; }
+
+		//public List<PromotionData> PromotionDatas { get; private set; }
 
 
-		public int Messages { get; private set; }
+		//public int Messages { get; private set; }
+		public int Count { get; private set; }
 
-		List<Employee> Employees;
+
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
@@ -67,48 +67,93 @@ namespace CRMLite
 			};
 			
 			FindViewById<Button>(Resource.Id.saSyncB).Click += Sync_Click;
-			
+
+			FindViewById<Button>(Resource.Id.saUploadPhotoB).Click += UploadPhoto_Click;;
+
+
+
 			RefreshView();
 
-			ACCESS_TOKEN = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
-				.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
+			var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
+
+			ACCESS_TOKEN = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
+			USERNAME = shared.GetString(SigninDialog.C_USERNAME, string.Empty);
+
 		}
-		
+
+		void UploadPhoto_Click(object sender, EventArgs e)
+		{
+			foreach (var photo in MainDatabase.GetItemsToSync<PhotoData>()) {
+				try {;
+					Toast.MakeText(this, string.Format(@"Загрузка фото с uuid {0} по посещению с uuid:{1}", photo.UUID, photo.Attendance), ToastLength.Short).Show();
+
+					var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+
+					//					var request = new RestRequest (@"AttendancePhoto/create?attendance={attendance}&longitude={longitude}&latitude={latitude}&stamp={stamp}", Method.POST);
+					var request = new RestRequest(@"PhotoData/upload", Method.POST);
+					request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
+					//request.AddQueryParameter(@"Stamp", photo.Stamp.ToString());
+					request.AddQueryParameter(@"Attendance", photo.Attendance);
+					request.AddQueryParameter(@"PhotoType", photo.PhotoType);
+					request.AddQueryParameter(@"Brand", photo.Brand);
+					request.AddQueryParameter(@"Latitude", photo.Latitude.ToString(CultureInfo.CreateSpecificCulture(@"en-GB")));
+					request.AddQueryParameter(@"Longitude", photo.Longitude.ToString(CultureInfo.CreateSpecificCulture(@"en-GB")));
+					request.AddFile(@"photo", File.ReadAllBytes(photo.PhotoPath), Path.GetFileName(photo.PhotoPath), string.Empty);
+
+					var response = client.Execute(request);
+
+					switch (response.StatusCode) {
+						case HttpStatusCode.OK:
+						case HttpStatusCode.Created:
+							photo.IsSynced = true;
+							Toast.MakeText(this, @"Фото ЗАГРУЖЕНО!", ToastLength.Short).Show();
+							continue;
+						default:
+							Toast.MakeText(this, @"Не удалось загрузить фото по посещению!", ToastLength.Short).Show();
+							continue;
+					}
+				} catch (Exception ex) {
+					Toast.MakeText(this, @"Error : " + ex.Message, ToastLength.Short).Show();
+					continue;
+				}
+			}
+		}
+
 		void RefreshView(){
 			//var pharmacies = MainDatabase.GetItemsToSync<Pharmacy>();
 
-			Attendancies = MainDatabase.GetItemsToSync<Attendance>();
-			CompetitorDatas = MainDatabase.GetItemsToSync<CompetitorData>();
-			ContractDatas = MainDatabase.GetItemsToSync<ContractData>();
-			CoterieDatas = MainDatabase.GetItemsToSync<CoterieData>();
-			DistributionDatas = MainDatabase.GetItemsToSync<DistributionData>();
-			Employees = MainDatabase.GetItemsToSync<Employee>();
+			Count = 0;
 
-			Hospitals = MainDatabase.GetItemsToSync<Hospital>();
-			HospitalDatas = MainDatabase.GetItemsToSync<HospitalData>();
+			Count += MainDatabase.CountItemsToSync<Attendance>();
+			Count += MainDatabase.CountItemsToSync<CompetitorData>();
+			Count += MainDatabase.CountItemsToSync<ContractData>();
+			Count += MainDatabase.CountItemsToSync<CoterieData>();
+			Count += MainDatabase.CountItemsToSync<DistributionData>();
+			Count += MainDatabase.CountItemsToSync<Employee>();
+
+			Count += MainDatabase.CountItemsToSync<GPSData>();
+
+			Count += MainDatabase.CountItemsToSync<Hospital>();
+			Count += MainDatabase.CountItemsToSync<HospitalData>();
 
 			//var monthFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByMonth>();
 			//var quarterFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByQuarter>();
 			//var monthSaleDatas = MainDatabase.GetItemsToSync<SaleDataByMonth>();
 			//var quarterSaleDatas = MainDatabase.GetItemsToSync<SaleDataByQuarter>();
 
-			MessageDatas = MainDatabase.GetItemsToSync<MessageData>();
+			Count += MainDatabase.CountItemsToSync<MessageData>();
 			//var photoDatas = MainDatabase.GetItemsToSync<PhotoData>();
 
-			PresentationDatas = MainDatabase.GetItemsToSync<PresentationData>();
-			PromotionDatas = MainDatabase.GetItemsToSync<PromotionData>();
-			ResumeDatas = MainDatabase.GetItemsToSync<ResumeData>();
-			RouteItems = MainDatabase.GetItemsToSync<RouteItem>();
+			Count += MainDatabase.CountItemsToSync<PresentationData>();
+			Count += MainDatabase.CountItemsToSync<PromotionData>();
+			Count += MainDatabase.CountItemsToSync<ResumeData>();
+			Count += MainDatabase.CountItemsToSync<RouteItem>();
 
-			int count = 0;
-			count += MainDatabase.CountItemsToSync<Entities.Message>();
 
-			FindViewById<TextView>(Resource.Id.saSyncEntitiesCount).Text = 
-				( Attendancies.Count + + CompetitorDatas.Count + ContractDatas.Count + CoterieDatas.Count 
-				 + DistributionDatas.Count + Employees.Count + Hospitals.Count + HospitalDatas.Count
-				 + MessageDatas.Count + PresentationDatas.Count + PromotionDatas.Count + ResumeDatas.Count 
-				 + RouteItems.Count + count
-				).ToString();
+			Count += MainDatabase.CountItemsToSync<Entities.Message>();
+
+			var toSyncCount = FindViewById<TextView>(Resource.Id.saSyncEntitiesCount);
+			toSyncCount.Text = string.Format("Необходимо синхронизировать {0} объектов", Count);
 				//pharmacies.Count + employees.Count + hospitals.Count + hospitalDatas.Count + attendances.Count + competitorDatas.Count +
 				//contractDatas.Count + coterieDatas.Count + monthFinanceDatas.Count + quarterFinanceDatas.Count + monthSaleDatas.Count +
 				//quarterSaleDatas.Count + messageDatas.Count + photoDatas.Count + presentationDatas.Count + promotionDatas.Count + 
@@ -146,31 +191,47 @@ namespace CRMLite
 
 			//Locker.Visibility = ViewStates.Gone;
 
-			var progress = ProgressDialog.Show(this, string.Empty, @"Синхронизация");
+			if (Count > 0) {
+				var progress = ProgressDialog.Show(this, string.Empty, @"Синхронизация");
 
-			new Task(() => {
-				Thread.Sleep(2000); // иначе не успеет показаться диалог
+				new Task(() => {
+					MainDatabase.Dispose();
+					Thread.Sleep(1000); // иначе не успеет показаться диалог
 
-				RunOnUiThread(() => {
-					SyncEntities(Attendancies);
-					SyncEntities(CompetitorDatas);
-					SyncEntities(ContractDatas);
-					SyncEntities(CoterieDatas);
-					SyncEntities(DistributionDatas);
-					SyncEntities(Employees);
-					SyncEntities(Hospitals);
-					SyncEntities(HospitalDatas);
+					MainDatabase.Username = USERNAME;
+					//var types = new List<Type>();
+					//types.Add(typeof(Attendance));
+					//types.Add(typeof(CompetitorData));
+
+					//foreach (var type in types) {
+					//	SyncEntities(MainDatabase.GetItemsToSync<(type as Type)>());
+					//}
+
+					SyncEntities(MainDatabase.GetItemsToSync<Attendance>());
+					SyncEntities(MainDatabase.GetItemsToSync<CompetitorData>());
+					SyncEntities(MainDatabase.GetItemsToSync<ContractData>());
+					SyncEntities(MainDatabase.GetItemsToSync<CoterieData>());
+					SyncEntities(MainDatabase.GetItemsToSync<DistributionData>());
+					SyncEntities(MainDatabase.GetItemsToSync<Employee>());
+					SyncEntities(MainDatabase.GetItemsToSync<GPSData>());
+					SyncEntities(MainDatabase.GetItemsToSync<Hospital>());
+					SyncEntities(MainDatabase.GetItemsToSync<HospitalData>());
 					SyncEntities(MainDatabase.GetItemsToSync<Entities.Message>());
-					SyncEntities(MessageDatas);
-					SyncEntities(PresentationDatas);
-					SyncEntities(PromotionDatas);
-					SyncEntities(ResumeDatas);
-					SyncEntities(RouteItems);
+					SyncEntities(MainDatabase.GetItemsToSync<MessageData>());
+					SyncEntities(MainDatabase.GetItemsToSync<PresentationData>());
+					SyncEntities(MainDatabase.GetItemsToSync<PromotionData>());
+					SyncEntities(MainDatabase.GetItemsToSync<ResumeData>());
+					SyncEntities(MainDatabase.GetItemsToSync<RouteItem>());
 
-					progress.Dismiss();
-					RefreshView();
-				});
-			}).Start();
+					RunOnUiThread(() => {
+						MainDatabase.Dispose();
+						MainDatabase.Username = USERNAME;
+						// Thread.Sleep(1000);
+						progress.Dismiss();
+						RefreshView();
+					});
+				}).Start();
+			}
 		}
 
 		protected override void OnResume()

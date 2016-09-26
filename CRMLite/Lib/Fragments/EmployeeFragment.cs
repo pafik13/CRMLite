@@ -244,6 +244,7 @@ namespace CRMLite
 		public override void OnPause()
 		{
 			base.OnPause();
+			SaveAllEmployees();
 		}
 
 		public override void OnStop()

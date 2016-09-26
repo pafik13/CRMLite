@@ -16,6 +16,7 @@ using Realms;
 using CRMLite.Entities;
 using CRMLite.Adapters;
 using CRMLite.Dialogs;
+using Android.Locations;
 //using Android.Graphics;
 
 namespace CRMLite
@@ -287,7 +288,7 @@ namespace CRMLite
 					    break;
 					case WorkMode.wmRouteAndRecommendations:
 						if (routeItems.Count == 0) {
-							list = list.OrderBy(ph => ph.NextAttendanceDate).ToList();
+							list = list.OrderBy(ph => orderMapState[ph.State]).ThenBy(ph => ph.NextAttendanceDate).ToList();
 					    } else {
 							var orderMapRoute = routeItems.ToDictionary(ri => ri.Pharmacy, ri => ri.Order);  
 							var routeList = list.Where(ph => pharmaciesInRoute.Contains(ph.UUID))
@@ -424,18 +425,19 @@ namespace CRMLite
 				Console.WriteLine(@"username = IsNullOrEmpty");
 				return;
 			}
+
+			if (!IsLocationActive()) return;
+
 			MainDatabase.Username = username;
+			Helper.Username = username;
 
 			var agentUUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
-			var agent = MainDatabase.GetItem<Agent>(agentUUID);
-			Helper.Username = username;
-			Helper.WeeksInRoute = agent.weeksInRout;
-			Helper.WorkMode = agent.GetWorkMode();
-
-			if (Secret.IsNeedReCreateDB) {
-				//Realm.DeleteRealm(RealmConfiguration.DefaultConfiguration);
-				MainDatabase.ClearDB();
-				//Secret.IsNeedReCreateDB = false;
+			try {
+				var agent = MainDatabase.GetItem<Agent>(agentUUID);
+				Helper.WeeksInRoute = agent.weeksInRout;
+				Helper.WorkMode = agent.GetWorkMode();
+			} catch (Exception ex) {
+				Console.WriteLine(ex.Message);
 			}
 
 			var w = new Stopwatch();
@@ -505,6 +507,30 @@ namespace CRMLite
 			);
 			w.Stop();
 			Console.WriteLine(@"Search: обновление={0}", w.ElapsedMilliseconds);
+		}
+
+		private bool IsLocationActive()
+		{
+			/*throw new NotImplementedException();*/
+			var locMgr = GetSystemService(LocationService) as LocationManager;
+
+			if (locMgr.IsProviderEnabled(LocationManager.NetworkProvider)
+			  || locMgr.IsProviderEnabled(LocationManager.GpsProvider)
+			   ) {
+				return true;
+			}
+
+			new AlertDialog.Builder(this)
+						   .SetTitle(Resource.String.warning_caption)
+						   .SetMessage(Resource.String.no_location_provider)
+						   .SetCancelable(false)
+						   .SetPositiveButton(Resource.String.on_button, delegate {
+							   var intent = new Intent(Android.Provider.Settings.ActionLocationSourceSettings);
+							   StartActivity(intent);
+						   })
+						   .Show();
+
+			return false;
 		}
 
 		protected override void OnPause()

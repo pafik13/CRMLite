@@ -14,6 +14,7 @@ namespace CRMLite
 			base.OnCreate (savedInstanceState);
 			RequestWindowFeature (WindowFeatures.NoTitle);
 			Window.AddFlags (WindowManagerFlags.KeepScreenOn);
+
 			StartActivity(new Intent(this, typeof(MainActivity)));
 		}
 	}

@@ -173,6 +173,7 @@
     <Compile Include="Lib\JSONSerializer.cs" />
     <Compile Include="Lib\Adapters\AddressSuggestionAdapter.cs" />
     <Compile Include="Lib\Adapters\MessageAdapter.cs" />
+    <Compile Include="Lib\Entities\GPSData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

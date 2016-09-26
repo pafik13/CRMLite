@@ -18,11 +18,13 @@ using Android.Support.V4.View;
 
 using CRMLite.Dialogs;
 using CRMLite.Entities;
+using Android.Locations;
+using Android.Runtime;
 
 namespace CRMLite
 {
 	[Activity(Label = "AttendanceActivity", ScreenOrientation=ScreenOrientation.Landscape, WindowSoftInputMode=SoftInput.AdjustPan)]
-	public class AttendanceActivity : V4App.FragmentActivity, ViewPager.IOnPageChangeListener
+	public class AttendanceActivity : V4App.FragmentActivity, ViewPager.IOnPageChangeListener, ILocationListener
 	{
 		public const int C_NUM_PAGES = 4;
 
@@ -34,6 +36,9 @@ namespace CRMLite
 		ImageView History;
 		ImageView Material;
 		IList<Material> Materials;
+
+		LocationManager LocMgr;
+		List<Location> Locations;
 
 		string PharmacyUUID;
 
@@ -122,6 +127,18 @@ namespace CRMLite
 				if (AttendanceStart == null) {
 					AttendanceStart = DateTimeOffset.Now;
 
+					// Location
+					Locations = new List<Location>();
+
+					LocMgr = GetSystemService(LocationService) as LocationManager;
+					var locationCriteria = new Criteria();
+					locationCriteria.Accuracy = Accuracy.Coarse;
+					locationCriteria.PowerRequirement = Power.Medium;
+					string locationProvider = LocMgr.GetBestProvider(locationCriteria, true);
+					System.Diagnostics.Debug.Print("Starting location updates with " + locationProvider);
+					LocMgr.RequestLocationUpdates(locationProvider, 2000, 1, this);
+					// !Location	
+
 					if (Pager.CurrentItem == 2) {
 						FragmentTitle.Text = @"СОБИРАЕМАЯ ИНФОРМАЦИЯ";
 					}
@@ -176,6 +193,8 @@ namespace CRMLite
 				lockDialog.Cancelable = false;
 				lockDialog.Show(fragmentTransaction, LockDialog.TAG);
 
+				LocMgr.RemoveUpdates(this);
+
 				new Task(() => {
 					Thread.Sleep(2000); // иначе не успеет показаться диалог
 
@@ -185,6 +204,20 @@ namespace CRMLite
 						attendance.Pharmacy = PharmacyUUID;
 						attendance.When = AttendanceStart.Value;
 						attendance.Duration = (DateTimeOffset.Now - AttendanceStart.Value).Milliseconds;
+
+						foreach (var location in Locations) {
+							var gps = MainDatabase.Create2<GPSData>();
+							gps.Attendance = attendance.UUID;
+							gps.Accuracy = location.Accuracy;
+							gps.Altitude = location.Altitude;
+							gps.Bearing = location.Bearing;
+							gps.ElapsedRealtimeNanos = location.ElapsedRealtimeNanos;
+							gps.IsFromMockProvider = location.IsFromMockProvider;
+							gps.Latitude = location.Latitude;
+							gps.Longitude = location.Longitude;
+							gps.Provider = location.Provider;
+							gps.Speed = location.Speed;
+						}
 
 						// Оповещаем фрагменты о завершении визита
 						for (int f = 0; f < C_NUM_PAGES; f++) {
@@ -292,6 +325,24 @@ namespace CRMLite
 			string tag = MakeFragmentName(Pager.Id, position);
 			var fragment = SupportFragmentManager.FindFragmentByTag(tag);
 			return fragment;
+		}
+
+		public void OnLocationChanged(Location location)
+		{
+			Locations.Add(location);
+		}
+
+		public void OnProviderDisabled(string provider)
+		{
+			System.Diagnostics.Debug.Print(provider + " disabled by user");
+		}
+		public void OnProviderEnabled(string provider)
+		{
+			System.Diagnostics.Debug.Print(provider + " enabled by user");
+		}
+		public void OnStatusChanged(string provider, Availability status, Bundle extras)
+		{
+			System.Diagnostics.Debug.Print(provider + " availability has changed to " + status);
 		}
 
 		/**

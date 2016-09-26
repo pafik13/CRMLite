@@ -59,33 +59,36 @@ namespace CRMLite
 
 		void Clear_Click(object sender, EventArgs e)
 		{
-			var transaction = MainDatabase.BeginTransaction();
+			//var transaction = MainDatabase.BeginTransaction();
 
-			MainDatabase.DeleteAttendancies();
-			MainDatabase.DeleteDistributions();
-			MainDatabase.DeleteFinanceData();
-			MainDatabase.DeleteSaleData();
+			//MainDatabase.DeleteAttendancies();
+			//MainDatabase.DeleteDistributions();
+			//MainDatabase.DeleteFinanceData();
+			//MainDatabase.DeleteSaleData();
 
-			MainDatabase.DeleteItems<FinanceDataByMonth>();
-			MainDatabase.DeleteItems<FinanceDataByQuarter>();
-			MainDatabase.DeleteItems<SaleDataByMonth>();
-			MainDatabase.DeleteItems<SaleDataByQuarter>();
+			//MainDatabase.DeleteItems<FinanceDataByMonth>();
+			//MainDatabase.DeleteItems<FinanceDataByQuarter>();
+			//MainDatabase.DeleteItems<SaleDataByMonth>();
+			//MainDatabase.DeleteItems<SaleDataByQuarter>();
 
-			MainDatabase.DeleteItems<CoterieData>();
-			MainDatabase.DeleteItems<PresentationData>();
-			MainDatabase.DeleteItems<Employee>();
-			MainDatabase.DeleteItems<PromotionData>();
-			MainDatabase.DeleteItems<CompetitorData>();
-			MainDatabase.DeleteItems<MessageData>();
-			MainDatabase.DeleteItems<ResumeData>();
-			MainDatabase.DeleteItems<PhotoData>();
-			MainDatabase.DeleteItems<Material>();
-			MainDatabase.DeleteItems<ListedHospital>();
+			//MainDatabase.DeleteItems<CoterieData>();
+			//MainDatabase.DeleteItems<PresentationData>();
+			//MainDatabase.DeleteItems<Employee>();
+			//MainDatabase.DeleteItems<PromotionData>();
+			//MainDatabase.DeleteItems<CompetitorData>();
+			//MainDatabase.DeleteItems<MessageData>();
+			//MainDatabase.DeleteItems<ResumeData>();
+			//MainDatabase.DeleteItems<PhotoData>();
+			//MainDatabase.DeleteItems<Material>();
+			//MainDatabase.DeleteItems<ListedHospital>();
 
-			MainDatabase.DeleteItems<RouteItem>();
+			//MainDatabase.DeleteItems<RouteItem>();
 
 
-			transaction.Commit();
+			//transaction.Commit();
+
+			MainDatabase.ClearDB();
+			MainDatabase.Dispose();
 		}
 
 		void CustomAction_Click(object sender, EventArgs e)
