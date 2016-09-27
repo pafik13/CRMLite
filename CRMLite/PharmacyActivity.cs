@@ -315,15 +315,15 @@ namespace CRMLite
 				if (Address.IsPerformingCompletion) return;
 
 				if (Address.Text.Contains(" ")) {
-					var response = Api.QueryAddress(Address.Text);
-					Address.Adapter = new AddressSuggestionAdapter(this, response.suggestionss ?? new List<SuggestAddressResponse.Suggestions>());
-					//response.suggestionss
-					//Address.SetTag(Resource.String.SubwayUUID, response.suggestionss);
-					//var suggestions = response.suggestionss.Select(x => x.value).ToArray();
-					//Address.Adapter = new ArrayAdapter<string>(
-					//	this, Android.Resource.Layout.SimpleDropDownItem1Line, suggestions
-					//);
-					//(Address.Adapter as ArrayAdapter<string>).NotifyDataSetChanged();
+					var suggestions = new List<SuggestAddressResponse.Suggestions>();
+					try {
+						var response = Api.QueryAddress(Address.Text);
+						suggestions = response.suggestionss;
+					} catch (Exception ex) {
+						System.Diagnostics.Debug.WriteLine(ex.Message);
+					}
+					Address.Adapter = new AddressSuggestionAdapter(this, suggestions);
+
 					if (Address.IsShown) {
 						Address.DismissDropDown();
 					}

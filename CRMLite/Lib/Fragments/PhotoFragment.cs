@@ -42,12 +42,6 @@ namespace CRMLite
 		static Java.IO.File File;
 		List<PhotoData> Photos;
 
-		public static string PhotoDir {
-			get {
-				return Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, @"MyTempDir");
-			}
-		}
-
 		/**
 		 * Factory method for this fragment class. Constructs a new fragment for the given page number.
 		 */
@@ -111,7 +105,7 @@ namespace CRMLite
 			//		string subtype = currentPhotoSubTypes[spnPhotoSubTypes.SelectedItemPosition].name;
 			//		subtype = Transliteration.Front(subtype, TransliterationType.Gost).Substring(0, Math.Min(5, subtype.Length)).ToUpper();
 					string stamp = DateTime.Now.ToString(@"yyyyMMddHHmmsszz");
-					File = new Java.IO.File(PhotoDir, string.Format("PHOTO_{0}.jpg", stamp));
+					File = new Java.IO.File(Helper.PhotoDir, string.Format("PHOTO_{0}.jpg", stamp));
 					var intent = new Intent(MediaStore.ActionImageCapture);
 					intent.PutExtra(MediaStore.ExtraOutput, Android.Net.Uri.FromFile(File));
 					StartActivityForResult(intent, C_REQUEST_PHOTO);

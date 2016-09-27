@@ -11,19 +11,22 @@ using Android.Widget;
 using Android.Content;
 using Android.Views.InputMethods;
 
-using Realms;
-
 using CRMLite.Entities;
 using CRMLite.Adapters;
 using CRMLite.Dialogs;
 using Android.Locations;
-//using Android.Graphics;
+using HockeyApp.Android;
+
+[assembly: UsesPermission(Android.Manifest.Permission.Internet)]
+[assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
 
 namespace CRMLite
 {
 	[Activity(Label = "Main")]
 	public class MainActivity : Activity
 	{
+		public const string HOCKEYAPP_APPID = "c5a5b39231634cbbbd2068c7a1bd6d1d";
+
 		public const string C_MAIN_PREFS = @"C_MAIN_PREFS";
 		public const string C_SAVED_PHARMACY_UUID = @"C_SAVED_PHARMACY_UUID";
 		public const int C_ITEMS_IN_RESULT = 10;
@@ -43,6 +46,12 @@ namespace CRMLite
 
 			RequestWindowFeature(WindowFeatures.NoTitle);
 			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
+
+			// Register the crash manager before Initializing the trace writer
+			CrashManager.Register(this, HOCKEYAPP_APPID);
+
+			//Register to with the Update Manager
+			UpdateManager.Register(this, HOCKEYAPP_APPID);
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
@@ -398,6 +407,9 @@ namespace CRMLite
 		{
 			base.OnResume();
 
+			//Start Tracking usage in this activit
+			Tracking.StartUsage(this);
+
 			var shared = GetSharedPreferences(C_MAIN_PREFS, FileCreationMode.Private);
 
 			string username = shared.GetString(SigninDialog.C_USERNAME, string.Empty);
@@ -509,7 +521,7 @@ namespace CRMLite
 			Console.WriteLine(@"Search: обновление={0}", w.ElapsedMilliseconds);
 		}
 
-		private bool IsLocationActive()
+		bool IsLocationActive()
 		{
 			/*throw new NotImplementedException();*/
 			var locMgr = GetSystemService(LocationService) as LocationManager;
@@ -535,6 +547,8 @@ namespace CRMLite
 
 		protected override void OnPause()
 		{
+			//Stop Tracking usage in this activity
+			Tracking.StopUsage(this);
 			base.OnPause();
 		}
 

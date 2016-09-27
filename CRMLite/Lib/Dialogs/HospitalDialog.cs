@@ -8,6 +8,8 @@ using Android.Widget;
 
 using CRMLite.Entities;
 using CRMLite.DaData;
+using System.Collections.Generic;
+using CRMLite.Adapters;
 
 namespace CRMLite.Dialogs
 {
@@ -73,17 +75,26 @@ namespace CRMLite.Dialogs
 			{
 				if (addressACTV.Text.Contains(" "))
 				{
-					var response = Api.QueryAddress(addressACTV.Text);
-					var suggestions = response.suggestionss.Select(x => x.value).ToArray();
-					addressACTV.Adapter = new ArrayAdapter<string>(
-						Activity, Android.Resource.Layout.SimpleDropDownItem1Line, suggestions
-					);
-					(addressACTV.Adapter as ArrayAdapter<string>).NotifyDataSetChanged();
+					var suggestions = new List<SuggestAddressResponse.Suggestions>();
+					try {
+						var response = Api.QueryAddress(addressACTV.Text);
+						suggestions = response.suggestionss;
+					} catch (Exception ex) {
+						System.Diagnostics.Debug.WriteLine(ex.Message);
+					}
+					addressACTV.Adapter = new AddressSuggestionAdapter(Activity, suggestions);
 					if (addressACTV.IsShown) {
 						addressACTV.DismissDropDown();
 					}
 					addressACTV.ShowDropDown();
 				}
+			};
+			addressACTV.ItemClick += (sender, e) => {
+				var item = (((AutoCompleteTextView)sender).Adapter as AddressSuggestionAdapter)[e.Position];
+				((AutoCompleteTextView)sender).SetTag(Resource.String.fias_id, item.data.fias_id);
+				((AutoCompleteTextView)sender).SetTag(Resource.String.qc_geo, item.data.qc_geo);
+				((AutoCompleteTextView)sender).SetTag(Resource.String.geo_lat, item.data.geo_lat);
+				((AutoCompleteTextView)sender).SetTag(Resource.String.geo_lon, item.data.geo_lon);
 			};
 
 			view.FindViewById<Button>(Resource.Id.hdCloseB).Click += (s, e) => {

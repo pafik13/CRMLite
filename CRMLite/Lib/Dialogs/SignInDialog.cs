@@ -77,7 +77,7 @@ namespace CRMLite.Dialogs
 			base.OnCreateView (inflater, container, savedInstanceState);
 
 			Dialog.SetCanceledOnTouchOutside (false);
-
+			Cancelable = false;
 			var view = inflater.Inflate (Resource.Layout.SignInDialog, container, false);
 
 			bSignUp = view.FindViewById<Button> (Resource.Id.btnDialogEmail);
@@ -184,7 +184,8 @@ namespace CRMLite.Dialogs
 					WriteDanger (@"ОШИБКА! ВХОД НЕ ВЫПОЛНЕН", 3000);
 					return;
 				}
-				WriteSuccess(@"ВХОД ВЫПОЛНЕН УСПЕШНО", 3000);;
+				Cancelable = true;
+				WriteSuccess(@"ВХОД ВЫПОЛНЕН УСПЕШНО", 3000);
 				MainDatabase.Dispose();
 				activity.RunOnUiThread(() => MainDatabase.Username = tvUsername.Text);
 				OnSuccessSignedIn(EventArgs.Empty);

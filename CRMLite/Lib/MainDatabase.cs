@@ -36,7 +36,12 @@ namespace CRMLite
 					Me._username = value;
 				}
 			} 
-			get { return Me._username; } 
+			get {
+				if (Me == null) {
+					return string.Empty;
+				}
+				return Me._username; 
+			} 
 		}
 
 		//static MainDatabase()

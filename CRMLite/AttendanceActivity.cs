@@ -45,12 +45,6 @@ namespace CRMLite
 		DateTimeOffset? AttendanceStart;
 		Attendance AttendanceLast;
 
-		public static string PhotoDir {
-			get {
-				return Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, @"MyTempDir");
-			}
-		}
-
 		public void OnPageScrolled(int position, float positionOffset, int positionOffsetPixels)
 		{
 			return;
@@ -203,7 +197,7 @@ namespace CRMLite
 						var attendance = MainDatabase.Create<Attendance>();
 						attendance.Pharmacy = PharmacyUUID;
 						attendance.When = AttendanceStart.Value;
-						attendance.Duration = (DateTimeOffset.Now - AttendanceStart.Value).Milliseconds;
+						attendance.Duration = (DateTimeOffset.Now - AttendanceStart.Value).TotalMilliseconds;
 
 						foreach (var location in Locations) {
 							var gps = MainDatabase.Create2<GPSData>();
@@ -274,7 +268,7 @@ namespace CRMLite
 				               .SetTitle("Выберите материал для показа:")
 				               .SetCancelable(true)
 				               .SetItems(Materials.Select(item => item.name).ToArray(), (caller, arguments) => {
-									var file = new Java.IO.File(PhotoDir, @"kv-present.pdf");
+									var file = new Java.IO.File(Helper.MaterialDir, @"kv-present.pdf");
 									var intent = new Intent(Intent.ActionView);
 								   intent.SetDataAndType(Android.Net.Uri.FromFile(file), "application/pdf");
 								   intent.SetFlags(ActivityFlags.NoHistory);

@@ -68,6 +68,12 @@
     <Reference Include="DotNetCross.Memory.Unsafe">
       <HintPath>..\packages\DotNetCross.Memory.Unsafe.0.2.3.4\lib\netstandard1.0\DotNetCross.Memory.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="HockeySDK.AndroidBindings">
+      <HintPath>..\Components\hockeyappandroid-4.1.0.3\lib\android\HockeySDK.AndroidBindings.dll</HintPath>
+    </Reference>
+    <Reference Include="HockeySDK">
+      <HintPath>..\Components\hockeyappandroid-4.1.0.3\lib\android\HockeySDK.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -530,6 +536,14 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="json.net">
       <Version>7.0.1</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="hockeyappandroid">
+      <Version>4.1.0.3</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="hockeyappandroid">
+      <Version>4.1.0.3</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

@@ -84,10 +84,11 @@ namespace CRMLite
 		void UploadPhoto_Click(object sender, EventArgs e)
 		{
 			foreach (var photo in MainDatabase.GetItemsToSync<PhotoData>()) {
-				try {;
+				try {
 					Toast.MakeText(this, string.Format(@"Загрузка фото с uuid {0} по посещению с uuid:{1}", photo.UUID, photo.Attendance), ToastLength.Short).Show();
 
-					var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+					//var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+					var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
 
 					//					var request = new RestRequest (@"AttendancePhoto/create?attendance={attendance}&longitude={longitude}&latitude={latitude}&stamp={stamp}", Method.POST);
 					var request = new RestRequest(@"PhotoData/upload", Method.POST);
@@ -105,7 +106,7 @@ namespace CRMLite
 					switch (response.StatusCode) {
 						case HttpStatusCode.OK:
 						case HttpStatusCode.Created:
-							photo.IsSynced = true;
+							//photo.IsSynced = true;
 							Toast.MakeText(this, @"Фото ЗАГРУЖЕНО!", ToastLength.Short).Show();
 							continue;
 						default:

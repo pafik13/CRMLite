@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.Diagnostics;
+using System.IO;
 
 namespace CRMLite
 {
@@ -17,6 +19,48 @@ namespace CRMLite
 		public static int WeeksInRoute = 3;
 
 		public static WorkMode WorkMode = WorkMode.wmOnlyRoute;
+
+		public static string AppDir {
+			get {
+				return Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, @"ru.sbl.crmlite");
+			}
+		}
+
+		public static string PhotoDir {
+			get {
+				if (string.IsNullOrEmpty(Username)) return string.Empty;
+
+				var photoDir = Path.Combine(AppDir, Username, @"photos");
+				if (Directory.Exists(photoDir)) {
+					Debug.WriteLine("That PhotoDir exists already.");
+					return photoDir;
+				}
+
+				// Try to create the directory.
+				DirectoryInfo di = Directory.CreateDirectory(photoDir);
+				Debug.WriteLine("The PhotoDir was created successfully at {0}.", Directory.GetCreationTime(photoDir));
+
+				return photoDir;
+			}
+		}
+
+		public static string MaterialDir {
+			get {
+				if (string.IsNullOrEmpty(Username)) return string.Empty;
+
+				var materialDir = Path.Combine(AppDir, Username, @"materials");
+				if (Directory.Exists(materialDir)) {
+					Debug.WriteLine("That MaterialDir exists already.");
+					return materialDir;
+				}
+
+				// Try to create the directory.
+				DirectoryInfo di = Directory.CreateDirectory(materialDir);
+				Debug.WriteLine("The MaterialDir was created successfully at {0}.", Directory.GetCreationTime(materialDir));
+
+				return materialDir;
+			}
+		}
 
 		public static string GetWorkModeDesc(WorkMode workMode)
 		{
