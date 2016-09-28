@@ -1097,7 +1097,7 @@ namespace CRMLite
 							newQuarters++;
 							var oldQuarter = oldQuarters.SingleOrDefault(oq => oq.DrugSKU == sku.Key && oq.Year == year.Key && oq.Quarter == q);
 							if (oldQuarter == null) {
-								var quarter = MainDatabase.Create<SaleDataByQuarter>();
+								var quarter = MainDatabase.Create2<SaleDataByQuarter>();
 								quarter.Attendance = current.UUID;
 								quarter.Pharmacy = Pharmacy.UUID;
 								quarter.DrugSKU = sku.Key;

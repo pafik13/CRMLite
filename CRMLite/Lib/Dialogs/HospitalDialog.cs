@@ -106,13 +106,13 @@ namespace CRMLite.Dialogs
 
 				var transaction = MainDatabase.BeginTransaction();
 				if (HospitalData == null) {
-					var hospital = MainDatabase.Create<Hospital>();
+					var hospital = MainDatabase.Create2<Hospital>();
 					hospital.CreatedAt = DateTimeOffset.Now;
 					hospital.UpdatedAt = DateTimeOffset.Now;
 					hospital.Name = view.FindViewById<EditText>(Resource.Id.hdNameET).Text;
 					hospital.Address = view.FindViewById<EditText>(Resource.Id.hdAddressACTV).Text;
 
-					var hospitalData = MainDatabase.Create<HospitalData>();
+					var hospitalData = MainDatabase.Create2<HospitalData>();
 					hospitalData.Pharmacy = Pharmacy.UUID;
 					hospitalData.Hospital = hospital.UUID;
 				} else {

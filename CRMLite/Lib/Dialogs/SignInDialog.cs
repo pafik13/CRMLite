@@ -27,6 +27,7 @@ namespace CRMLite.Dialogs
 	{
 		const char quote = '"';
 		public const string C_USERNAME = @"C_USERNAME";
+		public const string C_EMAIL = @"C_EMAIL";
 		public const string C_ACCESS_TOKEN = @"C_ACCESS_TOKEN";
 		public const string C_AGENT_UUID = @"C_AGENT_UUID";
 
@@ -313,11 +314,12 @@ namespace CRMLite.Dialogs
 			client.CookieContainer = new CookieContainer();
 
 			string access_token = string.Empty;
+			string email = username + "@sbl-crm.ru";
 			IRestResponse response;
 			WriteInfo("Получение Access_Token", 1000);
 			try {
 				var request = new RestRequest(@"auth/login", Method.POST);
-				request.AddParameter("email", username + "@sbl-crm.ru", ParameterType.GetOrPost);
+				request.AddParameter("email", email, ParameterType.GetOrPost);
 				request.AddParameter("password", password, ParameterType.GetOrPost);
 				response = client.Execute(request);
 				if (response.StatusCode != HttpStatusCode.OK) {
@@ -365,6 +367,7 @@ namespace CRMLite.Dialogs
 			activity.GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
 					.Edit()
 					.PutString(C_USERNAME, username)
+					.PutString(C_EMAIL, email)
 					.PutString(C_ACCESS_TOKEN, access_token)
 					.PutString(C_AGENT_UUID, agent.uuid)
 					.Commit();

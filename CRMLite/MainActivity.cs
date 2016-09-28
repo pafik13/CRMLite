@@ -16,6 +16,7 @@ using CRMLite.Adapters;
 using CRMLite.Dialogs;
 using Android.Locations;
 using HockeyApp.Android;
+using HockeyApp.Android.Utils;
 
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
 [assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
@@ -25,8 +26,6 @@ namespace CRMLite
 	[Activity(Label = "Main")]
 	public class MainActivity : Activity
 	{
-		public const string HOCKEYAPP_APPID = "c5a5b39231634cbbbd2068c7a1bd6d1d";
-
 		public const string C_MAIN_PREFS = @"C_MAIN_PREFS";
 		public const string C_SAVED_PHARMACY_UUID = @"C_SAVED_PHARMACY_UUID";
 		public const int C_ITEMS_IN_RESULT = 10;
@@ -48,10 +47,12 @@ namespace CRMLite
 			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
 
 			// Register the crash manager before Initializing the trace writer
-			CrashManager.Register(this, HOCKEYAPP_APPID);
+			CrashManager.Register(this, Secret.HockeyappAppId);
 
 			//Register to with the Update Manager
-			UpdateManager.Register(this, HOCKEYAPP_APPID);
+			UpdateManager.Register(this, Secret.HockeyappAppId);
+
+			HockeyLog.LogLevel = 3;
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
@@ -198,6 +199,10 @@ namespace CRMLite
 
 			FilterContent = FindViewById<TextView>(Resource.Id.maFilterTV);
 			AttendanceCount = FindViewById<TextView>(Resource.Id.maAttendanceCountTV);
+
+
+			//LoginManager.Register(this, Secret.HockeyappAppId, LoginManager.LoginModeEmailOnly);
+			//LoginManager.VerifyLogin(this, Intent);
 		}
 
 		void Filter_Click(object sender, EventArgs e)
@@ -443,14 +448,18 @@ namespace CRMLite
 			MainDatabase.Username = username;
 			Helper.Username = username;
 
+			var email = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
+
 			var agentUUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
 			try {
 				var agent = MainDatabase.GetItem<Agent>(agentUUID);
+				MainDatabase.AgentUUID = agent.uuid;
 				Helper.WeeksInRoute = agent.weeksInRout;
 				Helper.WorkMode = agent.GetWorkMode();
 			} catch (Exception ex) {
 				Console.WriteLine(ex.Message);
 			}
+
 
 			var w = new Stopwatch();
 			
@@ -470,7 +479,7 @@ namespace CRMLite
 		      if (nextRoutItems.Count() == 0) {
 		        using (var trans = MainDatabase.BeginTransaction()){
 		          foreach (var oldItem in currentRouteItems){
-		            var newItem = MainDatabase.Create<RouteItem>();
+		            var newItem = MainDatabase.Create2<RouteItem>();
 						      newItem.Pharmacy = oldItem.Pharmacy;
 						      newItem.Date = nextDate;
 						      newItem.Order = oldItem.Order;

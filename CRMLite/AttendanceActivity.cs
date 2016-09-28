@@ -194,7 +194,7 @@ namespace CRMLite
 
 					RunOnUiThread(() => {
 						var transaction = MainDatabase.BeginTransaction();
-						var attendance = MainDatabase.Create<Attendance>();
+						var attendance = MainDatabase.Create2<Attendance>();
 						attendance.Pharmacy = PharmacyUUID;
 						attendance.When = AttendanceStart.Value;
 						attendance.Duration = (DateTimeOffset.Now - AttendanceStart.Value).TotalMilliseconds;

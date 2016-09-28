@@ -17,15 +17,13 @@ namespace CRMLite.Entities
 
 		public DateTimeOffset When { get; set; }
 
-		public int Duration { get; set; }
+		public double Duration { get; set; }
 
 		public string CreatedBy { get; set; }
 
 		public DateTimeOffset CreatedAt { get; set; }
 
 		public DateTimeOffset UpdatedAt { get; set; }
-
-		public SyncResult SyncResult { get; set; }
 
 		public bool IsSynced { get; set; }
 	}

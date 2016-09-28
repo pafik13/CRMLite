@@ -130,6 +130,7 @@ namespace CRMLite
 			Count += MainDatabase.CountItemsToSync<ContractData>();
 			Count += MainDatabase.CountItemsToSync<CoterieData>();
 			Count += MainDatabase.CountItemsToSync<DistributionData>();
+			Count += MainDatabase.CountItemsToSync<Pharmacy>();
 			Count += MainDatabase.CountItemsToSync<Employee>();
 
 			Count += MainDatabase.CountItemsToSync<GPSData>();
@@ -213,6 +214,7 @@ namespace CRMLite
 					SyncEntities(MainDatabase.GetItemsToSync<ContractData>());
 					SyncEntities(MainDatabase.GetItemsToSync<CoterieData>());
 					SyncEntities(MainDatabase.GetItemsToSync<DistributionData>());
+					SyncEntities(MainDatabase.GetItemsToSync<Pharmacy>());
 					SyncEntities(MainDatabase.GetItemsToSync<Employee>());
 					SyncEntities(MainDatabase.GetItemsToSync<GPSData>());
 					SyncEntities(MainDatabase.GetItemsToSync<Hospital>());
@@ -241,31 +243,31 @@ namespace CRMLite
 
 		}
 		
-		void SyncItems(List<ISync> items)
-		{
-			var firstItem = items[0];
-			string itemPath = firstItem.GetType().Name;
-			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
-			//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
+		//void SyncItems(List<ISync> items)
+		//{
+		//	var firstItem = items[0];
+		//	string itemPath = firstItem.GetType().Name;
+		//	var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+		//	//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
 
-			foreach (var item in items)
-			{
-				var request = new RestRequest(itemPath, Method.POST);
-				request.AddJsonBody(item);
-				var response = client.Execute<Entities.SyncResult>(request);
-				switch (response.StatusCode)
-				{
-					case HttpStatusCode.OK:
-					case HttpStatusCode.Created:
-						using (var trans = MainDatabase.BeginTransaction()) {
-							item.SyncResult = response.Data;
-							trans.Commit();
-						}
-						break;
-				}
-				Console.WriteLine(response.StatusDescription);
-			}
-		}
+		//	foreach (var item in items)
+		//	{
+		//		var request = new RestRequest(itemPath, Method.POST);
+		//		request.AddJsonBody(item);
+		//		var response = client.Execute<Entities.SyncResult>(request);
+		//		switch (response.StatusCode)
+		//		{
+		//			case HttpStatusCode.OK:
+		//			case HttpStatusCode.Created:
+		//				using (var trans = MainDatabase.BeginTransaction()) {
+		//					item.SyncResult = response.Data;
+		//					trans.Commit();
+		//				}
+		//				break;
+		//		}
+		//		Console.WriteLine(response.StatusDescription);
+		//	}
+		//}
 
 		void SyncEntities<T>(List<T> items) where T : RealmObject, ISync
 		{

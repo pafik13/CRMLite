@@ -120,6 +120,7 @@ namespace CRMLite
 			ContractsChoice.Click += ContractsChoice_Click;
 
 			Address = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfAddressACTV);
+			Address.SetTag(Resource.String.IsChanged, false);
 
 			Subway = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfSubwayACTV);
 
@@ -209,6 +210,7 @@ namespace CRMLite
 			};
 			Address.ItemClick += (sender, e) => {
 				var item = (((AutoCompleteTextView)sender).Adapter as AddressSuggestionAdapter)[e.Position];
+				((AutoCompleteTextView)sender).SetTag(Resource.String.IsChanged, true);
 				((AutoCompleteTextView)sender).SetTag(Resource.String.fias_id, item.data.fias_id);
 				((AutoCompleteTextView)sender).SetTag(Resource.String.qc_geo, item.data.qc_geo);
 				((AutoCompleteTextView)sender).SetTag(Resource.String.geo_lat, item.data.geo_lat);
@@ -374,7 +376,7 @@ namespace CRMLite
 					}
 					contractDatas = null;
 					foreach (var contract in contractUUIDs.Split(';')) {
-						var contractData = MainDatabase.Create<ContractData>();
+						var contractData = MainDatabase.Create2<ContractData>();
 						contractData.Pharmacy = item.UUID;
 						contractData.Contract = contract;
 					}
@@ -394,7 +396,16 @@ namespace CRMLite
 				item.Net = NetUUID;
 			}
 
-			item.Address = View.FindViewById<AutoCompleteTextView>(Resource.Id.pfAddressACTV).Text;
+			var address = View.FindViewById<AutoCompleteTextView>(Resource.Id.pfAddressACTV);
+			bool isChanged = (bool)address.GetTag(Resource.String.IsChanged);
+			if (isChanged) {
+				item.Address = address.Text;
+
+				item.AddressFiasId = (string)address.GetTag(Resource.String.fias_id);
+				item.AddressQCGeo = (string)address.GetTag(Resource.String.qc_geo);
+				item.AddressGeoLat = (string)address.GetTag(Resource.String.geo_lat);
+				item.AddressGeoLon = (string)address.GetTag(Resource.String.geo_lon);
+			}
 
 			if (string.IsNullOrEmpty(Subway.Text)) {
 				item.Subway = string.Empty;

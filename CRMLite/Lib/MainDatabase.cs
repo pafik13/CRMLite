@@ -44,6 +44,22 @@ namespace CRMLite
 			} 
 		}
 
+		protected string _agent_uuid;
+
+		public static string AgentUUID {
+			set {
+				if (Me == null) {
+					return;
+				}
+				Me._agent_uuid = value;
+			}
+			get {
+				if (Me == null) {
+					return string.Empty;
+				}
+				return Me._agent_uuid;}
+		}
+
 		//static MainDatabase()
 		//{
 		//	Me = new MainDatabase();
@@ -303,10 +319,10 @@ namespace CRMLite
 			Me.DB.Manage(item);
 		}
 
-		public static T CreateData<T>(string attendanceUUID) where T : RealmObject, IAttendanceData, IEntity, new()
+		public static T CreateData<T>(string attendanceUUID) where T : RealmObject, IAttendanceData, IEntity, ISync, new()
 		{
-			var item = Me.DB.CreateObject<T>();
-			item.UUID = Guid.NewGuid().ToString();
+			var item = Create2<T>();
+			//item.UUID = Guid.NewGuid().ToString();
 			item.Attendance = attendanceUUID;
 			return item;
 		}
@@ -330,7 +346,7 @@ namespace CRMLite
 		{
 			var item = Me.DB.CreateObject<T>();
 			item.UUID = Guid.NewGuid().ToString();
-			item.CreatedBy = @"Agent";
+			item.CreatedBy = string.IsNullOrEmpty(AgentUUID) ? @"AgentUUID is Empty" : AgentUUID;
 			item.CreatedAt = DateTimeOffset.Now;
 			item.UpdatedAt = DateTimeOffset.Now;
 			return item;
@@ -529,8 +545,7 @@ namespace CRMLite
 		#region Employee
 		public static Employee CreateEmployee(string pharmacyUUID)
 		{
-			var employee = Me.DB.CreateObject<Employee>();
-			employee.UUID = Guid.NewGuid().ToString();
+			var employee = Create2<Employee>();
 			employee.Pharmacy = pharmacyUUID;
 			return employee;
 		}

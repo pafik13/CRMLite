@@ -14,7 +14,7 @@ namespace CRMLite.Entities
 	/// <summary>
 	/// Аптека.
 	/// </summary>
-	public class Pharmacy : RealmObject, IEntity
+	public class Pharmacy : RealmObject, IEntity, ISync
 	{
 		/// <summary>
 		/// Уникальный идентификатор аптеки. Используется Guid.
@@ -128,6 +128,19 @@ namespace CRMLite.Entities
 		/// <value>The comment.</value>
 		public string Comment { get; set; }
 
+		public string Email { get; set; }
+
+		/// <summary>
+		/// Gets or sets the address fias identifier.
+		/// </summary>
+		/// <value>The address fias identifier.</value>
+		public string AddressFiasId { get; set; }
+		public string AddressQCGeo { get; set; }
+		public string AddressGeoLat { get; set; }
+		public string AddressGeoLon { get; set; }
+
+		public string CreatedBy { get; set; }
+
 		/// <summary>
 		/// Дата заведения аптеки. Присваивается при сохранении.
 		/// </summary>
@@ -140,12 +153,6 @@ namespace CRMLite.Entities
 		/// <value>The created date.</value>
 		public DateTimeOffset UpdatedAt { get; set; }
 
-		/// <summary>
-		/// Последний результат синхронизации.
-		/// </summary>
-		/// <value>The result of last sync.</value>
-		public SyncResult LastSyncResult { get; set; }
-
-		public string Email { get; set; }
+		public bool IsSynced { get; set; }
 	}
 }

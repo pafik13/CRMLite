@@ -1,11 +1,12 @@
-﻿using Realms;
+﻿using System;
+using Realms;
 
 namespace CRMLite.Entities
 {
 	/// <summary>
 	/// Данные по продажам, которые вводятся на визите
 	/// </summary>
-	public class SaleDataByMonth : RealmObject, IAttendanceData, IPharmacyData, IEntity
+	public class SaleDataByMonth : RealmObject, IAttendanceData, IPharmacyData, IEntity, ISync
 	{
 		/// <summary>
 		/// Уникальный идентификатор продаж. Используется Guid.
@@ -27,6 +28,14 @@ namespace CRMLite.Entities
 		public int Month { get; set; }
 
 		public float? Sale { get; set; }
+
+		public string CreatedBy { get; set; }
+
+		public DateTimeOffset CreatedAt { get; set; }
+
+		public DateTimeOffset UpdatedAt { get; set; }
+
+		public bool IsSynced { get; set; }
 	}
 }
 

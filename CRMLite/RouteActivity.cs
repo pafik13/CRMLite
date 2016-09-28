@@ -102,7 +102,7 @@ namespace CRMLite
 				
 				//TODO: rename vars
 				using (var trans = MainDatabase.BeginTransaction()){
-					var newRouteItem = MainDatabase.Create<RouteItem>();
+					var newRouteItem = MainDatabase.Create2<RouteItem>();
 					newRouteItem.Pharmacy = item.UUID;
 					newRouteItem.Order = RouteTable.ChildCount;
 					newRouteItem.Date = SelectedDate;

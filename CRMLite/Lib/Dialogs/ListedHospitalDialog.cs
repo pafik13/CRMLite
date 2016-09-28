@@ -121,7 +121,7 @@ namespace CRMLite.Dialogs
 
 				var transaction = MainDatabase.BeginTransaction();
 
-				var hospitalData = MainDatabase.Create<HospitalData>();
+				var hospitalData = MainDatabase.Create2<HospitalData>();
 				hospitalData.Pharmacy = Pharmacy.UUID;
 				hospitalData.ListedHospital = item.uuid;
 

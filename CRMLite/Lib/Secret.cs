@@ -11,6 +11,10 @@
 			get { return "https://suggestions.dadata.ru/suggestions/api/4_1/rs"; }
 		}
 
+		public static string HockeyappAppId {
+			get { return "c5a5b39231634cbbbd2068c7a1bd6d1d"; }
+		}
+
 		public static bool IsNeedReCreateDB
 		{
 			get { return true; }
