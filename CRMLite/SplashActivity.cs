@@ -3,6 +3,8 @@ using Android.App;
 using Android.Views;
 using Android.Content;
 
+using CRMLite.Dialogs;
+
 namespace CRMLite
 {
 	//https://forums.xamarin.com/discussion/19362/xamarin-forms-splashscreen-in-android
@@ -14,6 +16,12 @@ namespace CRMLite
 			base.OnCreate (savedInstanceState);
 			RequestWindowFeature (WindowFeatures.NoTitle);
 			Window.AddFlags (WindowManagerFlags.KeepScreenOn);
+
+			GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private).Edit()
+			                                                                         .PutString(MainActivity.C_DUMMY, string.Empty);
+
+			GetSharedPreferences(FilterDialog.C_FILTER_PREFS, FileCreationMode.Private).Edit()
+			                                                                           .PutString(MainActivity.C_DUMMY, string.Empty);
 
 			StartActivity(new Intent(this, typeof(MainActivity)));
 		}

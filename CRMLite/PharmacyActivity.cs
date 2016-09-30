@@ -115,6 +115,7 @@ namespace CRMLite
 				}
 
 				item.UpdatedAt = DateTimeOffset.Now;
+				item.IsSynced = false;
 				item.SetState((PharmacyState)State.SelectedItemPosition);
 				item.Brand = FindViewById<EditText>(Resource.Id.paBrandET).Text;
 				item.NumberName = FindViewById<EditText>(Resource.Id.paNumberNameET).Text;
@@ -127,10 +128,9 @@ namespace CRMLite
 				}
 
 				var address = FindViewById<AutoCompleteTextView>(Resource.Id.paAddressACTV);
+				item.Address = address.Text;
 				bool isChanged = (bool)address.GetTag(Resource.String.IsChanged);
 				if (isChanged) {
-					item.Address = address.Text;
-
 					item.AddressFiasId = (string)address.GetTag(Resource.String.fias_id);
 					item.AddressQCGeo = (string)address.GetTag(Resource.String.qc_geo);
 					item.AddressGeoLat = (string)address.GetTag(Resource.String.geo_lat);

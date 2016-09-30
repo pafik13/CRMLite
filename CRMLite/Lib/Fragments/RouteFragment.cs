@@ -14,12 +14,22 @@ namespace CRMLite
 
 		int Offset;
 
-		DateTimeOffset Date;
+		DateTimeOffset BaseDate;
 
+
+		DateTimeOffset MondayDate;
 		ListView MondayTable;
+
+		DateTimeOffset TuesdayDate;
 		ListView TuesdayTable;
+
+		DateTimeOffset WednesdayDate;
 		ListView WednesdayTable;
+
+		DateTimeOffset ThursdayDate;
 		ListView ThursdayTable;
+
+		DateTimeOffset FridayDate;
 		ListView FridayTable;
 
 
@@ -41,7 +51,9 @@ namespace CRMLite
 
 			// Create your fragment heree
 			Offset = Arguments.GetInt(C_OFFSET);
-			Date = DateTimeOffset.Now.AddDays(7*Offset);
+			var now = DateTime.Now;
+			BaseDate = new DateTimeOffset(now.Year, now.Month, now.Day, 0, 0, 0, new TimeSpan(0, 0, 0));
+			BaseDate = BaseDate.AddDays(7 * Offset);
 		}
 
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -58,27 +70,32 @@ namespace CRMLite
 			// Find tables
 			MondayTable = rootView.FindViewById<ListView>(Resource.Id.rwMondayTable);
 			header = inflater.Inflate(Resource.Layout.RouteWeekTableHeader, MondayTable, false);
-			header.FindViewById<TextView>(Resource.Id.rwthDateTV).Text = Date.AddDays(-(int)DateTimeOffset.Now.DayOfWeek + (int)DayOfWeek.Monday).LocalDateTime.ToLongDateString();
+			MondayDate = BaseDate.AddDays(-(int)BaseDate.DayOfWeek + (int)DayOfWeek.Monday);
+			header.FindViewById<TextView>(Resource.Id.rwthDateTV).Text = MondayDate.Date.ToLongDateString();
 			MondayTable.AddHeaderView(header);
 
 			TuesdayTable = rootView.FindViewById<ListView>(Resource.Id.rwTuesdayTable);
 			header = inflater.Inflate(Resource.Layout.RouteWeekTableHeader, TuesdayTable, false);
-			header.FindViewById<TextView>(Resource.Id.rwthDateTV).Text = Date.AddDays(-(int)DateTimeOffset.Now.DayOfWeek + (int)DayOfWeek.Tuesday).LocalDateTime.ToLongDateString();
+			TuesdayDate = BaseDate.AddDays(-(int)BaseDate.DayOfWeek + (int)DayOfWeek.Tuesday);
+			header.FindViewById<TextView>(Resource.Id.rwthDateTV).Text = TuesdayDate.Date.ToLongDateString();
 			TuesdayTable.AddHeaderView(header);
 
 			WednesdayTable = rootView.FindViewById<ListView>(Resource.Id.rwWednesdayTable);
 			header = inflater.Inflate(Resource.Layout.RouteWeekTableHeader, WednesdayTable, false);
-			header.FindViewById<TextView>(Resource.Id.rwthDateTV).Text = Date.AddDays(-(int)DateTimeOffset.Now.DayOfWeek + (int)DayOfWeek.Wednesday).LocalDateTime.ToLongDateString();
+			WednesdayDate = BaseDate.AddDays(-(int)BaseDate.DayOfWeek + (int)DayOfWeek.Wednesday);
+			header.FindViewById<TextView>(Resource.Id.rwthDateTV).Text = WednesdayDate.Date.ToLongDateString();
 			WednesdayTable.AddHeaderView(header);
 
 			ThursdayTable = rootView.FindViewById<ListView>(Resource.Id.rwThursdayTable);
 			header = inflater.Inflate(Resource.Layout.RouteWeekTableHeader, ThursdayTable, false);
-			header.FindViewById<TextView>(Resource.Id.rwthDateTV).Text = Date.AddDays(-(int)DateTimeOffset.Now.DayOfWeek + (int)DayOfWeek.Thursday).LocalDateTime.ToLongDateString();
+			ThursdayDate = BaseDate.AddDays(-(int)BaseDate.DayOfWeek + (int)DayOfWeek.Thursday);
+			header.FindViewById<TextView>(Resource.Id.rwthDateTV).Text = ThursdayDate.Date.ToLongDateString();
 			ThursdayTable.AddHeaderView(header);
 
 			FridayTable = rootView.FindViewById<ListView>(Resource.Id.rwFridayTable);
 			header = inflater.Inflate(Resource.Layout.RouteWeekTableHeader, FridayTable, false);
-			header.FindViewById<TextView>(Resource.Id.rwthDateTV).Text = Date.AddDays(-(int)DateTimeOffset.Now.DayOfWeek + (int)DayOfWeek.Friday).LocalDateTime.ToLongDateString();
+			FridayDate = BaseDate.AddDays(-(int)BaseDate.DayOfWeek + (int)DayOfWeek.Friday);
+			header.FindViewById<TextView>(Resource.Id.rwthDateTV).Text = FridayDate.Date.ToLongDateString();
 			FridayTable.AddHeaderView(header);
 
 			return rootView;
@@ -88,11 +105,11 @@ namespace CRMLite
 		{
 			base.OnResume();
 
-			MondayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(Date, DayOfWeek.Monday));
-			TuesdayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(Date, DayOfWeek.Tuesday));
-			WednesdayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(Date, DayOfWeek.Wednesday));
-			ThursdayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(Date, DayOfWeek.Thursday));
-			FridayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(Date, DayOfWeek.Friday));
+			MondayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(MondayDate));
+			TuesdayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(TuesdayDate));
+			WednesdayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(WednesdayDate));
+			ThursdayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(ThursdayDate));
+			FridayTable.Adapter = new RouteDayInWeekAdapter(Activity, MainDatabase.GetRouteItems(FridayDate));
 		}
 	}
 }

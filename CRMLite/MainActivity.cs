@@ -29,6 +29,7 @@ namespace CRMLite
 		public const string C_MAIN_PREFS = @"C_MAIN_PREFS";
 		public const string C_SAVED_PHARMACY_UUID = @"C_SAVED_PHARMACY_UUID";
 		public const int C_ITEMS_IN_RESULT = 10;
+		public const string C_DUMMY = @"C_DUMMY";
 
 		IList<Pharmacy> Pharmacies;
 		ListView PharmacyTable;
@@ -74,19 +75,19 @@ namespace CRMLite
 			};
 
 			var sync = FindViewById<ImageView>(Resource.Id.maSync);
-			sync.LongClick += (sender, e) => {
-				StartActivity(new Intent(this, typeof(LoadDataActivity)));
-			};
 			sync.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(SyncActivity)));
 			};
-			
-			var lib = FindViewById<ImageView>(Resource.Id.maLibrary);
-			lib.LongClick += (sender, e) => {
-				StartActivity(new Intent(this, typeof(TestDataActivity)));
+			sync.LongClick += (sender, e) => {
+				StartActivity(new Intent(this, typeof(LoadDataActivity)));
 			};
+
+			var lib = FindViewById<ImageView>(Resource.Id.maLibrary);
 			lib.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(LibraryActivity)));
+			};
+			lib.LongClick += (sender, e) => {
+				StartActivity(new Intent(this, typeof(TestDataActivity)));
 			};
 
 			var route = FindViewById<ImageView>(Resource.Id.maRoute);
@@ -203,6 +204,7 @@ namespace CRMLite
 
 			//LoginManager.Register(this, Secret.HockeyappAppId, LoginManager.LoginModeEmailOnly);
 			//LoginManager.VerifyLogin(this, Intent);
+			UpdateManager.Register(this, Secret.HockeyappAppId);
 		}
 
 		void Filter_Click(object sender, EventArgs e)
@@ -357,8 +359,8 @@ namespace CRMLite
 						new SearchItem(
 							item.UUID,
 							item.GetName(),
-							MainDatabase.GetItem<Subway>(item.Subway).name,
-							MainDatabase.GetItem<Region>(item.Region).name,
+							string.IsNullOrEmpty(item.Subway) ? item.Subway : MainDatabase.GetItem<Subway>(item.Subway).name,
+							string.IsNullOrEmpty(item.Region) ? item.Region : MainDatabase.GetItem<Region>(item.Region).name,
 							item.Brand
 						)
 					);
@@ -522,8 +524,8 @@ namespace CRMLite
 			SearchItems[uuid] = new SearchItem(
 				pharmacy.UUID,
 				pharmacy.GetName(),
-				MainDatabase.GetItem<Subway>(pharmacy.Subway).name,
-				MainDatabase.GetItem<Region>(pharmacy.Region).name,
+				string.IsNullOrEmpty(pharmacy.Subway) ? pharmacy.Subway : MainDatabase.GetItem<Subway>(pharmacy.Subway).name,
+				string.IsNullOrEmpty(pharmacy.Region) ? pharmacy.Region : MainDatabase.GetItem<Region>(pharmacy.Region).name,
 				pharmacy.Brand
 			);
 			w.Stop();
@@ -558,6 +560,7 @@ namespace CRMLite
 		{
 			//Stop Tracking usage in this activity
 			Tracking.StopUsage(this);
+			UpdateManager.Unregister();
 			base.OnPause();
 		}
 
@@ -566,6 +569,13 @@ namespace CRMLite
 			base.OnStop();
 			// TODO: сделать ветку автоматической синхронизации
 			// SaveToFileAllCache;
+			UpdateManager.Unregister();
+		}
+
+		protected override void OnDestroy()
+		{
+			base.OnDestroy();
+			UpdateManager.Unregister();
 		}
 	}
 }

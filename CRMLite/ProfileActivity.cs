@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
 using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Android.Content;
 
 using CRMLite.Dialogs;
 using CRMLite.Adapters;
@@ -31,10 +27,6 @@ namespace CRMLite
 		ImageView SearchImage;
 
 		EditText SearchEditor;
-
-		List<SearchItem> SearchItemsSource;
-		//List<SearchItem> SearchItems;
-		List<SearchItem> SearchedItems;
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
@@ -84,23 +76,9 @@ namespace CRMLite
 				var agent = MainDatabase.GetItem<Agent>(agentUUID);
 				FindViewById<TextView>(Resource.Id.paShortNameTV).Text = agent.shortName;
 			} catch (Exception ex) {
-				Console.WriteLine(ex.Message);
+				System.Diagnostics.Debug.WriteLine(ex.Message);
 			}
 
-			SearchItemsSource = new List<SearchItem>();
-			var pharmacies = MainDatabase.GetItems<Pharmacy>();
-			foreach (var item in pharmacies) {
-				SearchItemsSource.Add(
-					new SearchItem(
-						item.UUID,
-						item.GetName(),
-						MainDatabase.GetItem<Subway>(item.Subway).name,
-						MainDatabase.GetItem<Region>(item.Region).name,
-						item.Brand
-					)
-				);
-			}
-			SearchedItems = new List<SearchItem>();
 			SearchSwitcher = FindViewById<ViewSwitcher>(Resource.Id.paSearchVS);
 			SearchSwitcher.SetInAnimation(this, Android.Resource.Animation.SlideInLeft);
 			SearchSwitcher.SetOutAnimation(this, Android.Resource.Animation.SlideOutRight);
@@ -128,7 +106,7 @@ namespace CRMLite
 		protected override void OnResume()
 		{
 			base.OnResume();
-			var watch = new Stopwatch();
+			var watch = new System.Diagnostics.Stopwatch();
 			watch.Start();
 			ReportData = MainDatabase.GetProfileReportData(Dates);
 

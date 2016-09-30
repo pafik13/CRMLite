@@ -43,8 +43,8 @@ namespace CRMLite.Adapters
 					new SearchItem(
 						item.UUID,
 						item.GetName(),
-						MainDatabase.GetItem<Subway>(item.Subway).name,
-						MainDatabase.GetItem<Region>(item.Region).name,
+						string.IsNullOrEmpty(item.Subway) ? item.Subway : MainDatabase.GetItem<Subway>(item.Subway).name,
+						string.IsNullOrEmpty(item.Region) ? item.Region : MainDatabase.GetItem<Region>(item.Region).name,
 						item.Brand
 					)
 				);
@@ -139,6 +139,7 @@ namespace CRMLite.Adapters
 				}
 
 				if (culture.CompareInfo.IndexOf(item.Value.Name, text, CompareOptions.IgnoreCase) >= 0) {
+					item.Value.Match = string.Format(matchFormat, @"в адресе");
 					Items.Add(item.Key, Source[item.Key]);
 					//if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
 					continue;

@@ -1,13 +1,10 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
@@ -16,9 +13,6 @@ using CRMLite.Adapters;
 using Android.Views.InputMethods;
 using System.Globalization;
 using System.Diagnostics;
-using Android.Views.Animations;
-using Android.Animation;
-using Android.Graphics;
 using Android.Support.V4.App;
 using Android.Support.V4.View;
 
@@ -27,8 +21,8 @@ namespace CRMLite
 	[Activity(Label = "RouteActivity", ScreenOrientation=Android.Content.PM.ScreenOrientation.Landscape)]
 	public class RouteActivity : FragmentActivity, ViewPager.IOnPageChangeListener
 	{
-		public const int C_ITEMS_IN_RESULT = 10;
-		public const int C_FRAGMENTS_COUNT = 5;
+		// public const int C_ITEMS_IN_RESULT = 10;
+		// public const int C_FRAGMENTS_COUNT = 5;
 
 		DateTimeOffset SelectedDate;
 
@@ -62,8 +56,8 @@ namespace CRMLite
 			switch (position) {
 				default:
 					Info.Text = string.Format(
-						@"Период планирования: {0} недели ({1} дней) Фрагмент {2}",
-						Helper.WeeksInRoute, Helper.WeeksInRoute * 5, position
+						@"Период планирования: {0} недели ({1} дней). Номер недели: {2}",
+						Helper.WeeksInRoute, Helper.WeeksInRoute * 5, position + 1
 					);
 					break; ;
 			}
@@ -129,8 +123,8 @@ namespace CRMLite
 					new RouteSearchItem(
 						item.UUID,
 						item.GetName(),
-						MainDatabase.GetItem<Subway>(item.Subway).name,
-						MainDatabase.GetItem<Entities.Region>(item.Region).name,
+						string.IsNullOrEmpty(item.Subway) ? item.Subway : MainDatabase.GetItem<Subway>(item.Subway).name,
+						string.IsNullOrEmpty(item.Region) ? item.Region : MainDatabase.GetItem<Region>(item.Region).name,
 						item.Brand
 					)
 				);
@@ -174,27 +168,27 @@ namespace CRMLite
 						if (culture.CompareInfo.IndexOf(item.Subway, text, CompareOptions.IgnoreCase) >= 0) {
 							item.Match = string.Format(matchFormat, @"метро=" + item.Subway);
 							SearchedItems.Add(item);
-							if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
+							//if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
 							continue;
 						}
 
 						if (culture.CompareInfo.IndexOf(item.Region, text, CompareOptions.IgnoreCase) >= 0) {
 							item.Match = string.Format(matchFormat, @"район=" + item.Region);
 							SearchedItems.Add(item);
-							if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
+							//if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
 							continue;
 						}
 
 						if (culture.CompareInfo.IndexOf(item.Brand, text, CompareOptions.IgnoreCase) >= 0) {
 							item.Match = string.Format(matchFormat, @"бренд=" + item.Brand);
 							SearchedItems.Add(item);
-							if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
+							//if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
 							continue;
 						}
 					}
 				}
 				w.Stop();
-				Console.WriteLine(@"Search: поиск={0}", w.ElapsedMilliseconds);
+				System.Diagnostics.Debug.WriteLine(@"Search: поиск={0}", w.ElapsedMilliseconds);
 
 				PharmacyTable.Adapter = new RoutePharmacyAdapter(this, SearchedItems);
 			};
@@ -203,8 +197,8 @@ namespace CRMLite
 
 			FindViewById<Button>(Resource.Id.raSelectDateB).Click += (sender, e) => {
 				DatePickerFragment frag = DatePickerFragment.NewInstance(delegate (DateTime date) {
-					Console.WriteLine("DatePicker:{0}", date.ToLongDateString());
-					Console.WriteLine("DatePicker:{0}", new DateTimeOffset(date));
+					System.Diagnostics.Debug.WriteLine("DatePicker:{0}", date.ToLongDateString());
+					System.Diagnostics.Debug.WriteLine("DatePicker:{0}", new DateTimeOffset(date));
 					SelectedDate = new DateTimeOffset(date, new TimeSpan(0, 0, 0)); ;
 					RefreshTables();
 				});
@@ -216,11 +210,17 @@ namespace CRMLite
 
 			var switcher = FindViewById<ViewSwitcher>(Resource.Id.raSwitchViewVS);
 			FindViewById<ImageView>(Resource.Id.raSwitchIV).Click += (sender, e) => {
-				Console.WriteLine(@"switcher:{0}; Resource{1}", switcher.CurrentView.Id, Resource.Id.raContainerVP);
+				System.Diagnostics.Debug.WriteLine(@"switcher:{0}; Resource{1}", switcher.CurrentView.Id, Resource.Id.raContainerVP);
 				if (switcher.CurrentView.Id != Resource.Id.raContainerVP) {
+					Info.Text = string.Format(
+						@"Период планирования: {0} недели ({1} дней). Номер недели: {2}",
+						Helper.WeeksInRoute, Helper.WeeksInRoute * 5, 1
+					);
 					var pager = FindViewById<ViewPager>(Resource.Id.raContainerVP);
 					pager.AddOnPageChangeListener(this);
 					pager.Adapter = new RoutePagerAdapter(SupportFragmentManager);
+				} else {
+					Info.Text = string.Format(@"Период планирования: {0} недели ({1} дней)", Helper.WeeksInRoute, Helper.WeeksInRoute * 5);
 				}
 				switcher.ShowNext();
 			};
@@ -322,13 +322,14 @@ namespace CRMLite
 		{
 			base.OnResume();
 
-			SelectedDate = DateTimeOffset.Now;
+			var now = DateTime.Now;
+			SelectedDate = new DateTimeOffset(now.Year, now.Month, now.Day, 0, 0, 0, new TimeSpan(0, 0, 0));
 			RefreshTables();
 		}
 
 		void RefreshTables()
 		{
-			FindViewById<Button>(Resource.Id.raSelectDateB).Text = SelectedDate.UtcDateTime.Date.ToLongDateString();
+			FindViewById<Button>(Resource.Id.raSelectDateB).Text = SelectedDate.Date.ToLongDateString();
 
 			var routeItemsPharmacies = MainDatabase.GetEarlyRouteItems(SelectedDate).Select(ri => ri.Pharmacy);
 			RouteSearchItems = RouteSearchItemsSource.Where(rsi => !routeItemsPharmacies.Contains(rsi.UUID)).ToList(); 
@@ -392,63 +393,6 @@ namespace CRMLite
 				}
 
 			}
-		}
-	}
-
-	class MyShadowBuilder : View.DragShadowBuilder
-	{
-		const int centerOffset = 52;
-		int width, height;
-
-		public MyShadowBuilder(View baseView) : base(baseView)
-		{
-		}
-
-		public override void OnProvideShadowMetrics(Point shadowSize, Point shadowTouchPoint)
-		{
-			width = View.Width;
-			height = View.Height;
-
-			// This is the overall dimension of your drag shadow
-			shadowSize.Set(width * 2, height * 2);
-			// This one tells the system how to translate your shadow on the screen so
-			// that the user fingertip is situated on that point of your canvas.
-			// In my case, the touch point is in the middle of the (height, width) top-right rect
-			shadowTouchPoint.Set(width + width / 2 - centerOffset, height / 2 + centerOffset);
-		}
-
-		public override void OnDrawShadow(Canvas canvas)
-		{
-			const float sepAngle = (float)Math.PI / 16;
-			const float circleRadius = 2f;
-
-			// Draw the shadow circles in the top-right corner
-			float centerX = width + width / 2 - centerOffset;
-			float centerY = height / 2 + centerOffset;
-
-			var baseColor = Color.Black;
-			var paint = new Paint() {
-				AntiAlias = true,
-				Color = baseColor
-			};
-
-			// draw a dot where the center of the touch point (i.e. your fingertip) is
-			canvas.DrawCircle(centerX, centerY, circleRadius + 1, paint);
-			for (int radOffset = 70; centerX + radOffset < canvas.Width; radOffset += 20) {
-				// Vary the alpha channel based on how far the dot is
-				baseColor.A = (byte)(128 * (2f * (width / 2f - 1.3f * radOffset + 60) / width) + 100);
-				paint.Color = baseColor;
-				// Draw the dots along a circle of radius radOffset and centered on centerX,centerY
-				for (float angle = 0; angle < Math.PI * 2; angle += sepAngle) {
-					var pointX = centerX + (float)Math.Cos(angle) * radOffset;
-					var pointY = centerY + (float)Math.Sin(angle) * radOffset;
-					canvas.DrawCircle(pointX, pointY, circleRadius, paint);
-				}
-			}
-
-			//View.Dra
-			// Draw the dragged view in the bottom-left corner
-			//canvas.DrawBitmap(View.DrawingCache, 0, height, null);
 		}
 	}
 }

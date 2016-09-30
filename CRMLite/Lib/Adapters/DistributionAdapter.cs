@@ -52,7 +52,8 @@ namespace CRMLite.Adapters
 								parent,
 								false)) as LinearLayout;
 
-			view.FindViewById<TextView>(Resource.Id.dtiDrugSKUTV).Text = MainDatabase.GetItem<DrugSKU>(item.DrugSKU).name;
+			view.FindViewById<TextView>(Resource.Id.dtiDrugSKUTV).Text
+			    = string.IsNullOrEmpty(item.DrugSKU) ? "<пусто>" : MainDatabase.GetItem<DrugSKU>(item.DrugSKU).name;
 			view.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked = item.IsExistence;
 			view.FindViewById<EditText>(Resource.Id.dtiCountET).Text = item.Count.ToString();
 			view.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = item.Price.ToString();

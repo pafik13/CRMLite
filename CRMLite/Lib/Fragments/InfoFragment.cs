@@ -414,7 +414,7 @@ namespace CRMLite
 					foreach (var brand in employee.Value) {
 						var brandRow = Inflater.Inflate(Resource.Layout.InfoPresentationSubItem, brandTable, false);
 						brandRow.FindViewById<TextView>(Resource.Id.ipsiBrandTV).Text =
-							        MainDatabase.GetItem<DrugBrand>(brand.Key).name;
+							        string.IsNullOrEmpty(brand.Key) ? @"<пусто>" : MainDatabase.GetItem<DrugBrand>(brand.Key).name;
 						brandRow.FindViewById<TextView>(Resource.Id.ipsiWorkTypesTV).Text =
 							        string.Join(System.Environment.NewLine, brand.Value.Select(wt => wt.name));
 						brandTable.AddView(brandRow);

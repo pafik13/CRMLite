@@ -52,10 +52,10 @@ namespace CRMLite.Adapters
                 if (string.IsNullOrEmpty(pharmacy.Region)) {
                     return view;
                 }
-                view.FindViewById<TextView>(Resource.Id.rwtiSubwayOrRegionTV).Text = MainDatabase.GetItem<Subway>(pharmacy.Subway).name;
-                return view;
+				view.FindViewById<TextView>(Resource.Id.rwtiSubwayOrRegionTV).Text = MainDatabase.GetItem<Region>(pharmacy.Region).name;
+				return view;
             }
-            view.FindViewById<TextView>(Resource.Id.rwtiSubwayOrRegionTV).Text = MainDatabase.GetItem<Region>(pharmacy.Region).name;
+			view.FindViewById<TextView>(Resource.Id.rwtiSubwayOrRegionTV).Text = MainDatabase.GetItem<Subway>(pharmacy.Subway).name;
             return view;
 		}
 	}

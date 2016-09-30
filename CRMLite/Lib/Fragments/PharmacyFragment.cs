@@ -10,7 +10,6 @@ using Android.Support.V4.App;
 using CRMLite.Entities;
 using CRMLite.DaData;
 using Realms;
-using Android.Support.V7.App;
 using CRMLite.Adapters;
 using Android.Content;
 using CRMLite.Dialogs;
@@ -385,6 +384,7 @@ namespace CRMLite
 			/* ./Contracts */
 
 			item.UpdatedAt = DateTimeOffset.Now;
+			item.IsSynced = false;
 			item.SetState((PharmacyState)State.SelectedItemPosition);
 			item.Brand = View.FindViewById<EditText>(Resource.Id.pfBrandET).Text;
 			item.NumberName = View.FindViewById<EditText>(Resource.Id.pfNumberNameET).Text;
@@ -397,10 +397,10 @@ namespace CRMLite
 			}
 
 			var address = View.FindViewById<AutoCompleteTextView>(Resource.Id.pfAddressACTV);
+			item.Address = address.Text;
+
 			bool isChanged = (bool)address.GetTag(Resource.String.IsChanged);
 			if (isChanged) {
-				item.Address = address.Text;
-
 				item.AddressFiasId = (string)address.GetTag(Resource.String.fias_id);
 				item.AddressQCGeo = (string)address.GetTag(Resource.String.qc_geo);
 				item.AddressGeoLat = (string)address.GetTag(Resource.String.geo_lat);

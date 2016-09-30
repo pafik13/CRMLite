@@ -71,7 +71,7 @@ namespace CRMLite
 			var dbFileLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),  username, Helper.C_DB_FILE_NAME);
 			new System.IO.FileInfo(dbFileLocation).Directory.Create();
 			//Config = new RealmConfiguration(Helper.C_DB_FILE_NAME);
-			Config = new RealmConfiguration(dbFileLocation, true);
+			Config = new RealmConfiguration(dbFileLocation, false);
 			DB = Realm.GetInstance(Config);
 
 			SyncDictionary = new ConcurrentDictionary<SyncItem, SyncItem>();
@@ -631,7 +631,7 @@ namespace CRMLite
 
 		internal static List<RouteItem> GetEarlyRouteItems(DateTimeOffset selectedDate)
 		{
-			var lowDate = selectedDate.AddDays(-14).UtcDateTime.Date;
+			var lowDate = selectedDate.AddDays(-7 * Helper.WeeksInRoute + 1).UtcDateTime.Date;
 			var highDate = selectedDate.AddDays(-1).UtcDateTime.Date;
 
 			return Me.DB.All<RouteItem>()
