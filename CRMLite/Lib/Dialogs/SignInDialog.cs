@@ -372,6 +372,22 @@ namespace CRMLite.Dialogs
 					.PutString(C_AGENT_UUID, agent.uuid)
 					.Commit();
 
+			WriteInfo(@"Получение аптек", 1000);
+			try {
+				LoadEntities<Pharmacy>(client, access_token);
+			} catch (Exception ex) {
+				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
+				return false;
+			}
+
+			WriteInfo(@"Получение сотрудников", 1000);
+			try {
+				LoadEntities<Employee>(client, access_token);
+			} catch (Exception ex) {
+				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
+				return false;
+			}
+
 			WriteInfo(@"Получение LoadPositions", 1000);
 			try {
 				//LoadPositions(client);
@@ -695,6 +711,24 @@ namespace CRMLite.Dialogs
 				}
 			}
 			Console.WriteLine(@"LoadItems: Done");
+		}
+
+		void LoadEntities<T>(RestClient client, string access_token) where T : Realms.RealmObject, IEntity, ISync
+		{
+			Console.WriteLine(@"LoadEntities: typeof={0}", typeof(T));
+			string className = typeof(T).Name;
+			string path = string.Format(@"{0}/byjwt?access_token={1}", className, access_token);
+			var request = new RestRequest(path, Method.GET);
+			var response = client.Execute<List<T>>(request);
+			if (response.StatusCode == HttpStatusCode.OK) {
+				Console.WriteLine(@"LoadEntities: Data.Count={0}", response.Data.Count);
+				using (var trans = MainDatabase.BeginTransaction()) {
+					MainDatabase.DeleteAll<T>(trans);
+					MainDatabase.SaveEntities(trans, response.Data);
+					trans.Commit();
+				}
+			}
+			Console.WriteLine(@"LoadEntities: Done");
 		}
 
 		void LoadNets(RestClient client)

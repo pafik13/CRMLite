@@ -156,10 +156,12 @@ namespace CRMLite
 
 			var toSyncCount = FindViewById<TextView>(Resource.Id.saSyncEntitiesCount);
 			toSyncCount.Text = string.Format("Необходимо синхронизировать {0} объектов", Count);
-				//pharmacies.Count + employees.Count + hospitals.Count + hospitalDatas.Count + attendances.Count + competitorDatas.Count +
-				//contractDatas.Count + coterieDatas.Count + monthFinanceDatas.Count + quarterFinanceDatas.Count + monthSaleDatas.Count +
-				//quarterSaleDatas.Count + messageDatas.Count + photoDatas.Count + presentationDatas.Count + promotionDatas.Count + 
-				//resumeDatas.Count + routeItems.Count;
+
+			var toUpdateCount = FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount);
+			toUpdateCount.Text = string.Format("Необходимо обновить {0} объектов", 0);
+
+			var photoCount = FindViewById<TextView>(Resource.Id.saSyncPhotosCount);
+			photoCount.Text = string.Format("Необходимо выгрузить {0} фото", MainDatabase.CountItemsToSync<PhotoData>());
 		}
 		
 		void Sync_Click(object sender, EventArgs e){

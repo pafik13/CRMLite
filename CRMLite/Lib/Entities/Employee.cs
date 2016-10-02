@@ -117,12 +117,6 @@ namespace CRMLite.Entities
 		public SyncResult SyncResult { get; set; }
 
 		public bool IsSynced { get; set; }
-
-		//public bool ShouldSerializeName()
-		//{
-		//	// don't serialize the Manager property if an employee is their own manager
-		//	return false;
-		//}
 	}
 }
 

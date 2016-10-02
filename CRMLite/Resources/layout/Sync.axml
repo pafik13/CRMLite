@@ -66,12 +66,20 @@
             android:layout_below="@id/saUpdateEntitiesCount"
             android:id="@+id/saSyncB"
             android:layout_centerHorizontal="true" />
-        <Button
+        <TextView
             android:layout_marginTop="20dp"
+            android:text="Необходимо выгрузить {0} фото"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/saSyncPhotosCount"
+            android:layout_below="@id/saSyncB"
+            android:layout_centerInParent="true" />
+        <Button
             android:text="ЗАГРУЗИТЬ ФОТО"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/saSyncB"
+            android:layout_below="@id/saSyncPhotosCount"
             android:id="@+id/saUploadPhotoB"
             android:layout_centerHorizontal="true" />
     </RelativeLayout>

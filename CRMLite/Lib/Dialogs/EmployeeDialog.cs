@@ -135,7 +135,9 @@ namespace CRMLite.Dialogs
 			Dialog.SetTitle("СОТРУДНИК : " + Employee.Name);
 
 			view.FindViewById<TextView>(Resource.Id.edUUIDTV).Append(Employee.UUID);
-			view.FindViewById<EditText>(Resource.Id.edNameET).Append(Employee.Name);
+			if (!string.IsNullOrEmpty(Employee.Name)) {
+				view.FindViewById<EditText>(Resource.Id.edNameET).Append(Employee.Name);
+			}
 			if (!string.IsNullOrEmpty(Employee.Position)) {
 				Position.SetSelection(Positions.FindIndex(item => string.Compare(item.uuid, Employee.Position) == 0));
 			}
@@ -145,10 +147,18 @@ namespace CRMLite.Dialogs
 				view.FindViewById<EditText>(Resource.Id.edBirthDateET).Append(Employee.BirthDate.Value.ToString("dd.MM.yyyy"));
 			}
 
-			view.FindViewById<EditText>(Resource.Id.edPhoneET).Append(Employee.Phone);
-			view.FindViewById<EditText>(Resource.Id.edEmailET).Append(Employee.Email);
+			if (!string.IsNullOrEmpty(Employee.Phone)) {
+				view.FindViewById<EditText>(Resource.Id.edPhoneET).Append(Employee.Phone);
+			}
+			if (!string.IsNullOrEmpty(Employee.Email)) {
+				view.FindViewById<EditText>(Resource.Id.edEmailET).Append(Employee.Email);
+			}
+
 			view.FindViewById<CheckBox>(Resource.Id.edCanParticipateCB).Checked = Employee.CanParticipate;
-			view.FindViewById<EditText>(Resource.Id.edCommentET).Append(Employee.Comment);
+
+			if (!string.IsNullOrEmpty(Employee.Comment)) {
+				view.FindViewById<EditText>(Resource.Id.edCommentET).Append(Employee.Comment);
+			}
 
 			return view;
 		}

@@ -28,6 +28,7 @@ namespace CRMLite
 
 		public static string Username { 
 			set {
+				value = value.ToLower();
 				if (Me == null) {
 					Me = new MainDatabase(value);
 					Me._username = value;
@@ -303,6 +304,19 @@ namespace CRMLite
 			}
 		}
 
+		public static void SaveEntities<T>(Transaction openedTransaction, IList<T> data) where T : RealmObject, IEntity, ISync
+		{
+			Console.WriteLine(@"SaveEntities: typeof={0}", typeof(T));
+			if (openedTransaction == null) {
+				throw new ArgumentNullException(nameof(openedTransaction));
+			}
+
+			foreach (var item in data) {
+				item.IsSynced = true;
+				Me.DB.Manage(item);
+			}
+		}
+
 		public static void DeleteAll<T>(Transaction openedTransaction) where T : RealmObject
 		{
 			if (openedTransaction == null) {
@@ -327,13 +341,13 @@ namespace CRMLite
 			return item;
 		}
 
-		public static T Create<T>(string attendanceUUID) where T : RealmObject, IAttendanceData, IEntity, new()
-		{
-			var item = new T();
-			item.UUID = Guid.NewGuid().ToString();
-			item.Attendance = attendanceUUID;
-			return item;
-		}
+		//public static T Create<T>(string attendanceUUID) where T : RealmObject, IAttendanceData, IEntity, new()
+		//{
+		//	var item = new T();
+		//	item.UUID = Guid.NewGuid().ToString();
+		//	item.Attendance = attendanceUUID;
+		//	return item;
+		//}
 
 		public static T Create<T>() where T : RealmObject, IEntity, new()
 		{

@@ -291,7 +291,9 @@ namespace CRMLite
 				};
 
 				// TODO: optimize work with route
-				var routeItems = MainDatabase.GetRouteItems(DateTimeOffset.Now);
+				var now = DateTime.Now;
+				var date = new DateTimeOffset(now.Year, now.Month, now.Day, 0, 0, 0, new TimeSpan(0, 0, 0));
+				var routeItems = MainDatabase.GetRouteItems(date);
 				pharmaciesInRoute = routeItems.Select(ri => ri.Pharmacy).ToArray();
 				// wmOnlyRoute, wmRouteAndRecommendations, wmOnlyRecommendations
 				switch (Helper.WorkMode) {
