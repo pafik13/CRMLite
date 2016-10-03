@@ -2,10 +2,11 @@
 using Android.OS;
 using Android.Widget;
 using Android.Views;
+using Android.Content.PM;
 
 namespace CRMLite
 {
-	[Activity(Label = "LibraryActivity")]
+	[Activity(Label = "LibraryActivity", ScreenOrientation = ScreenOrientation.Landscape)]
 	public class LibraryActivity : Activity
 	{
 		protected override void OnCreate(Bundle savedInstanceState)

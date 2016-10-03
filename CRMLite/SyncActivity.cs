@@ -1,32 +1,34 @@
 ﻿using System;
+using System.IO;
+using System.Net;
+using System.Threading;
+using System.Globalization;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using Android.App;
 using Android.OS;
+using Android.App;
+using Android.Views;
 using Android.Widget;
+using Android.Content;
+using Android.Content.PM;
 
 using RestSharp;
 
-using CRMLite.Entities;
-using Android.Views;
-using System.Threading;
 using Realms;
-using System.Net;
-using Android.Content;
 
 using CRMLite.Dialogs;
-using System.Threading.Tasks;
-using System.Globalization;
-using System.IO;
+using CRMLite.Entities;
 
 namespace CRMLite
 {
-	[Activity(Label = "SyncActivity")]
+	[Activity(Label = "SyncActivity", ScreenOrientation = ScreenOrientation.Landscape)]
 	public class SyncActivity : Activity
 	{
 		TextView Locker;
 		string ACCESS_TOKEN;
-
+
+		public string HOST_URL { get; private set; }
 		public string USERNAME { get; private set; }
 
 
@@ -78,6 +80,7 @@ namespace CRMLite
 
 			ACCESS_TOKEN = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
 			USERNAME = shared.GetString(SigninDialog.C_USERNAME, string.Empty);
+			HOST_URL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
 
 		}
 
@@ -87,10 +90,8 @@ namespace CRMLite
 				try {
 					Toast.MakeText(this, string.Format(@"Загрузка фото с uuid {0} по посещению с uuid:{1}", photo.UUID, photo.Attendance), ToastLength.Short).Show();
 
-					//var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
-					var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
+					var client = new RestClient(HOST_URL);
 
-					//					var request = new RestRequest (@"AttendancePhoto/create?attendance={attendance}&longitude={longitude}&latitude={latitude}&stamp={stamp}", Method.POST);
 					var request = new RestRequest(@"PhotoData/upload", Method.POST);
 					request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
 					//request.AddQueryParameter(@"Stamp", photo.Stamp.ToString());
@@ -244,37 +245,10 @@ namespace CRMLite
 			base.OnResume();
 
 		}
-		
-		//void SyncItems(List<ISync> items)
-		//{
-		//	var firstItem = items[0];
-		//	string itemPath = firstItem.GetType().Name;
-		//	var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
-		//	//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
-
-		//	foreach (var item in items)
-		//	{
-		//		var request = new RestRequest(itemPath, Method.POST);
-		//		request.AddJsonBody(item);
-		//		var response = client.Execute<Entities.SyncResult>(request);
-		//		switch (response.StatusCode)
-		//		{
-		//			case HttpStatusCode.OK:
-		//			case HttpStatusCode.Created:
-		//				using (var trans = MainDatabase.BeginTransaction()) {
-		//					item.SyncResult = response.Data;
-		//					trans.Commit();
-		//				}
-		//				break;
-		//		}
-		//		Console.WriteLine(response.StatusDescription);
-		//	}
-		//}
 
 		void SyncEntities<T>(List<T> items) where T : RealmObject, ISync
 		{
-			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
-			//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
+			var client = new RestClient(HOST_URL); 
 			string entityPath = typeof(T).Name;
 
 			using (var trans = MainDatabase.BeginTransaction()) {

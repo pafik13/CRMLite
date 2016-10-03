@@ -1,16 +1,14 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
 using System.Linq;
-using System.Text;
+using System.Diagnostics;
+using System.Collections.Generic;
 
-using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Runtime;
+using Android.App;
 using Android.Views;
 using Android.Widget;
+using Android.Content;
+using Android.Content.PM;
 
 using CRMLite.Entities;
 
@@ -18,7 +16,7 @@ namespace CRMLite
 {
 	public enum DistributionInfoType { ditIsExistence, ditCount, ditPrice, ditIsPresence, ditHasPOS, ditOrder };
 
-	[Activity(Label = "HistoryActivity")]
+	[Activity(Label = "HistoryActivity", ScreenOrientation = ScreenOrientation.Landscape)]
 	public class HistoryActivity : Activity
 	{
 		Pharmacy Pharmacy;

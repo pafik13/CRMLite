@@ -1,14 +1,15 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
 using System.Linq;
+using System.Diagnostics;
+using System.Collections.Generic;
 
-using Android.App;
-using Android.Content;
+
 using Android.OS;
+using Android.App;
 using Android.Views;
 using Android.Widget;
+using Android.Content;
+using Android.Content.PM;
 
 using CRMLite.Dialogs;
 using CRMLite.Entities;
@@ -17,7 +18,7 @@ namespace CRMLite
 {
 	public enum FinanceInfoType { fitSale, fitPurchase, fitRemain };
 
-	[Activity(Label = "FinanceActivity")]
+	[Activity(Label = "FinanceActivity", ScreenOrientation = ScreenOrientation.Landscape)]
 	public class FinanceActivity : Activity
 	{
 		const string PeriodFormatForKey = @"MMyyyy";

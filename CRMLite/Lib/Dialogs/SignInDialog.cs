@@ -23,6 +23,11 @@ using CRMLite.Entities;
 
 namespace CRMLite.Dialogs
 {
+	public class HostHolder
+	{
+		public string hostURL { get; set;}
+	}
+
 	public class SigninDialog : DialogFragment
 	{
 		const char quote = '"';
@@ -30,6 +35,8 @@ namespace CRMLite.Dialogs
 		public const string C_EMAIL = @"C_EMAIL";
 		public const string C_ACCESS_TOKEN = @"C_ACCESS_TOKEN";
 		public const string C_AGENT_UUID = @"C_AGENT_UUID";
+		public const string C_HOST_URL = @"C_HOST_URL";
+
 
 		public const string TAG = @"SigninDialog";
 
@@ -309,9 +316,9 @@ namespace CRMLite.Dialogs
 		{
 			WriteInfo ("Подключение к серверу");
 
-			var client = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+			var login = new RestClient(@"http://front-sblcrm.rhcloud.com/");
 			//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
-			client.CookieContainer = new CookieContainer();
+			login.CookieContainer = new CookieContainer();
 
 			string access_token = string.Empty;
 			string email = username + "@sbl-crm.ru";
@@ -321,13 +328,13 @@ namespace CRMLite.Dialogs
 				var request = new RestRequest(@"auth/login", Method.POST);
 				request.AddParameter("email", email, ParameterType.GetOrPost);
 				request.AddParameter("password", password, ParameterType.GetOrPost);
-				response = client.Execute(request);
+				response = login.Execute(request);
 				if (response.StatusCode != HttpStatusCode.OK) {
 					return false;
 				}
 
 				request = new RestRequest(@"user/jwt", Method.GET);
-				response = client.Execute<JsonWebToken>(request);
+				response = login.Execute<JsonWebToken>(request);
 				if (response.StatusCode != HttpStatusCode.OK) {
 					return false;
 				}
@@ -343,13 +350,14 @@ namespace CRMLite.Dialogs
 			Helper.Username = username;
 
 			Agent agent;
+			string hostURL;
 			WriteInfo(@"Получение Agent", 1000);
 			try {
 				string path = typeof(Agent).Name + @"/byjwt";
 
 				var request = new RestRequest(path, Method.GET);
 				request.AddQueryParameter(@"access_token", access_token);
-				response = client.Execute<Agent>(request);
+				response = login.Execute<Agent>(request);
 				agent = (response as IRestResponse<Agent>).Data;
 
 				using (var trans = MainDatabase.BeginTransaction()) {
@@ -357,6 +365,15 @@ namespace CRMLite.Dialogs
 					MainDatabase.SaveItem(trans, agent);
 					trans.Commit();
 				}
+
+				request = new RestRequest(path, Method.GET);
+				request.AddQueryParameter(@"access_token", access_token);
+				response = login.Execute<HostHolder>(request);
+				hostURL = (response as IRestResponse<HostHolder>).Data.hostURL;
+				Uri uriResult;
+				bool result = Uri.TryCreate(hostURL, UriKind.Absolute, out uriResult)
+					&& (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+				if (!result) return false;
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -370,7 +387,10 @@ namespace CRMLite.Dialogs
 					.PutString(C_EMAIL, email)
 					.PutString(C_ACCESS_TOKEN, access_token)
 					.PutString(C_AGENT_UUID, agent.uuid)
+			        .PutString(C_HOST_URL, hostURL)
 					.Commit();
+
+			var client = new RestClient(hostURL);
 
 			WriteInfo(@"Получение аптек", 1000);
 			try {

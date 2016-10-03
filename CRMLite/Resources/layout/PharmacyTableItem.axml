@@ -10,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/ptiStateTV"
-        android:layout_weight="10"
+        android:layout_weight="8"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
@@ -20,7 +20,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/ptiNameTV"
-        android:layout_weight="22"
+        android:layout_weight="20"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
@@ -57,34 +57,34 @@
         android:focusableInTouchMode="false" />
     <ImageView
         android:src="@drawable/ic_history_black_36dp"
-        android:paddingTop="6dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="6dp"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/ptiHistoryIV"
-        android:layout_weight="4" />
+        android:layout_weight="5" />
     <ImageView
         android:src="@drawable/ic_face_black_36dp"
-        android:paddingTop="6dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="6dp"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/ptiEmployeeIV"
-        android:layout_weight="4" />
+        android:layout_weight="5" />
     <ImageView
         android:src="@drawable/ic_shopping_cart_black_36dp"
-        android:paddingTop="6dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="6dp"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:id="@+id/ptiContractIV"
-        android:layout_weight="4" />
+        android:id="@+id/ptiFinanceIV"
+        android:layout_weight="5" />
     <ImageView
         android:src="@drawable/ic_local_hospital_black_36dp"
-        android:paddingTop="6dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="6dp"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/ptiHospitalIV"
-        android:layout_weight="4" />
+        android:layout_weight="5" />
 </LinearLayout>

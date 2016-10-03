@@ -839,8 +839,8 @@ namespace CRMLite
 					ll.FindViewById<EditText>(Resource.Id.dtiPriceET).Enabled = e.IsChecked;
 					ll.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Enabled = e.IsChecked;
 					ll.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Enabled = e.IsChecked;
-					ll.FindViewById<EditText>(Resource.Id.dtiOrderET).Enabled = e.IsChecked;
-					ll.FindViewById<EditText>(Resource.Id.dtiCommentET).Enabled = e.IsChecked;
+					//ll.FindViewById<EditText>(Resource.Id.dtiOrderET).Enabled = e.IsChecked;
+					//ll.FindViewById<EditText>(Resource.Id.dtiCommentET).Enabled = e.IsChecked;
 				};
 				row.FindViewById<EditText>(Resource.Id.dtiCountET).Text = string.Empty;
 				row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = string.Empty;

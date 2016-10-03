@@ -9,21 +9,23 @@ using Android.App;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
+using Android.Content.PM;
+using Android.Locations;
 using Android.Views.InputMethods;
+
+using HockeyApp.Android;
+using HockeyApp.Android.Utils;
 
 using CRMLite.Entities;
 using CRMLite.Adapters;
 using CRMLite.Dialogs;
-using Android.Locations;
-using HockeyApp.Android;
-using HockeyApp.Android.Utils;
 
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
 [assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
 
 namespace CRMLite
 {
-	[Activity(Label = "Main")]
+	[Activity(Label = "Main", ScreenOrientation = ScreenOrientation.Landscape)]
 	public class MainActivity : Activity
 	{
 		public const string C_MAIN_PREFS = @"C_MAIN_PREFS";
@@ -294,6 +296,10 @@ namespace CRMLite
 				var now = DateTime.Now;
 				var date = new DateTimeOffset(now.Year, now.Month, now.Day, 0, 0, 0, new TimeSpan(0, 0, 0));
 				var routeItems = MainDatabase.GetRouteItems(date);
+
+				//Проверка правильности маршрута
+				routeItems = FixRoute(routeItems);
+
 				pharmaciesInRoute = routeItems.Select(ri => ri.Pharmacy).ToArray();
 				// wmOnlyRoute, wmRouteAndRecommendations, wmOnlyRecommendations
 				switch (Helper.WorkMode) {
@@ -336,6 +342,21 @@ namespace CRMLite
 
 			Pharmacies = list; //.Take(14).ToList();
 			PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies, pharmaciesInRoute);
+		}
+
+		// TODO: сделать более лучший вариант
+		List<RouteItem> FixRoute(List<RouteItem> currentRoute)
+		{
+			var dict = new Dictionary<string, int>();
+			var result = new List<RouteItem>();
+
+			foreach(var item in currentRoute) {
+				if (!dict.ContainsKey(item.Pharmacy)) {
+					dict.Add(item.Pharmacy, 1);
+					result.Add(item);
+				}
+			}
+			return result;
 		}
 
 		void Search(string text)
@@ -521,15 +542,18 @@ namespace CRMLite
 
 			if (SearchItems == null) return;
 
-			w.Start();
-			var pharmacy = MainDatabase.GetEntity<Pharmacy>(uuid);
-			SearchItems[uuid] = new SearchItem(
-				pharmacy.UUID,
-				pharmacy.GetName(),
-				string.IsNullOrEmpty(pharmacy.Subway) ? pharmacy.Subway : MainDatabase.GetItem<Subway>(pharmacy.Subway).name,
-				string.IsNullOrEmpty(pharmacy.Region) ? pharmacy.Region : MainDatabase.GetItem<Region>(pharmacy.Region).name,
-				pharmacy.Brand
-			);
+			if (SearchItems.ContainsKey(uuid)) {
+				w.Start();
+				var pharmacy = MainDatabase.GetEntity<Pharmacy>(uuid);
+				SearchItems[uuid] = new SearchItem(
+					pharmacy.UUID,
+					pharmacy.GetName(),
+					string.IsNullOrEmpty(pharmacy.Subway) ? pharmacy.Subway : MainDatabase.GetItem<Subway>(pharmacy.Subway).name,
+					string.IsNullOrEmpty(pharmacy.Region) ? pharmacy.Region : MainDatabase.GetItem<Region>(pharmacy.Region).name,
+					pharmacy.Brand
+				);
+			}
+			prefs.Edit().PutString(C_SAVED_PHARMACY_UUID, string.Empty).Commit();
 			w.Stop();
 			Console.WriteLine(@"Search: обновление={0}", w.ElapsedMilliseconds);
 		}

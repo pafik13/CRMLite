@@ -56,7 +56,7 @@ namespace CRMLite.Adapters
 			view.FindViewById<TextView>(Resource.Id.ptiAddressTV).Text = 
 				string.IsNullOrEmpty(item.Address) ? @"<нет адреса>" : item.Address;
 
-			var showFinance = view.FindViewById<ImageView>(Resource.Id.ptiContractIV);
+			var showFinance = view.FindViewById<ImageView>(Resource.Id.ptiFinanceIV);
 			showFinance.SetTag(Resource.String.PharmacyUUID, item.UUID);
 			showFinance.Click -= ShowFinanceClickEventHandler;
 			showFinance.Click += ShowFinanceClickEventHandler;

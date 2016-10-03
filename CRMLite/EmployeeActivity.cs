@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 
 using Android.App;
-using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-
-using Realms;
+using Android.Content;
+using Android.Content.PM;
 
 using CRMLite.Entities;
 using CRMLite.Adapters;
@@ -15,7 +14,7 @@ using CRMLite.Dialogs;
 
 namespace CRMLite
 {
-	[Activity(Label = "EmployeeActivity")]
+	[Activity(Label = "EmployeeActivity", ScreenOrientation = ScreenOrientation.Landscape)]
 	public class EmployeeActivity : Activity
 	{
 		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";

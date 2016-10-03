@@ -2,13 +2,14 @@
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using Android.Content.PM;
 
 using CRMLite.Adapters;
 using CRMLite.Dialogs;
 
 namespace CRMLite
 {
-	[Activity(Label = "MessageActivity")]
+	[Activity(Label = "MessageActivity", ScreenOrientation = ScreenOrientation.Landscape)]
 	public class MessageActivity : Activity
 	{		public ListView Table { get; private set; }
 

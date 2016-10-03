@@ -78,7 +78,6 @@
             android:layout_centerInParent="true" />
     </RelativeLayout>
     <EditText
-        android:enabled="false"
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -91,7 +90,6 @@
         android:hint="Заказ"
         android:inputType="textCapSentences" />
     <EditText
-        android:enabled="false"
         android:textCursorDrawable="@null"
         android:layout_width="0dp"
         android:layout_height="match_parent"

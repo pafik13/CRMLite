@@ -1,24 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
+using System.Globalization;
+using System.Collections.Generic;
 
 using Android.App;
-using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using Android.Content;
+using Android.Content.PM;
+using Android.Support.V4.App;
+using Android.Support.V4.View;
+using Android.Views.InputMethods;
 
 using CRMLite.Entities;
 using CRMLite.Adapters;
-using Android.Views.InputMethods;
-using System.Globalization;
-using System.Diagnostics;
-using Android.Support.V4.App;
-using Android.Support.V4.View;
 
 namespace CRMLite
 {
-	[Activity(Label = "RouteActivity", ScreenOrientation=Android.Content.PM.ScreenOrientation.Landscape)]
+	[Activity(Label = "RouteActivity", ScreenOrientation = ScreenOrientation.Landscape)]
 	public class RouteActivity : FragmentActivity, ViewPager.IOnPageChangeListener
 	{
 		// public const int C_ITEMS_IN_RESULT = 10;

@@ -3257,14 +3257,14 @@ namespace CRMLite
 			// aapt resource value: 0x7f0c01eb
 			public const int ptiAddressTV = 2131493355;
 			
-			// aapt resource value: 0x7f0c01f0
-			public const int ptiContractIV = 2131493360;
-			
 			// aapt resource value: 0x7f0c01fe
 			public const int ptiDateTimeTV = 2131493374;
 			
 			// aapt resource value: 0x7f0c01ef
 			public const int ptiEmployeeIV = 2131493359;
+			
+			// aapt resource value: 0x7f0c01f0
+			public const int ptiFinanceIV = 2131493360;
 			
 			// aapt resource value: 0x7f0c01ee
 			public const int ptiHistoryIV = 2131493358;

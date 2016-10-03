@@ -6,15 +6,16 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
+using Android.Content.PM;
+using Android.Views.InputMethods;
 
 using CRMLite.Dialogs;
 using CRMLite.Adapters;
 using CRMLite.Entities;
-using Android.Views.InputMethods;
 
 namespace CRMLite
 {
-	[Activity(Label = "ProfileActivity")]
+	[Activity(Label = "ProfileActivity", ScreenOrientation = ScreenOrientation.Landscape)]
 	public class ProfileActivity : Activity
 	{
 		LinearLayout Content;
