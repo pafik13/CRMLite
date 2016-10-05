@@ -181,6 +181,8 @@
     <Compile Include="Lib\Adapters\AddressSuggestionAdapter.cs" />
     <Compile Include="Lib\Adapters\MessageAdapter.cs" />
     <Compile Include="Lib\Entities\GPSData.cs" />
+    <Compile Include="Lib\Entities\MaterialFile.cs" />
+    <Compile Include="Lib\Entities\MaterialItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

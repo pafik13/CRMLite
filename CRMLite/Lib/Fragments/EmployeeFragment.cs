@@ -97,6 +97,7 @@ namespace CRMLite
 
 		void RecreateAdapter()
 		{
+			if (Employees != null && Employees.Count > 0) EmployeeTable.RemoveViews(1, Employees.Count - 1);
 			Employees = MainDatabase.GetPharmacyDatas<Employee>(Pharmacy.UUID);
 			foreach (var employee in Employees) {
 				AddEmployeeToTable(employee);
@@ -221,7 +222,7 @@ namespace CRMLite
 								DateTimeFormatInfo fmt = new CultureInfo("ru-RU").DateTimeFormat;
 								if (!string.IsNullOrEmpty(birthDate)) {
 									DateTimeOffset dtoBirthDate;
-									if (DateTimeOffset.TryParse(birthDate, fmt, DateTimeStyles.None, out dtoBirthDate)) {
+									if (DateTimeOffset.TryParse(birthDate, fmt, DateTimeStyles.AssumeUniversal, out dtoBirthDate)) {
 										employee.BirthDate = dtoBirthDate;
 									}
 								}

@@ -18,10 +18,12 @@ namespace CRMLite
 			Window.AddFlags (WindowManagerFlags.KeepScreenOn);
 
 			GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private).Edit()
-			                                                                         .PutString(MainActivity.C_DUMMY, string.Empty);
+			                                                                         .PutString(MainActivity.C_DUMMY, string.Empty)
+			                                                                         .Commit();
 
 			GetSharedPreferences(FilterDialog.C_FILTER_PREFS, FileCreationMode.Private).Edit()
-			                                                                           .PutString(MainActivity.C_DUMMY, string.Empty);
+			                                                                           .PutString(MainActivity.C_DUMMY, string.Empty)
+			                                                                           .Commit();
 
 			StartActivity(new Intent(this, typeof(MainActivity)));
 		}

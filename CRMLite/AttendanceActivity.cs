@@ -66,7 +66,7 @@ namespace CRMLite
 					break;
 				case 2:
 					FragmentTitle.Text = (AttendanceLast == null) || AttendanceStart.HasValue ? 
-						@"СОБИРАЕМАЯ ИНФОРМАЦИЯ" : string.Format(@"ИНФОРМАЦИЯ С ВИЗИТА ОТ {0}", AttendanceLast.When);
+						@"СОБИРАЕМАЯ ИНФОРМАЦИЯ" : string.Format(@"ИНФОРМАЦИЯ С ВИЗИТА ОТ {0}", AttendanceLast.When.LocalDateTime);
 					var w = new Stopwatch();
 					w.Start();
 					var emp = GetFragment(1);
@@ -82,7 +82,7 @@ namespace CRMLite
 					break;
 				case 3:
 					FragmentTitle.Text = (AttendanceLast == null) || AttendanceStart.HasValue ?
-						@"ФОТО НА ВИЗИТЕ" : string.Format(@"ФОТО С ВИЗИТА ОТ {0}", AttendanceLast.When);
+						@"ФОТО НА ВИЗИТЕ" : string.Format(@"ФОТО С ВИЗИТА ОТ {0}", AttendanceLast.When.LocalDateTime);
 					break;
 				default:
 					FragmentTitle.Text = @"СТРАНИЦА " + (position + 1);
@@ -264,15 +264,33 @@ namespace CRMLite
 
 			Material = FindViewById<ImageView>(Resource.Id.aaMaterialIV);
 			Material.Click += (sender, e) => {
+				if (Materials.Count == 0) return;
+
+				var materialItems = new List<MaterialItem>();
+				var materialFiles = MainDatabase.GetItems<MaterialFile>();
+				foreach (var mf in materialFiles) {
+					var file = new Java.IO.File(Helper.MaterialDir, mf.fileName);
+					if (file.Exists()) {
+						var found = Materials.FirstOrDefault(m => m.uuid == mf.material);
+						if (found != null) {
+							materialItems.Add(new MaterialItem(found.name, file));
+						}
+					}
+				}
+
+				if (materialItems.Count == 0) return;
+
 				new AlertDialog.Builder(this)
 				               .SetTitle("Выберите материал для показа:")
 				               .SetCancelable(true)
-				               .SetItems(Materials.Select(item => item.name).ToArray(), (caller, arguments) => {
-									var file = new Java.IO.File(Helper.MaterialDir, @"kv-present.pdf");
-									var intent = new Intent(Intent.ActionView);
-								   intent.SetDataAndType(Android.Net.Uri.FromFile(file), "application/pdf");
-								   intent.SetFlags(ActivityFlags.NoHistory);
-								   StartActivity(intent);
+				               .SetItems(
+					               materialItems.Select(item => item.MaterialName).ToArray(), 
+					               (caller, arguments) => {
+										var intent = new Intent(Intent.ActionView);
+									    var uri = Android.Net.Uri.FromFile(materialItems[arguments.Which].FilePath);
+										intent.SetDataAndType(uri, "application/pdf");
+								   		intent.SetFlags(ActivityFlags.NoHistory);
+								   		StartActivity(intent);
 								   //var materialActivity = new Intent(this, typeof(MaterialActivity));
 								   //materialActivity.PutExtra(MaterialActivity.C_MATERIAL_UUID, Materials[arguments.Which].uuid);
 								   //StartActivity(materialActivity);

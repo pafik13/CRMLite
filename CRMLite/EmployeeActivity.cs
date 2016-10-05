@@ -1,4 +1,5 @@
 ﻿using System;
+using SDiag = System.Diagnostics;
 using System.Collections.Generic;
 
 using Android.App;
@@ -50,7 +51,10 @@ namespace CRMLite
 
 			EmployeeTable.ItemClick += (sender, e) => {
 				Employee item;
-				if (EmployeeTable.ChildCount == Employees.Count + 1) {
+				if (EmployeeTable.HeaderViewsCount > 0) {
+					if (e.Position < EmployeeTable.HeaderViewsCount) {
+						return;
+					}
 					item = Employees[e.Position - 1];
 				} else {
 					item = Employees[e.Position];
@@ -66,14 +70,14 @@ namespace CRMLite
 				var employeeDialog = new EmployeeDialog(Pharmacy, item);
 				employeeDialog.Show(fragmentTransaction, EmployeeDialog.TAG);
 				employeeDialog.AfterSaved += (caller, arguments) => {
-					Console.WriteLine("Event {0} was called", "AfterSaved");
+					SDiag.Debug.WriteLine("Event {0} was called", "AfterSaved");
 
 					RecreateAdapter();
 				};
 			};
 
 			FindViewById<ImageView>(Resource.Id.eaAddIV).Click += (s, e) => {
-				Console.WriteLine("Event {0} was called", "eaAdd_Click");
+				SDiag.Debug.WriteLine("Event {0} was called", "eaAdd_Click");
 
 				var fragmentTransaction = FragmentManager.BeginTransaction();
 				var prev = FragmentManager.FindFragmentByTag(EmployeeDialog.TAG);
@@ -85,7 +89,7 @@ namespace CRMLite
 				var employeeDialog = new EmployeeDialog(Pharmacy);
 				employeeDialog.Show(fragmentTransaction, EmployeeDialog.TAG);
 				employeeDialog.AfterSaved += (caller, arguments) => {
-					Console.WriteLine("Event {0} was called", "AfterSaved");
+					SDiag.Debug.WriteLine("Event {0} was called", "AfterSaved");
 
 					RecreateAdapter();
 				};

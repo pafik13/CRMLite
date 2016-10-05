@@ -341,6 +341,11 @@ namespace CRMLite
 			return item;
 		}
 
+		public static bool IsSavedBefore<T>(string uuid) where T : RealmObject, IEntiryFromServer, new()
+		{
+			return Me.DB.All<T>().ToList().Exists((obj) => obj.uuid == uuid);
+		}
+
 		//public static T Create<T>(string attendanceUUID) where T : RealmObject, IAttendanceData, IEntity, new()
 		//{
 		//	var item = new T();

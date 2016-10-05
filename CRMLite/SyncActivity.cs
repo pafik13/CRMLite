@@ -6,6 +6,8 @@ using System.Globalization;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using SDiag = System.Diagnostics;
+
 using Android.OS;
 using Android.App;
 using Android.Views;
@@ -27,10 +29,13 @@ namespace CRMLite
 	{
 		TextView Locker;
 		string ACCESS_TOKEN;
-
+		CancellationTokenSource CancelSource;
+		CancellationToken CancelToken;
 		public string HOST_URL { get; private set; }
 		public string USERNAME { get; private set; }
+		public string AGENT_UUID { get; private set; }
 
+		public List<MaterialFile> MaterialFiles { get; private set; }
 
 		//public List<Hospital> Hospitals { get; private set; }
 
@@ -61,7 +66,11 @@ namespace CRMLite
 
 			// Create your application here
 			SetContentView(Resource.Layout.Sync);
-			
+
+			using (var trans = MainDatabase.BeginTransaction()) {
+				MainDatabase.DeleteItems<MaterialFile>();
+				trans.Commit();
+			}
 			Locker = FindViewById<TextView>(Resource.Id.locker);
 			
 			FindViewById<Button>(Resource.Id.saCloseB).Click += (s, e) => {
@@ -70,18 +79,20 @@ namespace CRMLite
 			
 			FindViewById<Button>(Resource.Id.saSyncB).Click += Sync_Click;
 
-			FindViewById<Button>(Resource.Id.saUploadPhotoB).Click += UploadPhoto_Click;;
+			FindViewById<Button>(Resource.Id.saUploadPhotoB).Click += UploadPhoto_Click;
 
-
-
-			RefreshView();
 
 			var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
 
 			ACCESS_TOKEN = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
 			USERNAME = shared.GetString(SigninDialog.C_USERNAME, string.Empty);
 			HOST_URL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
+			AGENT_UUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
 
+			MaterialFiles = new List<MaterialFile>();
+
+
+			RefreshView();
 		}
 
 		void UploadPhoto_Click(object sender, EventArgs e)
@@ -107,7 +118,7 @@ namespace CRMLite
 					switch (response.StatusCode) {
 						case HttpStatusCode.OK:
 						case HttpStatusCode.Created:
-							//photo.IsSynced = true;
+							photo.IsSynced = true;
 							Toast.MakeText(this, @"Фото ЗАГРУЖЕНО!", ToastLength.Short).Show();
 							continue;
 						default:
@@ -163,6 +174,43 @@ namespace CRMLite
 
 			var photoCount = FindViewById<TextView>(Resource.Id.saSyncPhotosCount);
 			photoCount.Text = string.Format("Необходимо выгрузить {0} фото", MainDatabase.CountItemsToSync<PhotoData>());
+
+
+			CancelSource = new CancellationTokenSource();
+			CancelToken = CancelSource.Token;
+			CheckMaterialFiles();
+		}
+
+		async void CheckMaterialFiles()
+		{
+			var client = new RestClient(HOST_URL);
+			//var client = new RestClient("http://sbl-crm-project-pafik13.c9users.io:8080/");
+			var request = new RestRequest("/MaterialFile?populate=false", Method.GET);
+
+			var response = await client.ExecuteGetTaskAsync<List<MaterialFile>>(request);
+
+			if (!CancelToken.IsCancellationRequested) {
+				switch (response.StatusCode) {
+					case HttpStatusCode.OK:
+					case HttpStatusCode.Created:
+						SDiag.Debug.WriteLine("MaterialFile: {0}", response.Data.Count);
+						MaterialFiles.Clear();
+						foreach (var item in response.Data) {
+							if (!MainDatabase.IsSavedBefore<MaterialFile>(item.uuid)) {
+								if (!string.IsNullOrEmpty(item.s3Location)) {
+									MaterialFiles.Add(item);
+								}
+							}
+						}
+
+						RunOnUiThread(() => {
+							var toUpdateCount = FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount);
+							toUpdateCount.Text = string.Format("Необходимо обновить {0} объектов", MaterialFiles.Count);
+						});
+						break;
+				}
+				Console.WriteLine(response.StatusDescription);
+			}
 		}
 		
 		void Sync_Click(object sender, EventArgs e){
@@ -212,6 +260,38 @@ namespace CRMLite
 					//	SyncEntities(MainDatabase.GetItemsToSync<(type as Type)>());
 					//}
 
+					foreach (var materialFile in MaterialFiles) {
+						if (!MainDatabase.IsSavedBefore<Material>(materialFile.material)) {
+							var client = new RestClient(HOST_URL);
+							string pathURL = string.Format(@"Material/{0}?populate=false", materialFile.material);
+							var request = new RestRequest(pathURL, Method.GET);
+
+							var response = client.Execute<Material>(request);
+
+							switch (response.StatusCode) {
+								case HttpStatusCode.OK:
+								case HttpStatusCode.Created:
+									SDiag.Debug.WriteLine("Material: {0}", response.Data);
+									MainDatabase.SaveItem(response.Data);
+									SDiag.Debug.WriteLine(response.StatusDescription);
+									break;
+								default:
+									SDiag.Debug.WriteLine(response.StatusDescription);
+									continue;
+							}
+						}
+
+						var wclient = new WebClient();
+						string path = new Java.IO.File(Helper.MaterialDir, materialFile.fileName).ToString(); 
+						try {
+							//ServicePointManager.ServerCertificateValidationCallback += (o, certificate, chain, errors) => true;
+							wclient.DownloadFile(materialFile.s3Location, path);
+							MainDatabase.SaveItem(materialFile);
+						} catch(Exception exc) {
+							SDiag.Debug.WriteLine("Was exception: {0}", exc.Message);
+						}
+					}
+
 					SyncEntities(MainDatabase.GetItemsToSync<Attendance>());
 					SyncEntities(MainDatabase.GetItemsToSync<CompetitorData>());
 					SyncEntities(MainDatabase.GetItemsToSync<ContractData>());
@@ -243,7 +323,6 @@ namespace CRMLite
 		protected override void OnResume()
 		{
 			base.OnResume();
-
 		}
 
 		void SyncEntities<T>(List<T> items) where T : RealmObject, ISync
@@ -268,6 +347,15 @@ namespace CRMLite
 				}
 				trans.Commit();
 			}
+		}
+
+		protected override void OnPause()
+		{
+			base.OnPause();
+
+			if (CancelToken.CanBeCanceled && CancelSource != null) {
+				CancelSource.Cancel();
+			}		
 		}
 	}
 }

@@ -124,6 +124,7 @@ namespace CRMLite
 			if (attendanceLast != null) {
 				if (attendanceLast.When.Date == DateTimeOffset.UtcNow.Date) {
 					Arrow.Visibility = ViewStates.Gone;
+					Locker.Text = string.Empty;
 				}
 			}
 
