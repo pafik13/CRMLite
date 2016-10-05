@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
+
+using SDiag = System.Diagnostics;
+
 
 using Android.OS;
 using Android.App;
@@ -51,11 +53,11 @@ namespace CRMLite
 
 			// Register the crash manager before Initializing the trace writer
 			CrashManager.Register(this, Secret.HockeyappAppId);
-
+			//CrashManagerListener
 			//Register to with the Update Manager
 			UpdateManager.Register(this, Secret.HockeyappAppId);
 
-			HockeyLog.LogLevel = 3;
+			HockeyLog.LogLevel = 2;
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
@@ -230,6 +232,7 @@ namespace CRMLite
 				showPharmacy.PutExtra(@"UUID", Pharmacies[e.Position - 1].UUID);
 				StartActivity(showPharmacy);
 			}
+			//throw new DivideByZeroException("My DivideByZeroException");
 		}
 
 		void RecreateAdapter(List<Pharmacy> inputList = null)
@@ -367,9 +370,9 @@ namespace CRMLite
 				return;
 			}
 
-			//Console.WriteLine(@"Search: startmemory{0}", System.Diagnostics.Process.GetCurrentProcess().WorkingSet64);
+			//SDiag.Debug.WriteLine(@"Search: startmemory{0}", System.Diagnostics.Process.GetCurrentProcess().WorkingSet64);
 
-			var w = new Stopwatch();
+			var w = new SDiag.Stopwatch();
 			w.Start();
 			// 1 насыщениe
 			//var searchItems = new List<SearchItem>()
@@ -390,7 +393,7 @@ namespace CRMLite
 				}
 			}
 			w.Stop();
-			Console.WriteLine(@"Search: насыщение={0}", w.ElapsedMilliseconds);
+			SDiag.Debug.WriteLine(@"Search: насыщение={0}", w.ElapsedMilliseconds);
 
 			w.Restart();
 			var matchFormat = @"Совпадение: {0}";
@@ -420,7 +423,7 @@ namespace CRMLite
 				}
 			}
 			w.Stop();
-			Console.WriteLine(@"Search: поиск={0}", w.ElapsedMilliseconds);
+			SDiag.Debug.WriteLine(@"Search: поиск={0}", w.ElapsedMilliseconds);
 
 			w.Restart();
 			// 3 показ
@@ -429,8 +432,8 @@ namespace CRMLite
 			//	this, Android.Resource.Layout.SimpleListItemMultipleChoice, result.Select(si => si.Name).ToArray()
 			//);
 			w.Stop();
-			Console.WriteLine(@"Search: показ={0}", w.ElapsedMilliseconds);
-			//Console.WriteLine(@"Search: endmemory{0}", System.Diagnostics.Process.GetCurrentProcess().WorkingSet64);
+			SDiag.Debug.WriteLine(@"Search: показ={0}", w.ElapsedMilliseconds);
+			//SDiag.Debug.WriteLine(@"Search: endmemory{0}", System.Diagnostics.Process.GetCurrentProcess().WorkingSet64);
 		}
 
 		protected override void OnResume()
@@ -460,13 +463,20 @@ namespace CRMLite
 					//Toast.MakeText(this, @"SuccessSignedIn", ToastLength.Short).Show();
 					RunOnUiThread(() => {
 						OnResume();
-						Console.WriteLine(@"DBPath = {0}", MainDatabase.DBPath);
+						SDiag.Debug.WriteLine(@"DBPath = {0}", MainDatabase.DBPath);
 					});
 				};
 
-				Console.WriteLine(@"username = IsNullOrEmpty");
+				SDiag.Debug.WriteLine(@"username = IsNullOrEmpty");
 				return;
 			}
+
+			var ft = FragmentManager.BeginTransaction();
+			var sd = FragmentManager.FindFragmentByTag(SigninDialog.TAG);
+			if (sd != null) {
+				ft.Remove(sd);
+			}
+			ft.Commit();
 
 			if (!IsLocationActive()) return;
 
@@ -482,17 +492,17 @@ namespace CRMLite
 				Helper.WeeksInRoute = agent.weeksInRout;
 				Helper.WorkMode = agent.GetWorkMode();
 			} catch (Exception ex) {
-				Console.WriteLine(ex.Message);
+				SDiag.Debug.WriteLine(ex.Message);
 			}
 
 
-			var w = new Stopwatch();
+			var w = new SDiag.Stopwatch();
 			
 			// TODO: сделать ветку автоматической синхронизации
 			// w.Restart();
 			// StartService(new Intent(@"SyncService"));
 			// w.Stop();
-			// Console.WriteLine(@"SyncService: запуск={0}", w.ElapsedMilliseconds);
+			// SDiag.Debug.WriteLine(@"SyncService: запуск={0}", w.ElapsedMilliseconds);
 
 		    w.Restart();
 			var currentRouteItems = MainDatabase.GetRouteItems(DateTimeOffset.Now);
@@ -514,14 +524,14 @@ namespace CRMLite
 		      }
 		    }
 		    w.Stop();
-		    Console.WriteLine(@"Route: копирование={0}", w.ElapsedMilliseconds);
+		    SDiag.Debug.WriteLine(@"Route: копирование={0}", w.ElapsedMilliseconds);
     
 			w.Restart();
 			int count = MainDatabase.GetItems<Attendance>()
 									.Count(att => att.When.LocalDateTime.Date == DateTimeOffset.Now.Date);
 			AttendanceCount.Text = string.Format(@"РЕЖИМ РАБОТЫ: {0};  СЕГОДНЯ ВИЗИТОВ: {1}", Helper.GetWorkModeDesc(Helper.WorkMode), count);
 			w.Stop();
-			Console.WriteLine(@"OnResume: подсчет визитов={0}", w.ElapsedMilliseconds);
+			SDiag.Debug.WriteLine(@"OnResume: подсчет визитов={0}", w.ElapsedMilliseconds);
 
 			var sparseArray = SearchTable.CheckedItemPositions;
 			bool hasCheckedItemInSearchTable = false;
@@ -555,7 +565,7 @@ namespace CRMLite
 			}
 			prefs.Edit().PutString(C_SAVED_PHARMACY_UUID, string.Empty).Commit();
 			w.Stop();
-			Console.WriteLine(@"Search: обновление={0}", w.ElapsedMilliseconds);
+			SDiag.Debug.WriteLine(@"Search: обновление={0}", w.ElapsedMilliseconds);
 		}
 
 		bool IsLocationActive()

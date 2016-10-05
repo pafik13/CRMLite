@@ -67,10 +67,10 @@ namespace CRMLite
 			// Create your application here
 			SetContentView(Resource.Layout.Sync);
 
-			using (var trans = MainDatabase.BeginTransaction()) {
-				MainDatabase.DeleteItems<MaterialFile>();
-				trans.Commit();
-			}
+			//using (var trans = MainDatabase.BeginTransaction()) {
+			//	MainDatabase.DeleteItems<MaterialFile>();
+			//	trans.Commit();
+			//}
 			Locker = FindViewById<TextView>(Resource.Id.locker);
 			
 			FindViewById<Button>(Resource.Id.saCloseB).Click += (s, e) => {
@@ -97,39 +97,67 @@ namespace CRMLite
 
 		void UploadPhoto_Click(object sender, EventArgs e)
 		{
-			foreach (var photo in MainDatabase.GetItemsToSync<PhotoData>()) {
-				try {
-					Toast.MakeText(this, string.Format(@"Загрузка фото с uuid {0} по посещению с uuid:{1}", photo.UUID, photo.Attendance), ToastLength.Short).Show();
-
-					var client = new RestClient(HOST_URL);
-
-					var request = new RestRequest(@"PhotoData/upload", Method.POST);
-					request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
-					//request.AddQueryParameter(@"Stamp", photo.Stamp.ToString());
-					request.AddQueryParameter(@"Attendance", photo.Attendance);
-					request.AddQueryParameter(@"PhotoType", photo.PhotoType);
-					request.AddQueryParameter(@"Brand", photo.Brand);
-					request.AddQueryParameter(@"Latitude", photo.Latitude.ToString(CultureInfo.CreateSpecificCulture(@"en-GB")));
-					request.AddQueryParameter(@"Longitude", photo.Longitude.ToString(CultureInfo.CreateSpecificCulture(@"en-GB")));
-					request.AddFile(@"photo", File.ReadAllBytes(photo.PhotoPath), Path.GetFileName(photo.PhotoPath), string.Empty);
-
-					var response = client.Execute(request);
-
-					switch (response.StatusCode) {
-						case HttpStatusCode.OK:
-						case HttpStatusCode.Created:
-							photo.IsSynced = true;
-							Toast.MakeText(this, @"Фото ЗАГРУЖЕНО!", ToastLength.Short).Show();
-							continue;
-						default:
-							Toast.MakeText(this, @"Не удалось загрузить фото по посещению!", ToastLength.Short).Show();
-							continue;
-					}
-				} catch (Exception ex) {
-					Toast.MakeText(this, @"Error : " + ex.Message, ToastLength.Short).Show();
-					continue;
-				}
+			if (CancelSource != null && CancelToken.CanBeCanceled) {
+				CancelSource.Cancel();
 			}
+
+			var progress = ProgressDialog.Show(this, string.Empty, @"Выгрузка фото");
+
+			new Task(() => {
+				MainDatabase.Dispose();
+				Thread.Sleep(1000); // иначе не успеет показаться диалог
+
+				MainDatabase.Username = USERNAME;
+				using (var trans = MainDatabase.BeginTransaction()) {
+					foreach (var photo in MainDatabase.GetItemsToSync<PhotoData>()) {
+						try {
+							//Toast.MakeText(this, string.Format(@"Загрузка фото с uuid {0} по посещению с uuid:{1}", photo.UUID, photo.Attendance), ToastLength.Short).Show();
+							SDiag.Debug.WriteLine(string.Format(@"Загрузка фото с uuid {0} по посещению с uuid:{1}", photo.UUID, photo.Attendance));
+
+							var client = new RestClient(HOST_URL);
+
+							var request = new RestRequest(@"PhotoData/upload", Method.POST);
+							request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
+							//request.AddQueryParameter(@"Stamp", photo.Stamp.ToString());
+							request.AddQueryParameter(@"Attendance", photo.Attendance);
+							request.AddQueryParameter(@"PhotoType", photo.PhotoType);
+							request.AddQueryParameter(@"Brand", photo.Brand);
+							request.AddQueryParameter(@"Latitude", photo.Latitude.ToString(CultureInfo.CreateSpecificCulture(@"en-GB")));
+							request.AddQueryParameter(@"Longitude", photo.Longitude.ToString(CultureInfo.CreateSpecificCulture(@"en-GB")));
+							request.AddFile(@"photo", File.ReadAllBytes(photo.PhotoPath), Path.GetFileName(photo.PhotoPath), string.Empty);
+
+							var response = client.Execute(request);
+
+							switch (response.StatusCode) {
+								case HttpStatusCode.OK:
+								case HttpStatusCode.Created:
+									// TODO: переделать на вызов с проверкой открытой транзакции
+									photo.IsSynced = true;
+									if (!photo.IsManaged) MainDatabase.SavePhoto(photo);
+									//Toast.MakeText(this, "Фото ЗАГРУЖЕНО!", ToastLength.Short).Show();
+									SDiag.Debug.WriteLine("Фото ЗАГРУЖЕНО!");
+									continue;
+								default:
+									//Toast.MakeText(this, "Не удалось загрузить фото по посещению!", ToastLength.Short).Show();
+									SDiag.Debug.WriteLine("Не удалось загрузить фото по посещению!");
+									continue;
+							}
+						} catch (Exception ex) {
+							//Toast.MakeText(this, @"Error : " + ex.Message, ToastLength.Short).Show();
+							SDiag.Debug.WriteLine("Error : " + ex.Message);
+							continue;
+						}
+					}
+					trans.Commit();
+				}
+				RunOnUiThread(() => {
+					MainDatabase.Dispose();
+					MainDatabase.Username = USERNAME;
+					// Thread.Sleep(1000);
+					progress.Dismiss();
+					RefreshView();
+				});
+			}).Start();
 		}
 
 		void RefreshView(){
@@ -209,12 +237,17 @@ namespace CRMLite
 						});
 						break;
 				}
-				Console.WriteLine(response.StatusDescription);
+				SDiag.Debug.WriteLine(response.StatusDescription);
 			}
 		}
 		
 		void Sync_Click(object sender, EventArgs e){
-			Toast.MakeText(this, @"saSyncB_Click", ToastLength.Short).Show();
+
+			if (CancelSource != null && CancelToken.CanBeCanceled) {
+				CancelSource.Cancel();
+			}
+
+			//Toast.MakeText(this, @"saSyncB_Click", ToastLength.Short).Show();
 
 			//Locker.Visibility = ViewStates.Visible;
 
@@ -281,15 +314,17 @@ namespace CRMLite
 							}
 						}
 
-						ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-						var wclient = new WebClient();
-						string path = new Java.IO.File(Helper.MaterialDir, materialFile.fileName).ToString(); 
-						try {
-							wclient.DownloadFile(materialFile.s3Location, path);
-							MainDatabase.SaveItem(materialFile);
-						} catch(Exception exc) {
-							// TODO: Add log info to HockeyApp
-							SDiag.Debug.WriteLine("Was exception: {0}", exc.Message);
+						// 79 Characters (72 without spaces)
+						ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
+						using (var wclient = new WebClient()) {
+							string path = new Java.IO.File(Helper.MaterialDir, materialFile.fileName).ToString();
+							try {
+								wclient.DownloadFile(materialFile.s3Location, path);
+								MainDatabase.SaveItem(materialFile);
+							} catch (Exception exc) {
+								// TODO: Add log info to HockeyApp
+								SDiag.Debug.WriteLine("Was exception: {0}", exc.Message);
+							}
 						}
 					}
 
@@ -344,7 +379,7 @@ namespace CRMLite
 							item.IsSynced = true;
 							break;
 					}
-					Console.WriteLine(response.StatusDescription);
+					SDiag.Debug.WriteLine(response.StatusDescription);
 				}
 				trans.Commit();
 			}
