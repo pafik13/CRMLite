@@ -97,7 +97,7 @@ namespace CRMLite
 
 		void RecreateAdapter()
 		{
-			if (Employees != null && Employees.Count > 0) EmployeeTable.RemoveViews(1, Employees.Count - 1);
+			if (Employees != null && Employees.Count > 0) EmployeeTable.RemoveViews(1, Employees.Count);
 			Employees = MainDatabase.GetPharmacyDatas<Employee>(Pharmacy.UUID);
 			foreach (var employee in Employees) {
 				AddEmployeeToTable(employee);

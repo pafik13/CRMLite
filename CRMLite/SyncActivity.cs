@@ -244,7 +244,7 @@ namespace CRMLite
 
 			//Locker.Visibility = ViewStates.Gone;
 
-			if (Count > 0) {
+			if (Count > 0 || MaterialFiles.Count > 0) {
 				var progress = ProgressDialog.Show(this, string.Empty, @"Синхронизация");
 
 				new Task(() => {
@@ -281,13 +281,14 @@ namespace CRMLite
 							}
 						}
 
+						ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 						var wclient = new WebClient();
 						string path = new Java.IO.File(Helper.MaterialDir, materialFile.fileName).ToString(); 
 						try {
-							//ServicePointManager.ServerCertificateValidationCallback += (o, certificate, chain, errors) => true;
 							wclient.DownloadFile(materialFile.s3Location, path);
 							MainDatabase.SaveItem(materialFile);
 						} catch(Exception exc) {
+							// TODO: Add log info to HockeyApp
 							SDiag.Debug.WriteLine("Was exception: {0}", exc.Message);
 						}
 					}
