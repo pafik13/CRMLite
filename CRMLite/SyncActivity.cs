@@ -27,6 +27,8 @@ namespace CRMLite
 	[Activity(Label = "SyncActivity", ScreenOrientation = ScreenOrientation.Landscape)]
 	public class SyncActivity : Activity
 	{
+		const string C_LAST_UPLOAD_REALM_FILE_DATETIME = "C_LAST_UPLOAD_REALM_FILE_DATETIME";
+
 		TextView Locker;
 		string ACCESS_TOKEN;
 		CancellationTokenSource CancelSource;
@@ -34,6 +36,8 @@ namespace CRMLite
 		public string HOST_URL { get; private set; }
 		public string USERNAME { get; private set; }
 		public string AGENT_UUID { get; private set; }
+
+		public string LAST_UPLOAD_REALM_FILE_DATETIME { get; private set; }
 
 		public List<MaterialFile> MaterialFiles { get; private set; }
 
@@ -91,7 +95,6 @@ namespace CRMLite
 
 			MaterialFiles = new List<MaterialFile>();
 
-
 			RefreshView();
 		}
 
@@ -108,15 +111,64 @@ namespace CRMLite
 				Thread.Sleep(1000); // иначе не успеет показаться диалог
 
 				MainDatabase.Username = USERNAME;
+
+				var client = new RestClient(HOST_URL);
+				IRestRequest request;
+				IRestResponse response;
+				//var client = new RestClient("http://sbl-crm-project-pafik13.c9users.io:8080/");
+
+				bool isNeedUploadRealm = false;
+				if (string.IsNullOrEmpty(LAST_UPLOAD_REALM_FILE_DATETIME)) {
+					isNeedUploadRealm = true;
+				} else {
+					try {
+						var date = DateTime.Parse(LAST_UPLOAD_REALM_FILE_DATETIME, null, DateTimeStyles.RoundtripKind);
+						isNeedUploadRealm = (date.Date > DateTime.Now.Date);
+					} catch (Exception exc) {
+						SDiag.Debug.WriteLine("Error : " + exc.Message);
+						isNeedUploadRealm = true;
+					}
+				}
+
+				if (isNeedUploadRealm) {
+					request = new RestRequest(@"RealmFile/upload", Method.POST);
+
+					request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
+					request.AddQueryParameter(@"androidId", Helper.AndroidId);
+					request.AddFile(@"realm", File.ReadAllBytes(MainDatabase.DBPath), Path.GetFileName(MainDatabase.DBPath), string.Empty);
+
+					response = client.Execute(request);
+
+					switch (response.StatusCode) {
+						case HttpStatusCode.OK:
+						case HttpStatusCode.Created:
+							SDiag.Debug.WriteLine("Удалось загрузить копию базы!");
+							string lastUploadRealmFileDatetime = DateTime.Now.ToString("O");
+							GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private).Edit()
+																									 .PutString(C_LAST_UPLOAD_REALM_FILE_DATETIME, lastUploadRealmFileDatetime)
+																									 .Commit();
+							break;
+						default:
+							SDiag.Debug.WriteLine("Не удалось загрузить копию базы!");
+							break;
+					}
+					//RunOnUiThread(() => {
+					//	MainDatabase.Dispose();
+					//	MainDatabase.Username = USERNAME;
+					//	// Thread.Sleep(1000);
+					//	progress.Dismiss();
+					//	RefreshView();
+					//});
+					//return;
+				}
 				using (var trans = MainDatabase.BeginTransaction()) {
+
 					foreach (var photo in MainDatabase.GetItemsToSync<PhotoData>()) {
 						try {
 							//Toast.MakeText(this, string.Format(@"Загрузка фото с uuid {0} по посещению с uuid:{1}", photo.UUID, photo.Attendance), ToastLength.Short).Show();
 							SDiag.Debug.WriteLine(string.Format(@"Загрузка фото с uuid {0} по посещению с uuid:{1}", photo.UUID, photo.Attendance));
 
-							var client = new RestClient(HOST_URL);
-
-							var request = new RestRequest(@"PhotoData/upload", Method.POST);
+							request = new RestRequest(@"PhotoData/upload", Method.POST);
 							request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
 							//request.AddQueryParameter(@"Stamp", photo.Stamp.ToString());
 							request.AddQueryParameter(@"Attendance", photo.Attendance);
@@ -126,7 +178,7 @@ namespace CRMLite
 							request.AddQueryParameter(@"Longitude", photo.Longitude.ToString(CultureInfo.CreateSpecificCulture(@"en-GB")));
 							request.AddFile(@"photo", File.ReadAllBytes(photo.PhotoPath), Path.GetFileName(photo.PhotoPath), string.Empty);
 
-							var response = client.Execute(request);
+							response = client.Execute(request);
 
 							switch (response.StatusCode) {
 								case HttpStatusCode.OK:
@@ -162,6 +214,7 @@ namespace CRMLite
 
 		void RefreshView(){
 			//var pharmacies = MainDatabase.GetItemsToSync<Pharmacy>();
+			LAST_UPLOAD_REALM_FILE_DATETIME = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private).GetString(C_LAST_UPLOAD_REALM_FILE_DATETIME, string.Empty);
 
 			Count = 0;
 
@@ -245,6 +298,30 @@ namespace CRMLite
 
 			if (CancelSource != null && CancelToken.CanBeCanceled) {
 				CancelSource.Cancel();
+			}
+
+
+			try {
+				var dbFileInfo = new FileInfo(MainDatabase.DBPath);
+				HockeyApp.MetricsManager.TrackEvent(
+					"SyncActivity.Sync_Click.DB",
+					new Dictionary<string, string> { 
+						{ "realm.path", dbFileInfo.FullName },
+						{ "android_id", Helper.AndroidId },
+						{ "agent_uuid", MainDatabase.AgentUUID }
+					},
+					new Dictionary<string, double> { { "realm.size", dbFileInfo.Length } }
+				);
+			} catch (Exception exc) {
+				HockeyApp.MetricsManager.TrackEvent(
+					"SyncActivity.Sync_Click.Exception",
+					new Dictionary<string, string> { 
+						{ "Message", exc.Message },
+						{ "android_id", Helper.AndroidId },
+						{ "agent_uuid", MainDatabase.AgentUUID }
+					},
+					new Dictionary<string, double> { { "HResult", exc.HResult } }
+				);				
 			}
 
 			//Toast.MakeText(this, @"saSyncB_Click", ToastLength.Short).Show();

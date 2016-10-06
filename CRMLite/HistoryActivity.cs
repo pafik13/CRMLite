@@ -123,7 +123,24 @@ namespace CRMLite
 						var view = row.GetChildAt(v);
 						if (view is TextView) {
 							(view as TextView).Text = string.Empty;
-							TextViews.Add(dict_key, (view as TextView));
+							if (!TextViews.ContainsKey(dict_key)) {
+								TextViews.Add(dict_key, (view as TextView));
+								//HockeyApp.MetricsManager.TrackEvent(
+								//"HistoryActivity.RefreshView",
+								//	new Dictionary<string, string> { { "dict_key", dict_key }, { "date", dates[v - 1].LocalDateTime.ToLongDateString() } },
+								//	new Dictionary<string, double> { { "v", v } }
+								//);
+							} else {
+								HockeyApp.MetricsManager.TrackEvent(
+									"HistoryActivity.RefreshView.DuplicateKey",
+									new Dictionary<string, string> { 
+										{ "dict_key", dict_key }, 
+										{ "android_id", Helper.AndroidId }, 
+										{ "agent_uuid", MainDatabase.AgentUUID },
+									},
+									new Dictionary<string, double> { { "v", v} }
+								);
+							}
 						}
 					}
 					Table.AddView(row);
@@ -135,24 +152,35 @@ namespace CRMLite
 				var distributions = MainDatabase.GetItems<DistributionData>().Where(i => i.Attendance == attendance.UUID);
 				foreach (var distribution in distributions) {
 					// IsExistence
+
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditIsExistence, attendance.When.ToString(format));
-					TextViews[dict_key].Text = distribution.IsExistence ? @"+" : @"-";
+					if (!TextViews.ContainsKey(dict_key)) {
+						TextViews[dict_key].Text = distribution.IsExistence ? @"+" : @"-";
+					}
 
 					// Count
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditCount, attendance.When.ToString(format));
-					TextViews[dict_key].Text = distribution.Count.ToString();
+					if (!TextViews.ContainsKey(dict_key)) {
+						TextViews[dict_key].Text = distribution.Count.ToString();
+					}
 
 					// Price
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditPrice, attendance.When.ToString(format));
-					TextViews[dict_key].Text = distribution.Price.ToString();
+					if (!TextViews.ContainsKey(dict_key)) {
+						TextViews[dict_key].Text = distribution.Price.ToString();
+					}
 
 					// IsPresence
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditIsPresence, attendance.When.ToString(format));
-					TextViews[dict_key].Text = distribution.IsPresence ? @"+" : @"-";
+					if (!TextViews.ContainsKey(dict_key)) {
+						TextViews[dict_key].Text = distribution.IsPresence ? @"+" : @"-";
+					}
 
 					// HasPOS
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditHasPOS, attendance.When.ToString(format));
-					TextViews[dict_key].Text = distribution.HasPOS ? @"+" : @"-";
+					if (!TextViews.ContainsKey(dict_key)) {
+						TextViews[dict_key].Text = distribution.HasPOS ? @"+" : @"-";
+					}
 				}
 			}
 

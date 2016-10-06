@@ -17,6 +17,7 @@ using Android.Views.InputMethods;
 
 using HockeyApp.Android;
 using HockeyApp.Android.Utils;
+using HockeyApp.Android.Metrics;
 
 using CRMLite.Entities;
 using CRMLite.Adapters;
@@ -53,11 +54,20 @@ namespace CRMLite
 
 			// Register the crash manager before Initializing the trace writer
 			CrashManager.Register(this, Secret.HockeyappAppId);
-			//CrashManagerListener
-			//Register to with the Update Manager
+
+			// Register to with the Update Manager
 			UpdateManager.Register(this, Secret.HockeyappAppId);
 
 			HockeyLog.LogLevel = 2;
+
+			// Register user metics
+			MetricsManager.Register(Application, Secret.HockeyappAppId);
+			MetricsManager.EnableUserMetrics();
+			//HockeyApp.MetricsManager.TrackEvent(
+			//	"MainActivity.OnCreate",
+			//	new Dictionary<string, string> { { "prop1", "val1" } },
+			//	new Dictionary<string, double> { { "mes1", 1.0 } }
+			//);
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
@@ -491,6 +501,7 @@ namespace CRMLite
 				MainDatabase.AgentUUID = agent.uuid;
 				Helper.WeeksInRoute = agent.weeksInRout;
 				Helper.WorkMode = agent.GetWorkMode();
+				Helper.AndroidId = Helper.GetAndroidId(this);
 			} catch (Exception ex) {
 				SDiag.Debug.WriteLine(ex.Message);
 			}

@@ -63,7 +63,7 @@ namespace CRMLite
 				Dates[w] = DateTimeOffset.UtcNow.AddDays(-7 * (weeksCount - 1 - w));
 				var hView = header.GetChildAt(w + 1);
 				if (hView is TextView) {
-					(hView as TextView).Text = Helper.GetIso8601WeekOfYear(Dates[w].UtcDateTime).ToString();
+					(hView as TextView).Text = Helper.GetIso8601WeekOfYear(Dates[w].UtcDateTime.Date).ToString();
 				}
 			}
 			Content.AddView(header, 1);

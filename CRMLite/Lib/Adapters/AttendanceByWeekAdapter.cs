@@ -30,7 +30,7 @@ namespace CRMLite.Adapters
 			YearWeeks = new int[14];
             for (int d = 0; d < 14; d++)
             {
-				YearWeeks[d] = dates[d].Year * 100 + Helper.GetIso8601WeekOfYear(dates[d].DateTime);
+				YearWeeks[d] = dates[d].Year * 100 + Helper.GetIso8601WeekOfYear(dates[d].DateTime.Date);
             }
 
 			Items = Source;

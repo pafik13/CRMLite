@@ -3,6 +3,9 @@ using System.Globalization;
 using System.Diagnostics;
 using System.IO;
 
+using Android.Provider;
+using Android.Content;
+
 namespace CRMLite
 {
 	public enum WorkMode
@@ -19,6 +22,13 @@ namespace CRMLite
 		public static int WeeksInRoute = 3;
 
 		public static WorkMode WorkMode = WorkMode.wmOnlyRoute;
+
+		public static string AndroidId = string.Empty;
+
+		public static string GetAndroidId(Context context)
+		{
+			return Settings.Secure.GetString(context.ContentResolver, Settings.Secure.AndroidId);
+		}
 
 		public static string AppDir {
 			get {

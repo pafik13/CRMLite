@@ -698,8 +698,22 @@ namespace CRMLite
 			{
 				var d = attendance.When.UtcDateTime.Date;
 				int key = d.Year * 100 + Helper.GetIso8601WeekOfYear(d);
-				if (result[attendance.Pharmacy].ContainsKey(key)){
-					result[attendance.Pharmacy][key]++;
+				if (result.ContainsKey(attendance.Pharmacy)) {
+					if (result[attendance.Pharmacy].ContainsKey(key)) {
+						result[attendance.Pharmacy][key]++;
+					}
+				} else {
+					HockeyApp.MetricsManager.TrackEvent(
+						"MainDatabase.GetProfileReportData",
+						new Dictionary<string, string> { 
+							{ "UUID", attendance.UUID },
+							{ "Pharmacy", attendance.Pharmacy },
+							{ "date", d.ToLongDateString() },
+							{ "android_id", Helper.AndroidId },
+							{ "agent_uuid", AgentUUID }
+						},
+						new Dictionary<string, double> { { "key", key } }
+					);
 				}
 			}
 			
