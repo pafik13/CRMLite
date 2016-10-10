@@ -61,6 +61,12 @@ namespace CRMLite
 				return Me._agent_uuid;}
 		}
 
+
+		public static string RealmDir {
+			get {
+				return System.IO.Path.Combine(Helper.AppDir, Username, @"realm");
+			}
+		}
 		//static MainDatabase()
 		//{
 		//	Me = new MainDatabase();
@@ -68,9 +74,12 @@ namespace CRMLite
 
 		protected MainDatabase(string username)
 		{
-			// instantiate the database
-			var dbFileLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),  username, Helper.C_DB_FILE_NAME);
+			//string dbFileLocation = System.IO.Path.Combine(Helper.AppDir, username, @"realm", Helper.C_DB_FILE_NAME);
+
+			//if (!System.IO.File.Exists(dbFileLocation)) {
+			string dbFileLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), username, Helper.C_DB_FILE_NAME);
 			new System.IO.FileInfo(dbFileLocation).Directory.Create();
+			//}
 			//Config = new RealmConfiguration(Helper.C_DB_FILE_NAME);
 			Config = new RealmConfiguration(dbFileLocation, false);
 			DB = Realm.GetInstance(Config);

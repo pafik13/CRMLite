@@ -55,7 +55,7 @@ namespace CRMLite
 					if (e.Position < EmployeeTable.HeaderViewsCount) {
 						return;
 					}
-					item = Employees[e.Position - 1];
+					item = Employees[e.Position - EmployeeTable.HeaderViewsCount];
 				} else {
 					item = Employees[e.Position];
 				}

@@ -10,6 +10,7 @@ using Android.Widget;
 
 using CRMLite.Entities;
 using RestSharp;
+using System.IO;
 
 namespace CRMLite
 {
@@ -93,6 +94,29 @@ namespace CRMLite
 
 		void CustomAction_Click(object sender, EventArgs e)
 		{
+			// Remove path from the file name.
+			string fName = MainDatabase.DBPath;
+
+			try {
+				// Will not overwrite if the destination file already exists.
+				File.Copy(MainDatabase.DBPath, Path.Combine(MainDatabase.RealmDir, Path.GetFileName(MainDatabase.DBPath)));
+			}
+
+			// Catch exception if the file was already copied.
+			catch (IOException copyError) {
+				new AlertDialog.Builder(this)
+							   .SetTitle(Resource.String.error_caption)
+							   .SetMessage(copyError.Message)
+							   .SetCancelable(true)
+							   .SetPositiveButton("OK", (caller, arguments) => {
+								   if (caller is Dialog) {
+									   (caller as Dialog).Dismiss();
+								   }
+							   })
+							   .Show();
+			}
+
+
 			//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
 			//string path = typeof(Agent).Name + @"/d3c6594e-41b3-4986-8afc-cf236413bd7e?populate=false";
 
@@ -102,38 +126,38 @@ namespace CRMLite
 			//MainDatabase.Dispose();
 			//MainDatabase.GetNets();
 
-			var gen = new Stopwatch();
-			gen.Start();
-			var rnd = new Random();
-			rnd.Next();
-			var nets = MainDatabase.GetItems<Net>();
-			var subways = MainDatabase.GetItems<Subway>();
-			var region = MainDatabase.GetItems<Region>();
-			var categories = MainDatabase.GetItems<Category>();
+			//var gen = new Stopwatch();
+			//gen.Start();
+			//var rnd = new Random();
+			//rnd.Next();
+			//var nets = MainDatabase.GetItems<Net>();
+			//var subways = MainDatabase.GetItems<Subway>();
+			//var region = MainDatabase.GetItems<Region>();
+			//var categories = MainDatabase.GetItems<Category>();
 
-			using (var transaction = MainDatabase.BeginTransaction()) {
-				MainDatabase.DeleteItems<Pharmacy>();
-				transaction.Commit();
-			}
+			//using (var transaction = MainDatabase.BeginTransaction()) {
+			//	MainDatabase.DeleteItems<Pharmacy>();
+			//	transaction.Commit();
+			//}
 
-			using (var transaction = MainDatabase.BeginTransaction()) {
-				for (int i = 0; i < 500; i++) {
-					var pharmacy = MainDatabase.CreatePharmacy();
-					pharmacy.Brand = @"Brand #" + i;
-					pharmacy.Address = @"Address #" + i;
-					pharmacy.Net = nets[rnd.Next(0, nets.Count - 1)].uuid;
-					pharmacy.Subway = subways[rnd.Next(0, subways.Count - 1)].uuid;
-					pharmacy.Region = region[rnd.Next(0, region.Count - 1)].uuid;
-					pharmacy.Category = categories[rnd.Next(0, categories.Count - 1)].uuid;
-				}
-				transaction.Commit();
-			}
+			//using (var transaction = MainDatabase.BeginTransaction()) {
+			//	for (int i = 0; i < 500; i++) {
+			//		var pharmacy = MainDatabase.CreatePharmacy();
+			//		pharmacy.Brand = @"Brand #" + i;
+			//		pharmacy.Address = @"Address #" + i;
+			//		pharmacy.Net = nets[rnd.Next(0, nets.Count - 1)].uuid;
+			//		pharmacy.Subway = subways[rnd.Next(0, subways.Count - 1)].uuid;
+			//		pharmacy.Region = region[rnd.Next(0, region.Count - 1)].uuid;
+			//		pharmacy.Category = categories[rnd.Next(0, categories.Count - 1)].uuid;
+			//	}
+			//	transaction.Commit();
+			//}
 
-			gen.Stop();
-			Console.WriteLine(
-				@"Calc: {0}, nets: {1}, subways: {2}, region: {3}, categories: {4}", 
-				gen.ElapsedMilliseconds, nets.Count, subways.Count, region.Count, categories.Count
-			);
+			//gen.Stop();
+			//Console.WriteLine(
+			//	@"Calc: {0}, nets: {1}, subways: {2}, region: {3}, categories: {4}", 
+			//	gen.ElapsedMilliseconds, nets.Count, subways.Count, region.Count, categories.Count
+			//);
 		}
 
 		void GenerateData_Click(object sender, EventArgs e)

@@ -53,8 +53,11 @@ namespace CRMLite
 			HospitalTable.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
 			{
 				HospitalData item;
-				if (HospitalTable.ChildCount == HospitalDatas.Count + 1) {
-					item = HospitalDatas[e.Position - 1];
+				if (HospitalTable.HeaderViewsCount > 0) {
+					if (e.Position < HospitalTable.HeaderViewsCount) {
+						return;
+					}
+					item = HospitalDatas[e.Position - HospitalTable.HeaderViewsCount];
 				} else {
 					item = HospitalDatas[e.Position];
 				}
