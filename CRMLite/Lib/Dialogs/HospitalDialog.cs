@@ -23,7 +23,7 @@ namespace CRMLite.Dialogs
 		readonly HospitalData HospitalData;
 
 		Hospital Hospital;
-		SuggestClient Api;
+		//SuggestClient Api;
 
 		protected virtual void OnAfterSaved(EventArgs e)
 		{
@@ -40,7 +40,7 @@ namespace CRMLite.Dialogs
 			}
 			Pharmacy = pharmacy;
 			HospitalData = hospitalData;
-			Api = new SuggestClient(Secret.DadataApiToken, Secret.DadataApiURL);
+			//Api = new SuggestClient(Secret.DadataApiToken, Secret.DadataApiURL);
 		}
 
 		public override void OnCreate(Bundle savedInstanceState)
@@ -71,31 +71,31 @@ namespace CRMLite.Dialogs
 
 			AutoCompleteTextView addressACTV = view.FindViewById<AutoCompleteTextView>(Resource.Id.hdAddressACTV);
 			addressACTV.Append(Hospital == null ? @"Москва" : Hospital.Address);
-			addressACTV.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
-			{
-				if (addressACTV.Text.Contains(" "))
-				{
-					var suggestions = new List<SuggestAddressResponse.Suggestions>();
-					try {
-						var response = Api.QueryAddress(addressACTV.Text);
-						suggestions = response.suggestionss;
-					} catch (Exception ex) {
-						System.Diagnostics.Debug.WriteLine(ex.Message);
-					}
-					addressACTV.Adapter = new AddressSuggestionAdapter(Activity, suggestions);
-					if (addressACTV.IsShown) {
-						addressACTV.DismissDropDown();
-					}
-					addressACTV.ShowDropDown();
-				}
-			};
-			addressACTV.ItemClick += (sender, e) => {
-				var item = (((AutoCompleteTextView)sender).Adapter as AddressSuggestionAdapter)[e.Position];
-				((AutoCompleteTextView)sender).SetTag(Resource.String.fias_id, item.data.fias_id);
-				((AutoCompleteTextView)sender).SetTag(Resource.String.qc_geo, item.data.qc_geo);
-				((AutoCompleteTextView)sender).SetTag(Resource.String.geo_lat, item.data.geo_lat);
-				((AutoCompleteTextView)sender).SetTag(Resource.String.geo_lon, item.data.geo_lon);
-			};
+			//addressACTV.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
+			//{
+			//	if (addressACTV.Text.Contains(" "))
+			//	{
+			//		//var suggestions = new List<SuggestAddressResponse.Suggestions>();
+			//		//try {
+			//		//	var response = Api.QueryAddress(addressACTV.Text);
+			//		//	suggestions = response.suggestionss;
+			//		//} catch (Exception ex) {
+			//		//	System.Diagnostics.Debug.WriteLine(ex.Message);
+			//		//}
+			//		//addressACTV.Adapter = new AddressSuggestionAdapter(Activity, suggestions);
+			//		//if (addressACTV.IsShown) {
+			//		//	addressACTV.DismissDropDown();
+			//		//}
+			//		//addressACTV.ShowDropDown();
+			//	}
+			//};
+			//addressACTV.ItemClick += (sender, e) => {
+			//	var item = (((AutoCompleteTextView)sender).Adapter as AddressSuggestionAdapter)[e.Position];
+			//	((AutoCompleteTextView)sender).SetTag(Resource.String.fias_id, item.data.fias_id);
+			//	((AutoCompleteTextView)sender).SetTag(Resource.String.qc_geo, item.data.qc_geo);
+			//	((AutoCompleteTextView)sender).SetTag(Resource.String.geo_lat, item.data.geo_lat);
+			//	((AutoCompleteTextView)sender).SetTag(Resource.String.geo_lon, item.data.geo_lon);
+			//};
 
 			view.FindViewById<Button>(Resource.Id.hdCloseB).Click += (s, e) => {
 				Dismiss();

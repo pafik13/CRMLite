@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ using Realms;
 
 using CRMLite.Dialogs;
 using CRMLite.Entities;
+using Newtonsoft.Json;
 
 namespace CRMLite
 {
@@ -293,13 +295,82 @@ namespace CRMLite
 				SDiag.Debug.WriteLine(response.StatusDescription);
 			}
 		}
-		
+
+		public bool IsTokenExpired(string token)
+		{
+			var payloadBytes = Convert.FromBase64String(token.Split('.')[1] + "=");
+			var payloadStr = Encoding.UTF8.GetString(payloadBytes, 0, payloadBytes.Length);
+
+			// Here, I only extract the "exp" payload property. You can extract other properties if you want.
+			var payload = JsonConvert.DeserializeAnonymousType(payloadStr, new { Exp = 0UL }); // 0UL makes implicit typing create the field as unsigned long. 
+
+			var currentTimestamp = (ulong)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
+
+			return currentTimestamp > payload.Exp;
+		}
+
 		void Sync_Click(object sender, EventArgs e){
 
 			if (CancelSource != null && CancelToken.CanBeCanceled) {
 				CancelSource.Cancel();
 			}
 
+			if (IsTokenExpired(ACCESS_TOKEN)) {
+
+				var input = new EditText(this);
+				// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+				input.InputType = Android.Text.InputTypes.ClassText | Android.Text.InputTypes.TextVariationPassword;
+
+				new AlertDialog.Builder(this)
+							   .SetTitle("Ключ доступа просрочен. Введите пароль.")
+							   .SetView(input)
+				               .SetPositiveButton("OK", async (caller, arguments) => {
+								   var progress = ProgressDialog.Show(this, string.Empty, @"Проверка данных. Получение ключа доступа.");
+								   var login = new RestClient(@"http://front-sblcrm.rhcloud.com/");
+								   //var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
+								   login.CookieContainer = new CookieContainer();
+
+								   string email = Helper.Username + "@sbl-crm.ru";
+								   string password = input.Text;
+								   IRestResponse response;
+								   try {
+									   var request = new RestRequest(@"auth/login", Method.POST);
+									   request.AddParameter("email", email, ParameterType.GetOrPost);
+									   request.AddParameter("password", password, ParameterType.GetOrPost);
+									   response = await login.ExecuteTaskAsync(request);
+									   if (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Created) {
+
+										   request = new RestRequest(@"user/jwt", Method.GET);
+										   response = await login.ExecuteTaskAsync<JsonWebToken>(request);
+										   if (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Created) {
+
+											   ACCESS_TOKEN = (response as IRestResponse<JsonWebToken>).Data.token;
+											   GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private).Edit()
+																													    .PutString(SigninDialog.C_ACCESS_TOKEN, ACCESS_TOKEN)
+																													    .Commit();
+												Toast.MakeText(this, "Новый ключ получен. Попробуйте синхронизироваться!", ToastLength.Long).Show();
+											   progress.Dismiss();
+										   } else {
+
+											   progress.Dismiss();
+										   }
+									   } else {
+										   progress.Dismiss();
+									   }
+								   } catch (Exception ex) {
+									   Toast.MakeText(this, string.Format(@"Error: {0}", ex.Message), ToastLength.Long).Show();
+									   progress.Dismiss();
+								   }
+							   })
+				               .SetNegativeButton(Resource.String.cancel_button, (caller, arguments) => {
+								   if (caller is Dialog) {
+									   ((Dialog)caller).Dismiss();
+								   }
+							   })
+							   .Show();
+
+				return;
+			}
 
 			try {
 				var dbFileInfo = new FileInfo(MainDatabase.DBPath);

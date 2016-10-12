@@ -130,7 +130,7 @@ namespace CRMLite
 					locationCriteria.PowerRequirement = Power.Medium;
 					string locationProvider = LocMgr.GetBestProvider(locationCriteria, true);
 					System.Diagnostics.Debug.Print("Starting location updates with " + locationProvider);
-					LocMgr.RequestLocationUpdates(locationProvider, 2000, 1, this);
+					LocMgr.RequestLocationUpdates(locationProvider, 5000, 1, this);
 					// !Location	
 
 					if (Pager.CurrentItem == 2) {
@@ -169,6 +169,8 @@ namespace CRMLite
 					button.Text = "ЗАКОНЧИТЬ ВИЗИТ";
 					return;
 				}
+
+				if ((DateTimeOffset.Now - AttendanceStart.Value).TotalSeconds < 30) return;
 
 				if (CurrentFocus != null) {
 					var imm = (InputMethodManager)GetSystemService(InputMethodService);
@@ -222,6 +224,7 @@ namespace CRMLite
 						}
 
 						transaction.Commit();
+
 						lockDialog.Dismiss();
 						Finish();
 					});
@@ -291,10 +294,6 @@ namespace CRMLite
 										intent.SetDataAndType(uri, "application/pdf");
 								   		intent.SetFlags(ActivityFlags.NoHistory);
 								   		StartActivity(intent);
-								   //var materialActivity = new Intent(this, typeof(MaterialActivity));
-								   //materialActivity.PutExtra(MaterialActivity.C_MATERIAL_UUID, Materials[arguments.Which].uuid);
-								   //StartActivity(materialActivity);
-								   //Toast.MakeText(this, Materials[arguments.Which].name, ToastLength.Short).Show();
 							   })
 				               .Show();
 			};
@@ -303,6 +302,13 @@ namespace CRMLite
 		protected override void OnResume()
 		{
 			base.OnResume();
+		}
+
+		protected override void OnPause()
+		{
+			base.OnPause();
+
+			// MainDatabase.Dispose();
 		}
 
 		protected override void OnStop()

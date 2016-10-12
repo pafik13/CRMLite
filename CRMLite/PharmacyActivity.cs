@@ -47,7 +47,7 @@ namespace CRMLite
 		IList<Category> CategoryByNets;
 		AutoCompleteTextView Category;
 
-		SuggestClient Api;
+		//SuggestClient Api;
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
@@ -101,7 +101,7 @@ namespace CRMLite
 							var contracts = contractUUIDs.Split(';');
 							var contractDatas = MainDatabase.GetPharmacyDatas<ContractData>(item.UUID);
 							foreach (var contractData in contractDatas) {
-								MainDatabase.DeleteEntity(transaction, contractData); ;
+								MainDatabase.DeleteEntity(transaction, contractData);
 							}
 							contractDatas = null;
 							foreach (var contract in contractUUIDs.Split(';')) {
@@ -198,7 +198,7 @@ namespace CRMLite
 				Finish();
 			};
 
-			Api = new SuggestClient(Secret.DadataApiToken, Secret.DadataApiURL);
+			//Api = new SuggestClient(Secret.DadataApiToken, Secret.DadataApiURL);
 
 
 			#region State
@@ -321,33 +321,33 @@ namespace CRMLite
 		void InitViews()
 		{
 			#region Address
-			Address.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) => {
-				if (Address.IsPerformingCompletion) return;
+			//Address.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) => {
+				//if (Address.IsPerformingCompletion) return;
 
-				if (Address.Text.Contains(" ")) {
-					var suggestions = new List<SuggestAddressResponse.Suggestions>();
-					try {
-						var response = Api.QueryAddress(Address.Text);
-						suggestions = response.suggestionss;
-					} catch (Exception ex) {
-						System.Diagnostics.Debug.WriteLine(ex.Message);
-					}
-					Address.Adapter = new AddressSuggestionAdapter(this, suggestions);
+				//if (Address.Text.Contains(" ")) {
+				//	var suggestions = new List<SuggestAddressResponse.Suggestions>();
+				//	try {
+				//		var response = Api.QueryAddress(Address.Text);
+				//		suggestions = response.suggestionss;
+				//	} catch (Exception ex) {
+				//		System.Diagnostics.Debug.WriteLine(ex.Message);
+				//	}
+				//	Address.Adapter = new AddressSuggestionAdapter(this, suggestions);
 
-					if (Address.IsShown) {
-						Address.DismissDropDown();
-					}
-					Address.ShowDropDown();
-				}
-			};
-			Address.ItemClick += (sender, e) => {
-				var item = (((AutoCompleteTextView)sender).Adapter as AddressSuggestionAdapter)[e.Position];
-				((AutoCompleteTextView)sender).SetTag(Resource.String.IsChanged, true);
-				((AutoCompleteTextView)sender).SetTag(Resource.String.fias_id, item.data.fias_id);
-				((AutoCompleteTextView)sender).SetTag(Resource.String.qc_geo, item.data.qc_geo);
-				((AutoCompleteTextView)sender).SetTag(Resource.String.geo_lat, item.data.geo_lat);
-				((AutoCompleteTextView)sender).SetTag(Resource.String.geo_lon, item.data.geo_lon);
-			};
+				//	if (Address.IsShown) {
+				//		Address.DismissDropDown();
+				//	}
+				//	Address.ShowDropDown();
+				//}
+			//};
+			//Address.ItemClick += (sender, e) => {
+			//	var item = (((AutoCompleteTextView)sender).Adapter as AddressSuggestionAdapter)[e.Position];
+			//	((AutoCompleteTextView)sender).SetTag(Resource.String.IsChanged, true);
+			//	((AutoCompleteTextView)sender).SetTag(Resource.String.fias_id, item.data.fias_id);
+			//	((AutoCompleteTextView)sender).SetTag(Resource.String.qc_geo, item.data.qc_geo);
+			//	((AutoCompleteTextView)sender).SetTag(Resource.String.geo_lat, item.data.geo_lat);
+			//	((AutoCompleteTextView)sender).SetTag(Resource.String.geo_lon, item.data.geo_lon);
+			//};
 			#endregion
 
 			#region Subway
