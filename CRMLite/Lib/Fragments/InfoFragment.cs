@@ -195,7 +195,7 @@ namespace CRMLite
 			}
 
 			new Android.App.AlertDialog.Builder(Activity)
-					   .SetTitle("Выберите виды работ:")
+					   .SetTitle("Выберите бренды:")
 					   .SetCancelable(false)
 					   .SetMultiChoiceItems(
 				           Brands.Select(item => item.name).ToArray(),

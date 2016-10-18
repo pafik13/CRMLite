@@ -50,7 +50,8 @@ namespace CRMLite.Adapters
 
 			var view = (convertView ?? Context.LayoutInflater.Inflate(Resource.Layout.PharmacyTableItem, parent, false)
 			           ) as LinearLayout;
-    		view.FindViewById<TextView>(Resource.Id.ptiStateTV).Text = GetStateDesc(item.GetState());
+			view.FindViewById<TextView>(Resource.Id.ptiNoTV).Text = (position + 1).ToString();
+			view.FindViewById<TextView>(Resource.Id.ptiStateTV).Text = GetStateDesc(item.GetState());
 			view.FindViewById<TextView>(Resource.Id.ptiNameTV).Text = 
 				string.IsNullOrEmpty(item.Brand) ? @"<нет бренда>" : item.Brand;
 			view.FindViewById<TextView>(Resource.Id.ptiAddressTV).Text = 

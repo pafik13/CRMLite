@@ -41,6 +41,8 @@ namespace CRMLite
 
 		public string LAST_UPLOAD_REALM_FILE_DATETIME { get; private set; }
 
+		public List<WorkType> WorkTypes { get; private set; }
+
 		public List<MaterialFile> MaterialFiles { get; private set; }
 
 		//public List<Hospital> Hospitals { get; private set; }
@@ -96,6 +98,7 @@ namespace CRMLite
 			AGENT_UUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
 
 			MaterialFiles = new List<MaterialFile>();
+			WorkTypes = new List<WorkType>();
 
 			RefreshView();
 		}
@@ -294,6 +297,33 @@ namespace CRMLite
 				}
 				SDiag.Debug.WriteLine(response.StatusDescription);
 			}
+
+			request = new RestRequest("/WorkType?populate=false", Method.GET);
+
+			var responseWTs = await client.ExecuteGetTaskAsync<List<WorkType>>(request);
+
+			if (!CancelToken.IsCancellationRequested) {
+				switch (responseWTs.StatusCode) {
+					case HttpStatusCode.OK:
+					case HttpStatusCode.Created:
+						SDiag.Debug.WriteLine("WorkType: {0}", responseWTs.Data.Count);
+						WorkTypes.Clear();
+						foreach (var item in responseWTs.Data) {
+							if (!MainDatabase.IsSavedBefore<WorkType>(item.uuid)) {
+								if (!string.IsNullOrEmpty(item.name)) {
+									WorkTypes.Add(item);
+								}
+							}
+						}
+
+						RunOnUiThread(() => {
+							var toUpdateCount = FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount);
+							toUpdateCount.Text = string.Format("Необходимо обновить {0} объектов", MaterialFiles.Count + WorkTypes.Count);
+						});
+						break;
+				}
+				SDiag.Debug.WriteLine(response.StatusDescription);
+			}
 		}
 
 		public bool IsTokenExpired(string token)
@@ -425,7 +455,7 @@ namespace CRMLite
 
 			//Locker.Visibility = ViewStates.Gone;
 
-			if (Count > 0 || MaterialFiles.Count > 0) {
+			if (Count > 0 || MaterialFiles.Count > 0 || WorkTypes.Count > 0) {
 				var progress = ProgressDialog.Show(this, string.Empty, @"Синхронизация");
 
 				new Task(() => {
@@ -433,14 +463,8 @@ namespace CRMLite
 					Thread.Sleep(1000); // иначе не успеет показаться диалог
 
 					MainDatabase.Username = USERNAME;
-					//var types = new List<Type>();
-					//types.Add(typeof(Attendance));
-					//types.Add(typeof(CompetitorData));
 
-					//foreach (var type in types) {
-					//	SyncEntities(MainDatabase.GetItemsToSync<(type as Type)>());
-					//}
-
+					// Обновление материалов
 					foreach (var materialFile in MaterialFiles) {
 						if (!MainDatabase.IsSavedBefore<Material>(materialFile.material)) {
 							var client = new RestClient(HOST_URL);
@@ -473,6 +497,13 @@ namespace CRMLite
 								// TODO: Add log info to HockeyApp
 								SDiag.Debug.WriteLine("Was exception: {0}", exc.Message);
 							}
+						}
+					}
+
+					// Обновление материалов
+					foreach (var workType in WorkTypes) {
+						if (!MainDatabase.IsSavedBefore<WorkType>(workType.uuid)) {
+							MainDatabase.SaveItem(workType);
 						}
 					}
 

@@ -373,22 +373,11 @@
                         style="@style/control_label"
                         android:layout_height="@dimen/row_height"
                         android:layout_width="match_parent" />
-                    <AutoCompleteTextView
-                        android:dropDownWidth="450dp"
-                        android:textCursorDrawable="@null"
-                        android:layout_column="1"
-                        android:id="@+id/pfCategoryACTV"
-                        android:background="@drawable/bottomline"
-                        android:textColorHint="@color/Grey_300"
-                        android:textColor="@android:color/black"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:hint="Например, Категория A"
-                        android:enabled="true"
-                        android:layout_marginRight="24dp"
-                        android:inputType="textCapSentences"
+                    <Spinner
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_width="match_parent" />
+                        android:id="@+id/pfCategoryS"
+                        android:layout_marginRight="24dp" />
                 </TableRow>
                 <TableRow
                     android:id="@+id/pfRowTurnOver">

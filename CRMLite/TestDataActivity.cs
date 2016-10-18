@@ -94,27 +94,32 @@ namespace CRMLite
 
 		void CustomAction_Click(object sender, EventArgs e)
 		{
-			// Remove path from the file name.
-			string fName = MainDatabase.DBPath;
+			using (var transaction = MainDatabase.BeginTransaction()) {
+				MainDatabase.DeleteItems<WorkType>();
 
-			try {
-				// Will not overwrite if the destination file already exists.
-				File.Copy(MainDatabase.DBPath, Path.Combine(MainDatabase.RealmDir, Path.GetFileName(MainDatabase.DBPath)));
+				transaction.Commit();
 			}
 
-			// Catch exception if the file was already copied.
-			catch (IOException copyError) {
-				new AlertDialog.Builder(this)
-							   .SetTitle(Resource.String.error_caption)
-							   .SetMessage(copyError.Message)
-							   .SetCancelable(true)
-							   .SetPositiveButton("OK", (caller, arguments) => {
-								   if (caller is Dialog) {
-									   (caller as Dialog).Dismiss();
-								   }
-							   })
-							   .Show();
-			}
+			//string fName = MainDatabase.DBPath;
+
+			//try {
+			//	// Will not overwrite if the destination file already exists.
+			//	File.Copy(MainDatabase.DBPath, Path.Combine(MainDatabase.RealmDir, Path.GetFileName(MainDatabase.DBPath)));
+			//}
+
+			//// Catch exception if the file was already copied.
+			//catch (IOException copyError) {
+			//	new AlertDialog.Builder(this)
+			//				   .SetTitle(Resource.String.error_caption)
+			//				   .SetMessage(copyError.Message)
+			//				   .SetCancelable(true)
+			//				   .SetPositiveButton("OK", (caller, arguments) => {
+			//					   if (caller is Dialog) {
+			//						   (caller as Dialog).Dismiss();
+			//					   }
+			//				   })
+			//				   .Show();
+			//}
 
 
 			//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");

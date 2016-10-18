@@ -42,8 +42,8 @@ namespace CRMLite
 		AutoCompleteTextView Region;
 		IList<Place> Places;
 		AutoCompleteTextView Place;
-		IList<Category> CategoryByNets;
-		AutoCompleteTextView Category;
+		List<Category> Categories;
+		Spinner Category;
 
 		//SuggestClient Api;
 
@@ -104,7 +104,7 @@ namespace CRMLite
 			var netChoiceButton = view.FindViewById<Button>(Resource.Id.pfNetB);
 			netChoiceButton.Click += (object sender, EventArgs e) => {
 				new Android.App.AlertDialog.Builder(Activity)
-				           .SetTitle("Аптечная сеть")
+						   .SetTitle("Аптечная сеть")
 						   .SetCancelable(true)
 						   .SetItems(Nets.Select(item => item.name).ToArray(), (caller, arguments) => {
 							   SetNet(arguments.Which);
@@ -127,7 +127,17 @@ namespace CRMLite
 
 			Place = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfPlaceACTV);
 
-			Category = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfCategoryACTV);
+			//Category = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryACTV);
+
+			#region Category
+			Category = view.FindViewById<Spinner>(Resource.Id.pfCategoryS);
+			Categories = new List<Category>();
+			Categories.Add(new Category { name = @"Выберите категорию!", uuid = Guid.Empty.ToString() });
+			Categories.AddRange(MainDatabase.GetItems<Category>());
+			var categoryAdapter = new ArrayAdapter(Activity, Android.Resource.Layout.SimpleSpinnerItem, Categories.Select(cat => cat.name).ToArray());
+			categoryAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
+			Category.Adapter = categoryAdapter;
+			#endregion
 
 			view.FindViewById<TextView>(Resource.Id.pfUUIDTV).Text = Pharmacy.UUID;
 
@@ -165,8 +175,11 @@ namespace CRMLite
 			Place.Text = string.IsNullOrEmpty(Pharmacy.Place) ?
 				string.Empty : MainDatabase.GetItem<Place>(Pharmacy.Place).name;
 
-			Category.Text = string.IsNullOrEmpty(Pharmacy.Category) ?
-				string.Empty : MainDatabase.GetItem<Category>(Pharmacy.Category).name;
+			//Category.Text = string.IsNullOrEmpty(Pharmacy.Category) ?
+			//	string.Empty : MainDatabase.GetItem<Category>(Pharmacy.Category).name
+			if (!string.IsNullOrEmpty(Pharmacy.Category)) {
+				Category.SetSelection(Categories.FindIndex(cat => string.Compare(cat.uuid, Pharmacy.Category) == 0));
+			}
 
 			view.FindViewById<EditText>(Resource.Id.pfTurnOverET).Text = Pharmacy.TurnOver.HasValue ?
 				Pharmacy.TurnOver.Value.ToString() : string.Empty;
@@ -265,21 +278,41 @@ namespace CRMLite
 			};
 			#endregion
 
-			#region Category
-			CategoryByNets = MainDatabase.GetCategories("net");
-			Category.Adapter = new ArrayAdapter<string>(
-				Activity, Android.Resource.Layout.SimpleDropDownItem1Line, CategoryByNets.Select(c => c.name).ToArray()
-			);
-			Category.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) => {
-				if (sender is AutoCompleteTextView) {
-					var text = ((AutoCompleteTextView)sender).Text;
-					var category = CategoryByNets.SingleOrDefault(c => c.name.Equals(text));
-					if (category != null) {
-						((AutoCompleteTextView)sender).SetTag(Resource.String.CategoryUUID, category.uuid);
-					}
-				}
-			};
-			#endregion
+			//#region Category
+			//Categories = MainDatabase.GetItems<Category>();
+			//Category.Adapter = new ArrayAdapter<string>(
+			//	this, Android.Resource.Layout.SimpleDropDownItem1Line, Categories.Select(c => c.name).ToArray()
+			//);
+			//Category.FocusChange += (sender, e) => {
+			//	if (Categories.Count > 0 && Categories.Count < 10) {
+			//		if (sender is AutoCompleteTextView) {
+			//			var actv = (AutoCompleteTextView)sender;
+			//			if (actv.HasFocus) {
+			//				actv.ShowDropDown();
+			//			}
+			//		}
+			//	}
+			//};
+			//Category.AfterTextChanged += (sender, e) => {
+			//	if (Categories.Count > 0 && Categories.Count < 10) {
+			//		if (sender is AutoCompleteTextView) {
+			//			var actv = (AutoCompleteTextView)sender;
+			//			if (actv.HasFocus) {
+			//				actv.ShowDropDown();
+			//			}
+			//		}
+			//	}
+			//};
+			//Category.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) => {
+			//	if (sender is AutoCompleteTextView) {
+			//		var text = ((AutoCompleteTextView)sender).Text;
+			//		var category = Categories.SingleOrDefault(c => c.name.Equals(text));
+			//		if (category != null) {
+			//			((AutoCompleteTextView)sender).SetTag(Resource.String.CategoryUUID, category.uuid);
+			//		}
+			//	}
+			//};
+			//#endregion
 		}
 
 		void SetNet(int index)
@@ -436,14 +469,19 @@ namespace CRMLite
 				}
 			}
 
-			if (string.IsNullOrEmpty(Category.Text)) {
-				item.Category = string.Empty;
+			if (Category.SelectedItemPosition > 0) {
+				item.Category = Categories[Category.SelectedItemPosition].uuid;
 			} else {
-				var categoryUUID = (string)Category.GetTag(Resource.String.CategoryUUID);
-				if (!string.IsNullOrEmpty(categoryUUID)) {
-					item.Category = categoryUUID;
-				}
+				item.Category = string.Empty;
 			}
+			//if (string.IsNullOrEmpty(Category.Text)) {
+			//	item.Category = string.Empty;
+			//} else {
+			//	var categoryUUID = (string)Category.GetTag(Resource.String.CategoryUUID);
+			//	if (!string.IsNullOrEmpty(categoryUUID)) {
+			//		item.Category = categoryUUID;
+			//	}
+			//}
 			item.TurnOver = Helper.ToInt(View.FindViewById<EditText>(Resource.Id.pfTurnOverET).Text);
 			item.Comment = View.FindViewById<EditText>(Resource.Id.pfCommentET).Text;
 
