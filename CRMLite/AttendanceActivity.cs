@@ -20,6 +20,7 @@ using CRMLite.Dialogs;
 using CRMLite.Entities;
 using Android.Locations;
 using Android.Runtime;
+using Android.Net;
 
 namespace CRMLite
 {
@@ -118,6 +119,8 @@ namespace CRMLite
 			var btnStartStop = FindViewById<Button>(Resource.Id.aaStartOrStopAttendanceB);
 			btnStartStop.Click += (sender, e) =>
 			{
+				if (!IsLocationActive() || !IsInternetActive()) return;
+
 				if (AttendanceStart == null) {
 					AttendanceStart = DateTimeOffset.Now;
 
@@ -225,7 +228,10 @@ namespace CRMLite
 
 						transaction.Commit();
 
-						lockDialog.Dismiss();
+						//if (lockDialog != null) {
+						//	lockDialog.DismissAllowingStateLoss();
+						//}
+
 						Finish();
 					});
 				}).Start();
@@ -299,9 +305,83 @@ namespace CRMLite
 			};
 		}
 
+		void MakeFullScreen()
+		{
+			View decorView = Window.DecorView;
+			var uiOptions = (int)decorView.SystemUiVisibility;
+			var newUiOptions = (int)uiOptions;
+
+			newUiOptions |= (int)SystemUiFlags.LayoutStable;
+			newUiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
+			newUiOptions |= (int)SystemUiFlags.LayoutFullscreen;
+			newUiOptions |= (int)SystemUiFlags.HideNavigation;
+			newUiOptions |= (int)SystemUiFlags.Fullscreen;
+			newUiOptions |= (int)SystemUiFlags.Immersive;
+
+			decorView.SystemUiVisibility = (StatusBarVisibility)newUiOptions;
+		}
+
+
+		bool IsLocationActive()
+		{
+			var locMgr = GetSystemService(LocationService) as LocationManager;
+
+			if (locMgr.IsProviderEnabled(LocationManager.NetworkProvider)
+			  || locMgr.IsProviderEnabled(LocationManager.GpsProvider)
+			   ) {
+				return true;
+			}
+
+			new AlertDialog.Builder(this)
+						   .SetTitle(Resource.String.warning_caption)
+						   .SetMessage(Resource.String.no_location_provider)
+						   .SetCancelable(false)
+						   .SetPositiveButton(Resource.String.on_button, delegate {
+							   var intent = new Intent(Android.Provider.Settings.ActionLocationSourceSettings);
+							   StartActivity(intent);
+						   })
+						   .Show();
+
+			return false;
+		}
+
+		bool IsInternetActive()
+		{
+			var cm = GetSystemService(ConnectivityService) as ConnectivityManager;
+			if (cm.ActiveNetworkInfo != null) {
+				if (cm.ActiveNetworkInfo.IsConnectedOrConnecting) {
+					return true;
+				}
+				new AlertDialog.Builder(this)
+							   .SetTitle(Resource.String.error_caption)
+							   .SetMessage(Resource.String.no_internet_connection)
+							   .SetCancelable(false)
+							   .SetNegativeButton(Resource.String.cancel_button, (sender, args) => {
+								   if (sender is Dialog) {
+									   (sender as Dialog).Dismiss();
+								   }
+							   })
+							   .Show();
+				return false;
+			}
+			new AlertDialog.Builder(this)
+						   .SetTitle(Resource.String.warning_caption)
+						   .SetMessage(Resource.String.no_internet_provider)
+						   .SetCancelable(false)
+						   .SetPositiveButton(Resource.String.on_button, delegate {
+							   var intent = new Intent(Android.Provider.Settings.ActionWirelessSettings);
+							   StartActivity(intent);
+						   })
+						   .Show();
+			return false;
+		}
+
 		protected override void OnResume()
 		{
 			base.OnResume();
+			//if (AttendanceStart.HasValue) {
+			//	MakeFullScreen();
+			//}
 		}
 
 		protected override void OnPause()

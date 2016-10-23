@@ -207,8 +207,9 @@ namespace CRMLite
 					}
 					trans.Commit();
 				}
+
+				MainDatabase.Dispose();
 				RunOnUiThread(() => {
-					MainDatabase.Dispose();
 					MainDatabase.Username = USERNAME;
 					// Thread.Sleep(1000);
 					progress.Dismiss();
@@ -524,8 +525,9 @@ namespace CRMLite
 					SyncEntities(MainDatabase.GetItemsToSync<ResumeData>());
 					SyncEntities(MainDatabase.GetItemsToSync<RouteItem>());
 
+					MainDatabase.Dispose();
+
 					RunOnUiThread(() => {
-						MainDatabase.Dispose();
 						MainDatabase.Username = USERNAME;
 						// Thread.Sleep(1000);
 						progress.Dismiss();

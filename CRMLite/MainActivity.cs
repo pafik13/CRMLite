@@ -22,6 +22,7 @@ using HockeyApp.Android.Metrics;
 using CRMLite.Entities;
 using CRMLite.Adapters;
 using CRMLite.Dialogs;
+using Android.Net;
 
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
 [assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
@@ -33,10 +34,12 @@ namespace CRMLite
 	{
 		public const string C_MAIN_PREFS = @"C_MAIN_PREFS";
 		public const string C_SAVED_PHARMACY_UUID = @"C_SAVED_PHARMACY_UUID";
-		public const int C_ITEMS_IN_RESULT = 10;
+		public const int C_ITEMS_IN_RESULT = 14;
 		public const string C_DUMMY = @"C_DUMMY";
 
-		IList<Pharmacy> Pharmacies;
+		string SelectedPharmacyUUID;
+
+		List<Pharmacy> Pharmacies;
 		ListView PharmacyTable;
 		TextView FilterContent;
 		TextView AttendanceCount;
@@ -63,11 +66,6 @@ namespace CRMLite
 			// Register user metics
 			MetricsManager.Register(Application, Secret.HockeyappAppId);
 			MetricsManager.EnableUserMetrics();
-			//HockeyApp.MetricsManager.TrackEvent(
-			//	"MainActivity.OnCreate",
-			//	new Dictionary<string, string> { { "prop1", "val1" } },
-			//	new Dictionary<string, double> { { "mes1", 1.0 } }
-			//);
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
@@ -241,6 +239,7 @@ namespace CRMLite
 				var showPharmacy = new Intent(this, typeof(PharmacyActivity));
 				showPharmacy.PutExtra(@"UUID", Pharmacies[e.Position - 1].UUID);
 				StartActivity(showPharmacy);
+				SelectedPharmacyUUID = Pharmacies[e.Position - 1].UUID;
 			}
 			//throw new DivideByZeroException("My DivideByZeroException");
 		}
@@ -252,6 +251,12 @@ namespace CRMLite
 				if (inputList.Count > 0) {
 					Pharmacies = inputList;
 					PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies);
+					//if (!string.IsNullOrEmpty(SelectedPharmacyUUID)) {
+					//	int index = Pharmacies.FindIndex(ph => ph.UUID == SelectedPharmacyUUID);
+					//	if (index > -1) {
+					//		PharmacyTable.SetSelection(index);
+					//	}
+					//}
 					return;
 				}
 			}
@@ -355,6 +360,12 @@ namespace CRMLite
 
 			Pharmacies = list; //.Take(14).ToList();
 			PharmacyTable.Adapter = new PharmacyAdapter(this, Pharmacies, pharmaciesInRoute);
+			if (!string.IsNullOrEmpty(SelectedPharmacyUUID)) {
+				int index = Pharmacies.FindIndex(ph => ph.UUID == SelectedPharmacyUUID);
+				if (index > -1) {
+					PharmacyTable.SetSelection(index);
+				}
+			}
 		}
 
 		// TODO: сделать более лучший вариант
@@ -389,15 +400,15 @@ namespace CRMLite
 			if (SearchItems == null) {
 				SearchItems = new Dictionary<string, SearchItem>();
 				var pharmacies = MainDatabase.GetItems<Pharmacy>();
-				foreach (var item in pharmacies) {
+				foreach (var pharmacy in pharmacies) {
 					SearchItems.Add(
-						item.UUID,
+						pharmacy.UUID,
 						new SearchItem(
-							item.UUID,
-							item.GetName(),
-							string.IsNullOrEmpty(item.Subway) ? item.Subway : MainDatabase.GetItem<Subway>(item.Subway).name,
-							string.IsNullOrEmpty(item.Region) ? item.Region : MainDatabase.GetItem<Region>(item.Region).name,
-							item.Brand
+							pharmacy.UUID,
+							pharmacy.GetName(),
+							string.IsNullOrEmpty(pharmacy.Subway) ? string.Empty : MainDatabase.GetItem<Subway>(pharmacy.Subway).name,
+							string.IsNullOrEmpty(pharmacy.Region) ? string.Empty : MainDatabase.GetItem<Region>(pharmacy.Region).name,
+							string.IsNullOrEmpty(pharmacy.Brand) ? string.Empty : pharmacy.Brand
 						)
 					);
 				}
@@ -446,6 +457,21 @@ namespace CRMLite
 			//SDiag.Debug.WriteLine(@"Search: endmemory{0}", System.Diagnostics.Process.GetCurrentProcess().WorkingSet64);
 		}
 
+		protected override void OnSaveInstanceState(Bundle outState)
+		{
+			base.OnSaveInstanceState(outState);
+			outState.PutString("username", MainDatabase.Username);
+			outState.PutString("selectedpharmacyuuid", SelectedPharmacyUUID);
+		}
+
+		protected override void OnRestoreInstanceState(Bundle savedInstanceState) { 
+			string username = savedInstanceState.GetString("username"); 
+			MainDatabase.Username = username; 
+			Helper.Username = username;
+			SelectedPharmacyUUID = savedInstanceState.GetString("selectedpharmacyuuid");;
+			base.OnRestoreInstanceState(savedInstanceState); 
+		}
+
 		protected override void OnResume()
 		{
 			base.OnResume();
@@ -488,12 +514,10 @@ namespace CRMLite
 			}
 			ft.Commit();
 
-			if (!IsLocationActive()) return;
+			if (!IsLocationActive() || !IsInternetActive()) return;
 
 			MainDatabase.Username = username;
 			Helper.Username = username;
-
-			var email = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
 
 			var agentUUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
 			try {
@@ -520,14 +544,16 @@ namespace CRMLite
 
 		    if (currentRouteItems.Count() > 0){
 				var nextDate = DateTimeOffset.Now.AddDays(Helper.WeeksInRoute * 7);
-				var nextRoutItems = MainDatabase.GetRouteItems(nextDate);
+				var date = new DateTimeOffset(nextDate.Year, nextDate.Month, nextDate.Day, 0, 0, 0, new TimeSpan(0, 0, 0));
+				var nextRoutItems = MainDatabase.GetRouteItems(date);
 
 		      if (nextRoutItems.Count() == 0) {
+
 		        using (var trans = MainDatabase.BeginTransaction()){
 		          foreach (var oldItem in currentRouteItems){
 		            var newItem = MainDatabase.Create2<RouteItem>();
 						      newItem.Pharmacy = oldItem.Pharmacy;
-						      newItem.Date = nextDate;
+						      newItem.Date = date;
 						      newItem.Order = oldItem.Order;
 		          }
 		          trans.Commit();
@@ -569,9 +595,9 @@ namespace CRMLite
 				SearchItems[uuid] = new SearchItem(
 					pharmacy.UUID,
 					pharmacy.GetName(),
-					string.IsNullOrEmpty(pharmacy.Subway) ? pharmacy.Subway : MainDatabase.GetItem<Subway>(pharmacy.Subway).name,
-					string.IsNullOrEmpty(pharmacy.Region) ? pharmacy.Region : MainDatabase.GetItem<Region>(pharmacy.Region).name,
-					pharmacy.Brand
+					string.IsNullOrEmpty(pharmacy.Subway) ? string.Empty : MainDatabase.GetItem<Subway>(pharmacy.Subway).name,
+					string.IsNullOrEmpty(pharmacy.Region) ? string.Empty : MainDatabase.GetItem<Region>(pharmacy.Region).name,
+					string.IsNullOrEmpty(pharmacy.Brand) ? string.Empty : pharmacy.Brand
 				);
 			}
 			prefs.Edit().PutString(C_SAVED_PHARMACY_UUID, string.Empty).Commit();
@@ -581,7 +607,6 @@ namespace CRMLite
 
 		bool IsLocationActive()
 		{
-			/*throw new NotImplementedException();*/
 			var locMgr = GetSystemService(LocationService) as LocationManager;
 
 			if (locMgr.IsProviderEnabled(LocationManager.NetworkProvider)
@@ -602,6 +627,38 @@ namespace CRMLite
 
 			return false;
 		}
+
+		bool IsInternetActive()
+		{
+			var cm = GetSystemService(ConnectivityService) as ConnectivityManager;
+			if (cm.ActiveNetworkInfo != null) {
+				if (cm.ActiveNetworkInfo.IsConnectedOrConnecting) {
+					return true;
+				}
+				new AlertDialog.Builder(this)
+				               .SetTitle(Resource.String.error_caption)
+				               .SetMessage(Resource.String.no_internet_connection)
+				               .SetCancelable(false)
+				               .SetNegativeButton(Resource.String.cancel_button, (sender, args) => {
+								   if (sender is Dialog) {
+									  (sender as Dialog).Dismiss();
+								   }
+								})
+				               .Show();
+				return false;
+			}
+			new AlertDialog.Builder(this)
+			               .SetTitle(Resource.String.warning_caption)
+			               .SetMessage(Resource.String.no_internet_provider)
+			               .SetCancelable(false)
+			               .SetPositiveButton(Resource.String.on_button, delegate {
+								var intent = new Intent(Android.Provider.Settings.ActionWirelessSettings);
+								StartActivity(intent);
+							})
+			               .Show();
+			return false;
+		}
+
 
 		protected override void OnPause()
 		{

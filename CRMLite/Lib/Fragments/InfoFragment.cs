@@ -214,13 +214,20 @@ namespace CRMLite
 							   if (isCacheBrandsWasEmpty) {
 								   brandTable.RemoveAllViews();
 
-								   foreach (var brandUUID in cacheBrands) {
-									   var row = Inflater.Inflate(Resource.Layout.InfoPresentationSubItem, brandTable, false);
-									   row.SetTag(Resource.String.PDBrand, brandUUID);
-									   row.FindViewById<TextView>(Resource.Id.ipsiBrandTV).Text = Brands.Single(b => b.uuid == brandUUID).name;
-									   row.FindViewById<TextView>(Resource.Id.ipsiBrandTV).Click += Brand_Click;
-									   row.FindViewById<TextView>(Resource.Id.ipsiWorkTypesTV).Click += WorkTypes_Click;
-									   brandTable.AddView(row);
+								   if (cacheBrands.Count > 0) {
+									   foreach (var brandUUID in cacheBrands) {
+										   var row = Inflater.Inflate(Resource.Layout.InfoPresentationSubItem, brandTable, false);
+										   row.SetTag(Resource.String.PDBrand, brandUUID);
+										   row.FindViewById<TextView>(Resource.Id.ipsiBrandTV).Text = Brands.Single(b => b.uuid == brandUUID).name;
+										   row.FindViewById<TextView>(Resource.Id.ipsiBrandTV).Click += Brand_Click;
+										   row.FindViewById<TextView>(Resource.Id.ipsiWorkTypesTV).Click += WorkTypes_Click;
+										   brandTable.AddView(row);
+									   }
+								   } else {
+									   var emptyRow = Inflater.Inflate(Resource.Layout.InfoPresentationSubItem, brandTable, false);
+									   emptyRow.FindViewById<TextView>(Resource.Id.ipsiBrandTV).Click += Brand_Click;
+									   emptyRow.FindViewById<TextView>(Resource.Id.ipsiWorkTypesTV).Click += WorkTypes_Click;
+									   brandTable.AddView(emptyRow);
 								   }
 							   } else {
 								   if (cacheBrands.Count > 0) {

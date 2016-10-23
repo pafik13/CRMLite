@@ -123,10 +123,11 @@ namespace CRMLite
 				RouteSearchItemsSource.Add(
 					new RouteSearchItem(
 						item.UUID,
-						item.GetName(),
-						string.IsNullOrEmpty(item.Subway) ? item.Subway : MainDatabase.GetItem<Subway>(item.Subway).name,
-						string.IsNullOrEmpty(item.Region) ? item.Region : MainDatabase.GetItem<Region>(item.Region).name,
-						item.Brand
+						string.IsNullOrEmpty(item.GetName()) ? string.Empty : item.GetName(),
+						string.IsNullOrEmpty(item.Subway) ? string.Empty : MainDatabase.GetItem<Subway>(item.Subway).name,
+						string.IsNullOrEmpty(item.Region) ? string.Empty : MainDatabase.GetItem<Region>(item.Region).name,
+						string.IsNullOrEmpty(item.Brand) ? string.Empty : item.Brand,
+						string.IsNullOrEmpty(item.Address) ? string.Empty : item.Address
 					)
 				);
 			}
@@ -166,6 +167,7 @@ namespace CRMLite
 				// 2 поиск
 				foreach (var item in RouteSearchItems) {
 					if (item.IsVisible) {
+						//item.Subway = null;
 						if (culture.CompareInfo.IndexOf(item.Subway, text, CompareOptions.IgnoreCase) >= 0) {
 							item.Match = string.Format(matchFormat, @"метро=" + item.Subway);
 							SearchedItems.Add(item);
@@ -182,6 +184,13 @@ namespace CRMLite
 
 						if (culture.CompareInfo.IndexOf(item.Brand, text, CompareOptions.IgnoreCase) >= 0) {
 							item.Match = string.Format(matchFormat, @"бренд=" + item.Brand);
+							SearchedItems.Add(item);
+							//if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
+							continue;
+						}
+
+						if (culture.CompareInfo.IndexOf(item.Address, text, CompareOptions.IgnoreCase) >= 0) {
+							item.Match = string.Format(matchFormat, @"адрес");
 							SearchedItems.Add(item);
 							//if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
 							continue;
