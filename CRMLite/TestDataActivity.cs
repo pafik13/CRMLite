@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
-using System.Diagnostics;
+using SDiag = System.Diagnostics;
 
 using Android.App;
 using Android.OS;
@@ -11,12 +11,15 @@ using Android.Widget;
 using CRMLite.Entities;
 using RestSharp;
 using System.IO;
+using Android.Content;
 
 namespace CRMLite
 {
 	[Activity(Label = "TestDataActivity")]
 	public class TestDataActivity : Activity
 	{
+		const int PICKFILE_REQUEST_CODE = 3;
+
 		Button GenerateData;
 		Button CustomAction;
 		Button Clear;
@@ -94,76 +97,45 @@ namespace CRMLite
 
 		void CustomAction_Click(object sender, EventArgs e)
 		{
-			using (var transaction = MainDatabase.BeginTransaction()) {
-				MainDatabase.DeleteItems<WorkType>();
+			//var intent = new Intent(Intent.ActionGetContent);
+			//intent.SetType("*/*");
+			//intent.AddCategory(Intent.CategoryOpenable);
+			//StartActivityForResult(intent, PICKFILE_REQUEST_CODE);
+			string fileName = "bd0712a3-a5e7-4704-b565-889f673a393b.realm";
+			string dbFileLocation = Path.Combine(Helper.AppDir, fileName);
 
-				transaction.Commit();
+			if (File.Exists(dbFileLocation)) {
+				SDiag.Debug.WriteLine(dbFileLocation + " is Exists!");
 			}
 
-			//string fName = MainDatabase.DBPath;
+			if (File.Exists(MainDatabase.DBPath)) {
+				SDiag.Debug.WriteLine(MainDatabase.DBPath + " is Exists!");
+				//var fi = new FileInfo(MainDatabase.DBPath);
+				//var directory = fi.Directory.FullName;
+				var newPath = Path.Combine(new FileInfo(MainDatabase.DBPath).Directory.FullName, fileName);
+				if (!File.Exists(newPath)) File.Copy(dbFileLocation, newPath, true);
 
-			//try {
-			//	// Will not overwrite if the destination file already exists.
-			//	File.Copy(MainDatabase.DBPath, Path.Combine(MainDatabase.RealmDir, Path.GetFileName(MainDatabase.DBPath)));
-			//}
-
-			//// Catch exception if the file was already copied.
-			//catch (IOException copyError) {
-			//	new AlertDialog.Builder(this)
-			//				   .SetTitle(Resource.String.error_caption)
-			//				   .SetMessage(copyError.Message)
-			//				   .SetCancelable(true)
-			//				   .SetPositiveButton("OK", (caller, arguments) => {
-			//					   if (caller is Dialog) {
-			//						   (caller as Dialog).Dismiss();
-			//					   }
-			//				   })
-			//				   .Show();
-			//}
-
-
-			//var client = new RestClient(@"http://sbl-crm-project-pafik13.c9users.io:8080/");
-			//string path = typeof(Agent).Name + @"/d3c6594e-41b3-4986-8afc-cf236413bd7e?populate=false";
-
-			//var request = new RestRequest(path, Method.GET);
-			//var response = client.Execute<Agent>(request);
-
-			//MainDatabase.Dispose();
-			//MainDatabase.GetNets();
-
-			//var gen = new Stopwatch();
-			//gen.Start();
-			//var rnd = new Random();
-			//rnd.Next();
-			//var nets = MainDatabase.GetItems<Net>();
-			//var subways = MainDatabase.GetItems<Subway>();
-			//var region = MainDatabase.GetItems<Region>();
-			//var categories = MainDatabase.GetItems<Category>();
-
-			//using (var transaction = MainDatabase.BeginTransaction()) {
-			//	MainDatabase.DeleteItems<Pharmacy>();
-			//	transaction.Commit();
-			//}
-
-			//using (var transaction = MainDatabase.BeginTransaction()) {
-			//	for (int i = 0; i < 500; i++) {
-			//		var pharmacy = MainDatabase.CreatePharmacy();
-			//		pharmacy.Brand = @"Brand #" + i;
-			//		pharmacy.Address = @"Address #" + i;
-			//		pharmacy.Net = nets[rnd.Next(0, nets.Count - 1)].uuid;
-			//		pharmacy.Subway = subways[rnd.Next(0, subways.Count - 1)].uuid;
-			//		pharmacy.Region = region[rnd.Next(0, region.Count - 1)].uuid;
-			//		pharmacy.Category = categories[rnd.Next(0, categories.Count - 1)].uuid;
-			//	}
-			//	transaction.Commit();
-			//}
-
-			//gen.Stop();
-			//Console.WriteLine(
-			//	@"Calc: {0}, nets: {1}, subways: {2}, region: {3}, categories: {4}", 
-			//	gen.ElapsedMilliseconds, nets.Count, subways.Count, region.Count, categories.Count
-			//);
+				if (File.Exists(newPath)) {
+					SDiag.Debug.WriteLine(newPath + " is Exists!");
+					MainDatabase.Dispose();
+					Helper.C_DB_FILE_NAME = fileName;
+					MainDatabase.Username = Helper.Username;
+				}
+			}
 		}
+
+		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+		{
+			base.OnActivityResult(requestCode, resultCode, data);
+
+			if (requestCode == PICKFILE_REQUEST_CODE) {
+				// SDiag.Debug.WriteLine(resultCode);
+				if (resultCode == Result.Ok) {
+					StartActivity(new Intent(Intent.ActionView, data.Data));
+				}
+			}
+		}
+
 
 		void GenerateData_Click(object sender, EventArgs e)
 		{

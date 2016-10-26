@@ -76,6 +76,7 @@ namespace CRMLite
 			SetContentView(Resource.Layout.Route);
 
 			FindViewById<Button>(Resource.Id.raCloseB).Click += (s, e) => {
+				MainDatabase.Dispose();
 				Finish();
 			};
 
@@ -262,7 +263,7 @@ namespace CRMLite
 				trans.Commit();
 			}
 
-			adapter.SwitchVisibility(pos);
+			if (pos != -1) adapter.SwitchVisibility(pos);
 		}
 
 		void Row_LongClick(object sender, View.LongClickEventArgs e)
@@ -352,12 +353,11 @@ namespace CRMLite
 			}
 
 			RouteTable.RemoveAllViews();
-			foreach (var item in MainDatabase.GetRouteItems(SelectedDate)) {
+			foreach (var item in MainDatabase.GetRouteItems(SelectedDate).OrderBy(ri => ri.Order)) {
 				var row = LayoutInflater.Inflate(Resource.Layout.RouteItem, RouteTable, false);
 				row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text = MainDatabase.GetEntity<Pharmacy>(item.Pharmacy).GetName();
 
 				int position = RouteSearchItems.FindIndex(rsi => string.Compare(rsi.UUID, item.Pharmacy) == 0);
-				RoutePharmacyAdapter.ChangeVisibility(position, false);
 
 				row.SetTag(Resource.String.Position, position);
 				row.SetTag(Resource.String.RouteItemUUID, item.UUID);
@@ -366,9 +366,6 @@ namespace CRMLite
 				row.SetTag(Resource.String.RouteItemOrder, item.Order);
 				row.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (item.Order + 1).ToString();
 
-				row.FindViewById<ImageView>(Resource.Id.riDeleteIV).Click += RowDelete_Click;
-				row.LongClick += Row_LongClick;
-				row.Drag += Row_Drag;
 
 				RouteTable.AddView(row);
 			}
