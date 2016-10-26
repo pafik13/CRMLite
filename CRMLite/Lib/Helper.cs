@@ -16,6 +16,7 @@ namespace CRMLite
 	public static class Helper
 	{
 		//public const string C_DB_FILE_NAME = @"main.realm";
+		public static string C_DB_FILE_NAME = @"main.realm";
 
 		public static string Username = @"";
 

@@ -358,6 +358,12 @@ namespace CRMLite
 				row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text = MainDatabase.GetEntity<Pharmacy>(item.Pharmacy).GetName();
 
 				int position = RouteSearchItems.FindIndex(rsi => string.Compare(rsi.UUID, item.Pharmacy) == 0);
+				if (position != -1) {
+					RoutePharmacyAdapter.ChangeVisibility(position, false);
+				}
+
+				//row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text 
+				//   = string.Format("({0}) {1}", position, MainDatabase.GetEntity<Pharmacy>(item.Pharmacy).GetName());
 
 				row.SetTag(Resource.String.Position, position);
 				row.SetTag(Resource.String.RouteItemUUID, item.UUID);
@@ -366,6 +372,16 @@ namespace CRMLite
 				row.SetTag(Resource.String.RouteItemOrder, item.Order);
 				row.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (item.Order + 1).ToString();
 
+				var delImage = row.FindViewById<ImageView>(Resource.Id.riDeleteIV);
+				var now = DateTime.Now;
+				if (SelectedDate > new DateTimeOffset(now.Year, now.Month, now.Day, 0, 0, 0, new TimeSpan(0, 0, 0))) {
+					delImage.Click += RowDelete_Click;
+					delImage.Visibility = ViewStates.Visible;
+					row.LongClick += Row_LongClick;
+					row.Drag += Row_Drag;
+				} else {
+					delImage.Visibility = ViewStates.Gone;
+				}
 
 				RouteTable.AddView(row);
 			}
