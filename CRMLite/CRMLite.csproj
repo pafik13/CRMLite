@@ -190,6 +190,8 @@
     <Compile Include="Lib\Entities\GPSData.cs" />
     <Compile Include="Lib\Entities\MaterialFile.cs" />
     <Compile Include="Lib\Entities\MaterialItem.cs" />
+    <Compile Include="Lib\Entities\LibraryFile.cs" />
+    <Compile Include="Lib\Adapters\LibraryAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -533,6 +535,8 @@
     <AndroidResource Include="Resources\drawable-xhdpi\ic_receipt_black_48dp.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_receipt_black_48dp.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_receipt_black_48dp.png" />
+    <AndroidResource Include="Resources\layout\LibraryTableItem.axml" />
+    <AndroidResource Include="Resources\layout\LibraryTableHeader.axml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

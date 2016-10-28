@@ -73,6 +73,24 @@ namespace CRMLite
 			}
 		}
 
+		public static string LibraryDir {
+			get {
+				if (string.IsNullOrEmpty(Username)) return string.Empty;
+
+				var libraryDir = Path.Combine(AppDir, Username, "library");
+				if (Directory.Exists(libraryDir)) {
+					Debug.WriteLine("That LibraryDir exists already.");
+					return libraryDir;
+				}
+
+				// Try to create the directory.
+				DirectoryInfo di = Directory.CreateDirectory(libraryDir);
+				Debug.WriteLine("The LibraryDir was created successfully at {0}.", Directory.GetCreationTime(libraryDir));
+
+				return libraryDir;
+			}
+		}
+
 		public static string GetWorkModeDesc(WorkMode workMode)
 		{
 			switch (workMode) {

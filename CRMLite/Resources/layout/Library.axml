@@ -1,20 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Grey_300">
-    <TextView
-        android:text="ЗДЕСЬ БУДЕТ БИБЛИОТЕКА ДОКУМЕНТОВ"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+    <RelativeLayout
+        android:id="@+id/laUpPanelRL"
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/laPlaceholderTV"
-        android:layout_centerInParent="true" />
-    <Button
-        android:text="ВЫЙТИ"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/laPlaceholderTV"
-        android:id="@+id/laExitB"
-        android:layout_centerHorizontal="true" />
+        android:background="@drawable/bottomline">
+        <TextView
+            android:text="БИБЛИОТЕКА ДОКУМЕНТОВ"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/laInfoTV"
+            android:gravity="center"
+            android:textColor="@color/Light_Blue_500"
+            android:height="64dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp" />
+        <Button
+            android:text="ЗАКРЫТЬ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:id="@+id/laCloseB"
+            android:background="@color/Deep_Orange_500"
+            android:typeface="monospace"
+            android:width="150dp"
+            android:height="62dp"
+            android:textColor="@android:color/white"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            android:minHeight="62dp"
+            android:layout_marginBottom="2dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/laUpPanelRL"
+        android:background="@color/Grey_300">
+        <LinearLayout
+            android:id="@+id/laContentLL"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="@color/Grey_300"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp">
+            <ListView
+                android:id="@+id/laLibraryTable"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:orientation="vertical"
+                android:divider="@color/Grey_300"
+                android:dividerHeight="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

@@ -34,7 +34,11 @@ namespace CRMLite
 		TextView Locker;
 		string ACCESS_TOKEN;
 		CancellationTokenSource CancelSource;
-		CancellationToken CancelToken;
+		CancellationToken CancelToken;
+
+		CancellationTokenSource CSForLibraryFiles;
+		CancellationToken CTForLibraryFiles;
+
 		public string HOST_URL { get; private set; }
 		public string USERNAME { get; private set; }
 		public string AGENT_UUID { get; private set; }
@@ -44,6 +48,7 @@ namespace CRMLite
 		public List<WorkType> WorkTypes { get; private set; }
 
 		public List<MaterialFile> MaterialFiles { get; private set; }
+		public List<LibraryFile> LibraryFiles { get; private set; }
 
 		//public List<Hospital> Hospitals { get; private set; }
 
@@ -94,11 +99,13 @@ namespace CRMLite
 
 			ACCESS_TOKEN = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
 			USERNAME = shared.GetString(SigninDialog.C_USERNAME, string.Empty);
-			HOST_URL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
+			//HOST_URL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
+			HOST_URL = @"http://sbl-crm-project-pafik13.c9users.io:8080/";
 			AGENT_UUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
 
 			MaterialFiles = new List<MaterialFile>();
 			WorkTypes = new List<WorkType>();
+			LibraryFiles = new List<LibraryFile>();
 
 			RefreshView();
 		}
@@ -108,7 +115,9 @@ namespace CRMLite
 			if (CancelSource != null && CancelToken.CanBeCanceled) {
 				CancelSource.Cancel();
 			}
-
+			if (CSForLibraryFiles != null && CTForLibraryFiles.CanBeCanceled) {
+				CSForLibraryFiles.Cancel();
+			}
 			var progress = ProgressDialog.Show(this, string.Empty, @"Выгрузка фото");
 
 			new Task(() => {
@@ -266,6 +275,10 @@ namespace CRMLite
 			CancelSource = new CancellationTokenSource();
 			CancelToken = CancelSource.Token;
 			CheckMaterialFiles();
+
+			CSForLibraryFiles = new CancellationTokenSource();
+			CTForLibraryFiles = CSForLibraryFiles.Token;
+			CheckLibraryFiles();
 		}
 
 		async void CheckMaterialFiles()
@@ -291,8 +304,8 @@ namespace CRMLite
 						}
 
 						RunOnUiThread(() => {
-							var toUpdateCount = FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount);
-							toUpdateCount.Text = string.Format("Необходимо обновить {0} объектов", MaterialFiles.Count);
+							int count = MaterialFiles.Count + WorkTypes.Count + LibraryFiles.Count;
+							FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount).Text = string.Format("Необходимо обновить {0} объектов", count);
 						});
 						break;
 				}
@@ -318,8 +331,40 @@ namespace CRMLite
 						}
 
 						RunOnUiThread(() => {
-							var toUpdateCount = FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount);
-							toUpdateCount.Text = string.Format("Необходимо обновить {0} объектов", MaterialFiles.Count + WorkTypes.Count);
+							int count = MaterialFiles.Count + WorkTypes.Count + LibraryFiles.Count;
+							FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount).Text = string.Format("Необходимо обновить {0} объектов", count);
+						});
+						break;
+				}
+				SDiag.Debug.WriteLine(response.StatusDescription);
+			}
+		}
+
+		async void CheckLibraryFiles()
+		{
+			var client = new RestClient(HOST_URL);
+			//var client = new RestClient("http://sbl-crm-project-pafik13.c9users.io:8080/");
+			var request = new RestRequest("/LibraryFile?populate=false", Method.GET);
+
+			var response = await client.ExecuteGetTaskAsync<List<LibraryFile>>(request);
+
+			if (!CTForLibraryFiles.IsCancellationRequested) {
+				switch (response.StatusCode) {
+					case HttpStatusCode.OK:
+					case HttpStatusCode.Created:
+						SDiag.Debug.WriteLine("MaterialFile: {0}", response.Data.Count);
+						LibraryFiles.Clear();
+						foreach (var item in response.Data) {
+							if (!MainDatabase.IsSavedBefore<LibraryFile>(item.uuid)) {
+								if (!string.IsNullOrEmpty(item.s3Location)) {
+									LibraryFiles.Add(item);
+								}
+							}
+						}
+
+						RunOnUiThread(() => {
+							int count = MaterialFiles.Count + WorkTypes.Count + LibraryFiles.Count;
+							FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount).Text = string.Format("Необходимо обновить {0} объектов", count);
 						});
 						break;
 				}
@@ -505,6 +550,22 @@ namespace CRMLite
 					foreach (var workType in WorkTypes) {
 						if (!MainDatabase.IsSavedBefore<WorkType>(workType.uuid)) {
 							MainDatabase.SaveItem(workType);
+						}
+					}
+
+					// Обновление файлов в библотекев
+					foreach (var libraryFile in LibraryFiles) {
+						// 79 Characters (72 without spaces)
+						ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
+						using (var wclient = new WebClient()) {
+							string path = new Java.IO.File(Helper.LibraryDir, libraryFile.fileName).ToString();
+							try {
+								wclient.DownloadFile(libraryFile.s3Location, path);
+								MainDatabase.SaveItem(libraryFile);
+							} catch (Exception exc) {
+								// TODO: Add log info to HockeyApp
+								SDiag.Debug.WriteLine("Was exception: {0}", exc.Message);
+							}
 						}
 					}
 
