@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sync-adapter
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:contentAuthority="ru.sbl.crmlite2.provider"
+        android:accountType="ru.sbl.crmlite2"
+        android:userVisible="false"
+        android:supportsUploading="true"
+        android:allowParallelSyncs="false"
+        android:isAlwaysSyncable="true"/>

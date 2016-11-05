@@ -99,8 +99,8 @@ namespace CRMLite
 
 			ACCESS_TOKEN = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
 			USERNAME = shared.GetString(SigninDialog.C_USERNAME, string.Empty);
-			//HOST_URL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
-			HOST_URL = @"http://sbl-crm-project-pafik13.c9users.io:8080/";
+			HOST_URL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
+			//HOST_URL = @"http://sbl-crm-project-pafik13.c9users.io:8080/";
 			AGENT_UUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
 
 			MaterialFiles = new List<MaterialFile>();

@@ -192,6 +192,12 @@
     <Compile Include="Lib\Entities\MaterialItem.cs" />
     <Compile Include="Lib\Entities\LibraryFile.cs" />
     <Compile Include="Lib\Adapters\LibraryAdapter.cs" />
+    <Compile Include="Lib\SyncAdapter\SyncAuthenticator.cs" />
+    <Compile Include="Lib\SyncAdapter\SyncAuthenticatorService.cs" />
+    <Compile Include="Lib\SyncAdapter\SyncAdapter.cs" />
+    <Compile Include="Lib\SyncAdapter\SyncAdapterService.cs" />
+    <Compile Include="Lib\SyncAdapter\StubProvider.cs" />
+    <Compile Include="Lib\SyncAdapter\SyncConst.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -537,6 +543,8 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_receipt_black_48dp.png" />
     <AndroidResource Include="Resources\layout\LibraryTableItem.axml" />
     <AndroidResource Include="Resources\layout\LibraryTableHeader.axml" />
+    <AndroidResource Include="Resources\xml\authenticator.xml" />
+    <AndroidResource Include="Resources\xml\syncadapter.xml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -560,6 +568,10 @@
       <Version>4.1.0.3</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Lib\SyncAdapter\" />
+    <Folder Include="Resources\xml\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets')" />

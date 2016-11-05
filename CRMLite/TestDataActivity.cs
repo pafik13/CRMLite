@@ -9,9 +9,12 @@ using Android.OS;
 using Android.Widget;
 
 using CRMLite.Entities;
+using CRMLite.Lib.Sync;
 using RestSharp;
 using System.IO;
 using Android.Content;
+using Android.Accounts;
+using CRMLite.Dialogs;
 
 namespace CRMLite
 {
@@ -95,33 +98,66 @@ namespace CRMLite
 			MainDatabase.Dispose();
 		}
 
+		public Account CreateSyncAccount(Context context)
+		{
+			var newAccount = new Account(SyncConst.ACCOUNT, SyncConst.ACCOUNT_TYPE);
+
+			var accountManager = (AccountManager)context.GetSystemService(AccountService);
+
+			if (accountManager.AddAccountExplicitly(newAccount, null, null)) {
+				SDiag.Debug.WriteLine("AddAccountExplicitly");
+			} else {
+				SDiag.Debug.WriteLine("NOT AddAccountExplicitly");
+			}
+
+			return newAccount;
+		}
+
 		void CustomAction_Click(object sender, EventArgs e)
 		{
+			//ru.sbl.crmlite2
+
+			var account = CreateSyncAccount(this);
+
+			var settingsBundle = new Bundle();
+			settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, true);
+			settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, true);
+			var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
+
+			var ACCESS_TOKEN = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
+			var HOST_URL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
+
+			settingsBundle.PutString(SigninDialog.C_ACCESS_TOKEN, ACCESS_TOKEN);
+			settingsBundle.PutString(SigninDialog.C_HOST_URL, HOST_URL);
+
+			ContentResolver.RequestSync(account, SyncConst.AUTHORITY, settingsBundle);
+
+
 			//var intent = new Intent(Intent.ActionGetContent);
 			//intent.SetType("*/*");
 			//intent.AddCategory(Intent.CategoryOpenable);
 			//StartActivityForResult(intent, PICKFILE_REQUEST_CODE);
-			string fileName = "bd0712a3-a5e7-4704-b565-889f673a393b.realm";
-			string dbFileLocation = Path.Combine(Helper.AppDir, fileName);
+			//string fileName = "bd0712a3-a5e7-4704-b565-889f673a393b.realm";
+			//string dbFileLocation = Path.Combine(Helper.AppDir, fileName);
 
-			if (File.Exists(dbFileLocation)) {
-				SDiag.Debug.WriteLine(dbFileLocation + " is Exists!");
-			}
+			//if (File.Exists(dbFileLocation)) {
+			//	SDiag.Debug.WriteLine(dbFileLocation + " is Exists!");
+			//}
 
-			if (File.Exists(MainDatabase.DBPath)) {
-				SDiag.Debug.WriteLine(MainDatabase.DBPath + " is Exists!");
-				//var fi = new FileInfo(MainDatabase.DBPath);
-				//var directory = fi.Directory.FullName;
-				var newPath = Path.Combine(new FileInfo(MainDatabase.DBPath).Directory.FullName, fileName);
-				if (!File.Exists(newPath)) File.Copy(dbFileLocation, newPath, true);
+			//if (File.Exists(MainDatabase.DBPath)) {
+			//	SDiag.Debug.WriteLine(MainDatabase.DBPath + " is Exists!");
+			//	//var fi = new FileInfo(MainDatabase.DBPath);
+			//	//var directory = fi.Directory.FullName;
+			//	var newPath = Path.Combine(new FileInfo(MainDatabase.DBPath).Directory.FullName, fileName);
+			//	if (!File.Exists(newPath)) File.Copy(dbFileLocation, newPath, true);
 
-				if (File.Exists(newPath)) {
-					SDiag.Debug.WriteLine(newPath + " is Exists!");
-					MainDatabase.Dispose();
-					Helper.C_DB_FILE_NAME = fileName;
-					MainDatabase.Username = Helper.Username;
-				}
-			}
+			//	if (File.Exists(newPath)) {
+			//		SDiag.Debug.WriteLine(newPath + " is Exists!");
+			//		MainDatabase.Dispose();
+			//		Helper.C_DB_FILE_NAME = fileName;
+			//		MainDatabase.Username = Helper.Username;
+			//	}
+			//}
 		}
 
 		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
