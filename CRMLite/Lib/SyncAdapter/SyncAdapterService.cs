@@ -4,7 +4,7 @@ using Android.Content;
 
 namespace CRMLite.Lib.Sync
 {
-	[Service(Name = "ru.sbl.crmlite2.SyncAdapterService", Exported = true)] //, Process = ":sync"
+	[Service(Name = "ru.sbl.crmlite2.SyncAdapterService", Exported = true, Process = ":sync")] //, Process = ":sync"
 	[IntentFilter(new[] { "android.content.SyncAdapter" })]
 	[MetaData("android.content.SyncAdapter", Resource = "@xml/syncadapter")]
 	public class SyncAdapterService : Service

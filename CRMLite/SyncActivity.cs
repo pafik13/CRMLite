@@ -23,6 +23,8 @@ using Realms;
 using CRMLite.Dialogs;
 using CRMLite.Entities;
 using Newtonsoft.Json;
+using Android.Accounts;
+using CRMLite.Lib.Sync;
 
 namespace CRMLite
 {
@@ -385,6 +387,22 @@ namespace CRMLite
 			return currentTimestamp > payload.Exp;
 		}
 
+		public Account CreateSyncAccount(Context context)
+		{
+			var newAccount = new Account(SyncConst.ACCOUNT, SyncConst.ACCOUNT_TYPE);
+
+			var accountManager = (AccountManager)context.GetSystemService(AccountService);
+
+			var tag = "CRMLite:SyncActivity:CreateSyncAccount";
+			if (accountManager.AddAccountExplicitly(newAccount, null, null)) {
+				Android.Util.Log.Info(tag, "AddAccountExplicitly");
+			} else {
+				Android.Util.Log.Info(tag, "NOT AddAccountExplicitly");
+			}
+
+			return newAccount;
+		}
+
 		void Sync_Click(object sender, EventArgs e){
 
 			if (CancelSource != null && CancelToken.CanBeCanceled) {
@@ -447,6 +465,23 @@ namespace CRMLite
 
 				return;
 			}
+			// Register Account and Set periodic sync
+			var account = CreateSyncAccount(this);
+
+			var settingsBundle = new Bundle();
+			settingsBundle.PutString(SigninDialog.C_ACCESS_TOKEN, ACCESS_TOKEN);
+			settingsBundle.PutString(SigninDialog.C_HOST_URL, HOST_URL);
+			settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, false);
+			settingsBundle.PutBoolean(ContentResolver.SyncExtrasDoNotRetry, false);
+			settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, false);
+
+			ContentResolver.SetIsSyncable(account, SyncConst.AUTHORITY, 1);
+			ContentResolver.SetSyncAutomatically(account, SyncConst.AUTHORITY, true);
+
+			ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, settingsBundle, SyncConst.SYNC_INTERVAL);
+
+			// End - Register Account and Set periodic sync
+
 
 			try {
 				var dbFileInfo = new FileInfo(MainDatabase.DBPath);

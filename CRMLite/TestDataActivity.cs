@@ -120,8 +120,8 @@ namespace CRMLite
 			var account = CreateSyncAccount(this);
 
 			var settingsBundle = new Bundle();
-			settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, true);
-			settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, true);
+			//settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, true);
+			//settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, true);
 			var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
 
 			var ACCESS_TOKEN = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
@@ -129,9 +129,16 @@ namespace CRMLite
 
 			settingsBundle.PutString(SigninDialog.C_ACCESS_TOKEN, ACCESS_TOKEN);
 			settingsBundle.PutString(SigninDialog.C_HOST_URL, HOST_URL);
+			settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, false);
+			settingsBundle.PutBoolean(ContentResolver.SyncExtrasDoNotRetry, false);
+        	settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, false);
+			//ContentResolver.RequestSync(account, SyncConst.AUTHORITY, settingsBundle);
 
-			ContentResolver.RequestSync(account, SyncConst.AUTHORITY, settingsBundle);
-
+			//ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, Bundle.Empty, SyncConst.SYNC_INTERVAL)
+			ContentResolver.SetIsSyncable(account, SyncConst.AUTHORITY, 1);
+			ContentResolver.SetSyncAutomatically(account, SyncConst.AUTHORITY, true);
+			;
+			ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, settingsBundle, SyncConst.SYNC_INTERVAL);
 
 			//var intent = new Intent(Intent.ActionGetContent);
 			//intent.SetType("*/*");

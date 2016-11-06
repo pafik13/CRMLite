@@ -1,13 +1,15 @@
-﻿using SD = System.Diagnostics;
+﻿using System.Net;
+using System.Collections.Generic;
 
 using Android.OS;
+using Android.Util;
 using Android.Content;
 using Android.Accounts;
-using Android.Util;
+
 using RestSharp;
+
 using CRMLite.Dialogs;
-using System.Net;
-using System.Collections.Generic;
+using CRMLite.Entities;
 
 namespace CRMLite.Lib.Sync
 {
@@ -52,7 +54,26 @@ namespace CRMLite.Lib.Sync
 			}
 
 			if (hasAccessToken && hasHostURL) {
-					
+				var client = new RestClient(HOST_URL);
+
+				// ПОЛУЧЕНИЕ ДАННЫХ
+				var path = typeof(LifecycleAction).Name;
+				var req = new RestRequest(path, Method.POST);
+				req.AddQueryParameter(@"access_token", ACCESS_TOKEN);
+
+				var response = client.Execute(request);
+				switch (response.StatusCode) {
+					case HttpStatusCode.OK:
+					case HttpStatusCode.Created:
+						Log.Info(tag, string.Format("Uploaded: {0}-{1}", cursor.GetString(0), cursor.GetString(1)));
+						uuids.Add(cursor.GetString(1));
+						break;
+					default:
+						Log.Info(tag, string.Format("NOT Uploaded: {0}-{1}", cursor.GetString(0), cursor.GetString(1)));
+						break;
+				}
+
+				// ОТДАЧА ДАННЫХ
 				var entitiesArray = new string[] {       
 					SyncConst.Attendancies,
 					SyncConst.CompetitorDatas,
@@ -88,8 +109,6 @@ namespace CRMLite.Lib.Sync
 					var uuids = new List<string>();
 					if (cursor != null) {
 						try {
-							var client = new RestClient(HOST_URL);
-
 							if (cursor.Count > 0) {
 								cursor.MoveToFirst();
 								do {
@@ -115,19 +134,6 @@ namespace CRMLite.Lib.Sync
 									}
 								} while (cursor.MoveToNext());
 							}
-
-
-							//using (var trans = MainDatabase.BeginTransaction()) {
-							//	foreach (var item in items) {
-							//		request.JsonSerializer = new NewtonsoftJsonSerializer();
-
-							//		SDiag.Debug.WriteLine(response.StatusDescription);
-							//	}
-							//	trans.Commit();
-							//}
-
-							//Log.Info(tag, string.Join(", ", cursor.GetColumnNames()));
-
 						} catch (System.Exception ex) {
 							Log.Error(tag, ex.Message);
 						}

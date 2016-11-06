@@ -152,34 +152,39 @@ namespace CRMLite
 				var distributions = MainDatabase.GetItems<DistributionData>().Where(i => i.Attendance == attendance.UUID);
 				foreach (var distribution in distributions) {
 					// IsExistence
-
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditIsExistence, attendance.When.ToString(format));
-					if (!TextViews.ContainsKey(dict_key)) {
-						TextViews[dict_key].Text = distribution.IsExistence ? @"+" : @"-";
+					if (TextViews.ContainsKey(dict_key)) {
+						TextViews[dict_key].Text = distribution.IsExistence ? "+" : "-";
 					}
 
 					// Count
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditCount, attendance.When.ToString(format));
-					if (!TextViews.ContainsKey(dict_key)) {
+					if (TextViews.ContainsKey(dict_key)) {
 						TextViews[dict_key].Text = distribution.Count.ToString();
 					}
 
 					// Price
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditPrice, attendance.When.ToString(format));
-					if (!TextViews.ContainsKey(dict_key)) {
+					if (TextViews.ContainsKey(dict_key)) {
 						TextViews[dict_key].Text = distribution.Price.ToString();
 					}
 
 					// IsPresence
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditIsPresence, attendance.When.ToString(format));
-					if (!TextViews.ContainsKey(dict_key)) {
-						TextViews[dict_key].Text = distribution.IsPresence ? @"+" : @"-";
+					if (TextViews.ContainsKey(dict_key)) {
+						TextViews[dict_key].Text = distribution.IsPresence ? "+" : "-";
 					}
 
 					// HasPOS
 					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditHasPOS, attendance.When.ToString(format));
-					if (!TextViews.ContainsKey(dict_key)) {
-						TextViews[dict_key].Text = distribution.HasPOS ? @"+" : @"-";
+					if (TextViews.ContainsKey(dict_key)) {
+						TextViews[dict_key].Text = distribution.HasPOS ? "+" : "-";
+					}
+
+					// OrderS
+					dict_key = string.Format("{0}-{1}-{2}", distribution.DrugSKU, DistributionInfoType.ditOrder, attendance.When.ToString(format));
+					if (TextViews.ContainsKey(dict_key)) {
+						TextViews[dict_key].Text = string.IsNullOrEmpty(distribution.Order) ? "-" : "+";
 					}
 				}
 			}
@@ -205,6 +210,8 @@ namespace CRMLite
 					return @"Выкладка";
 				case DistributionInfoType.ditHasPOS:
 					return @"POS-материалы";
+				case DistributionInfoType.ditOrder:
+					return @"Заказ";
 				default:
 					return @"Unknown";
 			}
