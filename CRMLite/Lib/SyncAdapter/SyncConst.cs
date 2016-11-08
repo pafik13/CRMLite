@@ -1,4 +1,7 @@
 ﻿using Android.Net;
+
+using CRMLite.Entities;
+
 namespace CRMLite.Lib.Sync
 {
 	public static class SyncConst
@@ -11,7 +14,7 @@ namespace CRMLite.Lib.Sync
 
 		// Sync interval constants
 		public const long SECONDS_PER_MINUTE = 60L;
-		public const long SYNC_INTERVAL_IN_MINUTES = 10L;
+		public const long SYNC_INTERVAL_IN_MINUTES = 2L;
 		public const long SYNC_INTERVAL = SYNC_INTERVAL_IN_MINUTES * SECONDS_PER_MINUTE;
 
 		public const string Attendancies = "Attendancies";
@@ -31,8 +34,12 @@ namespace CRMLite.Lib.Sync
 		public const string ResumeDatas = "ResumeDatas";
 		public const string RouteItems = "RouteItems";
 
-
 		public const string SET_SYNCED = "set_synced";
+
+
+		public const string Distributor = "Distributor";
+		public const string PhotoType = "PhotoType";
+
 
 
 		public static Uri GetURI(string lastPathSegment) { 

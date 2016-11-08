@@ -89,5 +89,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tdaClearB" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tdaDataLL" />
     </LinearLayout>
 </ScrollView>

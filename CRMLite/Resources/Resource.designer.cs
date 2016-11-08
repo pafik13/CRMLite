@@ -3632,6 +3632,9 @@ namespace CRMLite
 			// aapt resource value: 0x7f0d025b
 			public const int tdaCustomActionB = 2131559003;
 			
+			// aapt resource value: 0x7f0d025d
+			public const int tdaDataLL = 2131559005;
+			
 			// aapt resource value: 0x7f0d0250
 			public const int tdaDistributions = 2131558992;
 			

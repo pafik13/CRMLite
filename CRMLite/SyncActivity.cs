@@ -469,6 +469,7 @@ namespace CRMLite
 			var account = CreateSyncAccount(this);
 
 			var settingsBundle = new Bundle();
+			settingsBundle.PutString(MainDatabase.C_DB_PATH, MainDatabase.DBPath);
 			settingsBundle.PutString(SigninDialog.C_ACCESS_TOKEN, ACCESS_TOKEN);
 			settingsBundle.PutString(SigninDialog.C_HOST_URL, HOST_URL);
 			settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, false);

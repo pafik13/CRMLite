@@ -32,16 +32,23 @@ namespace CRMLite.Lib.Sync
 			ContentResolver = context.ContentResolver;
 		}
 
-		public override void OnPerformSync(Account account, Bundle extras, string authority, ContentProviderClient provider, SyncResult syncResult)
+		public override void OnPerformSync(Account account, Bundle extras, string authority, ContentProviderClient provider, Android.Content.SyncResult syncResult)
 		{
 			// Data transfer code here
 			var tag = TAG + ":OnPerformSync";
 
+			var DB_PATH = extras.GetString(MainDatabase.C_DB_PATH, string.Empty);
 			var ACCESS_TOKEN = extras.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
 			var HOST_URL = extras.GetString(SigninDialog.C_HOST_URL, string.Empty);
 
+			bool hasBDPath = true;
 			bool hasAccessToken = true;
 			bool hasHostURL = true;
+
+			if (string.IsNullOrEmpty(DB_PATH)) {
+				hasBDPath = false;
+				Log.Error(tag, "DB_PATH is NULL");
+			}
 
 			if (string.IsNullOrEmpty(ACCESS_TOKEN)) {
 				hasAccessToken = false;
@@ -53,24 +60,93 @@ namespace CRMLite.Lib.Sync
 				Log.Error(tag, "HOST_URL is NULL");
 			}
 
-			if (hasAccessToken && hasHostURL) {
+			if (hasBDPath && hasAccessToken && hasHostURL) {
 				var client = new RestClient(HOST_URL);
 
 				// ПОЛУЧЕНИЕ ДАННЫХ
-				var path = typeof(LifecycleAction).Name;
-				var req = new RestRequest(path, Method.POST);
+				var path = typeof(LifecycleAction).Name + "/byjwt";
+				var req = new RestRequest(path, Method.GET);
 				req.AddQueryParameter(@"access_token", ACCESS_TOKEN);
 
-				var response = client.Execute(request);
-				switch (response.StatusCode) {
-					case HttpStatusCode.OK:
-					case HttpStatusCode.Created:
-						Log.Info(tag, string.Format("Uploaded: {0}-{1}", cursor.GetString(0), cursor.GetString(1)));
-						uuids.Add(cursor.GetString(1));
-						break;
-					default:
-						Log.Info(tag, string.Format("NOT Uploaded: {0}-{1}", cursor.GetString(0), cursor.GetString(1)));
-						break;
+				var res = client.Execute<List<LifecycleAction>>(req);
+
+				if ((res.StatusCode != HttpStatusCode.OK)
+				  && (res.StatusCode != HttpStatusCode.Created)
+				   ) {
+					Log.Error(tag, string.Format("NOT Download LifecycleAction"));
+				} else {
+					Log.Info(tag, string.Format("Download LifecycleAction: {0}", res.Data.Count));
+
+					foreach (var lc_action in res.Data) {
+						bool canClear = false;
+						var modelURI = SyncConst.GetURI(lc_action.model);
+
+						switch (lc_action.action) {
+							case "create":
+							case "update":
+								var pathModel = string.Format("{0}/{1}", lc_action.model, lc_action.uuid);
+								var reqModel = new RestRequest(pathModel, Method.GET);
+								reqModel.AddQueryParameter(@"access_token", ACCESS_TOKEN);
+
+								var resModel = client.Execute(reqModel);
+								switch (resModel.StatusCode) {
+									case HttpStatusCode.OK:
+									case HttpStatusCode.Created:
+										Log.Info(tag, string.Format("Downloaded Model by path:{0}", pathModel));
+										Log.Info(tag, string.Format("Downloaded Model={0}", resModel.Content));
+										var values = new ContentValues();
+										values.Put("db_path", DB_PATH);
+										values.Put("model", lc_action.model);
+										values.Put("uuid", lc_action.uuid);
+										values.Put("action", lc_action.action);
+										values.Put("json", resModel.Content);
+										var result = provider.Insert(modelURI, values);
+										switch (result.LastPathSegment) {
+											case "OK":
+												canClear = true;
+												break;
+											case "ERROR":
+												Log.Error(tag, string.Format("NOT Inserted object:{0}:{1}", lc_action.model, lc_action.uuid));
+												break;
+											default:
+												Log.Error(tag, string.Format("Unhandled LastPathSegment {0}", result.LastPathSegment));
+												break;
+										}
+										break;
+									default:
+										Log.Error(tag, string.Format("NOT Downloaded Model by path:{0}", pathModel));
+										break;
+								}
+								break;
+
+							case "delete":
+								var args = new string[] { DB_PATH, lc_action.uuid };
+								int d = provider.Delete(modelURI, modelURI.LastPathSegment, args);
+								if (d == -1) {
+									Log.Error(tag, string.Format("NOT Deleted object:{0}:{1}", lc_action.model, lc_action.uuid));
+									break;
+								}
+								canClear = true;
+								break;
+							default:
+								Log.Error(tag, string.Format("Unhandled action: {0}", lc_action.action));
+								break;
+						}
+
+						if (canClear) {
+							var pathClear = typeof(LifecycleAction).Name + "/clear";
+							var reqClear = new RestRequest(pathClear, Method.DELETE);
+							reqClear.AddQueryParameter(@"access_token", ACCESS_TOKEN);
+							reqClear.AddQueryParameter(@"model", lc_action.model);
+							reqClear.AddQueryParameter(@"uuid", lc_action.uuid);
+
+							var resClear = client.Execute(reqClear);
+							if ((resClear.StatusCode != HttpStatusCode.OK) && (resClear.StatusCode != HttpStatusCode.Created))
+							{
+								Log.Error(tag, string.Format("NOT Cleared object:{0}:{1}", lc_action.model, lc_action.uuid));
+							}
+						}
+					}
 				}
 
 				// ОТДАЧА ДАННЫХ
@@ -97,7 +173,8 @@ namespace CRMLite.Lib.Sync
 					// 1. получить данные
 					Log.Info(tag, string.Format("Start Query, {0}", entities));
 					var entyitiesURI = SyncConst.GetURI(entities);
-					var cursor = provider.Query(entyitiesURI, EMPTY_STRING_ARRAY, string.Empty, EMPTY_STRING_ARRAY, string.Empty);
+					var args = new string[] { DB_PATH };
+					var cursor = provider.Query(entyitiesURI, EMPTY_STRING_ARRAY, string.Empty, args, string.Empty);
 					if (cursor == null) {
 						Log.Info(tag, string.Format("End Query, cursor is NULL"));
 					} else {
@@ -107,6 +184,7 @@ namespace CRMLite.Lib.Sync
 					// 2. синхронизировать
 					Log.Info(tag, string.Format("Start Sync, {0}", entities));
 					var uuids = new List<string>();
+					uuids.Add(DB_PATH);
 					if (cursor != null) {
 						try {
 							if (cursor.Count > 0) {

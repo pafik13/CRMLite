@@ -115,30 +115,45 @@ namespace CRMLite
 
 		void CustomAction_Click(object sender, EventArgs e)
 		{
+			new Thread(() => {
+				var DB = Realms.Realm.GetInstance(MainDatabase.DBPath);
+
+				//var ojb = new Distributor()
+				var json = "{\"name\":\"NewDistr3\",\"uuid\":\"2817a473-9720-424d-b379-3cedd7b90c80\",\"createdAt\":\"2016-11-07T18:50:58.960Z\",\"updatedAt\":\"2016-11-07T18:50:58.960Z\",\"id\":\"5820cd12e53164e74abff8f9\"}"; ;
+				Realms.RealmObject ojb = Newtonsoft.Json.JsonConvert.DeserializeObject<Distributor>(json);
+				using (var trans = DB.BeginWrite()) {
+
+					DB.Manage(ojb);
+					trans.Rollback();
+				}
+			}).Start();
+			//ojb.
+			//var  = DB.CreateObject<Distributor>();
+
 			//ru.sbl.crmlite2
 
-			var account = CreateSyncAccount(this);
+			//var account = CreateSyncAccount(this);
 
-			var settingsBundle = new Bundle();
-			//settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, true);
-			//settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, true);
-			var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
+			//var settingsBundle = new Bundle();
+			////settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, true);
+			////settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, true);
+			//var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
 
-			var ACCESS_TOKEN = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
-			var HOST_URL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
+			//var ACCESS_TOKEN = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
+			//var HOST_URL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
 
-			settingsBundle.PutString(SigninDialog.C_ACCESS_TOKEN, ACCESS_TOKEN);
-			settingsBundle.PutString(SigninDialog.C_HOST_URL, HOST_URL);
-			settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, false);
-			settingsBundle.PutBoolean(ContentResolver.SyncExtrasDoNotRetry, false);
-        	settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, false);
-			//ContentResolver.RequestSync(account, SyncConst.AUTHORITY, settingsBundle);
+			//settingsBundle.PutString(SigninDialog.C_ACCESS_TOKEN, ACCESS_TOKEN);
+			//settingsBundle.PutString(SigninDialog.C_HOST_URL, HOST_URL);
+			//settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, false);
+			//settingsBundle.PutBoolean(ContentResolver.SyncExtrasDoNotRetry, false);
+   //     	settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, false);
+			////ContentResolver.RequestSync(account, SyncConst.AUTHORITY, settingsBundle);
 
-			//ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, Bundle.Empty, SyncConst.SYNC_INTERVAL)
-			ContentResolver.SetIsSyncable(account, SyncConst.AUTHORITY, 1);
-			ContentResolver.SetSyncAutomatically(account, SyncConst.AUTHORITY, true);
-			;
-			ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, settingsBundle, SyncConst.SYNC_INTERVAL);
+			////ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, Bundle.Empty, SyncConst.SYNC_INTERVAL)
+			//ContentResolver.SetIsSyncable(account, SyncConst.AUTHORITY, 1);
+			//ContentResolver.SetSyncAutomatically(account, SyncConst.AUTHORITY, true);
+			//;
+			//ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, settingsBundle, SyncConst.SYNC_INTERVAL);
 
 			//var intent = new Intent(Intent.ActionGetContent);
 			//intent.SetType("*/*");
@@ -344,7 +359,13 @@ namespace CRMLite
 			FindViewById<TextView>(Resource.Id.tdaSaleDatas).Text = string.Format(@"SaleDatas: {0}", MainDatabase.GetItems<SaleDataByMonth>().Count);
 			FindViewById<TextView>(Resource.Id.tdaPhotoDatas).Text = string.Format(@"PhotoDatas: {0}", MainDatabase.GetItems<PhotoData>().Count);
 
+			var ll = FindViewById<LinearLayout>(Resource.Id.tdaDataLL);
+			var distributors = MainDatabase.GetItems<Distributor>();
+			foreach (var item in distributors) {
+				ll.AddView(new TextView(this) { Text = string.Format("uuid:{0}, name:{1}", item.uuid, item.name) });
+			}
 		}
+
 	}
 }
 

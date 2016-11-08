@@ -11,6 +11,8 @@ namespace CRMLite
 {
 	public class MainDatabase
 	{
+		public const string C_DB_PATH = "C_DB_PATH";
+
 		readonly Realm DB;
 		readonly RealmConfiguration Config;
 

@@ -1,11 +1,16 @@
-﻿using System;
+﻿//using System;
 using System.Linq;
 using System.Collections.Generic;
 
-
+using Android.Net;
+using Android.Util;
 using Android.Content;
-using CRMLite.Entities;
+
+using Newtonsoft.Json;
+
 using Realms;
+
+using CRMLite.Entities;
 
 namespace CRMLite.Lib.Sync
 {
@@ -13,8 +18,8 @@ namespace CRMLite.Lib.Sync
 	{
 		public const string AUTHORITY = "ru.sbl.crmlite2.provider";
 
-
 		NewtonsoftJsonSerializer Serializer;
+
 
 		public override bool OnCreate()
 		{
@@ -22,7 +27,7 @@ namespace CRMLite.Lib.Sync
 			return true;
 		}
 
-		public override string GetType(Android.Net.Uri uri)
+		public override string GetType(Uri uri)
 		{
 			if (uri.LastPathSegment.Equals("attendancies")) {
 				return MainDatabase.DBPath;
@@ -34,15 +39,16 @@ namespace CRMLite.Lib.Sync
 		public static IQueryable<IEntity> GetItemsToSync<T>(Realm db) where T : RealmObject, IEntity, ISync
 		{
 			if (db == null) {
-				throw new ArgumentNullException(nameof(db));
+				throw new System.ArgumentNullException(nameof(db));
 			}
 
 			return db.All<T>().Where(item => !item.IsSynced);
 		}
 
-		public override Android.Database.ICursor Query(Android.Net.Uri uri, string[] projection, string selection, string[] selectionArgs, string sortOrder)
+		public override Android.Database.ICursor Query(Uri uri, string[] projection, string selection, string[] selectionArgs, string sortOrder)
 		{
-			using (var DB = Realm.GetInstance(MainDatabase.DBPath)) {
+			string db_path = selectionArgs[0];
+			using (var DB = Realm.GetInstance(db_path)) {
 				var fields = new string[] { "TYPE", "UUID", "JSON" };
 				var cursor = new Android.Database.MatrixCursor(fields);
 
@@ -114,6 +120,7 @@ namespace CRMLite.Lib.Sync
 						entities = GetItemsToSync<RouteItem>(DB);
 						break;
 					default:
+						System.Diagnostics.Debug.WriteLine("Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Query");
 						break ;
 				}
 
@@ -128,19 +135,112 @@ namespace CRMLite.Lib.Sync
 			}
 		}
 
-		public override Android.Net.Uri Insert(Android.Net.Uri uri, ContentValues values)
+		Uri ManageItem<T>(Uri uri, Realm db, T item, IQueryable<T> list, string uuid) where T: RealmObject
 		{
-			return null;
+			var ERROR = new Uri.Builder()
+				   .Scheme(uri.Scheme)
+				   .Authority(uri.Authority)
+				   .Path("ERROR")
+				   .Build();
+
+			var OK = new Uri.Builder()
+							.Scheme(uri.Scheme)
+							.Authority(uri.Authority)
+							.Path("OK")
+							.Build();
+			
+			if (item == null) {
+				Log.Error("StubProvider", string.Format("Cannot insert object:{0}:{1}. Find more than 1 record.", uri.LastPathSegment, uuid));
+				return ERROR;
+			}
+
+			if (list.Count() > 1) {
+				Log.Error("StubProvider", string.Format("Cannot insert object:{0}:{1}. Obj is NULL.", uri.LastPathSegment, uuid));
+				return ERROR;
+			}
+
+			try {
+				using (var transaction = db.BeginWrite()) {
+					if (list.Count() == 1) {
+						db.Remove(list.First());
+					}
+					db.Manage(item);
+					transaction.Commit();
+				}
+				return OK;
+			} catch (System.Exception ex) {
+				Log.Error("StubProvider", string.Format("Cannot insert object:{0}:{1}. Exeption: {2}", uri.LastPathSegment, uuid, ex.Message));
+				return ERROR;
+			}
 		}
 
-		public override int Delete(Android.Net.Uri uri, string selection, string[] selectionArgs)
+		public override Uri Insert(Uri uri, ContentValues values)
 		{
-			return 0;
+			var json = values.GetAsString("json");
+			var db_path = values.GetAsString("db_path");
+			using (var DB = Realm.GetInstance(db_path)) {
+				switch (uri.LastPathSegment) {
+					case SyncConst.Distributor:
+						var item1 = JsonConvert.DeserializeObject<Distributor>(json);
+						var list1 = DB.All<Distributor>().Where(d => d.uuid == item1.uuid);
+						return ManageItem(uri, DB, item1, list1, item1.uuid);
+					case SyncConst.PhotoType:
+						var item2 = JsonConvert.DeserializeObject<PhotoType>(json);
+						var list2 = DB.All<PhotoType>().Where(d => d.uuid == item2.uuid);
+						return ManageItem(uri, DB, item2, list2, item2.uuid);
+					default:
+						return new Uri.Builder()
+									  .Scheme(uri.Scheme)
+									  .Authority(uri.Authority)
+									  .Path("ERROR")
+									  .Build();
+				}
+
+			}
+
 		}
 
-		public override int Update(Android.Net.Uri uri, ContentValues values, string selection, string[] selectionArgs)
+		int RemoveItems<T>(Realm db, IQueryable<T> list, string uuid) where T : RealmObject
 		{
-			using (var DB = Realm.GetInstance(MainDatabase.DBPath)) {
+			if (list.Count() == 0) return 0;
+
+			if (list.Count() > 1) {
+				Log.Error("StubProvider", string.Format("Cannot remove object:{0}:{1}. Find more than 1 record.", typeof(T).Name, uuid));
+				return -1;
+			}
+
+			try {
+				using (var transaction = db.BeginWrite()) {
+					db.Remove(list.First());
+					transaction.Commit();
+				}
+				return 1;
+			} catch (System.Exception ex) {
+				Log.Error("StubProvider", string.Format("Cannot remove object:{0}:{1}. Exeption: {2}", typeof(T).Name, uuid, ex.Message));
+				return -1;
+			}
+		}
+
+		public override int Delete(Uri uri, string selection, string[] selectionArgs)
+		{
+			string uuid = selectionArgs[1];
+			string db_path = selectionArgs[0];
+			using (var DB = Realm.GetInstance(db_path)) {
+				switch (selection) {
+					case SyncConst.Distributor:
+						var list = DB.All<Distributor>().Where(item => item.uuid == uuid);
+						return RemoveItems(DB, list, uuid);
+					default:
+						System.Diagnostics.Debug.WriteLine("Unhandled selection:" + selection, "StubProvider.Delete");
+						return -1;
+				}
+			}
+		}
+
+		public override int Update(Uri uri, ContentValues values, string selection, string[] selectionArgs)
+		{
+			string db_path = selectionArgs[0];
+			using (var DB = Realm.GetInstance(db_path)) {
 				switch (uri.LastPathSegment) {
 					case SyncConst.SET_SYNCED:
 						if (selectionArgs.Length > 0) {
@@ -195,6 +295,7 @@ namespace CRMLite.Lib.Sync
 									entities = DB.All<RouteItem>().ToList<IEntity>();
 									break;
 								default:
+									System.Diagnostics.Debug.WriteLine("Unhandled selection:" + selection, "StubProvider.Update");
 									break;
 									
 							}
@@ -212,6 +313,7 @@ namespace CRMLite.Lib.Sync
 						}
 						break;
 					default:
+						System.Diagnostics.Debug.WriteLine("Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Update");
 						break;
 				}
 			}
