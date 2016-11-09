@@ -10,11 +10,11 @@ namespace CRMLite.Lib.Sync
 
 		public const string ACCOUNT_TYPE = "ru.sbl.crmlite2";
 
-		public const string ACCOUNT = "dummyaccount";
+		public const string ACCOUNT = "autosync";
 
 		// Sync interval constants
 		public const long SECONDS_PER_MINUTE = 60L;
-		public const long SYNC_INTERVAL_IN_MINUTES = 2L;
+		public const long SYNC_INTERVAL_IN_MINUTES = 5L;
 		public const long SYNC_INTERVAL = SYNC_INTERVAL_IN_MINUTES * SECONDS_PER_MINUTE;
 
 		public const string Attendancies = "Attendancies";

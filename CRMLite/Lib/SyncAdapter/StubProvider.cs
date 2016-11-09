@@ -1,5 +1,4 @@
-﻿//using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 
 using Android.Net;
@@ -120,14 +119,14 @@ namespace CRMLite.Lib.Sync
 						entities = GetItemsToSync<RouteItem>(DB);
 						break;
 					default:
-						System.Diagnostics.Debug.WriteLine("Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Query");
+						Log.Error("StubProvider", "Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Query");
 						break ;
 				}
 
 				if (entities == null) return cursor;
 
-				foreach (var attendance in entities) {
-					var values = new Java.Lang.Object[] { type, attendance.UUID, Serializer.Serialize(attendance) };
+				foreach (var entity in entities) {
+					var values = new Java.Lang.Object[] { type, entity.UUID, Serializer.Serialize(entity) };
 					cursor.AddRow(values);
 				}
 
@@ -231,7 +230,7 @@ namespace CRMLite.Lib.Sync
 						var list = DB.All<Distributor>().Where(item => item.uuid == uuid);
 						return RemoveItems(DB, list, uuid);
 					default:
-						System.Diagnostics.Debug.WriteLine("Unhandled selection:" + selection, "StubProvider.Delete");
+						Log.Error("StubProvider", "Unhandled selection:" + selection, "StubProvider.Delete");
 						return -1;
 				}
 			}
@@ -295,7 +294,7 @@ namespace CRMLite.Lib.Sync
 									entities = DB.All<RouteItem>().ToList<IEntity>();
 									break;
 								default:
-									System.Diagnostics.Debug.WriteLine("Unhandled selection:" + selection, "StubProvider.Update");
+									Log.Error("StubProvider", "Unhandled selection:" + selection, "StubProvider.Update");
 									break;
 									
 							}
@@ -313,7 +312,7 @@ namespace CRMLite.Lib.Sync
 						}
 						break;
 					default:
-						System.Diagnostics.Debug.WriteLine("Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Update");
+						Log.Error("StubProvider", "Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Update");
 						break;
 				}
 			}
