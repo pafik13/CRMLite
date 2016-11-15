@@ -166,7 +166,8 @@ namespace CRMLite.Lib.Sync
 					SyncConst.PresentationDatas,
 					SyncConst.PromotionDatas,
 					SyncConst.ResumeDatas,
-					SyncConst.RouteItems, 
+					SyncConst.RouteItems,
+					SyncConst.ExcludeRouteItems
 				};
 
 				foreach (var entities in entitiesArray) {

@@ -245,6 +245,17 @@ namespace CRMLite
 			using (var trans = Me.DB.BeginWrite()) {
 				var item = GetEntity<T>(uuid);
 
+				if (item is RouteItem) {
+					var routeItem = item as RouteItem;
+					if (routeItem.IsSynced) {
+						var excludeRouteItem = Me.DB.CreateObject<ExcludeRouteItem>();
+						excludeRouteItem.UUID = routeItem.UUID;
+						excludeRouteItem.CreatedAt = DateTimeOffset.Now;
+						excludeRouteItem.UpdatedAt = DateTimeOffset.Now;
+						excludeRouteItem.CreatedBy = string.IsNullOrEmpty(AgentUUID) ? @"AgentUUID is Empty" : AgentUUID;
+					}
+				}
+
 				Me.DB.Remove(item);
 
 				trans.Commit();
@@ -661,7 +672,9 @@ namespace CRMLite
 
 		internal static List<RouteItem> GetEarlyRouteItems(DateTimeOffset selectedDate)
 		{
-			var lowDate = selectedDate.AddDays(-7 * Helper.WeeksInRoute + 1).UtcDateTime.Date;
+			if (Helper.WeeksInRoute < 2) return new List<RouteItem>();
+
+			var lowDate = selectedDate.AddDays(-7 * Helper.WeeksInRoute + 8).UtcDateTime.Date;
 			var highDate = selectedDate.AddDays(-1).UtcDateTime.Date;
 
 			return Me.DB.All<RouteItem>()

@@ -260,6 +260,7 @@ namespace CRMLite
 			Count += MainDatabase.CountItemsToSync<PromotionData>();
 			Count += MainDatabase.CountItemsToSync<ResumeData>();
 			Count += MainDatabase.CountItemsToSync<RouteItem>();
+			Count += MainDatabase.CountItemsToSync<ExcludeRouteItem>();
 
 
 			Count += MainDatabase.CountItemsToSync<Entities.Message>();
@@ -621,6 +622,7 @@ namespace CRMLite
 					SyncEntities(MainDatabase.GetItemsToSync<PromotionData>());
 					SyncEntities(MainDatabase.GetItemsToSync<ResumeData>());
 					SyncEntities(MainDatabase.GetItemsToSync<RouteItem>());
+					SyncEntities(MainDatabase.GetItemsToSync<ExcludeRouteItem>());
 
 					MainDatabase.Dispose();
 

@@ -33,6 +33,7 @@ namespace CRMLite.Lib.Sync
 		public const string PromotionDatas = "PromotionDatas";
 		public const string ResumeDatas = "ResumeDatas";
 		public const string RouteItems = "RouteItems";
+		public const string ExcludeRouteItems = "ExcludeRouteItems";
 
 		public const string SET_SYNCED = "set_synced";
 

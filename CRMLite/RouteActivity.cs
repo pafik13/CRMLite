@@ -243,7 +243,7 @@ namespace CRMLite
 
 			var rowForDelete = (LinearLayout)((ImageView)sender).Parent;
 
-			string routeItemUUID = (string)rowForDelete.GetTag(Resource.String.RouteItemUUID);
+			var routeItemUUID = (string)rowForDelete.GetTag(Resource.String.RouteItemUUID);
 			MainDatabase.DeleteEntity<RouteItem>(routeItemUUID);
 
 			int pos = (int) rowForDelete.GetTag(Resource.String.Position);

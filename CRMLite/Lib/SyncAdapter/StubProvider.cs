@@ -118,6 +118,10 @@ namespace CRMLite.Lib.Sync
 						type = typeof(RouteItem).Name;
 						entities = GetItemsToSync<RouteItem>(DB);
 						break;
+					case SyncConst.ExcludeRouteItems:
+						type = typeof(ExcludeRouteItem).Name;
+						entities = GetItemsToSync<ExcludeRouteItem>(DB);
+						break;
 					default:
 						Log.Error("StubProvider", "Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Query");
 						break ;
@@ -292,6 +296,9 @@ namespace CRMLite.Lib.Sync
 									break;
 								case SyncConst.RouteItems:
 									entities = DB.All<RouteItem>().ToList<IEntity>();
+									break;
+								case SyncConst.ExcludeRouteItems:
+									entities = DB.All<ExcludeRouteItem>().ToList<IEntity>();
 									break;
 								default:
 									Log.Error("StubProvider", "Unhandled selection:" + selection, "StubProvider.Update");

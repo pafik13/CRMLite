@@ -200,6 +200,7 @@
     <Compile Include="Lib\SyncAdapter\SyncConst.cs" />
     <Compile Include="Lib\Entities\LifecycleAction.cs" />
     <Compile Include="Lib\Entities\Distributor.cs" />
+    <Compile Include="Lib\Entities\ExcludeRouteItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
