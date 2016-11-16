@@ -96,6 +96,7 @@ namespace CRMLite
 
 			FindViewById<Button>(Resource.Id.saUploadPhotoB).Click += UploadPhoto_Click;
 
+			FindViewById<Button>(Resource.Id.saUploadRealmB).Click += UploadRealm_Click;
 
 			var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
 
@@ -110,6 +111,31 @@ namespace CRMLite
 			LibraryFiles = new List<LibraryFile>();
 
 			RefreshView();
+		}
+
+		void UploadRealm_Click(object sender, EventArgs e)
+		{
+			var client = new RestClient(HOST_URL);
+
+			var request = new RestRequest(@"RealmFile/upload", Method.POST);
+
+			request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
+			request.AddQueryParameter(@"androidId", Helper.AndroidId);
+			request.AddFile(@"realm", File.ReadAllBytes(MainDatabase.DBPath), Path.GetFileName(MainDatabase.DBPath), string.Empty);
+
+			var response = client.Execute(request);
+
+			switch (response.StatusCode) {
+				case HttpStatusCode.OK:
+				case HttpStatusCode.Created:
+					SDiag.Debug.WriteLine("Удалось загрузить копию базы!");
+					Toast.MakeText(this, "Удалось загрузить копию базы!", ToastLength.Short).Show();
+					break;
+				default:
+					SDiag.Debug.WriteLine("Не удалось загрузить копию базы!");
+					Toast.MakeText(this, "Не удалось загрузить копию базы!", ToastLength.Short).Show();
+					break;
+			}
 		}
 
 		void UploadPhoto_Click(object sender, EventArgs e)
