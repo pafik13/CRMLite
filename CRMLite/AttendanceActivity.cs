@@ -38,6 +38,9 @@ namespace CRMLite
 		ImageView Material;
 		IList<Material> Materials;
 
+		ImageView Distributors;
+		IList<Distributor> DistributorsList;
+
 		LocationManager LocMgr;
 		List<Location> Locations;
 
@@ -108,6 +111,8 @@ namespace CRMLite
 
 			Materials = MainDatabase.GetItems<Material>();
 
+			DistributorsList = MainDatabase.GetItems<Distributor>();
+
 			FragmentTitle = FindViewById<TextView>(Resource.Id.aaTitleTV);
 			FragmentTitle.Text = @"АПТЕКА";
 
@@ -167,6 +172,10 @@ namespace CRMLite
 					var materialParams = Material.LayoutParameters as RelativeLayout.LayoutParams;
 					materialParams.AddRule(LayoutRules.LeftOf, Resource.Id.aaHistoryIV);
 
+					Distributors.Visibility = ViewStates.Visible;
+					var distributorsParams = Distributors.LayoutParameters as RelativeLayout.LayoutParams;
+					distributorsParams.AddRule(LayoutRules.LeftOf, Resource.Id.aaMaterialIV);
+
 					var button = sender as Button;
 					button.SetBackgroundResource(Resource.Color.Deep_Orange_500);
 					button.Text = "ЗАКОНЧИТЬ ВИЗИТ";
@@ -216,6 +225,16 @@ namespace CRMLite
 							gps.Longitude = location.Longitude;
 							gps.Provider = location.Provider;
 							gps.Speed = location.Speed;
+						}
+
+						var distributorUUIDs = (string)Distributors.GetTag(Resource.String.DistributorUUIDs);
+
+						if (!string.IsNullOrEmpty(distributorUUIDs)) {
+							foreach (var distributor in distributorUUIDs.Split(';')) {
+								var distributorData = MainDatabase.Create2<DistributorData>();
+								distributorData.Attendance = attendance.UUID;
+								distributorData.Distributor = distributor;
+							}	
 						}
 
 						// Оповещаем фрагменты о завершении визита
@@ -302,6 +321,46 @@ namespace CRMLite
 								   		StartActivity(intent);
 							   })
 				               .Show();
+			};
+
+			Distributors = FindViewById<ImageView>(Resource.Id.aaDistributorsIV);
+			Distributors.Click += (sender, e) => {
+				if (DistributorsList.Count == 0) return;
+
+				var iv = (ImageView)sender;
+				var distributorUUIDs = (string)iv.GetTag(Resource.String.DistributorUUIDs);
+				var cacheDistributorUUIDs = string.IsNullOrEmpty(distributorUUIDs) ? new List<string>() : distributorUUIDs.Split(';').ToList();
+
+				bool[] checkedItems = new bool[DistributorsList.Count];
+				if (cacheDistributorUUIDs.Count > 0) {
+					for (int i = 0; i < DistributorsList.Count; i++) {
+						checkedItems[i] = cacheDistributorUUIDs.Contains(DistributorsList[i].uuid);
+					}
+				}
+
+				new AlertDialog.Builder(this)
+							   .SetTitle("Выберите дистрибьюторов:")
+							   .SetCancelable(false)
+							   .SetMultiChoiceItems(
+								   DistributorsList.Select(item => item.name).ToArray(),
+								   checkedItems,
+								   (caller, arguments) => {
+									   if (arguments.IsChecked) {
+										   cacheDistributorUUIDs.Add(DistributorsList[arguments.Which].uuid);
+									   } else {
+										   cacheDistributorUUIDs.Remove(DistributorsList[arguments.Which].uuid);
+									   }
+								   }
+							   )
+							   .SetPositiveButton(
+								   @"Сохранить",
+								   (caller, arguments) => {
+									   iv.SetTag(Resource.String.DistributorUUIDs, string.Join(";", cacheDistributorUUIDs));
+										(caller as Dialog).Dispose();
+								   }
+								)
+								.SetNegativeButton(@"Отмена", (caller, arguments) => { (caller as Dialog).Dispose(); })
+								.Show();
 			};
 		}
 
@@ -471,7 +530,7 @@ namespace CRMLite
 					case 1:
 						return EmployeeFragment.create(PharmacyUUID);
 					case 2:
-					return InfoFragment.create(PharmacyUUID, AttendanceLastUUID);
+						return InfoFragment.create(PharmacyUUID, AttendanceLastUUID);
 					case 3:
 						return PhotoFragment.create(PharmacyUUID, AttendanceLastUUID);
 					default:

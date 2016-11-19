@@ -2,7 +2,7 @@
 
 namespace CRMLite.Entities
 {
-	public class Contract: RealmObject, IEntiryFromServer
+	public class Contract : RealmObject, IEntiryFromServer
 	{
 		[PrimaryKey]
 		public string uuid { get; set; }

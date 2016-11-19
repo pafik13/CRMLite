@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@drawable/bottomline"
+    android:weightSum="100">
+    <TextView
+        android:text="Юр. название"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/cthLegalNameTV"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:paddingRight="10dp"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Наименование"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/cthPharmacyTV"
+        android:layout_weight="40"
+        android:gravity="center"
+        android:paddingRight="10dp"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Дата визита"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/cthWhenTV"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Препараты"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/cthDrugBrandsTV"
+        android:layout_weight="12"
+        android:gravity="center"
+        android:paddingRight="10dp"
+        android:textAppearance="@style/headerTextForPharmacy" />
+    <TextView
+        android:text="Сотрудники"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/cthEmployeesTV"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:paddingRight="10dp"
+        android:textAppearance="@style/headerTextForPharmacy" />
+</LinearLayout>

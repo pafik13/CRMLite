@@ -191,6 +191,10 @@ namespace CRMLite.Lib.Sync
 						var item2 = JsonConvert.DeserializeObject<PhotoType>(json);
 						var list2 = DB.All<PhotoType>().Where(d => d.uuid == item2.uuid);
 						return ManageItem(uri, DB, item2, list2, item2.uuid);
+					case SyncConst.DistributionAgreement:
+						var item3 = JsonConvert.DeserializeObject<DistributionAgreement>(json);
+						var list3 = DB.All<DistributionAgreement>().Where(d => d.uuid == item3.uuid);
+						return ManageItem(uri, DB, item3, list3, item3.uuid);
 					default:
 						return new Uri.Builder()
 									  .Scheme(uri.Scheme)

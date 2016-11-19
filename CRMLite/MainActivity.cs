@@ -107,6 +107,11 @@ namespace CRMLite
 				StartActivity(new Intent(this, typeof(RouteActivity)));
 			};
 
+			var coterie = FindViewById<ImageView>(Resource.Id.maCoterie);
+			coterie.Click += (sender, e) => {
+				StartActivity(new Intent(this, typeof(CoterieActivity)));
+			};
+
 			var searchView = FindViewById<RelativeLayout>(Resource.Id.maSearchRL);
 			searchView.Click += (sender, e) => {
 				if (CurrentFocus != null) {
@@ -438,6 +443,13 @@ namespace CRMLite
 
 				if (culture.CompareInfo.IndexOf(item.Value.Brand, text, CompareOptions.IgnoreCase) >= 0) {
 					item.Value.Match = string.Format(matchFormat, @"бренд=" + item.Value.Brand);
+					result.Add(item.Value);
+					if (result.Count > C_ITEMS_IN_RESULT) break;
+					continue;
+				}
+
+				if (culture.CompareInfo.IndexOf(item.Value.Name, text, CompareOptions.IgnoreCase) >= 0) {
+					item.Value.Match = string.Format(matchFormat, @"адрес=" + item.Value.Name);
 					result.Add(item.Value);
 					if (result.Count > C_ITEMS_IN_RESULT) break;
 					continue;

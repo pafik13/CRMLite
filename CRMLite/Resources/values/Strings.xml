@@ -24,6 +24,8 @@
 
 	<string name="ContractUUIDs">ContractUUIDs</string>
 
+	<string name="DistributorUUIDs">DistributorUUIDs</string>
+
 	<string name="fias_id">fias_id</string>
 	<string name="qc_geo">qc_geo</string>
 	<string name="geo_lat">geo_lat</string>

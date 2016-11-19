@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:minHeight="48dp"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:weightSum="100">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="20"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+        <TextView
+            android:layout_marginTop="6dp"
+            android:id="@+id/ctiLegalNameTV"
+            android:layout_marginLeft="12dp"
+            android:text="Юр. название"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/searchName"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+        <TextView
+            android:layout_marginBottom="6dp"
+            android:id="@+id/ctiMatchLegalNameTV"
+            android:layout_marginLeft="12dp"
+            android:text="Совпадние:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/searchMatch"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="40"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+        <TextView
+            android:layout_marginTop="6dp"
+            android:id="@+id/ctiPharmacyTV"
+            android:layout_marginLeft="12dp"
+            android:text="Наименование"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/searchName"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+        <TextView
+            android:layout_marginBottom="6dp"
+            android:id="@+id/ctiMatchPharmacyTV"
+            android:layout_marginLeft="12dp"
+            android:text="Совпадние:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/searchMatch"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+    </LinearLayout>
+    <TextView
+        android:text="Дата визита"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ctiWhenTV"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Препараты"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ctiDrugBrandsTV"
+        android:layout_weight="12"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+    <TextView
+        android:text="Сотрудники"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ctiEmployeesTV"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy" />
+</LinearLayout>

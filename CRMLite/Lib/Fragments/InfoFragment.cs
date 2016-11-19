@@ -24,6 +24,8 @@ namespace CRMLite
 		LayoutInflater Inflater;
 
 		Pharmacy Pharmacy;
+		Net Net;
+
 		IList<Employee> Employees;
 		IList<DrugBrand> Brands;
 		IList<DrugSKU> SKUs;
@@ -97,6 +99,8 @@ namespace CRMLite
 			var attendanceLast = string.IsNullOrEmpty(attendanceLastUUID) ? null : MainDatabase.GetEntity<Attendance>(attendanceLastUUID);
 
 			Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
+			Net = string.IsNullOrEmpty(Pharmacy.Net) ? null : MainDatabase.GetItem<Net>(Pharmacy.Net);
+
 			Employees = MainDatabase.GetEmployees(pharmacyUUID);
 			Brands = MainDatabase.GetItems<DrugBrand>();
 			SKUs = MainDatabase.GetItems<DrugSKU>();
@@ -328,6 +332,10 @@ namespace CRMLite
 			DistributionTable = view.FindViewById<LinearLayout>(Resource.Id.ifDistributionTable);
 
 			View header = Inflater.Inflate(Resource.Layout.DistributionTableHeader, DistributionTable, false);
+			//TODO: DEBUG
+			// if HOST_URL constains 
+			// header.FindViewById<TextView>().Text
+			// 
 			View divider = Inflater.Inflate(Resource.Layout.Divider, DistributionTable, false);
 
 			DistributionTable.AddView(header);
@@ -833,7 +841,32 @@ namespace CRMLite
 			Arrow.Visibility = ViewStates.Gone;
 			Locker.Visibility = ViewStates.Gone;
 
-			// 1. Дистрибьюция
+			// 1. Дистрибьюци
+			var agreements = new Dictionary<string, DistributionAgreement>();
+			foreach (var agreement in MainDatabase.GetItems<DistributionAgreement>()
+													  .Where(da => (da.object_type == "Pharmacy")
+																&& (da.object_uuid == Pharmacy.UUID)
+															)
+					)
+			{
+				if (!agreements.ContainsKey(agreement.drugSKU)) {
+					agreements.Add(agreement.drugSKU, agreement);
+				}
+			}
+			if (Net != null) {
+				foreach (var agreement in MainDatabase.GetItems<DistributionAgreement>()
+														  .Where(da => (da.object_type == "Net")
+				                                                    && (da.object_uuid == Net.uuid)
+																)
+						) 
+				{
+					if (agreements.ContainsKey(agreement.drugSKU)) {
+						agreements[agreement.drugSKU] = agreement;
+					} else {
+						agreements.Add(agreement.drugSKU, agreement);
+					}
+				}
+			}
 			for (int c = 2; c < DistributionTable.ChildCount; c = c + 2) {
 				var row = DistributionTable.GetChildAt(c) as LinearLayout;
 				var isExistence = row.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB);
@@ -850,12 +883,24 @@ namespace CRMLite
 					//ll.FindViewById<EditText>(Resource.Id.dtiOrderET).Enabled = e.IsChecked;
 					//ll.FindViewById<EditText>(Resource.Id.dtiCommentET).Enabled = e.IsChecked;
 				};
-				row.FindViewById<EditText>(Resource.Id.dtiCountET).Text = string.Empty;
-				row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = string.Empty;
-				row.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked = false;
-				row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked = false;
-				row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text = string.Empty;
-				row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text = string.Empty;
+				var drugSKU = (string)row.GetTag(Resource.String.DrugSKUUUID);
+				DistributionAgreement agreement = null;
+				if (agreements.ContainsKey(drugSKU)) {
+					agreement = agreements[drugSKU];
+					row.FindViewById<EditText>(Resource.Id.dtiCountET).Text = agreement.count.ToString();
+					row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = agreement.price.ToString();
+					row.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked = agreement.isPresence;
+					row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked = agreement.hasPOS;
+					row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text = agreement.order;
+					row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text = agreement.comment;
+				} else {
+					row.FindViewById<EditText>(Resource.Id.dtiCountET).Text = string.Empty;
+					row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = string.Empty;
+					row.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked = false;
+					row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked = false;
+					row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text = string.Empty;
+					row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text = string.Empty;
+				}
 			}
 
 			// 2. Содержание визита

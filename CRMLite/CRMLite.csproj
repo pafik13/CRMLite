@@ -201,6 +201,10 @@
     <Compile Include="Lib\Entities\LifecycleAction.cs" />
     <Compile Include="Lib\Entities\Distributor.cs" />
     <Compile Include="Lib\Entities\ExcludeRouteItem.cs" />
+    <Compile Include="Lib\Entities\DistributorData.cs" />
+    <Compile Include="CoterieActivity.cs" />
+    <Compile Include="Lib\Adapters\CoterieAdapter.cs" />
+    <Compile Include="Lib\Entities\DistributionAgreement.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -548,6 +552,19 @@
     <AndroidResource Include="Resources\layout\LibraryTableHeader.axml" />
     <AndroidResource Include="Resources\xml\authenticator.xml" />
     <AndroidResource Include="Resources\xml\syncadapter.xml" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_local_shipping_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_people_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_local_shipping_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_people_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_local_shipping_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_people_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_local_shipping_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_people_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_local_shipping_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_people_black_48dp.png" />
+    <AndroidResource Include="Resources\layout\Coterie.axml" />
+    <AndroidResource Include="Resources\layout\CoterieTableHeader.axml" />
+    <AndroidResource Include="Resources\layout\CoterieTableItem.axml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
