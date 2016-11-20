@@ -1,8 +1,9 @@
-﻿using Realms;
+﻿using System;
+using Realms;
 
-namespace CRMLite
+namespace CRMLite.Entities
 {
-	public class FinanceDataByMonth: RealmObject, IEntity, IPharmacyData
+	public class FinanceDataByMonth: RealmObject, IEntity, IPharmacyData, ISync
 	{
 		/// <summary>
 		/// Уникальный идентификатор информации о продажах. Используется Guid.
@@ -25,6 +26,46 @@ namespace CRMLite
 		public float? Purchase { get; set; }
 
 		public float? Remain { get; set; }
+
+		public string CreatedBy {
+			get {
+				throw new NotImplementedException();
+			}
+
+			set {
+				throw new NotImplementedException();
+			}
+		}
+
+		public DateTimeOffset CreatedAt {
+			get {
+				throw new NotImplementedException();
+			}
+
+			set {
+				throw new NotImplementedException();
+			}
+		}
+
+		public DateTimeOffset UpdatedAt {
+			get {
+				throw new NotImplementedException();
+			}
+
+			set {
+				throw new NotImplementedException();
+			}
+		}
+
+		public bool IsSynced {
+			get {
+				throw new NotImplementedException();
+			}
+
+			set {
+				throw new NotImplementedException();
+			}
+		}
 	}
 }
 

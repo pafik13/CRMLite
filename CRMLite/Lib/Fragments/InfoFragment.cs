@@ -21,6 +21,8 @@ namespace CRMLite
 		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";
 		public const string C_ATTENDANCE_LAST_UUID = @"C_ATTENDANCE_LAST_UUID";
 
+		string HOST_URL;
+
 		LayoutInflater Inflater;
 
 		Pharmacy Pharmacy;
@@ -87,6 +89,9 @@ namespace CRMLite
 			// return inflater.Inflate(Resource.Layout.YourFragment, container, false);
 
 			base.OnCreateView(inflater, container, savedInstanceState);
+
+			var shared = Activity.GetSharedPreferences(MainActivity.C_MAIN_PREFS, Android.Content.FileCreationMode.Private);
+			HOST_URL = shared.GetString(Dialogs.SigninDialog.C_HOST_URL, string.Empty);
 
 			Inflater = inflater;
 
@@ -333,9 +338,10 @@ namespace CRMLite
 
 			View header = Inflater.Inflate(Resource.Layout.DistributionTableHeader, DistributionTable, false);
 			//TODO: DEBUG
-			// if HOST_URL constains 
-			// header.FindViewById<TextView>().Text
-			// 
+			if (HOST_URL.Contains("johnson")) {
+				header.FindViewById<TextView>(Resource.Id.dthCommentTV).Text = "Приход";
+			}
+
 			View divider = Inflater.Inflate(Resource.Layout.Divider, DistributionTable, false);
 
 			DistributionTable.AddView(header);
@@ -844,7 +850,7 @@ namespace CRMLite
 			// 1. Дистрибьюци
 			var agreements = new Dictionary<string, DistributionAgreement>();
 			foreach (var agreement in MainDatabase.GetItems<DistributionAgreement>()
-													  .Where(da => (da.object_type == "Pharmacy")
+													  .Where(da => (da.object_type == "pharmacy")
 																&& (da.object_uuid == Pharmacy.UUID)
 															)
 					)
@@ -855,7 +861,7 @@ namespace CRMLite
 			}
 			if (Net != null) {
 				foreach (var agreement in MainDatabase.GetItems<DistributionAgreement>()
-														  .Where(da => (da.object_type == "Net")
+														  .Where(da => (da.object_type == "net")
 				                                                    && (da.object_uuid == Net.uuid)
 																)
 						) 
@@ -887,20 +893,20 @@ namespace CRMLite
 				DistributionAgreement agreement = null;
 				if (agreements.ContainsKey(drugSKU)) {
 					agreement = agreements[drugSKU];
-					row.FindViewById<EditText>(Resource.Id.dtiCountET).Text = agreement.count.ToString();
-					row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = agreement.price.ToString();
+					row.FindViewById<EditText>(Resource.Id.dtiCountET).Hint = agreement.count.ToString();
+					row.FindViewById<EditText>(Resource.Id.dtiPriceET).Hint = agreement.price.ToString();
 					row.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked = agreement.isPresence;
 					row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked = agreement.hasPOS;
-					row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text = agreement.order;
-					row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text = agreement.comment;
+					row.FindViewById<EditText>(Resource.Id.dtiOrderET).Hint = agreement.order;
+					row.FindViewById<EditText>(Resource.Id.dtiCommentET).Hint = agreement.comment;
 				} else {
-					row.FindViewById<EditText>(Resource.Id.dtiCountET).Text = string.Empty;
-					row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = string.Empty;
 					row.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked = false;
 					row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked = false;
-					row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text = string.Empty;
-					row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text = string.Empty;
 				}
+				row.FindViewById<EditText>(Resource.Id.dtiCountET).Text = string.Empty;
+				row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = string.Empty;
+				row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text = string.Empty;
+				row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text = string.Empty;
 			}
 
 			// 2. Содержание визита

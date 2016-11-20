@@ -39,7 +39,8 @@ namespace CRMLite.Lib.Sync
 
 			var DB_PATH = extras.GetString(MainDatabase.C_DB_PATH, string.Empty);
 			var ACCESS_TOKEN = extras.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
-			var HOST_URL = extras.GetString(SigninDialog.C_HOST_URL, string.Empty);
+			//var HOST_URL = extras.GetString(SigninDialog.C_HOST_URL, string.Empty);
+			string HOST_URL = "http://sbl-crm-project-pafik13.c9users.io:8080/";
 
 			bool hasBDPath = true;
 			bool hasAccessToken = true;
@@ -84,7 +85,7 @@ namespace CRMLite.Lib.Sync
 						switch (lc_action.action) {
 							case "create":
 							case "update":
-								var pathModel = string.Format("{0}/{1}", lc_action.model, lc_action.uuid);
+								var pathModel = string.Format("{0}/{1}?populate=false", lc_action.model, lc_action.uuid);
 								var reqModel = new RestRequest(pathModel, Method.GET);
 								reqModel.AddQueryParameter(@"access_token", ACCESS_TOKEN);
 

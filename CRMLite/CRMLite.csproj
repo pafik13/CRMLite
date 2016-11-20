@@ -24,20 +24,20 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>..\..\..\..\..\Public\GitHub\SBL\CRMLite\bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
 <AndroidKeyStore>True</AndroidKeyStore>
-<AndroidSigningKeyStore>C:\Users\pavel\AppData\Local\Xamarin\Mono for Android\Keystore\my_first_key\my_first_key.keystore</AndroidSigningKeyStore>
+<AndroidSigningKeyStore>C:\Users\Public\Android\Mono\keys\my_first_key\my_first_key.keystore</AndroidSigningKeyStore>
 <AndroidSigningStorePass>1611981</AndroidSigningStorePass>
 <AndroidSigningKeyAlias>my_first_key</AndroidSigningKeyAlias>
 <AndroidSigningKeyPass>1611981</AndroidSigningKeyPass>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>..\..\..\..\..\Public\GitHub\SBL\CRMLite\bin\Release</OutputPath>
     <DefineConstants></DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
