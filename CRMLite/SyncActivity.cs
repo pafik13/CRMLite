@@ -314,7 +314,7 @@ namespace CRMLite
 		{
 			var client = new RestClient(HOST_URL);
 			//var client = new RestClient("http://sbl-crm-project-pafik13.c9users.io:8080/");
-			var request = new RestRequest("/MaterialFile?populate=false", Method.GET);
+			var request = new RestRequest("/MaterialFile?type=for_pharmacy&populate=false", Method.GET);
 
 			var response = await client.ExecuteGetTaskAsync<List<MaterialFile>>(request);
 
@@ -373,7 +373,7 @@ namespace CRMLite
 		{
 			var client = new RestClient(HOST_URL);
 			//var client = new RestClient("http://sbl-crm-project-pafik13.c9users.io:8080/");
-			var request = new RestRequest("/LibraryFile?populate=false", Method.GET);
+			var request = new RestRequest("/LibraryFile?type=for_pharmacy&populate=false", Method.GET);
 
 			var response = await client.ExecuteGetTaskAsync<List<LibraryFile>>(request);
 
