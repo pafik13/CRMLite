@@ -39,8 +39,8 @@ namespace CRMLite.Lib.Sync
 
 			var DB_PATH = extras.GetString(MainDatabase.C_DB_PATH, string.Empty);
 			var ACCESS_TOKEN = extras.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
-			//var HOST_URL = extras.GetString(SigninDialog.C_HOST_URL, string.Empty);
-			string HOST_URL = "http://sbl-crm-project-pafik13.c9users.io:8080/";
+			var HOST_URL = extras.GetString(SigninDialog.C_HOST_URL, string.Empty);
+			//string HOST_URL = "http://sbl-crm-project-pafik13.c9users.io:8080/";
 
 			bool hasBDPath = true;
 			bool hasAccessToken = true;

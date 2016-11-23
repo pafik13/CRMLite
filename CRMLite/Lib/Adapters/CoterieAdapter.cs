@@ -12,11 +12,13 @@ namespace CRMLite.Adapters
 	{
 		readonly Activity Context;
 		readonly IList<Attendance> Attendancies;
+		readonly List<Employee> Employees;
 
 		public CoterieAdapter(Activity context, IList<Attendance> attendancies)
 		{
 			Context = context;
 			Attendancies = attendancies;
+			Employees = MainDatabase.GetItems<Employee>();
 		}
 
 		public override Attendance this[int position] {
@@ -35,12 +37,20 @@ namespace CRMLite.Adapters
 		public override View GetView(int position, View convertView, ViewGroup parent)
 		{
 			var item = Attendancies[position];
+			// TODO: Fix
 			var pharmacy = MainDatabase.GetEntity<Pharmacy>(item.Pharmacy);
 
 			var coterieDatas = MainDatabase.GetDatas<CoterieData>(item.UUID);
 
 			var brands = coterieDatas.GroupBy(cd => cd.Brand).Select(g => MainDatabase.GetItem<DrugBrand>(g.Key).name);
-			var employees = coterieDatas.GroupBy(cd => cd.Employee).Select(g => MainDatabase.GetEntity<Employee>(g.Key).Name);
+			// TODO: Fix
+			var employees = new List<string>();
+			foreach (var cd in coterieDatas.GroupBy(cd => cd.Employee)) {
+				var emp = Employees.SingleOrDefault(e => e.UUID == cd.Key);
+				if (emp != null) {
+					employees.Add(emp.Name);
+				}
+			}
 
 			var view = (convertView ??
 								Context.LayoutInflater.Inflate(
