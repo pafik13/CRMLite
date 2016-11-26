@@ -197,10 +197,34 @@ namespace CRMLite
 				}
 				fragmentTransaction.AddToBackStack(null);
 
+
+				// Оповещаем фрагменты о завершении визита
+				string undonePhotoTypes = string.Empty;
+				for (int f = 0; f < C_NUM_PAGES; f++) {
+					var fragment = GetFragment(f);
+					if (fragment is PhotoFragment) {
+						undonePhotoTypes = (fragment as PhotoFragment).GetUndonePhotoTypes();
+					}
+				}
+
+				if (string.IsNullOrEmpty(undonePhotoTypes)) {
+					new AlertDialog.Builder(this)
+								   .SetTitle(Resource.String.error_caption)
+								   .SetMessage("Необходимо сделать следующие фото: " + undonePhotoTypes)
+								   .SetCancelable(false)
+								   .SetPositiveButton(@"OK", (dialog, args) => {
+									   if (dialog is Dialog) {
+										   ((Dialog)dialog).Dismiss();
+										   Finish();
+									   }
+								   })
+								   .Show();
+					return;
+				}
+
 				var lockDialog = LockDialog.Create("Идет сохранение данных...", Resource.Color.Deep_Orange_500);
 				lockDialog.Cancelable = false;
 				lockDialog.Show(fragmentTransaction, LockDialog.TAG);
-
 				LocMgr.RemoveUpdates(this);
 
 				new Task(() => {

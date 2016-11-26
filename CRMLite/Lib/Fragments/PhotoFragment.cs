@@ -42,6 +42,11 @@ namespace CRMLite
 		static Java.IO.File File;
 		List<PhotoData> Photos;
 
+		internal string GetUndonePhotoTypes()
+		{
+			return string.Empty;
+		}
+
 		/**
 		 * Factory method for this fragment class. Constructs a new fragment for the given page number.
 		 */
