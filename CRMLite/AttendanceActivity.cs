@@ -210,7 +210,7 @@ namespace CRMLite
 				if (string.IsNullOrEmpty(undonePhotoTypes)) {
 					new AlertDialog.Builder(this)
 								   .SetTitle(Resource.String.error_caption)
-								   .SetMessage("Необходимо сделать следующие фото: " + undonePhotoTypes)
+					               .SetMessage("Необходимо сделать следующие фото:" + System.Environment.NewLine + undonePhotoTypes)
 								   .SetCancelable(false)
 								   .SetPositiveButton(@"OK", (dialog, args) => {
 									   if (dialog is Dialog) {

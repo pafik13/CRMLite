@@ -3,16 +3,12 @@ using System.Net;
 using Android.App;
 using Android.Content;
 
-using Realms;
-
 using RestSharp;
-
-using CRMLite.Entities;
 
 namespace CRMLite.Services
 {
 	[Service]
-	[IntentFilter(new String[] { "com.xamarin.SyncService" })]
+	[IntentFilter(new string[] { "com.xamarin.SyncService" })]
 	public class SyncService : IntentService
 	{
 		public SyncService() : base("SyncService")

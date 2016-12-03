@@ -29,6 +29,9 @@ namespace CRMLite
 		LayoutInflater Inflater;
 
 		Pharmacy Pharmacy;
+
+		public Dictionary<string, bool> Agreements { get; private set; }
+
 		DateTimeOffset? AttendanceStart;
 		TextView Locker;
 		ImageView Arrow;
@@ -44,7 +47,23 @@ namespace CRMLite
 
 		internal string GetUndonePhotoTypes()
 		{
-			return string.Empty;
+			string result = string.Empty;
+
+			foreach (var item in Agreements) {
+				if (item.Value) continue;
+
+				if (item.Key.Contains(":")) {
+					string[] keys = item.Key.Split(new char[] { ':' });
+					var photoType = MainDatabase.GetItem<PhotoType>(keys[0]);
+					var brand = MainDatabase.GetItem<DrugBrand>(keys[1]);
+					result += string.Format("Тип '{0}' для бренда '{1}'{2}", photoType.name, brand.name, System.Environment.NewLine);
+				} else {
+					var photoType = MainDatabase.GetItem<PhotoType>(item.Key);
+					result += string.Format("Тип '{0}'{1}", photoType.name, System.Environment.NewLine);
+				}
+			}
+
+			return result;
 		}
 
 		/**
@@ -68,6 +87,41 @@ namespace CRMLite
 			if (string.IsNullOrEmpty(pharmacyUUID)) return;
 
 			Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
+
+			Agreements = new Dictionary<string, bool>();
+			string key = string.Empty;
+			foreach (var agreement in MainDatabase.GetItems<PhotoAgreement>()
+													  .Where(pa => (pa.object_type == "pharmacy")
+																&& (pa.object_uuid == Pharmacy.UUID)
+															)
+					) 
+			{
+				if (string.IsNullOrEmpty(agreement.brand)) {
+					key = agreement.photoType;
+				} else {
+					key = string.Format("{0}:{1}", agreement.photoType, agreement.brand);
+				}
+				if (!Agreements.ContainsKey(key)) {
+					Agreements.Add(key, false);
+				}
+			}
+			if (!string.IsNullOrEmpty(Pharmacy.Net)) {
+				foreach (var agreement in MainDatabase.GetItems<PhotoAgreement>()
+														  .Where(pa => (pa.object_type == "net")
+																	&& (pa.object_uuid == Pharmacy.Net)
+																)
+						) 
+				{
+					if (string.IsNullOrEmpty(agreement.brand)) {
+						key = agreement.photoType;
+					} else {
+						key = string.Format("{0}:{1}", agreement.photoType, agreement.brand);
+					}
+					if (!Agreements.ContainsKey(key)) {
+						Agreements.Add(key, false);
+					}
+				}
+			}
 		}
 
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -201,8 +255,16 @@ namespace CRMLite
 				var photoType = PhotoTypes[PhotoType.SelectedItemPosition];
 				photo.PhotoType = photoType.uuid;
 
+				string key = string.Empty;
 				if (photoType.isNeedBrand) {
 					photo.Brand = Brands[Brand.SelectedItemPosition - 1].uuid;
+					key = string.Format("{0}:{1}", photo.PhotoType, photo.Brand); ;
+				} else {
+					key = photo.PhotoType;
+				}
+
+				if (Agreements.ContainsKey(key)) {
+					Agreements[key] = true;
 				}
 
 				//Latitude and Longitudee

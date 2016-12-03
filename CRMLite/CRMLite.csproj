@@ -205,6 +205,12 @@
     <Compile Include="CoterieActivity.cs" />
     <Compile Include="Lib\Adapters\CoterieAdapter.cs" />
     <Compile Include="Lib\Entities\DistributionAgreement.cs" />
+    <Compile Include="Lib\Entities\PhotoAgreement.cs" />
+    <Compile Include="DistributorRemainActivity.cs" />
+    <Compile Include="Lib\Entities\DistributorRemain.cs" />
+    <Compile Include="Lib\Adapters\DistributorRemainAdapter.cs" />
+    <Compile Include="Lib\Adapters\DistributorRemainAdapter %28copy%29.cs" />
+    <Compile Include="Lib\Services\LocationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

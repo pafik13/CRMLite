@@ -41,6 +41,8 @@ namespace CRMLite.Lib.Sync
 		public const string Distributor = "Distributor";
 		public const string PhotoType = "PhotoType";
 		public const string DistributionAgreement = "DistributionAgreement";
+		public const string PhotoAgreement = "PhotoAgreement";
+		public const string DistributorRemain = "DistributorRemain";
 
 
 		public static Uri GetURI(string lastPathSegment) { 
