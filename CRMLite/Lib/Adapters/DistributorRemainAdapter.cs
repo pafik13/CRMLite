@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using Android.App;
 using Android.Views;
@@ -10,28 +8,26 @@ using CRMLite.Entities;
 
 namespace CRMLite.Adapters
 {
-	public class DistributorRemainAdapter : BaseAdapter<Distributor>
+	public class DistributorRemainAdapter : BaseAdapter<DistributorRemain>
 	{
 		readonly Activity Context;
-		readonly IList<Distributor> Distributors;
-		readonly IList<DateTimeOffset> Dates;
+		readonly IList<DistributorRemain> DistributorRemains;
 
-		public DistributorRemainAdapter(Activity context, IList<Distributor> distributors, IList<DateTimeOffset> dates)
+		public DistributorRemainAdapter(Activity context, IList<DistributorRemain> distributorRemains)
 		{
 			Context = context;
-			Distributors = distributors;
-			Dates = dates;
+			DistributorRemains = distributorRemains;
 		}
 
-		public override Distributor this[int position] {
+		public override DistributorRemain this[int position] {
 			get {
-				return Distributors[position];
+				return DistributorRemains[position];
 			}
 		}
 
 		public override int Count {
 			get {
-				return Distributors.Count;
+				return DistributorRemains.Count;
 			}
 		}
 
@@ -43,24 +39,16 @@ namespace CRMLite.Adapters
 		public override View GetView(int position, View convertView, ViewGroup parent)
 		{
 			// Get our object for positio
-			var item = Distributors[position];
+			var item = DistributorRemains[position];
 
 			var view = (convertView ?? Context.LayoutInflater.Inflate(Resource.Layout.DistributorRemainTableItem, parent, false)
 					   ) as LinearLayout;
-			 
-			var distributorRemains = MainDatabase.GetItems<DistributorRemain>().Where(dr => dr.distributor == item.uuid);
-			var remains = new Dictionary<DateTimeOffset, DistributorRemain>();
-			foreach (var remain in distributorRemains) {
-				remains.Add(remain.date, remain);
-			}
 
-			foreach (var date in Dates) {
-				var txt = new TextView(Context);
-				if (remains.ContainsKey(date)) {
-					txt.Text = remains[date].remain.ToString();
-				}
-				view.AddView(txt);
-			}
+			//view.SetTag(Resource.String.ContractDataUUID, ContractDatas[position].UUID);
+
+			view.FindViewById<TextView>(Resource.Id.drtiDistributorTV).Text = item.distributor;
+			view.FindViewById<TextView>(Resource.Id.drtiDateTV).Text = item.date.LocalDateTime.ToString("dd.MM.yy");
+			view.FindViewById<TextView>(Resource.Id.drtiRemainTV).Text = item.remain.ToString();
 
 			return view;
 		}

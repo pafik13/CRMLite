@@ -115,18 +115,18 @@ namespace CRMLite
 
 		void CustomAction_Click(object sender, EventArgs e)
 		{
-			new Thread(() => {
-				var DB = Realms.Realm.GetInstance(MainDatabase.DBPath);
+			//new Thread(() => {
+			//	var DB = Realms.Realm.GetInstance(MainDatabase.DBPath);
 
-				//var ojb = new Distributor()
-				var json = "{\"name\":\"NewDistr3\",\"uuid\":\"2817a473-9720-424d-b379-3cedd7b90c80\",\"createdAt\":\"2016-11-07T18:50:58.960Z\",\"updatedAt\":\"2016-11-07T18:50:58.960Z\",\"id\":\"5820cd12e53164e74abff8f9\"}"; ;
-				Realms.RealmObject ojb = Newtonsoft.Json.JsonConvert.DeserializeObject<Distributor>(json);
-				using (var trans = DB.BeginWrite()) {
+			//	//var ojb = new Distributor()
+			//	var json = "{\"name\":\"NewDistr3\",\"uuid\":\"2817a473-9720-424d-b379-3cedd7b90c80\",\"createdAt\":\"2016-11-07T18:50:58.960Z\",\"updatedAt\":\"2016-11-07T18:50:58.960Z\",\"id\":\"5820cd12e53164e74abff8f9\"}"; ;
+			//	Realms.RealmObject ojb = Newtonsoft.Json.JsonConvert.DeserializeObject<Distributor>(json);
+			//	using (var trans = DB.BeginWrite()) {
 
-					DB.Manage(ojb);
-					trans.Rollback();
-				}
-			}).Start();
+			//		DB.Manage(ojb);
+			//		trans.Rollback();
+			//	}
+			//}).Start();
 			//ojb.
 			//var  = DB.CreateObject<Distributor>();
 
@@ -155,16 +155,11 @@ namespace CRMLite
 			//;
 			//ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, settingsBundle, SyncConst.SYNC_INTERVAL);
 
-			//var intent = new Intent(Intent.ActionGetContent);
-			//intent.SetType("*/*");
-			//intent.AddCategory(Intent.CategoryOpenable);
-			//StartActivityForResult(intent, PICKFILE_REQUEST_CODE);
-			//string fileName = "bd0712a3-a5e7-4704-b565-889f673a393b.realm";
-			//string dbFileLocation = Path.Combine(Helper.AppDir, fileName);
+			var intent = new Intent(Intent.ActionGetContent);
+			intent.SetType("*/*");
+			intent.AddCategory(Intent.CategoryOpenable);
+			StartActivityForResult(intent, PICKFILE_REQUEST_CODE);
 
-			//if (File.Exists(dbFileLocation)) {
-			//	SDiag.Debug.WriteLine(dbFileLocation + " is Exists!");
-			//}
 
 			//if (File.Exists(MainDatabase.DBPath)) {
 			//	SDiag.Debug.WriteLine(MainDatabase.DBPath + " is Exists!");
@@ -189,7 +184,30 @@ namespace CRMLite
 			if (requestCode == PICKFILE_REQUEST_CODE) {
 				// SDiag.Debug.WriteLine(resultCode);
 				if (resultCode == Result.Ok) {
-					StartActivity(new Intent(Intent.ActionView, data.Data));
+					//StartActivity(new Intent(Intent.ActionView, data.Data));
+					string fileName = data.Data.LastPathSegment.Split(new char[] { ':' })[1]; //"bd0712a3-a5e7-4704-b565-889f673a393b.realm";
+					//fileName = Path.GetFileName(fileName);
+					//string dbFileLocation = Path.Combine(Helper.AppDir, fileName);
+					string dbFileLoc = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, fileName);
+
+					if (File.Exists(dbFileLoc)) {
+						SDiag.Debug.WriteLine(dbFileLoc + " is Exists!");
+					}
+
+					if (File.Exists(MainDatabase.DBPath)) {
+						SDiag.Debug.WriteLine(MainDatabase.DBPath + " is Exists!");
+						//var fi = new FileInfo(MainDatabase.DBPath);
+						//var directory = fi.Directory.FullName;
+						var newPath = Path.Combine(new FileInfo(MainDatabase.DBPath).Directory.FullName, Path.GetFileName(dbFileLoc));
+						if (!File.Exists(newPath)) File.Copy(dbFileLoc, newPath, true);
+
+						if (File.Exists(newPath)) {
+							SDiag.Debug.WriteLine(newPath + " is Exists!");
+							MainDatabase.Dispose();
+							Helper.C_DB_FILE_NAME = Path.GetFileName(dbFileLoc);
+							MainDatabase.Username = Helper.Username;
+						}
+					}
 				}
 			}
 		}

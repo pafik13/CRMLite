@@ -37,12 +37,18 @@ namespace CRMLite.Lib.Sync
 
 		public const string SET_SYNCED = "set_synced";
 
+		public const string _OK = "OK";
+		public const string _ERROR = "ERROR";
+
 
 		public const string Distributor = "Distributor";
 		public const string PhotoType = "PhotoType";
 		public const string DistributionAgreement = "DistributionAgreement";
 		public const string PhotoAgreement = "PhotoAgreement";
 		public const string DistributorRemain = "DistributorRemain";
+
+		public const string DrugBrand = "DrugBrand";
+		public const string DrugSKU = "DrugSKU";
 
 
 		public static Uri GetURI(string lastPathSegment) { 

@@ -358,6 +358,10 @@ namespace CRMLite
 					row.SetTag(Resource.String.DrugSKUUUID, SKU.uuid);
 					row.FindViewById<TextView>(Resource.Id.dtiDrugSKUTV).Text = SKU.name;
 
+					if (HOST_URL.Contains("johnson")) {
+						row.FindViewById<TextView>(Resource.Id.dtiCommentET).Hint = "Приход";
+					}
+
 					DistributionTable.AddView(row);
 
 					divider = Inflater.Inflate(Resource.Layout.Divider, DistributionTable, false);
@@ -388,6 +392,10 @@ namespace CRMLite
 					row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked = item.HasPOS;
 					row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text = item.Order;
 					row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text = item.Comment;
+
+					if (HOST_URL.Contains("johnson")) {
+						row.FindViewById<TextView>(Resource.Id.dtiCommentET).Hint = "Приход";
+					}
 
 					DistributionTable.AddView(row);
 

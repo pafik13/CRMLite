@@ -30,7 +30,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
 <AndroidKeyStore>True</AndroidKeyStore>
-<AndroidSigningKeyStore>C:\Users\Public\Android\Mono\keys\my_first_key\my_first_key.keystore</AndroidSigningKeyStore>
+<AndroidSigningKeyStore>C:\Users\pavel\AppData\Local\Xamarin\Mono for Android\Keystore\my_first_key\my_first_key.keystore</AndroidSigningKeyStore>
 <AndroidSigningStorePass>1611981</AndroidSigningStorePass>
 <AndroidSigningKeyAlias>my_first_key</AndroidSigningKeyAlias>
 <AndroidSigningKeyPass>1611981</AndroidSigningKeyPass>
@@ -43,6 +43,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <AndroidLinkMode>Full</AndroidLinkMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -209,7 +210,6 @@
     <Compile Include="DistributorRemainActivity.cs" />
     <Compile Include="Lib\Entities\DistributorRemain.cs" />
     <Compile Include="Lib\Adapters\DistributorRemainAdapter.cs" />
-    <Compile Include="Lib\Adapters\DistributorRemainAdapter %28copy%29.cs" />
     <Compile Include="Lib\Services\LocationService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -571,6 +571,8 @@
     <AndroidResource Include="Resources\layout\Coterie.axml" />
     <AndroidResource Include="Resources\layout\CoterieTableHeader.axml" />
     <AndroidResource Include="Resources\layout\CoterieTableItem.axml" />
+    <AndroidResource Include="Resources\layout\DistributorRemainTableItem.axml" />
+    <AndroidResource Include="Resources\layout\DistributorRemainTableHeader.axml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@drawable/bottomline"
+    android:weightSum="100">
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/drtiDistributorTV"
+        android:layout_weight="66"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <TextView
+        android:text="Text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/drtiDateTV"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <TextView
+        android:text="Text"
+        android:layout_marginLeft="10dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/drtiRemainTV"
+        android:layout_weight="14"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/rowTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+</LinearLayout>

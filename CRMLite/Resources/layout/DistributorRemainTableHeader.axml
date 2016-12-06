@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@android:color/white"
+    android:weightSum="100">
+    <TextView
+        android:text="Дистрибьютор"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="66"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <TextView
+        android:text="Дата"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="14"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    <TextView
+        android:text="Остаток"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:textAppearance="@style/headerTextForPharmacy"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+</LinearLayout>

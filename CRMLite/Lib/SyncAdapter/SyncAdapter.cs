@@ -10,6 +10,8 @@ using RestSharp;
 
 using CRMLite.Dialogs;
 using CRMLite.Entities;
+using Android.App;
+using Android.Support.V4.App;
 
 namespace CRMLite.Lib.Sync
 {
@@ -19,10 +21,15 @@ namespace CRMLite.Lib.Sync
 		static readonly string[] EMPTY_STRING_ARRAY = new string[0];
 
 		ContentResolver ContentResolver;
+		readonly NotificationManager NotificationManager;
+
+		int UPSERT;
+		int DELETE;
 
 		public SyncAdapter(Context context, bool autoInitialize) : base(context, autoInitialize)
 		{
 			ContentResolver = context.ContentResolver;
+			NotificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
 		}
 
 		// For Android 3.0 compat
@@ -30,6 +37,7 @@ namespace CRMLite.Lib.Sync
 			: base(context, autoInitialize, allowParallelSyncs)
 		{
 			ContentResolver = context.ContentResolver;
+			NotificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
 		}
 
 		public override void OnPerformSync(Account account, Bundle extras, string authority, ContentProviderClient provider, Android.Content.SyncResult syncResult)
@@ -49,16 +57,22 @@ namespace CRMLite.Lib.Sync
 			if (string.IsNullOrEmpty(DB_PATH)) {
 				hasBDPath = false;
 				Log.Error(tag, "DB_PATH is NULL");
+			} else {
+				Log.Info(tag, string.Format("DB_PATH: {0}", DB_PATH));
 			}
 
 			if (string.IsNullOrEmpty(ACCESS_TOKEN)) {
 				hasAccessToken = false;
 				Log.Error(tag, "ACCESS_TOKEN is NULL");
+			} else {
+				Log.Info(tag, string.Format("ACCESS_TOKEN: {0}", ACCESS_TOKEN));
 			}
 
 			if (string.IsNullOrEmpty(HOST_URL)) {
 				hasHostURL = false;
 				Log.Error(tag, "HOST_URL is NULL");
+			} else {
+				Log.Info(tag, string.Format("HOST_URL: {0}", HOST_URL));
 			}
 
 			if (hasBDPath && hasAccessToken && hasHostURL) {
@@ -81,7 +95,7 @@ namespace CRMLite.Lib.Sync
 					foreach (var lc_action in res.Data) {
 						bool canClear = false;
 						var modelURI = SyncConst.GetURI(lc_action.model);
-
+						NotificationCompat.Builder ncbuilder;
 						switch (lc_action.action) {
 							case "create":
 							case "update":
@@ -103,10 +117,15 @@ namespace CRMLite.Lib.Sync
 										values.Put("json", resModel.Content);
 										var result = provider.Insert(modelURI, values);
 										switch (result.LastPathSegment) {
-											case "OK":
+											case SyncConst._OK:
 												canClear = true;
+												ncbuilder = new NotificationCompat.Builder(Context)
+												                                  .SetSmallIcon(Resource.Mipmap.Icon)
+												                                  .SetContentTitle("Было добавление/обновление объекта")
+												                                  .SetContentText(string.Format("object:{0}:{1}", lc_action.model, lc_action.uuid));
+												NotificationManager.Notify("SBL-CRM", UPSERT++, ncbuilder.Build());
 												break;
-											case "ERROR":
+											case SyncConst._ERROR:
 												Log.Error(tag, string.Format("NOT Inserted object:{0}:{1}", lc_action.model, lc_action.uuid));
 												break;
 											default:
@@ -128,6 +147,11 @@ namespace CRMLite.Lib.Sync
 									break;
 								}
 								canClear = true;
+								ncbuilder = new NotificationCompat.Builder(Context)
+								                                  .SetSmallIcon(Resource.Mipmap.Icon)
+								                                  .SetContentTitle("Было удаление объекта")
+								                                  .SetContentText(string.Format("object:{0}:{1}", lc_action.model, lc_action.uuid));
+								NotificationManager.Notify("SBL-CRM", DELETE++, ncbuilder.Build());
 								break;
 							default:
 								Log.Error(tag, string.Format("Unhandled action: {0}", lc_action.action));
@@ -223,11 +247,13 @@ namespace CRMLite.Lib.Sync
 					// 3. обновить данные
 					Log.Info(tag, string.Format("Start Update, {0}", entities));
 					int count = 0;
-					try{
-						var setSyncedURI = SyncConst.GetURI(SyncConst.SET_SYNCED);
-						count = provider.Update(setSyncedURI, new ContentValues(), entyitiesURI.LastPathSegment, uuids.ToArray());
-					} catch (System.Exception ex) {
-						Log.Error(tag, ex.Message);
+					if (uuids.Count > 1) {
+						try {
+							var setSyncedURI = SyncConst.GetURI(SyncConst.SET_SYNCED);
+							count = provider.Update(setSyncedURI, new ContentValues(), entyitiesURI.LastPathSegment, uuids.ToArray());
+						} catch (System.Exception ex) {
+							Log.Error(tag, ex.Message);
+						}
 					}
 					Log.Info(tag, string.Format("End Update, {0} entities updated", count));
 				}

@@ -17,6 +17,8 @@ namespace CRMLite.Lib.Sync
 	{
 		public const string AUTHORITY = "ru.sbl.crmlite2.provider";
 
+		const string TAG = "CRMLite.Lib.Sync:StubProvider";
+
 		NewtonsoftJsonSerializer Serializer;
 
 
@@ -123,7 +125,7 @@ namespace CRMLite.Lib.Sync
 						entities = GetItemsToSync<ExcludeRouteItem>(DB);
 						break;
 					default:
-						Log.Error("StubProvider", "Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Query");
+						Log.Error(TAG, "Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Query");
 						break ;
 				}
 
@@ -141,24 +143,24 @@ namespace CRMLite.Lib.Sync
 		Uri ManageItem<T>(Uri uri, Realm db, T item, IQueryable<T> list, string uuid) where T: RealmObject
 		{
 			var ERROR = new Uri.Builder()
-				   .Scheme(uri.Scheme)
-				   .Authority(uri.Authority)
-				   .Path("ERROR")
-				   .Build();
+			                   .Scheme(uri.Scheme)
+			                   .Authority(uri.Authority)
+			                   .Path(SyncConst._ERROR)
+			                   .Build();
 
 			var OK = new Uri.Builder()
 							.Scheme(uri.Scheme)
 							.Authority(uri.Authority)
-							.Path("OK")
+							.Path(SyncConst._OK)
 							.Build();
 			
 			if (item == null) {
-				Log.Error("StubProvider", string.Format("Cannot insert object:{0}:{1}. Find more than 1 record.", uri.LastPathSegment, uuid));
+				Log.Error(TAG, string.Format("Cannot insert object:{0}:{1}. Find more than 1 record.", uri.LastPathSegment, uuid));
 				return ERROR;
 			}
 
 			if (list.Count() > 1) {
-				Log.Error("StubProvider", string.Format("Cannot insert object:{0}:{1}. Obj is NULL.", uri.LastPathSegment, uuid));
+				Log.Error(TAG, string.Format("Cannot insert object:{0}:{1}. Obj is NULL.", uri.LastPathSegment, uuid));
 				return ERROR;
 			}
 
@@ -172,7 +174,7 @@ namespace CRMLite.Lib.Sync
 				}
 				return OK;
 			} catch (System.Exception ex) {
-				Log.Error("StubProvider", string.Format("Cannot insert object:{0}:{1}. Exeption: {2}", uri.LastPathSegment, uuid, ex.Message));
+				Log.Error(TAG, string.Format("Cannot insert object:{0}:{1}. Exeption: {2}", uri.LastPathSegment, uuid, ex.Message));
 				return ERROR;
 			}
 		}
@@ -203,12 +205,20 @@ namespace CRMLite.Lib.Sync
 						var item5 = JsonConvert.DeserializeObject<DistributorRemain>(json);
 						var list5 = DB.All<DistributorRemain>().Where(d => d.uuid == item5.uuid);
 						return ManageItem(uri, DB, item5, list5, item5.uuid);
+					case SyncConst.DrugSKU:
+						var item6 = JsonConvert.DeserializeObject<DrugSKU>(json);
+						var list6 = DB.All<DrugSKU>().Where(d => d.uuid == item6.uuid);
+						return ManageItem(uri, DB, item6, list6, item6.uuid);
+					case SyncConst.DrugBrand:
+						var item7 = JsonConvert.DeserializeObject<DrugBrand>(json);
+						var list7 = DB.All<DrugBrand>().Where(d => d.uuid == item7.uuid);
+						return ManageItem(uri, DB, item7, list7, item7.uuid);
 					default:
 						return new Uri.Builder()
-									  .Scheme(uri.Scheme)
-									  .Authority(uri.Authority)
-									  .Path("ERROR")
-									  .Build();
+						          .Scheme(uri.Scheme)
+						          .Authority(uri.Authority)
+						          .Path(SyncConst._ERROR)
+						          .Build();
 				}
 
 			}
@@ -220,7 +230,7 @@ namespace CRMLite.Lib.Sync
 			if (list.Count() == 0) return 0;
 
 			if (list.Count() > 1) {
-				Log.Error("StubProvider", string.Format("Cannot remove object:{0}:{1}. Find more than 1 record.", typeof(T).Name, uuid));
+				Log.Error(TAG, string.Format("Cannot remove object:{0}:{1}. Find more than 1 record.", typeof(T).Name, uuid));
 				return -1;
 			}
 
@@ -231,7 +241,7 @@ namespace CRMLite.Lib.Sync
 				}
 				return 1;
 			} catch (System.Exception ex) {
-				Log.Error("StubProvider", string.Format("Cannot remove object:{0}:{1}. Exeption: {2}", typeof(T).Name, uuid, ex.Message));
+				Log.Error(TAG, string.Format("Cannot remove object:{0}:{1}. Exeption: {2}", typeof(T).Name, uuid, ex.Message));
 				return -1;
 			}
 		}
@@ -243,14 +253,33 @@ namespace CRMLite.Lib.Sync
 			using (var DB = Realm.GetInstance(db_path)) {
 				switch (selection) {
 					case SyncConst.Distributor:
-						var list = DB.All<Distributor>().Where(item => item.uuid == uuid);
-						return RemoveItems(DB, list, uuid);
+						var list1 = DB.All<Distributor>().Where(item => item.uuid == uuid);
+						return RemoveItems(DB, list1, uuid);
+					case SyncConst.PhotoType:
+						var list2 = DB.All<PhotoType>().Where(item => item.uuid == uuid);
+						return RemoveItems(DB, list2, uuid);
+					case SyncConst.DistributionAgreement:
+						var list3 = DB.All<DistributionAgreement>().Where(item => item.uuid == uuid);
+						return RemoveItems(DB, list3, uuid);
+					case SyncConst.PhotoAgreement:
+						var list4 = DB.All<PhotoAgreement>().Where(item => item.uuid == uuid);
+						return RemoveItems(DB, list4, uuid);
+					case SyncConst.DistributorRemain:
+						var list5 = DB.All<DistributorRemain>().Where(item => item.uuid == uuid);
+						return RemoveItems(DB, list5, uuid);
+					case SyncConst.DrugSKU:
+						var list6 = DB.All<DrugSKU>().Where(item => item.uuid == uuid);
+						return RemoveItems(DB, list6, uuid);
+					case SyncConst.DrugBrand:
+						var list7 = DB.All<PhotoAgreement>().Where(item => item.uuid == uuid);
+						return RemoveItems(DB, list7, uuid);
 					default:
-						Log.Error("StubProvider", "Unhandled selection:" + selection, "StubProvider.Delete");
+						Log.Error(TAG, "Unhandled selection:" + selection, "StubProvider.Delete");
 						return -1;
 				}
 			}
 		}
+
 
 		public override int Update(Uri uri, ContentValues values, string selection, string[] selectionArgs)
 		{
@@ -258,7 +287,7 @@ namespace CRMLite.Lib.Sync
 			using (var DB = Realm.GetInstance(db_path)) {
 				switch (uri.LastPathSegment) {
 					case SyncConst.SET_SYNCED:
-						if (selectionArgs.Length > 0) {
+						if (selectionArgs.Length > 1) {
 							var entities = new List<IEntity>();
 							switch (selection) {
 								case SyncConst.Attendancies:
@@ -313,7 +342,7 @@ namespace CRMLite.Lib.Sync
 									entities = DB.All<ExcludeRouteItem>().ToList<IEntity>();
 									break;
 								default:
-									Log.Error("StubProvider", "Unhandled selection:" + selection, "StubProvider.Update");
+									Log.Error(TAG, "Unhandled selection:" + selection, "StubProvider.Update");
 									break;
 									
 							}
@@ -331,11 +360,11 @@ namespace CRMLite.Lib.Sync
 						}
 						break;
 					default:
-						Log.Error("StubProvider", "Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Update");
+						Log.Error(TAG, "Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Update");
 						break;
 				}
 			}
-			return selectionArgs.Length;
+			return selectionArgs.Length - 1;
 		}
 	}
 }
