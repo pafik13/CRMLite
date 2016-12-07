@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Diagnostics;
@@ -19,7 +18,6 @@ using Android.Support.V4.View;
 using CRMLite.Dialogs;
 using CRMLite.Entities;
 using Android.Locations;
-using Android.Runtime;
 using Android.Net;
 
 namespace CRMLite

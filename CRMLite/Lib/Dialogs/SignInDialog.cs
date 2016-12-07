@@ -543,6 +543,38 @@ namespace CRMLite.Dialogs
 				return false;
 			}
 
+			WriteInfo(@"Получение Distributors", 1000);
+			try {
+				LoadItems<Distributor>(client, 300);
+			} catch (Exception ex) {
+				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
+				return false;
+			}
+
+			WriteInfo(@"Получение DistributionAgreements", 1000);
+			try {
+				LoadItems<DistributionAgreement>(client, 500);
+			} catch (Exception ex) {
+				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
+				return false;
+			}
+
+			WriteInfo(@"Получение PhotoAgreements", 1000);
+			try {
+				LoadItems<PhotoAgreement>(client, 500);
+			} catch (Exception ex) {
+				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
+				return false;
+			}
+
+			WriteInfo(@"Получение DistributorRemains", 1000);
+			try {
+				LoadItems<DistributorRemain>(client, 500);
+			} catch (Exception ex) {
+				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
+				return false;
+			}
+
 			return true;
 		}
 
