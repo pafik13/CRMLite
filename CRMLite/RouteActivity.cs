@@ -341,6 +341,12 @@ namespace CRMLite
 		void RefreshTables()
 		{
 			FindViewById<Button>(Resource.Id.raSelectDateB).Text = SelectedDate.Date.ToLongDateString();
+			
+			if !(SelectedDate.Date > DateTimeOffset.Now.Date) {
+				RouteSearchItems = new List<RouteSearchItem>();
+				RoutePharmacyAdapter = new RoutePharmacyAdapter(this, RouteSearchItems);
+				PharmacyTable.Adapter = RoutePharmacyAdapter;
+			}
 
 			var routeItemsPharmacies = MainDatabase.GetEarlyRouteItems(SelectedDate).Select(ri => ri.Pharmacy);
 			RouteSearchItems = RouteSearchItemsSource.Where(rsi => !routeItemsPharmacies.Contains(rsi.UUID)).ToList(); 
