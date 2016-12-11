@@ -567,13 +567,13 @@ namespace CRMLite.Dialogs
 				return false;
 			}
 
-			WriteInfo(@"Получение DistributorRemains", 1000);
-			try {
-				LoadItems<DistributorRemain>(client, 500);
-			} catch (Exception ex) {
-				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
-				return false;
-			}
+			//WriteInfo(@"Получение DistributorRemains", 1000);
+			//try {
+			//	LoadItems<DistributorRemain>(client, 500);
+			//} catch (Exception ex) {
+			//	WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
+			//	return false;
+			//}
 
 			return true;
 		}

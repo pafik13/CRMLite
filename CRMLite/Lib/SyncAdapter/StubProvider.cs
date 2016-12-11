@@ -201,10 +201,10 @@ namespace CRMLite.Lib.Sync
 						var item4 = JsonConvert.DeserializeObject<PhotoAgreement>(json);
 						var list4 = DB.All<PhotoAgreement>().Where(d => d.uuid == item4.uuid);
 						return ManageItem(uri, DB, item4, list4, item4.uuid);
-					case SyncConst.DistributorRemain:
-						var item5 = JsonConvert.DeserializeObject<DistributorRemain>(json);
-						var list5 = DB.All<DistributorRemain>().Where(d => d.uuid == item5.uuid);
-						return ManageItem(uri, DB, item5, list5, item5.uuid);
+					//case SyncConst.DistributorRemain:
+					//	var item5 = JsonConvert.DeserializeObject<DistributorRemain>(json);
+					//	var list5 = DB.All<DistributorRemain>().Where(d => d.uuid == item5.uuid);
+					//	return ManageItem(uri, DB, item5, list5, item5.uuid);
 					case SyncConst.DrugSKU:
 						var item6 = JsonConvert.DeserializeObject<DrugSKU>(json);
 						var list6 = DB.All<DrugSKU>().Where(d => d.uuid == item6.uuid);
@@ -264,9 +264,9 @@ namespace CRMLite.Lib.Sync
 					case SyncConst.PhotoAgreement:
 						var list4 = DB.All<PhotoAgreement>().Where(item => item.uuid == uuid);
 						return RemoveItems(DB, list4, uuid);
-					case SyncConst.DistributorRemain:
-						var list5 = DB.All<DistributorRemain>().Where(item => item.uuid == uuid);
-						return RemoveItems(DB, list5, uuid);
+					//case SyncConst.DistributorRemain:
+					//	var list5 = DB.All<DistributorRemain>().Where(item => item.uuid == uuid);
+					//	return RemoveItems(DB, list5, uuid);
 					case SyncConst.DrugSKU:
 						var list6 = DB.All<DrugSKU>().Where(item => item.uuid == uuid);
 						return RemoveItems(DB, list6, uuid);

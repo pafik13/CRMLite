@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -29,11 +28,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-<AndroidKeyStore>True</AndroidKeyStore>
-<AndroidSigningKeyStore>C:\Users\pavel\AppData\Local\Xamarin\Mono for Android\Keystore\my_first_key\my_first_key.keystore</AndroidSigningKeyStore>
-<AndroidSigningStorePass>1611981</AndroidSigningStorePass>
-<AndroidSigningKeyAlias>my_first_key</AndroidSigningKeyAlias>
-<AndroidSigningKeyPass>1611981</AndroidSigningKeyPass>
+    <AndroidKeyStore>True</AndroidKeyStore>
+    <AndroidSigningKeyStore>C:\Users\pavel\AppData\Local\Xamarin\Mono for Android\Keystore\my_first_key\my_first_key.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>1611981</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>my_first_key</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>1611981</AndroidSigningKeyPass>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -114,7 +113,6 @@
     <Compile Include="Lib\Entities\Employee.cs" />
     <Compile Include="Lib\Entities\Position.cs" />
     <Compile Include="Lib\Entities\Category.cs" />
-    <Compile Include="AttendanceActivity.cs" />
     <Compile Include="Lib\Dialogs\LockDialog.cs" />
     <Compile Include="Lib\Fragments\ScreenSlidePageFragment.cs" />
     <Compile Include="Lib\Fragments\PharmacyFragment.cs" />
@@ -148,6 +146,7 @@
     <Compile Include="Lib\IAttendanceControl.cs" />
     <Compile Include="Lib\Helper.cs" />
     <Compile Include="Lib\Adapters\ContractAdapter.cs" />
+    <Compile Include="AttendanceActivity.cs" />
     <Compile Include="ContractActivity.cs" />
     <Compile Include="Lib\Entities\ContractData.cs" />
     <Compile Include="Lib\Entities\Agent.cs" />
@@ -208,8 +207,6 @@
     <Compile Include="Lib\Entities\DistributionAgreement.cs" />
     <Compile Include="Lib\Entities\PhotoAgreement.cs" />
     <Compile Include="DistributorRemainActivity.cs" />
-    <Compile Include="Lib\Entities\DistributorRemain.cs" />
-    <Compile Include="Lib\Adapters\DistributorRemainAdapter.cs" />
     <Compile Include="Lib\Services\LocationService.cs" />
   </ItemGroup>
   <ItemGroup>
