@@ -215,6 +215,35 @@ namespace CRMLite
 				StartActivity(new Intent(this, typeof(MessageActivity)));
 			};
 
+			var delete = FindViewById<ImageView>(Resource.Id.maDelete);
+			delete.Click += (sender, e) => {
+				new AlertDialog.Builder(this)
+				               .SetTitle(Resource.String.delete_caption)
+							   .SetMessage("Удалить закрытые аптеки?")
+							   .SetCancelable(false)
+				               .SetPositiveButton(Resource.String.ok_button, (dialog, args) => {
+								   var pharmacies = MainDatabase.GetItems<Pharmacy>()
+					                                            .Where(ph => ph.GetState() == PharmacyState.psClose);
+
+								   using (var transaction = MainDatabase.BeginTransaction()) {
+										foreach (var item in pharmacies) {
+										   MainDatabase.DeleteEntity(transaction, item);
+									   }
+									   transaction.Commit();
+								   }
+
+								   if (dialog is Dialog) {
+									   ((Dialog)dialog).Dismiss();
+								   }
+							   })
+				               .SetNegativeButton(Resource.String.cancel_button, (dialog, args) => {
+								  if (dialog is Dialog) {
+									  ((Dialog)dialog).Dismiss();
+								  }
+							   })
+							   .Show();
+			};
+
 			FilterContent = FindViewById<TextView>(Resource.Id.maFilterTV);
 			AttendanceCount = FindViewById<TextView>(Resource.Id.maAttendanceCountTV);
 

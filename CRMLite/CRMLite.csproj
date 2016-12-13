@@ -570,6 +570,11 @@
     <AndroidResource Include="Resources\layout\CoterieTableItem.axml" />
     <AndroidResource Include="Resources\layout\DistributorRemainTableItem.axml" />
     <AndroidResource Include="Resources\layout\DistributorRemainTableHeader.axml" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_delete_sweep_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_delete_sweep_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_delete_sweep_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_delete_sweep_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_delete_sweep_black_36dp.png" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

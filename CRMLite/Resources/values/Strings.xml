@@ -51,11 +51,13 @@
 
 	<string name="error_caption">Ошибка!</string>
 	<string name="warning_caption">Внимание!</string>
+	<string name="delete_caption">Удаление!</string>
 	<string name="cancel_button">Отмена</string>
 	<string name="no_internet_connection">Отсутствует подключение к интернету - проверьте правильность настроек.</string>
 	<string name="no_internet_provider">Выключено подключение к интернету.</string>
 	<string name="no_location_provider">Не получается получить данные о местоположении, так как отключены провайдеры.</string>
 	<string name="on_button">Включить</string>
+	<string name="ok_button">OK</string>
 	<string name="lorem_ipsum_short">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vel velit suscipit, molestie odio a, ultrices sapien. Sed porttitor lacus.</string>
 	<string name="lorem_ipsum_long">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vestibulum dictum lobortis. Curabitur quis dictum magna. Donec sodales est sit amet sapien gravida, a vehicula metus commodo. Mauris nulla est, dapibus nec purus at, pharetra dapibus magna. Nullam rhoncus finibus velit. Etiam scelerisque ornare sem quis aliquet. Donec aliquam venenatis.</string>
 	<string name="tutorial_rules">После регистрации пользователю начисляется условное количество баллов. Вы можете потратить их на доступные в данный момент акции в приложении кафе и ресторанах.</string>
