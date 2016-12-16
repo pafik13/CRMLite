@@ -91,11 +91,22 @@ namespace CRMLite
 			Agreements = new Dictionary<string, bool>();
 			string key = string.Empty;
 			foreach (var agreement in MainDatabase.GetItems<PhotoAgreement>()
+												  .Where(pa => (pa.object_type == "all"))
+					) {
+				if (string.IsNullOrEmpty(agreement.brand)) {
+					key = agreement.photoType;
+				} else {
+					key = string.Format("{0}:{1}", agreement.photoType, agreement.brand);
+				}
+				if (!Agreements.ContainsKey(key)) {
+					Agreements.Add(key, false);
+				}
+			}
+			foreach (var agreement in MainDatabase.GetItems<PhotoAgreement>()
 													  .Where(pa => (pa.object_type == "pharmacy")
 																&& (pa.object_uuid == Pharmacy.UUID)
 															)
-					) 
-			{
+					) {
 				if (string.IsNullOrEmpty(agreement.brand)) {
 					key = agreement.photoType;
 				} else {
@@ -110,8 +121,7 @@ namespace CRMLite
 														  .Where(pa => (pa.object_type == "net")
 																	&& (pa.object_uuid == Pharmacy.Net)
 																)
-						) 
-				{
+						) {
 					if (string.IsNullOrEmpty(agreement.brand)) {
 						key = agreement.photoType;
 					} else {
@@ -142,13 +152,13 @@ namespace CRMLite
 			var attendanceLastUUID = Arguments.GetString(C_ATTENDANCE_LAST_UUID);
 			var attendanceLast = string.IsNullOrEmpty(attendanceLastUUID) ? null : MainDatabase.GetEntity<Attendance>(attendanceLastUUID);
 
-			Photos = (attendanceLast == null) ? 
+			Photos = (attendanceLast == null) ?
 				new List<PhotoData>() : MainDatabase.GetDatas<PhotoData>(attendanceLastUUID) ?? new List<PhotoData>();
 
 			PhotoTable = view.FindViewById<LinearLayout>(Resource.Id.pfPhotoTableLL);
 			RefreshPhotoList();
-		
-			
+
+
 			Brand = view.FindViewById<Spinner>(Resource.Id.pfBrandS);
 			Brands = MainDatabase.GetItems<DrugBrand>();
 
@@ -158,17 +168,17 @@ namespace CRMLite
 
 			AddPhoto = view.FindViewById<Button>(Resource.Id.pfAddPhotoB);
 			AddPhoto.Click += (object sender, EventArgs e) => {
-			//	if (Common.CreateDirForPhotos(user)) {
-			//		string type = photoTypes[spnPhotoTypes.SelectedItemPosition].name;
-			//		type = Transliteration.Front(type, TransliterationType.Gost).Substring(0, Math.Min(5, type.Length)).ToUpper();
-			//		string subtype = currentPhotoSubTypes[spnPhotoSubTypes.SelectedItemPosition].name;
-			//		subtype = Transliteration.Front(subtype, TransliterationType.Gost).Substring(0, Math.Min(5, subtype.Length)).ToUpper();
-					string stamp = DateTime.Now.ToString(@"yyyyMMddHHmmsszz");
-					File = new Java.IO.File(Helper.PhotoDir, string.Format("PHOTO_{0}.jpg", stamp));
-					var intent = new Intent(MediaStore.ActionImageCapture);
-					intent.PutExtra(MediaStore.ExtraOutput, Android.Net.Uri.FromFile(File));
-					StartActivityForResult(intent, C_REQUEST_PHOTO);
-			//	}
+				//	if (Common.CreateDirForPhotos(user)) {
+				//		string type = photoTypes[spnPhotoTypes.SelectedItemPosition].name;
+				//		type = Transliteration.Front(type, TransliterationType.Gost).Substring(0, Math.Min(5, type.Length)).ToUpper();
+				//		string subtype = currentPhotoSubTypes[spnPhotoSubTypes.SelectedItemPosition].name;
+				//		subtype = Transliteration.Front(subtype, TransliterationType.Gost).Substring(0, Math.Min(5, subtype.Length)).ToUpper();
+				string stamp = DateTime.Now.ToString(@"yyyyMMddHHmmsszz");
+				File = new Java.IO.File(Helper.PhotoDir, string.Format("PHOTO_{0}.jpg", stamp));
+				var intent = new Intent(MediaStore.ActionImageCapture);
+				intent.PutExtra(MediaStore.ExtraOutput, Android.Net.Uri.FromFile(File));
+				StartActivityForResult(intent, C_REQUEST_PHOTO);
+				//	}
 			};
 
 			Locker = view.FindViewById<TextView>(Resource.Id.locker);
@@ -376,6 +386,4 @@ namespace CRMLite
 		}
 	}
 }
-
-
 

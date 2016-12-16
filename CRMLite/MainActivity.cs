@@ -232,6 +232,19 @@ namespace CRMLite
 									   transaction.Commit();
 								   }
 
+								   var sparseArray = SearchTable.CheckedItemPositions;
+								   bool hasCheckedItemInSearchTable = false;
+								   for (var i = 0; i < sparseArray.Size(); i++) {
+									   if (sparseArray.ValueAt(i)) {
+										   hasCheckedItemInSearchTable = true;
+										   break;
+									   }
+								   }
+
+								   if (!hasCheckedItemInSearchTable) {
+									   RecreateAdapter();
+								   }
+
 								   if (dialog is Dialog) {
 									   ((Dialog)dialog).Dismiss();
 								   }

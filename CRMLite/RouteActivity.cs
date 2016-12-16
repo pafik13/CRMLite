@@ -68,7 +68,7 @@ namespace CRMLite
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
-    
+
 			RequestWindowFeature(WindowFeatures.NoTitle);
 			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
 
@@ -95,9 +95,9 @@ namespace CRMLite
 				} else {
 					item = SearchedItems[e.Position];
 				}
-				
+
 				//TODO: rename vars
-				using (var trans = MainDatabase.BeginTransaction()){
+				using (var trans = MainDatabase.BeginTransaction()) {
 					var newRouteItem = MainDatabase.Create2<RouteItem>();
 					newRouteItem.Pharmacy = item.UUID;
 					newRouteItem.Order = RouteTable.ChildCount;
@@ -154,7 +154,7 @@ namespace CRMLite
 
 				if (string.IsNullOrEmpty(text)) {
 					foreach (var item in RouteSearchItems) {
-						item.Match = string.Empty; 
+						item.Match = string.Empty;
 					}
 					PharmacyTable.Adapter = new RoutePharmacyAdapter(this, RouteSearchItems);
 					return;
@@ -246,7 +246,7 @@ namespace CRMLite
 			var routeItemUUID = (string)rowForDelete.GetTag(Resource.String.RouteItemUUID);
 			MainDatabase.DeleteEntity<RouteItem>(routeItemUUID);
 
-			int pos = (int) rowForDelete.GetTag(Resource.String.Position);
+			int pos = (int)rowForDelete.GetTag(Resource.String.Position);
 			int index = (int)rowForDelete.GetTag(Resource.String.RouteItemOrder);
 
 			RouteTable.RemoveView(rowForDelete);
@@ -257,6 +257,8 @@ namespace CRMLite
 					routeItemUUID = (string)rowForUpdate.GetTag(Resource.String.RouteItemUUID);
 					var updRouteItem = MainDatabase.GetEntity<RouteItem>(routeItemUUID);
 					updRouteItem.Order = c;
+					updRouteItem.IsSynced = false;
+					updRouteItem.UpdatedAt = DateTimeOffset.Now;
 					rowForUpdate.SetTag(Resource.String.RouteItemOrder, c);
 					rowForUpdate.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (c + 1).ToString();
 				}
@@ -314,6 +316,8 @@ namespace CRMLite
 									string routeItemUUID = (string)rowForUpdate.GetTag(Resource.String.RouteItemUUID);
 									var updRouteItem = MainDatabase.GetEntity<RouteItem>(routeItemUUID);
 									updRouteItem.Order = c;
+									updRouteItem.IsSynced = false;
+									updRouteItem.UpdatedAt = DateTimeOffset.Now;
 									rowForUpdate.SetTag(Resource.String.RouteItemOrder, c);
 									rowForUpdate.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (c + 1).ToString();
 								}
@@ -341,23 +345,21 @@ namespace CRMLite
 		void RefreshTables()
 		{
 			FindViewById<Button>(Resource.Id.raSelectDateB).Text = SelectedDate.Date.ToLongDateString();
-			
-			if (!(SelectedDate.Date > DateTimeOffset.Now.Date)) {
+
+			if (SelectedDate.Date <= DateTimeOffset.Now.Date) {
 				RouteSearchItems = new List<RouteSearchItem>();
 				RoutePharmacyAdapter = new RoutePharmacyAdapter(this, RouteSearchItems);
 				PharmacyTable.Adapter = RoutePharmacyAdapter;
-				RouteTable.RemoveAllViews();
-				return;
-			}
+			} else {
+				var routeItemsPharmacies = MainDatabase.GetEarlyRouteItems(SelectedDate).Select(ri => ri.Pharmacy);
+				RouteSearchItems = RouteSearchItemsSource.Where(rsi => !routeItemsPharmacies.Contains(rsi.UUID)).ToList();
 
-			var routeItemsPharmacies = MainDatabase.GetEarlyRouteItems(SelectedDate).Select(ri => ri.Pharmacy);
-			RouteSearchItems = RouteSearchItemsSource.Where(rsi => !routeItemsPharmacies.Contains(rsi.UUID)).ToList(); 
+				RoutePharmacyAdapter = new RoutePharmacyAdapter(this, RouteSearchItems);
+				PharmacyTable.Adapter = RoutePharmacyAdapter;
 
-			RoutePharmacyAdapter = new RoutePharmacyAdapter(this, RouteSearchItems);
-			PharmacyTable.Adapter = RoutePharmacyAdapter;
-
-			for (int i = 0; i < RouteSearchItems.Count; i++) {
-				RoutePharmacyAdapter.ChangeVisibility(i, true);
+				for (int i = 0; i < RouteSearchItems.Count; i++) {
+					RoutePharmacyAdapter.ChangeVisibility(i, true);
+				}
 			}
 
 			RouteTable.RemoveAllViews();
@@ -420,7 +422,7 @@ namespace CRMLite
 			{
 				switch (position) {
 					default:
-					return RouteFragment.create(position);
+						return RouteFragment.create(position);
 				}
 
 			}
