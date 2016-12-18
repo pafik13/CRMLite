@@ -3,8 +3,14 @@ using System.Globalization;
 using System.Diagnostics;
 using System.IO;
 
+using System.Net;
+using System.Net.Cache;
+using System.Text.RegularExpressions;
+
 using Android.Provider;
 using Android.Content;
+
+using RestSharp;
 
 namespace CRMLite
 {
@@ -15,6 +21,8 @@ namespace CRMLite
 
 	public static class Helper
 	{
+		public static bool IsTimeChanged;
+
 		//public const string C_DB_FILE_NAME = @"main.realm";
 		public static string C_DB_FILE_NAME = @"main.realm";
 
@@ -167,6 +175,37 @@ namespace CRMLite
 			int.TryParse(value.Replace(',', '.'), NumberStyles.Integer, new CultureInfo("en-US").NumberFormat, out result);
 
 			return result;
+		}
+
+		public static DateTime GetNistTime(RestClient restClient = null, RestRequest restRequest = null)
+		{
+			var sw = new Stopwatch();
+			sw.Start();
+
+			DateTime dateTime = DateTime.MinValue;
+
+			var client = restClient ?? new RestClient("http://nist.time.gov/");
+			client.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
+			var request = restRequest ?? new RestRequest("actualtime.cgi", Method.GET);
+			var response = client.Execute(request);
+			if (response.StatusCode == HttpStatusCode.OK) {
+				Debug.WriteLine(response.Content);
+				var w = new Stopwatch();
+				w.Start();
+				//StreamReader stream = new StreamReader(response.GetResponseStream());
+				string time = Regex.Match(response.Content, @"(?<=\btime="")[^""]*").Value;
+				double milliseconds = Convert.ToInt64(time) / 1000.0;
+				dateTime = new DateTime(1970, 1, 1).AddMilliseconds(milliseconds).ToLocalTime();
+				w.Stop();
+				Debug.WriteLine(time);
+				Debug.WriteLine(dateTime);
+				Debug.WriteLine(w.ElapsedMilliseconds);
+			}
+
+			sw.Stop();
+			Debug.WriteLine(sw.ElapsedMilliseconds);
+
+			return dateTime;
 		}
 	}
 }

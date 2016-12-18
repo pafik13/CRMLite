@@ -208,6 +208,7 @@
     <Compile Include="Lib\Entities\PhotoAgreement.cs" />
     <Compile Include="DistributorRemainActivity.cs" />
     <Compile Include="Lib\Services\LocationService.cs" />
+    <Compile Include="Lib\Receivers\TimeChangedReceiver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -602,6 +603,7 @@
   <ItemGroup>
     <Folder Include="Lib\SyncAdapter\" />
     <Folder Include="Resources\xml\" />
+    <Folder Include="Lib\Receivers\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets')" />

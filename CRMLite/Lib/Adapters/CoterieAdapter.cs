@@ -38,7 +38,7 @@ namespace CRMLite.Adapters
 		{
 			var item = Attendancies[position];
 			// TODO: Fix
-			var pharmacy = MainDatabase.GetEntity<Pharmacy>(item.Pharmacy);
+			var pharmacy = MainDatabase.GetEntityOrNull<Pharmacy>(item.Pharmacy);
 
 			var coterieDatas = MainDatabase.GetDatas<CoterieData>(item.UUID);
 
@@ -59,10 +59,10 @@ namespace CRMLite.Adapters
 								false)) as LinearLayout;
 
 			view.FindViewById<TextView>(Resource.Id.ctiLegalNameTV).Text =
-				    string.IsNullOrEmpty(pharmacy.LegalName) ? "<пусто>" : pharmacy.LegalName;
+				    pharmacy == null ? "<аптека не найдена>" : string.IsNullOrEmpty(pharmacy.LegalName) ? "<пусто>" : pharmacy.LegalName;
 
 			view.FindViewById<TextView>(Resource.Id.ctiPharmacyTV).Text =
-				    string.IsNullOrEmpty(pharmacy.GetName()) ? "<пусто>" : pharmacy.GetName();
+				    pharmacy == null ? "<аптека не найдена>" : string.IsNullOrEmpty(pharmacy.GetName()) ? "<пусто>" : pharmacy.GetName();
 
 			view.FindViewById<TextView>(Resource.Id.ctiWhenTV).Text = item.When.LocalDateTime.ToShortDateString();
 

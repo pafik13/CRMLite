@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 using SDiag = System.Diagnostics;
 
-
 using Android.OS;
+using Android.Net;
 using Android.App;
 using Android.Views;
 using Android.Widget;
@@ -22,7 +22,7 @@ using HockeyApp.Android.Metrics;
 using CRMLite.Entities;
 using CRMLite.Adapters;
 using CRMLite.Dialogs;
-using Android.Net;
+using CRMLite.Receivers;
 
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
 [assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
@@ -38,6 +38,7 @@ namespace CRMLite
 		public const string C_DUMMY = @"C_DUMMY";
 
 		string SelectedPharmacyUUID;
+		string Version;
 
 		List<Pharmacy> Pharmacies;
 		ListView PharmacyTable;
@@ -69,6 +70,10 @@ namespace CRMLite
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
+
+			var packageInfo = ApplicationContext.PackageManager.GetPackageInfo(ApplicationContext.PackageName, 0);
+			Version = string.Format("Версия: {0} ({1})", packageInfo.VersionName, packageInfo.VersionCode);
+			FindViewById<TextView>(Resource.Id.maVersionTV).Text = Version;
 
 			PharmacyTable = FindViewById<ListView>(Resource.Id.maPharmacyTable);
 			View header = LayoutInflater.Inflate(Resource.Layout.PharmacyTableHeader, PharmacyTable, false);
@@ -128,7 +133,7 @@ namespace CRMLite
 
 			var searchSettings = FindViewById<ImageView>(Resource.Id.maSearchSettingsIV);
 			searchSettings.Click += (sender, e) => {
-				Toast.MakeText(this, @"maSearchSettingsIV Clicked", ToastLength.Short).Show();
+				Toast.MakeText(this, "maSearchSettingsIV Clicked", ToastLength.Short).Show();
 			};
 
 			SearchInput = FindViewById<EditText>(Resource.Id.maSearchInput);
@@ -187,7 +192,7 @@ namespace CRMLite
 				filterDialog.AfterSaved += (caller, arguments) => {
 					GetSharedPreferences(FilterDialog.C_FILTER_PREFS, FileCreationMode.Private)
 						.Edit()
-						.PutBoolean(@"IS_ON", true)
+						.PutBoolean("IS_ON", true)
 						.Commit();
 
 					RecreateAdapter();
@@ -207,7 +212,7 @@ namespace CRMLite
 				var messageDialog = new MessageDialog();
 				messageDialog.Show(fragmentTransaction, MessageDialog.TAG);
 				messageDialog.AfterSaved += (caller, arguments) => {
-					Toast.MakeText(this, @"Message saved", ToastLength.Short).Show();
+					Toast.MakeText(this, "Message saved", ToastLength.Short).Show();
 				};
 			};
 
@@ -231,6 +236,9 @@ namespace CRMLite
 									   }
 									   transaction.Commit();
 								   }
+
+								   string msg = string.Format("Было удалено {0} аптек.", pharmacies.Count());
+								   Toast.MakeText(this, msg, ToastLength.Long).Show();
 
 								   var sparseArray = SearchTable.CheckedItemPositions;
 								   bool hasCheckedItemInSearchTable = false;
@@ -348,6 +356,7 @@ namespace CRMLite
 				FilterContent.RequestFocus();
 			} else {
 				FilterContent.Visibility = ViewStates.Gone;
+				//FilterContent.Text = Version;
 				Filter.SetBackgroundColor(Android.Graphics.Color.Transparent);
 
 
@@ -535,6 +544,39 @@ namespace CRMLite
 
 			var shared = GetSharedPreferences(C_MAIN_PREFS, FileCreationMode.Private);
 
+			Helper.IsTimeChanged = shared.GetBoolean(TimeChangedReceiver.C_IS_TIME_CHANGED, false);
+
+			if (Helper.IsTimeChanged) {
+				var dialog = new AlertDialog.Builder(this)
+											.SetTitle(Resource.String.error_caption)
+											.SetMessage(Resource.String.time_changed)
+											.SetCancelable(false)
+											.SetPositiveButton(Resource.String.check_button, (EventHandler<DialogClickEventArgs>)null)
+											.SetNegativeButton(Resource.String.cancel_button, (sender, args) => {
+												if (sender is Dialog) {
+													(sender as Dialog).Dismiss();
+												}
+											})
+											.Create();
+				dialog.SetCanceledOnTouchOutside(false);
+				dialog.SetCancelable(false);
+				dialog.Show();
+				//Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
+				var dialogBtn = dialog.GetButton((int)DialogButtonType.Positive);
+				dialogBtn.Click += (sender, args) => {
+					// Don't dismiss dialog.
+					if (Math.Abs((Helper.GetNistTime() - DateTime.Now).TotalHours) < 1.1d) {
+						Helper.IsTimeChanged = false;
+						shared.Edit()
+							  .PutBoolean(TimeChangedReceiver.C_IS_TIME_CHANGED, false)
+							  .Commit();
+						dialog.Dismiss();
+					} else {
+						Toast.MakeText(this, "Время на планшете отличается от мирового более чем на 1 час", ToastLength.Short).Show();
+					}
+				};
+			}
+
 			string username = shared.GetString(SigninDialog.C_USERNAME, string.Empty);
 			if (string.IsNullOrEmpty(username)) {
 				Pharmacies = new List<Pharmacy>(); //.Take(14).ToList();
@@ -620,7 +662,9 @@ namespace CRMLite
 			w.Restart();
 			int count = MainDatabase.GetItems<Attendance>()
 									.Count(att => att.When.LocalDateTime.Date == DateTimeOffset.Now.Date);
-			AttendanceCount.Text = string.Format(@"РЕЖИМ РАБОТЫ: {0};  СЕГОДНЯ ВИЗИТОВ: {1}", Helper.GetWorkModeDesc(Helper.WorkMode), count);
+			AttendanceCount.Text = string.Format(
+				@"РЕЖИМ РАБОТЫ: {0};  СЕГОДНЯ ВИЗИТОВ: {1}", Helper.GetWorkModeDesc(Helper.WorkMode), count
+			);
 			w.Stop();
 			SDiag.Debug.WriteLine(@"OnResume: подсчет визитов={0}", w.ElapsedMilliseconds);
 

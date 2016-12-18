@@ -365,7 +365,12 @@ namespace CRMLite
 			RouteTable.RemoveAllViews();
 			foreach (var item in MainDatabase.GetRouteItems(SelectedDate).OrderBy(ri => ri.Order)) {
 				var row = LayoutInflater.Inflate(Resource.Layout.RouteItem, RouteTable, false);
-				row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text = MainDatabase.GetEntity<Pharmacy>(item.Pharmacy).GetName();
+				var pharmacy = MainDatabase.GetEntityOrNull<Pharmacy>(item.Pharmacy);
+				if (pharmacy == null) {
+					row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text = "<аптека не найдена>";
+				} else {
+					row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text = pharmacy.GetName();
+				}
 
 				int position = RouteSearchItems.FindIndex(rsi => string.Compare(rsi.UUID, item.Pharmacy) == 0);
 				if (position != -1) {
@@ -387,11 +392,12 @@ namespace CRMLite
 				if (SelectedDate > new DateTimeOffset(now.Year, now.Month, now.Day, 0, 0, 0, new TimeSpan(0, 0, 0))) {
 					delImage.Click += RowDelete_Click;
 					delImage.Visibility = ViewStates.Visible;
-					row.LongClick += Row_LongClick;
-					row.Drag += Row_Drag;
 				} else {
 					delImage.Visibility = ViewStates.Gone;
 				}
+
+				row.LongClick += Row_LongClick;
+				row.Drag += Row_Drag;
 
 				RouteTable.AddView(row);
 			}

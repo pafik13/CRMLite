@@ -167,6 +167,17 @@
                 android:minHeight="56dp"
                 android:layout_toLeftOf="@id/maMessage"
                 android:layout_marginRight="10dp" />
+            <TextView
+                android:text="{Версия}"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/maVersionTV"
+                android:gravity="center"
+                android:textColor="@android:color/black"
+                android:height="56dp"
+                android:layout_toLeftOf="@id/maDelete"
+                android:layout_marginRight="10dp" />
         </RelativeLayout>
     </RelativeLayout>
     <RelativeLayout

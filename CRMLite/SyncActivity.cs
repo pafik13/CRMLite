@@ -14,16 +14,17 @@ using Android.App;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
+using Android.Accounts;
 using Android.Content.PM;
 
 using RestSharp;
 
 using Realms;
 
+using Newtonsoft.Json;
+
 using CRMLite.Dialogs;
 using CRMLite.Entities;
-using Newtonsoft.Json;
-using Android.Accounts;
 using CRMLite.Lib.Sync;
 
 namespace CRMLite
@@ -52,25 +53,7 @@ namespace CRMLite
 		public List<MaterialFile> MaterialFiles { get; private set; }
 		public List<LibraryFile> LibraryFiles { get; private set; }
 
-		//public List<Hospital> Hospitals { get; private set; }
-
-		//public List<HospitalData> HospitalDatas { get; private set; }
-
-		//public List<MessageData> MessageDatas { get; private set; }
-
-		//public List<PresentationData> PresentationDatas { get; private set; }
-
-		//public List<ResumeData> ResumeDatas { get; private set; }
-
-		//public List<RouteItem> RouteItems { get; private set; }
-
-		//public List<PromotionData> PromotionDatas { get; private set; }
-
-
-		//public int Messages { get; private set; }
 		public int Count { get; private set; }
-
-
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
@@ -266,19 +249,17 @@ namespace CRMLite
 			Count += MainDatabase.CountItemsToSync<ContractData>();
 			Count += MainDatabase.CountItemsToSync<CoterieData>();
 			Count += MainDatabase.CountItemsToSync<DistributionData>();
+			Count += MainDatabase.CountItemsToSync<DistributorData>();
 			Count += MainDatabase.CountItemsToSync<Pharmacy>();
 			Count += MainDatabase.CountItemsToSync<Employee>();
+			Count += MainDatabase.CountItemsToSync<ExcludeRouteItem>();
 
 			Count += MainDatabase.CountItemsToSync<GPSData>();
 
 			Count += MainDatabase.CountItemsToSync<Hospital>();
 			Count += MainDatabase.CountItemsToSync<HospitalData>();
 
-			//var monthFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByMonth>();
-			//var quarterFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByQuarter>();
-			//var monthSaleDatas = MainDatabase.GetItemsToSync<SaleDataByMonth>();
-			//var quarterSaleDatas = MainDatabase.GetItemsToSync<SaleDataByQuarter>();
-
+			Count += MainDatabase.CountItemsToSync<Entities.Message>();			
 			Count += MainDatabase.CountItemsToSync<MessageData>();
 			//var photoDatas = MainDatabase.GetItemsToSync<PhotoData>();
 
@@ -286,10 +267,7 @@ namespace CRMLite
 			Count += MainDatabase.CountItemsToSync<PromotionData>();
 			Count += MainDatabase.CountItemsToSync<ResumeData>();
 			Count += MainDatabase.CountItemsToSync<RouteItem>();
-			Count += MainDatabase.CountItemsToSync<ExcludeRouteItem>();
 
-
-			Count += MainDatabase.CountItemsToSync<Entities.Message>();
 
 			var toSyncCount = FindViewById<TextView>(Resource.Id.saSyncEntitiesCount);
 			toSyncCount.Text = string.Format("Необходимо синхронизировать {0} объектов", Count);
@@ -534,35 +512,6 @@ namespace CRMLite
 				);				
 			}
 
-			//Toast.MakeText(this, @"saSyncB_Click", ToastLength.Short).Show();
-
-			//Locker.Visibility = ViewStates.Visible;
-
-			//Thread.Sleep(2000);
-
-			//var pharmacies = MainDatabase.GetItemsToSync<Pharmacy>();
-			//var employees = MainDatabase.GetItemsToSync<Employee>();
-			//var hospitals = MainDatabase.GetItemsToSync<Hospital>();
-			//var hospitalDatas = MainDatabase.GetItemsToSync<HospitalData>();
-			//var attendances = MainDatabase.GetItemsToSync<Attendance>();
-			//var competitorDatas = MainDatabase.GetItemsToSync<CompetitorData>();
-			//var contractDatas = MainDatabase.GetItemsToSync<ContractData>();
-			//var coterieDatas = MainDatabase.GetItemsToSync<CoterieData>();
-
-			//var monthFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByMonth>();
-			//var quarterFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByQuarter>();
-			//var monthSaleDatas = MainDatabase.GetItemsToSync<SaleDataByMonth>();
-			//var quarterSaleDatas = MainDatabase.GetItemsToSync<SaleDataByQuarter>();
-
-			//var messageDatas = MainDatabase.GetItemsToSync<MessageData>();
-			//var photoDatas = MainDatabase.GetItemsToSync<PhotoData>();
-
-			//var presentationDatas = MainDatabase.GetItemsToSync<PresentationData>();
-			//var promotionDatas = MainDatabase.GetItemsToSync<PromotionData>();
-			//var resumeDatas = MainDatabase.GetItemsToSync<ResumeData>();
-			//var routeItems = MainDatabase.GetItemsToSync<RouteItem>();
-
-			//Locker.Visibility = ViewStates.Gone;
 
 			if (Count > 0 || MaterialFiles.Count > 0 || WorkTypes.Count > 0) {
 				var progress = ProgressDialog.Show(this, string.Empty, @"Синхронизация");
@@ -616,7 +565,7 @@ namespace CRMLite
 						}
 					}
 
-					// Обновление файлов в библотекев
+					// Обновление файлов в библотеке
 					foreach (var libraryFile in LibraryFiles) {
 						// 79 Characters (72 without spaces)
 						ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
@@ -637,18 +586,19 @@ namespace CRMLite
 					SyncEntities(MainDatabase.GetItemsToSync<ContractData>());
 					SyncEntities(MainDatabase.GetItemsToSync<CoterieData>());
 					SyncEntities(MainDatabase.GetItemsToSync<DistributionData>());
-					SyncEntities(MainDatabase.GetItemsToSync<Pharmacy>());
+					SyncEntities(MainDatabase.GetItemsToSync<DistributorData>());
 					SyncEntities(MainDatabase.GetItemsToSync<Employee>());
+					SyncEntities(MainDatabase.GetItemsToSync<ExcludeRouteItem>());
 					SyncEntities(MainDatabase.GetItemsToSync<GPSData>());
 					SyncEntities(MainDatabase.GetItemsToSync<Hospital>());
 					SyncEntities(MainDatabase.GetItemsToSync<HospitalData>());
 					SyncEntities(MainDatabase.GetItemsToSync<Entities.Message>());
 					SyncEntities(MainDatabase.GetItemsToSync<MessageData>());
+					SyncEntities(MainDatabase.GetItemsToSync<Pharmacy>());
 					SyncEntities(MainDatabase.GetItemsToSync<PresentationData>());
 					SyncEntities(MainDatabase.GetItemsToSync<PromotionData>());
 					SyncEntities(MainDatabase.GetItemsToSync<ResumeData>());
 					SyncEntities(MainDatabase.GetItemsToSync<RouteItem>());
-					SyncEntities(MainDatabase.GetItemsToSync<ExcludeRouteItem>());
 
 					MainDatabase.Dispose();
 

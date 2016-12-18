@@ -56,10 +56,10 @@ namespace CRMLite
 					string[] keys = item.Key.Split(new char[] { ':' });
 					var photoType = MainDatabase.GetItem<PhotoType>(keys[0]);
 					var brand = MainDatabase.GetItem<DrugBrand>(keys[1]);
-					result += string.Format("Тип '{0}' для бренда '{1}'{2}", photoType.name, brand.name, System.Environment.NewLine);
+					result += string.Format("  - тип '{0}' для бренда '{1}'{2}", photoType.name, brand.name, System.Environment.NewLine);
 				} else {
 					var photoType = MainDatabase.GetItem<PhotoType>(item.Key);
-					result += string.Format("Тип '{0}'{1}", photoType.name, System.Environment.NewLine);
+					result += string.Format("  - тип '{0}'{1}", photoType.name, System.Environment.NewLine);
 				}
 			}
 

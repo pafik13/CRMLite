@@ -86,7 +86,7 @@ namespace CRMLite
 			var attendances = MainDatabase.GetItems<Attendance>().Where(i => i.Pharmacy == Pharmacy.UUID).OrderBy(i => i.When).ToList();
 			var dict_key = string.Empty;
 			// 1. Рисуем таблицу
-			int dateStep = 7;
+			int dateStep = 7 * Helper.WeeksInRoute;
 			int datesCount = 20;
 			string format = @"ddMMyy";
 			DateTimeOffset[] dates = new DateTimeOffset[datesCount];

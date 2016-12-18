@@ -53,7 +53,9 @@
 	<string name="warning_caption">Внимание!</string>
 	<string name="delete_caption">Удаление!</string>
 	<string name="cancel_button">Отмена</string>
+	<string name="check_button">Проверить</string>
 	<string name="no_internet_connection">Отсутствует подключение к интернету - проверьте правильность настроек.</string>
+	<string name="time_changed">Зафиксировано изменение времени. Без проверки корректности времени дальнейшая работа невозможна!</string>
 	<string name="no_internet_provider">Выключено подключение к интернету.</string>
 	<string name="no_location_provider">Не получается получить данные о местоположении, так как отключены провайдеры.</string>
 	<string name="on_button">Включить</string>

@@ -240,6 +240,11 @@ namespace CRMLite
 			return Me.DB.All<T>().Single(item => item.UUID == uuid);
 		}
 
+		public static T GetEntityOrNull<T>(string uuid) where T : RealmObject, IEntity
+		{
+			return Me.DB.All<T>().SingleOrDefault(item => item.UUID == uuid);
+		}
+
 		public static void DeleteEntity<T>(string uuid) where T : RealmObject, IEntity
 		{
 			using (var trans = Me.DB.BeginWrite()) {
