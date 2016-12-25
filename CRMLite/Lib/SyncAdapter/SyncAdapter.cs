@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 
 using Android.OS;
+using Android.App;
 using Android.Util;
 using Android.Content;
 using Android.Accounts;
+using Android.Support.V4.App;
 
 using RestSharp;
 
 using CRMLite.Dialogs;
 using CRMLite.Entities;
-using Android.App;
-using Android.Support.V4.App;
 
 namespace CRMLite.Lib.Sync
 {
@@ -181,6 +181,7 @@ namespace CRMLite.Lib.Sync
 					SyncConst.ContractDatas,
 					SyncConst.CoterieDatas,
 					SyncConst.DistributionDatas,
+		            SyncConst.DistributorDatas,
 					SyncConst.Pharmacies,
 					SyncConst.Employees,
 					SyncConst.GPSDatas,

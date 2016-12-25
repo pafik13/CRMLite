@@ -7,7 +7,7 @@ namespace CRMLite.Entities
 	public class Attendance : RealmObject, IEntity, ISync
 	{
 		/// <summary>
-		/// Уникальный идентификатор работника аптеки. Используется Guid.
+		/// Уникальный идентификатор посещения. Используется Guid.
 		/// </summary>
 		/// <value>The UUID.</value>
 		[PrimaryKey]

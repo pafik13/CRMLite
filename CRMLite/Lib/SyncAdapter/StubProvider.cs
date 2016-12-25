@@ -76,6 +76,10 @@ namespace CRMLite.Lib.Sync
 						type = typeof(DistributionData).Name;
 						entities = GetItemsToSync<DistributionData>(DB);
 						break;
+					case SyncConst.DistributorDatas:
+						type = typeof(DistributorData).Name;
+						entities = GetItemsToSync<DistributorData>(DB);
+						break;
 					case SyncConst.Pharmacies:
 						type = typeof(Pharmacy).Name;
 						entities = GetItemsToSync<Pharmacy>(DB);
@@ -201,10 +205,10 @@ namespace CRMLite.Lib.Sync
 						var item4 = JsonConvert.DeserializeObject<PhotoAgreement>(json);
 						var list4 = DB.All<PhotoAgreement>().Where(d => d.uuid == item4.uuid);
 						return ManageItem(uri, DB, item4, list4, item4.uuid);
-					//case SyncConst.DistributorRemain:
-					//	var item5 = JsonConvert.DeserializeObject<DistributorRemain>(json);
-					//	var list5 = DB.All<DistributorRemain>().Where(d => d.uuid == item5.uuid);
-					//	return ManageItem(uri, DB, item5, list5, item5.uuid);
+					case SyncConst.PhotoAfterAttendance:
+						var item5 = JsonConvert.DeserializeObject<PhotoAfterAttendance>(json);
+						var list5 = DB.All<PhotoAfterAttendance>().Where(d => d.uuid == item5.uuid);
+						return ManageItem(uri, DB, item5, list5, item5.uuid);
 					case SyncConst.DrugSKU:
 						var item6 = JsonConvert.DeserializeObject<DrugSKU>(json);
 						var list6 = DB.All<DrugSKU>().Where(d => d.uuid == item6.uuid);
@@ -264,14 +268,14 @@ namespace CRMLite.Lib.Sync
 					case SyncConst.PhotoAgreement:
 						var list4 = DB.All<PhotoAgreement>().Where(item => item.uuid == uuid);
 						return RemoveItems(DB, list4, uuid);
-					//case SyncConst.DistributorRemain:
-					//	var list5 = DB.All<DistributorRemain>().Where(item => item.uuid == uuid);
-					//	return RemoveItems(DB, list5, uuid);
+					case SyncConst.PhotoAfterAttendance:
+						var list5 = DB.All<PhotoAfterAttendance>().Where(item => item.uuid == uuid);
+						return RemoveItems(DB, list5, uuid);
 					case SyncConst.DrugSKU:
 						var list6 = DB.All<DrugSKU>().Where(item => item.uuid == uuid);
 						return RemoveItems(DB, list6, uuid);
 					case SyncConst.DrugBrand:
-						var list7 = DB.All<PhotoAgreement>().Where(item => item.uuid == uuid);
+						var list7 = DB.All<DrugBrand>().Where(item => item.uuid == uuid);
 						return RemoveItems(DB, list7, uuid);
 					default:
 						Log.Error(TAG, "Unhandled selection:" + selection, "StubProvider.Delete");
@@ -304,6 +308,9 @@ namespace CRMLite.Lib.Sync
 									break;
 								case SyncConst.DistributionDatas:
 									entities = DB.All<DistributionData>().ToList<IEntity>();
+									break;
+								case SyncConst.DistributorDatas:
+									entities = DB.All<DistributorData>().ToList<IEntity>();
 									break;
 								case SyncConst.Pharmacies:
 									entities = DB.All<Pharmacy>().ToList<IEntity>();

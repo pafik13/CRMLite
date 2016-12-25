@@ -18,17 +18,19 @@ using Realms;
 
 namespace CRMLite
 {
-	public class PhotoFragment : Fragment, IAttendanceControl
+	public class PhotoFragment : Fragment, IAttendanceControl, IMakePhotoAfterAttendance
 	{
 
-		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";
-		public const string C_ATTENDANCE_LAST_UUID = @"C_ATTENDANCE_LAST_UUID";
+		public const string C_PHARMACY_UUID = "C_PHARMACY_UUID";
+		public const string C_ATTENDANCE_LAST_UUID = "C_ATTENDANCE_LAST_UUID";
 
 		public const int C_REQUEST_PHOTO = 100;
+		public const int C_REQUEST_PHOTO_AFTER_ATTENDANCE = C_REQUEST_PHOTO + 1;
 
 		LayoutInflater Inflater;
 
 		Pharmacy Pharmacy;
+		Attendance AttendanceLast;
 
 		public Dictionary<string, bool> Agreements { get; private set; }
 
@@ -43,7 +45,10 @@ namespace CRMLite
 		Button AddPhoto;
 		LinearLayout PhotoTable;
 		static Java.IO.File File;
+		static string AfterAttendancePhotoType;
+
 		List<PhotoData> Photos;
+		List<PhotoComment> PhotoComments;
 
 		internal string GetUndonePhotoTypes()
 		{
@@ -150,9 +155,12 @@ namespace CRMLite
 			//	Photos = new List<PhotoData>();
 			//}
 			var attendanceLastUUID = Arguments.GetString(C_ATTENDANCE_LAST_UUID);
-			var attendanceLast = string.IsNullOrEmpty(attendanceLastUUID) ? null : MainDatabase.GetEntity<Attendance>(attendanceLastUUID);
+			AttendanceLast = string.IsNullOrEmpty(attendanceLastUUID) ? null : MainDatabase.GetEntity<Attendance>(attendanceLastUUID);
 
-			Photos = (attendanceLast == null) ?
+			Photos = (AttendanceLast == null) ?
+				new List<PhotoData>() : MainDatabase.GetDatas<PhotoData>(attendanceLastUUID) ?? new List<PhotoData>();
+
+			Photos = (AttendanceLast == null) ?
 				new List<PhotoData>() : MainDatabase.GetDatas<PhotoData>(attendanceLastUUID) ?? new List<PhotoData>();
 
 			PhotoTable = view.FindViewById<LinearLayout>(Resource.Id.pfPhotoTableLL);
@@ -184,8 +192,8 @@ namespace CRMLite
 			Locker = view.FindViewById<TextView>(Resource.Id.locker);
 			Arrow = view.FindViewById<ImageView>(Resource.Id.arrow);
 
-			if (attendanceLast != null) {
-				if (attendanceLast.When.Date == DateTimeOffset.UtcNow.Date) {
+			if (AttendanceLast != null) {
+				if (AttendanceLast.When.Date == DateTimeOffset.UtcNow.Date) {
 					Arrow.Visibility = ViewStates.Gone;
 					Locker.Text = string.Empty;
 				}
@@ -204,6 +212,7 @@ namespace CRMLite
 				i++;
 
 				View vPhoto = Inflater.Inflate(Resource.Layout.PhotoTableItem, null);
+				vPhoto.SetTag(Resource.String.PhotoDataUUID, item.UUID);
 				vPhoto.SetTag(Resource.String.PhotoPath, item.PhotoPath);
 				vPhoto.FindViewById<TextView>(Resource.Id.ptiNumTV).Text = i.ToString();
 				var photoType = MainDatabase.GetItem<PhotoType>(item.PhotoType);
@@ -220,6 +229,38 @@ namespace CRMLite
 					intent.SetDataAndType(Android.Net.Uri.Parse("file://" + view.GetTag(Resource.String.PhotoPath).ToString()), "image/*");
 					StartActivity(intent);
 				};
+
+				var comment = vPhoto.FindViewById<ImageView>(Resource.Id.ptiCommentIV);
+				comment.Click += (sender, e) => {
+					if (sender is ImageView) {
+						var ll = ((ImageView)sender).Parent as LinearLayout;
+						var photoDataUUID = (string)ll.GetTag(Resource.String.PhotoDataUUID);
+						if (string.IsNullOrEmpty(photoDataUUID)) return;
+
+						var photoComment = MainDatabase.GetEntityOrNull<PhotoComment>(photoDataUUID);
+						var input = new EditText(Activity);
+						// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+						input.InputType = Android.Text.InputTypes.ClassText | Android.Text.InputTypes.TextVariationPassword;
+
+						input.Text = (photoComment == null) ? string.Empty : photoComment.Text;
+
+						new Android.App.AlertDialog.Builder(Activity)
+									   .SetTitle("Введите комментарий для фотографии.")
+									   .SetView(input)
+						               .SetPositiveButton(Resource.String.ok_button, (caller, arguments) => {
+										   if (photoComment == null) {
+											
+							}
+									   })
+									   .SetNegativeButton(Resource.String.cancel_button, (caller, arguments) => {
+										   if (caller is Android.App.Dialog) {
+											   ((Android.App.Dialog)caller).Dismiss();
+										   }
+									   })
+									   .Show();
+					}
+				};
+
 				PhotoTable.AddView(vPhoto);
 			}
 		}
@@ -251,6 +292,16 @@ namespace CRMLite
 			double FloatS = S0 / S1;
 
 			return (float)(FloatD + (FloatM / 60) + (FloatS / 3600));
+		}
+
+		public void MakePhotoAfterAttendance(string afterAttendancePhotoType)
+		{
+			AfterAttendancePhotoType = afterAttendancePhotoType;
+			string stamp = DateTime.Now.ToString(@"yyyyMMddHHmmsszz");
+			File = new Java.IO.File(Helper.PhotoDir, string.Format("PHOTO_{0}.jpg", stamp));
+			var intent = new Intent(MediaStore.ActionImageCapture);
+			intent.PutExtra(MediaStore.ExtraOutput, Android.Net.Uri.FromFile(File));
+			StartActivityForResult(intent, C_REQUEST_PHOTO_AFTER_ATTENDANCE);
 		}
 
 		public override void OnActivityResult(int requestCode, int resultCode, Intent data)
@@ -287,9 +338,31 @@ namespace CRMLite
 
 				Photos.Add(photo);
 
-				//trans.Commit();
-
 				RefreshPhotoList();
+			}
+
+			if ((requestCode == C_REQUEST_PHOTO_AFTER_ATTENDANCE) && (resultCode == -1)) {
+				if (AttendanceLast != null) {
+					using (var transaction = MainDatabase.BeginTransaction()) {
+						var photo = MainDatabase.Create2<PhotoData>();
+						photo.Attendance = AttendanceLast.UUID;
+						photo.Stamp = DateTimeOffset.Now;
+						photo.PhotoPath = File.ToString();
+						photo.PhotoType = AfterAttendancePhotoType;
+
+						//Latitude and Longitudee
+						var exif = new ExifInterface(photo.PhotoPath);
+						float[] latLong = new float[2];
+						if (exif.GetLatLong(latLong)) {
+							photo.Latitude = latLong[0];
+							photo.Longitude = latLong[1];
+						}
+
+						transaction.Commit();
+						Photos.Add(photo);
+						RefreshPhotoList();
+					}
+				}
 			}
 
 			// Dispose of the Java side bitmap.

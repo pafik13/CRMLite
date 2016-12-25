@@ -209,6 +209,10 @@
     <Compile Include="DistributorRemainActivity.cs" />
     <Compile Include="Lib\Services\LocationService.cs" />
     <Compile Include="Lib\Receivers\TimeChangedReceiver.cs" />
+    <Compile Include="Lib\Entities\PhotoAfterAttendance.cs" />
+    <Compile Include="Lib\Entities\AttendanceOnPause.cs" />
+    <Compile Include="Lib\IMakePhotoAfterAttendance.cs" />
+    <Compile Include="Lib\Entities\PhotoComment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -576,6 +580,11 @@
     <AndroidResource Include="Resources\drawable-xhdpi\ic_delete_sweep_black_36dp.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_delete_sweep_black_36dp.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_delete_sweep_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_add_a_photo_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_add_a_photo_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_add_a_photo_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_add_a_photo_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_add_a_photo_black_48dp.png" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

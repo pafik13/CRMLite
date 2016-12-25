@@ -222,47 +222,50 @@ namespace CRMLite
 
 			var delete = FindViewById<ImageView>(Resource.Id.maDelete);
 			delete.Click += (sender, e) => {
-				new AlertDialog.Builder(this)
-				               .SetTitle(Resource.String.delete_caption)
-							   .SetMessage("Удалить закрытые аптеки?")
-							   .SetCancelable(false)
-				               .SetPositiveButton(Resource.String.ok_button, (dialog, args) => {
-								   var pharmacies = MainDatabase.GetItems<Pharmacy>()
-					                                            .Where(ph => ph.GetState() == PharmacyState.psClose);
+				string msg = "Удаление аптек не доступно по причине проработки техпроцесса...";
+				Toast.MakeText(this, msg, ToastLength.Long).Show();	
 
-								   using (var transaction = MainDatabase.BeginTransaction()) {
-										foreach (var item in pharmacies) {
-										   MainDatabase.DeleteEntity(transaction, item);
-									   }
-									   transaction.Commit();
-								   }
+				//new AlertDialog.Builder(this)
+				//               .SetTitle(Resource.String.delete_caption)
+				//			   .SetMessage("Удалить закрытые аптеки?")
+				//			   .SetCancelable(false)
+				//               .SetPositiveButton(Resource.String.ok_button, (dialog, args) => {
+				//				   var pharmacies = MainDatabase.GetItems<Pharmacy>()
+				//	                                            .Where(ph => ph.GetState() == PharmacyState.psClose);
 
-								   string msg = string.Format("Было удалено {0} аптек.", pharmacies.Count());
-								   Toast.MakeText(this, msg, ToastLength.Long).Show();
+				//				   using (var transaction = MainDatabase.BeginTransaction()) {
+				//						foreach (var item in pharmacies) {
+				//						   MainDatabase.DeleteEntity(transaction, item);
+				//					   }
+				//					   transaction.Commit();
+				//				   }
 
-								   var sparseArray = SearchTable.CheckedItemPositions;
-								   bool hasCheckedItemInSearchTable = false;
-								   for (var i = 0; i < sparseArray.Size(); i++) {
-									   if (sparseArray.ValueAt(i)) {
-										   hasCheckedItemInSearchTable = true;
-										   break;
-									   }
-								   }
+				//				   string msg = string.Format("Было удалено {0} аптек.", pharmacies.Count());
+				//				   Toast.MakeText(this, msg, ToastLength.Long).Show();
 
-								   if (!hasCheckedItemInSearchTable) {
-									   RecreateAdapter();
-								   }
+				//				   var sparseArray = SearchTable.CheckedItemPositions;
+				//				   bool hasCheckedItemInSearchTable = false;
+				//				   for (var i = 0; i < sparseArray.Size(); i++) {
+				//					   if (sparseArray.ValueAt(i)) {
+				//						   hasCheckedItemInSearchTable = true;
+				//						   break;
+				//					   }
+				//				   }
 
-								   if (dialog is Dialog) {
-									   ((Dialog)dialog).Dismiss();
-								   }
-							   })
-				               .SetNegativeButton(Resource.String.cancel_button, (dialog, args) => {
-								  if (dialog is Dialog) {
-									  ((Dialog)dialog).Dismiss();
-								  }
-							   })
-							   .Show();
+				//				   if (!hasCheckedItemInSearchTable) {
+				//					   RecreateAdapter();
+				//				   }
+
+				//				   if (dialog is Dialog) {
+				//					   ((Dialog)dialog).Dismiss();
+				//				   }
+				//			   })
+				//               .SetNegativeButton(Resource.String.cancel_button, (dialog, args) => {
+				//				  if (dialog is Dialog) {
+				//					  ((Dialog)dialog).Dismiss();
+				//				  }
+				//			   })
+				//			   .Show();
 			};
 
 			FilterContent = FindViewById<TextView>(Resource.Id.maFilterTV);
@@ -628,12 +631,6 @@ namespace CRMLite
 
 
 			var w = new SDiag.Stopwatch();
-			
-			// TODO: сделать ветку автоматической синхронизации
-			// w.Restart();
-			// StartService(new Intent(@"SyncService"));
-			// w.Stop();
-			// SDiag.Debug.WriteLine(@"SyncService: запуск={0}", w.ElapsedMilliseconds);
 
 		    w.Restart();
 			var currentRouteItems = MainDatabase.GetRouteItems(DateTimeOffset.Now);

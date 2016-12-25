@@ -22,6 +22,7 @@ namespace CRMLite.Lib.Sync
 		public const string ContractDatas = "ContractDatas";
 		public const string CoterieDatas = "CoterieDatas";
 		public const string DistributionDatas = "DistributionDatas";
+		public const string DistributorDatas = "DistributorDatas";
 		public const string Pharmacies = "Pharmacies";
 		public const string Employees = "Employees";
 		public const string GPSDatas = "GPSDatas";
@@ -45,7 +46,7 @@ namespace CRMLite.Lib.Sync
 		public const string PhotoType = "PhotoType";
 		public const string DistributionAgreement = "DistributionAgreement";
 		public const string PhotoAgreement = "PhotoAgreement";
-		//public const string DistributorRemain = "DistributorRemain";
+		public const string PhotoAfterAttendance = "PhotoAfterAttendance";
 
 		public const string DrugBrand = "DrugBrand";
 		public const string DrugSKU = "DrugSKU";

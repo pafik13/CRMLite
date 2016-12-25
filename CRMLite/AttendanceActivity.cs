@@ -30,6 +30,7 @@ namespace CRMLite
 		ViewPager Pager;
 		TextView FragmentTitle;
 		Button Close;
+		ImageView MakePhotoAfter;
 		ImageView Contracts;
 		ImageView Finance;
 		ImageView History;
@@ -126,6 +127,8 @@ namespace CRMLite
 
 				if (AttendanceStart == null) {
 					AttendanceStart = DateTimeOffset.Now;
+
+					MakePhotoAfter.Visibility = ViewStates.Gone;
 
 					// Location
 					Locations = new List<Location>();
@@ -276,10 +279,39 @@ namespace CRMLite
 					});
 				}).Start();
 			};
+
+			MakePhotoAfter = FindViewById<ImageView>(Resource.Id.aaMakePhotoAfterAttendanceIV);
+
 			// TODO: uncomment
 			if (AttendanceLast != null) {
 				if (AttendanceLast.When.Date == DateTimeOffset.UtcNow.Date) {
 					btnStartStop.Visibility = ViewStates.Gone;
+				}
+
+				var afterAttPhotos = MainDatabase.GetItems<PhotoAfterAttendance>().Select(paa => paa.photoType).ToArray();
+				if (afterAttPhotos.Count() > 0) {
+					MakePhotoAfter.Visibility = ViewStates.Visible;
+					MakePhotoAfter.Click += (sender, e) => {
+						var types = MainDatabase.GetItems<PhotoType>()
+						                        .Where(pt => afterAttPhotos.Contains(pt.uuid) && !pt.isNeedBrand)
+						                        .ToList();
+						new AlertDialog.Builder(this)
+									   .SetTitle("Выберите тип фотографии:")
+									   .SetCancelable(true)
+									   .SetItems(
+						                   types.Select(item => item.name).ToArray(),
+										   (caller, arguments) => {
+											   string typeUUID = types[arguments.Which].uuid;
+											   for (int f = 0; f < C_NUM_PAGES; f++) {
+												   var fragment = GetFragment(f);
+												   if (fragment is IMakePhotoAfterAttendance) {
+														(fragment as IMakePhotoAfterAttendance).MakePhotoAfterAttendance(typeUUID);
+												   }
+											   }
+										   })
+									   .Show();
+
+					};
 				}
 			}
 
