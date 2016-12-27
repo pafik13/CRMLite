@@ -3,8 +3,6 @@ using Android.App;
 using Android.Views;
 using Android.Content;
 
-using CRMLite.Dialogs;
-
 namespace CRMLite
 {
 	//https://forums.xamarin.com/discussion/19362/xamarin-forms-splashscreen-in-android

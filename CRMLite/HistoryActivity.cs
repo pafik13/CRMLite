@@ -74,6 +74,8 @@ namespace CRMLite
 							   })
 							   .Show();
 			} else {
+				Helper.CheckIfTimeChangedAndShowDialog(this);
+
 				RefreshView();
 			}
 		}

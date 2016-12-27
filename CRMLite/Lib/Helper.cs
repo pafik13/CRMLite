@@ -7,10 +7,14 @@ using System.Net;
 using System.Net.Cache;
 using System.Text.RegularExpressions;
 
-using Android.Provider;
+using Android.App;
+using Android.Widget;
 using Android.Content;
+using Android.Provider;
 
 using RestSharp;
+
+using CRMLite.Receivers;
 
 namespace CRMLite
 {
@@ -175,6 +179,39 @@ namespace CRMLite
 			int.TryParse(value.Replace(',', '.'), NumberStyles.Integer, new CultureInfo("en-US").NumberFormat, out result);
 
 			return result;
+		}
+
+		public static void CheckIfTimeChangedAndShowDialog(Context context)
+		{
+			var shared = context.GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
+
+			IsTimeChanged = shared.GetBoolean(TimeChangedReceiver.C_IS_TIME_CHANGED, false);
+
+			if (IsTimeChanged) {
+				var dialog = new AlertDialog.Builder(context)
+											.SetTitle(Resource.String.error_caption)
+											.SetMessage(Resource.String.time_changed)
+											.SetCancelable(false)
+											.SetPositiveButton(Resource.String.check_button, (EventHandler<DialogClickEventArgs>)null)
+											.Create();
+				dialog.SetCanceledOnTouchOutside(false);
+				dialog.SetCancelable(false);
+				dialog.Show();
+				//Overriding the handler immediately after show is probably a better approach than OnShowListener as described belo
+				var dialogBtn = dialog.GetButton((int)DialogButtonType.Positive);
+				dialogBtn.Click += (sender, args) => {
+					// Don't dismiss dialog
+					if (Math.Abs((GetNistTime() - DateTime.Now).TotalHours) < 1.1d) {
+						IsTimeChanged = false;
+						shared.Edit()
+							  .PutBoolean(TimeChangedReceiver.C_IS_TIME_CHANGED, false)
+							  .Commit();
+						dialog.Dismiss();
+					} else {
+						Toast.MakeText(context, Resource.String.time_diff_more_than_hour, ToastLength.Short).Show();
+					}
+				};
+			}
 		}
 
 		public static DateTime GetNistTime(RestClient restClient = null, RestRequest restRequest = null)

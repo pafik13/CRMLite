@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Android.OS;
+using Android.Net;
 using Android.App;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
 using Android.Content.PM;
+using Android.Locations;
 using Android.Views.InputMethods;
-using V4App = Android.Support.V4.App;
 using Android.Support.V4.View;
+using V4App = Android.Support.V4.App;
 
 using CRMLite.Dialogs;
 using CRMLite.Entities;
-using Android.Locations;
-using Android.Net;
 
 namespace CRMLite
 {
@@ -494,6 +494,7 @@ namespace CRMLite
 			//if (AttendanceStart.HasValue) {
 			//	MakeFullScreen();
 			//}
+			Helper.CheckIfTimeChangedAndShowDialog(this);
 		}
 
 		protected override void OnPause()

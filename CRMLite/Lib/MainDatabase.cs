@@ -252,13 +252,11 @@ namespace CRMLite
 
 				if (item is RouteItem) {
 					var routeItem = item as RouteItem;
-					if (routeItem.IsSynced) {
-						var excludeRouteItem = Me.DB.CreateObject<ExcludeRouteItem>();
-						excludeRouteItem.UUID = routeItem.UUID;
-						excludeRouteItem.CreatedAt = DateTimeOffset.Now;
-						excludeRouteItem.UpdatedAt = DateTimeOffset.Now;
-						excludeRouteItem.CreatedBy = string.IsNullOrEmpty(AgentUUID) ? @"AgentUUID is Empty" : AgentUUID;
-					}
+					var excludeRouteItem = Me.DB.CreateObject<ExcludeRouteItem>();
+					excludeRouteItem.UUID = routeItem.UUID;
+					excludeRouteItem.CreatedAt = DateTimeOffset.Now;
+					excludeRouteItem.UpdatedAt = DateTimeOffset.Now;
+					excludeRouteItem.CreatedBy = string.IsNullOrEmpty(AgentUUID) ? @"AgentUUID is Empty" : AgentUUID;
 				}
 
 				Me.DB.Remove(item);

@@ -337,6 +337,8 @@ namespace CRMLite
 		{
 			base.OnResume();
 
+			Helper.CheckIfTimeChangedAndShowDialog(this);
+
 			var now = DateTime.Now;
 			SelectedDate = new DateTimeOffset(now.Year, now.Month, now.Day, 0, 0, 0, new TimeSpan(0, 0, 0));
 			RefreshTables();

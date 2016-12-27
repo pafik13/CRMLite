@@ -142,6 +142,8 @@ namespace CRMLite
 								   .Show();
 
 			} else {
+				Helper.CheckIfTimeChangedAndShowDialog(this);
+
 				RecreateAdapter();
 			}
 		}

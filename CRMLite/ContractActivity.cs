@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-using Android.App;
-using Android.Content;
 using Android.OS;
+using Android.App;
 using Android.Views;
 using Android.Widget;
+using Android.Content;
 
 using CRMLite.Entities;
 using CRMLite.Adapters;
@@ -64,6 +64,7 @@ namespace CRMLite
 							   })
 							   .Show();
 			} else {
+				Helper.CheckIfTimeChangedAndShowDialog(this);
 
 				RecreateAdapter();
 			}

@@ -38,6 +38,8 @@ namespace CRMLite
 		{
 			base.OnResume();
 
+			Helper.CheckIfTimeChangedAndShowDialog(this);
+
 			var attendances = MainDatabase.GetItems<CoterieData>()
 										  .GroupBy(cd => cd.Attendance)
 										  .Select(g => MainDatabase.GetEntity<Attendance>(g.Key))

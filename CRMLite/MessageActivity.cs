@@ -57,6 +57,8 @@ namespace CRMLite
 		protected override void OnResume()
 		{
 			base.OnResume();
+			Helper.CheckIfTimeChangedAndShowDialog(this);
+
 			RecreateAdapter();
 		}
 

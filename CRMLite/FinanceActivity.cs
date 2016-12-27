@@ -3,7 +3,6 @@ using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
 
-
 using Android.OS;
 using Android.App;
 using Android.Views;
@@ -117,6 +116,8 @@ namespace CRMLite
 							   })
 							   .Show();
 			} else {
+				Helper.CheckIfTimeChangedAndShowDialog(this);
+
 				RefreshView();
 				//RefreshViewBySKU();
 			}

@@ -4695,6 +4695,9 @@ namespace CRMLite
 			// aapt resource value: 0x7f070087
 			public const int time_changed = 2131165319;
 			
+			// aapt resource value: 0x7f070090
+			public const int time_diff_more_than_hour = 2131165328;
+			
 			// aapt resource value: 0x7f07008e
 			public const int tutorial_rules = 2131165326;
 			

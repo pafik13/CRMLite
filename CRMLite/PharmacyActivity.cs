@@ -8,13 +8,7 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 
-using Realms;
-
-using Newtonsoft.Json;
-
 using CRMLite.Entities;
-using CRMLite.DaData;
-using CRMLite.Adapters;
 using CRMLite.Dialogs;
 
 namespace CRMLite
@@ -186,15 +180,6 @@ namespace CRMLite
 
 				transaction.Commit();
 
-				//var sync = new SyncItem() {
-				//	Path = @"Pharmacy",
-				//	ObjectUUID = Pharmacy.UUID,
-				//	JSON = JsonConvert.SerializeObject(Pharmacy)
-				//};
-
-				//MainDatabase.AddToQueue(sync);
-
-				//StartService(new Intent("com.xamarin.SyncService"));
 				GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
 					.Edit()
 					.PutString(MainActivity.C_SAVED_PHARMACY_UUID, item.UUID)
@@ -526,6 +511,13 @@ namespace CRMLite
 				//			   })
 				//			   .Show();
 			}
+		}
+
+		protected override void OnResume()
+		{
+			base.OnResume();
+			Helper.CheckIfTimeChangedAndShowDialog(this);
+
 		}
 	}
 }

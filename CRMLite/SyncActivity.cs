@@ -615,6 +615,8 @@ namespace CRMLite
 		protected override void OnResume()
 		{
 			base.OnResume();
+
+			Helper.CheckIfTimeChangedAndShowDialog(this);
 		}
 
 		void SyncEntities<T>(List<T> items) where T : RealmObject, ISync

@@ -22,7 +22,6 @@ using HockeyApp.Android.Metrics;
 using CRMLite.Entities;
 using CRMLite.Adapters;
 using CRMLite.Dialogs;
-using CRMLite.Receivers;
 
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
 [assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
@@ -38,7 +37,6 @@ namespace CRMLite
 		public const string C_DUMMY = @"C_DUMMY";
 
 		string SelectedPharmacyUUID;
-		string Version;
 
 		List<Pharmacy> Pharmacies;
 		ListView PharmacyTable;
@@ -70,10 +68,6 @@ namespace CRMLite
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
-
-			var packageInfo = ApplicationContext.PackageManager.GetPackageInfo(ApplicationContext.PackageName, 0);
-			Version = string.Format("Версия: {0} ({1})", packageInfo.VersionName, packageInfo.VersionCode);
-			FindViewById<TextView>(Resource.Id.maVersionTV).Text = Version;
 
 			PharmacyTable = FindViewById<ListView>(Resource.Id.maPharmacyTable);
 			View header = LayoutInflater.Inflate(Resource.Layout.PharmacyTableHeader, PharmacyTable, false);
@@ -224,48 +218,6 @@ namespace CRMLite
 			delete.Click += (sender, e) => {
 				string msg = "Удаление аптек не доступно по причине проработки техпроцесса...";
 				Toast.MakeText(this, msg, ToastLength.Long).Show();	
-
-				//new AlertDialog.Builder(this)
-				//               .SetTitle(Resource.String.delete_caption)
-				//			   .SetMessage("Удалить закрытые аптеки?")
-				//			   .SetCancelable(false)
-				//               .SetPositiveButton(Resource.String.ok_button, (dialog, args) => {
-				//				   var pharmacies = MainDatabase.GetItems<Pharmacy>()
-				//	                                            .Where(ph => ph.GetState() == PharmacyState.psClose);
-
-				//				   using (var transaction = MainDatabase.BeginTransaction()) {
-				//						foreach (var item in pharmacies) {
-				//						   MainDatabase.DeleteEntity(transaction, item);
-				//					   }
-				//					   transaction.Commit();
-				//				   }
-
-				//				   string msg = string.Format("Было удалено {0} аптек.", pharmacies.Count());
-				//				   Toast.MakeText(this, msg, ToastLength.Long).Show();
-
-				//				   var sparseArray = SearchTable.CheckedItemPositions;
-				//				   bool hasCheckedItemInSearchTable = false;
-				//				   for (var i = 0; i < sparseArray.Size(); i++) {
-				//					   if (sparseArray.ValueAt(i)) {
-				//						   hasCheckedItemInSearchTable = true;
-				//						   break;
-				//					   }
-				//				   }
-
-				//				   if (!hasCheckedItemInSearchTable) {
-				//					   RecreateAdapter();
-				//				   }
-
-				//				   if (dialog is Dialog) {
-				//					   ((Dialog)dialog).Dismiss();
-				//				   }
-				//			   })
-				//               .SetNegativeButton(Resource.String.cancel_button, (dialog, args) => {
-				//				  if (dialog is Dialog) {
-				//					  ((Dialog)dialog).Dismiss();
-				//				  }
-				//			   })
-				//			   .Show();
 			};
 
 			FilterContent = FindViewById<TextView>(Resource.Id.maFilterTV);
@@ -547,38 +499,7 @@ namespace CRMLite
 
 			var shared = GetSharedPreferences(C_MAIN_PREFS, FileCreationMode.Private);
 
-			Helper.IsTimeChanged = shared.GetBoolean(TimeChangedReceiver.C_IS_TIME_CHANGED, false);
-
-			if (Helper.IsTimeChanged) {
-				var dialog = new AlertDialog.Builder(this)
-											.SetTitle(Resource.String.error_caption)
-											.SetMessage(Resource.String.time_changed)
-											.SetCancelable(false)
-											.SetPositiveButton(Resource.String.check_button, (EventHandler<DialogClickEventArgs>)null)
-											.SetNegativeButton(Resource.String.cancel_button, (sender, args) => {
-												if (sender is Dialog) {
-													(sender as Dialog).Dismiss();
-												}
-											})
-											.Create();
-				dialog.SetCanceledOnTouchOutside(false);
-				dialog.SetCancelable(false);
-				dialog.Show();
-				//Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
-				var dialogBtn = dialog.GetButton((int)DialogButtonType.Positive);
-				dialogBtn.Click += (sender, args) => {
-					// Don't dismiss dialog.
-					if (Math.Abs((Helper.GetNistTime() - DateTime.Now).TotalHours) < 1.1d) {
-						Helper.IsTimeChanged = false;
-						shared.Edit()
-							  .PutBoolean(TimeChangedReceiver.C_IS_TIME_CHANGED, false)
-							  .Commit();
-						dialog.Dismiss();
-					} else {
-						Toast.MakeText(this, "Время на планшете отличается от мирового более чем на 1 час", ToastLength.Short).Show();
-					}
-				};
-			}
+			Helper.CheckIfTimeChangedAndShowDialog(this);
 
 			string username = shared.GetString(SigninDialog.C_USERNAME, string.Empty);
 			if (string.IsNullOrEmpty(username)) {
@@ -629,6 +550,10 @@ namespace CRMLite
 				SDiag.Debug.WriteLine(ex.Message);
 			}
 
+
+			var packageInfo = ApplicationContext.PackageManager.GetPackageInfo(ApplicationContext.PackageName, 0);
+			var version = string.Format("Версия: {0} ({1})", packageInfo.VersionName, packageInfo.VersionCode);
+			FindViewById<TextView>(Resource.Id.maVersionTV).Text = version;
 
 			var w = new SDiag.Stopwatch();
 
