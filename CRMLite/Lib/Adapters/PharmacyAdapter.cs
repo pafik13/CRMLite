@@ -17,11 +17,18 @@ namespace CRMLite.Adapters
 		readonly IList<Pharmacy> Pharmacies;
 		readonly string[] PharmaciesInRoute;
 
-		public PharmacyAdapter(Activity context, IList<Pharmacy> pharmacies, string[] pharmaciesInRoute = null) : base()
+		readonly string R_NoBrand;
+		readonly string R_NoAddress;
+		readonly string R_NoAttendance;
+
+		public PharmacyAdapter(Activity context, IList<Pharmacy> pharmacies, string[] pharmaciesInRoute = null)
 		{
 			Context = context;
 			Pharmacies = pharmacies;
 			PharmaciesInRoute = pharmaciesInRoute;
+			R_NoBrand = context.Resources.GetString(Resource.String.no_brand);
+			R_NoAddress = context.Resources.GetString(Resource.String.no_address);
+			R_NoAttendance = context.Resources.GetString(Resource.String.no_attendance);
 		}
 
 		public override Pharmacy this[int position]
@@ -43,51 +50,81 @@ namespace CRMLite.Adapters
 			}
 		}
 
+		#region ViewHolder
+		class ViewHolder : Java.Lang.Object
+		{
+			public TextView No { get; set; }
+			public TextView State { get; set; }
+			public TextView Name { get; set; }
+			public TextView Address { get; set; }
+			public TextView LastAttendance { get; set; }
+			public Button NextAttendance { get; set; }
+			public ImageView Finance { get; set; }
+			public ImageView History { get; set; }
+			public ImageView Hospital { get; set; }
+			public ImageView Employee { get; set; }
+		}
+		#endregion
+
 		public override View GetView(int position, View convertView, ViewGroup parent)
 		{
 			// Get our object for position
 			var item = Pharmacies[position];
+			var state = item.GetState();
 
-			var view = (convertView ?? Context.LayoutInflater.Inflate(Resource.Layout.PharmacyTableItem, parent, false)
-			           ) as LinearLayout;
-			view.FindViewById<TextView>(Resource.Id.ptiNoTV).Text = (position + 1).ToString();
-			view.FindViewById<TextView>(Resource.Id.ptiStateTV).Text = GetStateDesc(item.GetState());
-			view.FindViewById<TextView>(Resource.Id.ptiNameTV).Text = 
-				string.IsNullOrEmpty(item.Brand) ? @"<нет бренда>" : item.Brand;
-			view.FindViewById<TextView>(Resource.Id.ptiAddressTV).Text = 
-				string.IsNullOrEmpty(item.Address) ? @"<нет адреса>" : item.Address;
+			ViewHolder holder;
+			var view = convertView;
 
-			var showFinance = view.FindViewById<ImageView>(Resource.Id.ptiFinanceIV);
-			showFinance.SetTag(Resource.String.PharmacyUUID, item.UUID);
-			showFinance.Click -= ShowFinanceClickEventHandler;
-			showFinance.Click += ShowFinanceClickEventHandler;
+			if (view == null) {
+				view = Context.LayoutInflater.Inflate(Resource.Layout.PharmacyTableItem, parent, false);
 
-			var showHistory = view.FindViewById<ImageView>(Resource.Id.ptiHistoryIV);
-			showHistory.SetTag(Resource.String.PharmacyUUID, item.UUID);
-			showHistory.Click -= ShowHistoryClickEventHandler;
-			showHistory.Click += ShowHistoryClickEventHandler;
+				holder = new ViewHolder();
+				holder.No = view.FindViewById<TextView>(Resource.Id.ptiNoTV);
+				holder.State = view.FindViewById<TextView>(Resource.Id.ptiStateTV);
+				holder.Name = view.FindViewById<TextView>(Resource.Id.ptiNameTV);
+				holder.Address = view.FindViewById<TextView>(Resource.Id.ptiAddressTV);
+				holder.LastAttendance = view.FindViewById<TextView>(Resource.Id.ptiLastAttendanceDateTV);
 
-			var showHospital = view.FindViewById<ImageView>(Resource.Id.ptiHospitalIV);
-			showHospital.SetTag(Resource.String.PharmacyUUID, item.UUID);
-			showHospital.Click -= ShowHospitalClickEventHandler;
-			showHospital.Click += ShowHospitalClickEventHandler;
+				holder.NextAttendance = view.FindViewById<Button>(Resource.Id.ptiNextAttendanceB);
+				holder.NextAttendance.Click += NextAttendanceClickEventHandler;
+				      
+				holder.Finance = view.FindViewById<ImageView>(Resource.Id.ptiFinanceIV);
+				holder.Finance.Click += ShowFinanceClickEventHandler;
 
-			var showEmployee = view.FindViewById<ImageView>(Resource.Id.ptiEmployeeIV);
-			showEmployee.SetTag(Resource.String.PharmacyUUID, item.UUID);
-			showEmployee.Click -= ShowEmployeeClickEventHandler;
-			showEmployee.Click += ShowEmployeeClickEventHandler;
+				holder.History = view.FindViewById<ImageView>(Resource.Id.ptiHistoryIV);
+				holder.History.Click += ShowHistoryClickEventHandler;
+
+				holder.Hospital = view.FindViewById<ImageView>(Resource.Id.ptiHospitalIV);
+				holder.Hospital.Click += ShowHospitalClickEventHandler;
+
+				holder.Employee = view.FindViewById<ImageView>(Resource.Id.ptiEmployeeIV);
+				holder.Employee.Click += ShowEmployeeClickEventHandler;
+
+				view.Tag = holder;
+			} else {
+				holder = view.Tag as ViewHolder;
+			}
+
+			holder.No.Text = (position + 1).ToString();
+			holder.State.Text = GetStateDesc(state);
+			holder.Name.Text = string.IsNullOrEmpty(item.Brand) ? R_NoBrand : item.Brand;
+			holder.Address.Text = string.IsNullOrEmpty(item.Address) ? R_NoAddress : item.Address;
+
+			holder.Finance.SetTag(Resource.String.PharmacyUUID, item.UUID);
+
+			holder.History.SetTag(Resource.String.PharmacyUUID, item.UUID);
+
+			holder.Hospital.SetTag(Resource.String.PharmacyUUID, item.UUID);
+
+			holder.Employee.SetTag(Resource.String.PharmacyUUID, item.UUID);
 
 
-			var nextAttendance = view.FindViewById<Button>(Resource.Id.ptiNextAttendanceB);
-			nextAttendance.SetTag(Resource.String.PharmacyUUID, item.UUID);
-			nextAttendance.Text = item.NextAttendanceDate.HasValue ? 
-				item.NextAttendanceDate.Value.ToString(@"dd.MM.yyyy") : @"Начать визит"; //DateTimeOffset.Now.ToString(@"dd.MM.yyyy");
-			nextAttendance.Click -= NextAttendanceClickEventHandler;
-			nextAttendance.Click += NextAttendanceClickEventHandler;
+			holder.NextAttendance.SetTag(Resource.String.PharmacyUUID, item.UUID);
+			holder.NextAttendance.Text = item.NextAttendanceDate.HasValue ? 
+				item.NextAttendanceDate.Value.ToString(@"dd.MM.yyyy") : @"Начать визит";
 
-			var lastAttendance = view.FindViewById<TextView>(Resource.Id.ptiLastAttendanceDateTV);
-			lastAttendance.Text = item.LastAttendanceDate.HasValue ? 
-				item.LastAttendanceDate.Value.ToString(@"dd.MM.yyyy") : @"<нет визита>";
+			holder.LastAttendance.Text = item.LastAttendanceDate.HasValue ? 
+				item.LastAttendanceDate.Value.ToString(@"dd.MM.yyyy") : R_NoAttendance;
 
 			if (PharmaciesInRoute == null) return view;
 			if (PharmaciesInRoute.Length == 0) return view;
@@ -100,15 +137,15 @@ namespace CRMLite.Adapters
 						view.SetBackgroundResource(Resource.Color.Light_Green_100);
 						if (item.LastAttendanceDate.HasValue) {
 							if (item.LastAttendanceDate.Value.UtcDateTime.Date == DateTimeOffset.UtcNow.Date) {
-								nextAttendance.Text = @"Пройдено!";
+								holder.NextAttendance.Text = @"Пройдено!";
 							} else {
-								nextAttendance.Text = @"Начать визит";
+								holder.NextAttendance.Text = @"Начать визит";
 							}
 						} else {
-							nextAttendance.Text = @"Начать визит";
+							holder.NextAttendance.Text = @"Начать визит";
 						}
 					} else {
-						switch (item.GetState()) {
+						switch (state) {
 							case PharmacyState.psActive:
 								view.SetBackgroundColor(Android.Graphics.Color.White);
 								break;
@@ -122,7 +159,7 @@ namespace CRMLite.Adapters
 					}
 					break;
 				case WorkMode.wmOnlyRecommendations:
-					switch (item.GetState()) {
+					switch (state) {
 						case PharmacyState.psActive:
 							view.SetBackgroundColor(Android.Graphics.Color.White);
 							break;

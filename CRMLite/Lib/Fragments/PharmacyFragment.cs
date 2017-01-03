@@ -1,6 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 using Android.OS;
 using Android.Views;
@@ -18,6 +20,8 @@ namespace CRMLite
 {
 	public class PharmacyFragment : Fragment, IAttendanceControl
 	{
+		Stopwatch Chrono;
+
 		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";
 
 		Pharmacy Pharmacy;
@@ -59,8 +63,8 @@ namespace CRMLite
 		public override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
-
-			// Create your fragment here
+			Chrono = new Stopwatch();
+			Chrono.Start();
 		}
 
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -71,7 +75,6 @@ namespace CRMLite
 			base.OnCreateView(inflater, container, savedInstanceState);
 
 			View view = inflater.Inflate(Resource.Layout.PharmacyFragment, container, false);
-
 			//Api = new SuggestClient(Secret.DadataApiToken, Secret.DadataApiURL);
 
 
@@ -502,6 +505,14 @@ namespace CRMLite
 				.Edit()
 				.PutString(MainActivity.C_SAVED_PHARMACY_UUID, item.UUID)
 				.Commit();
+		}
+
+		public override void OnResume()
+		{
+			base.OnResume();
+
+			string debug = string.Concat(AttendanceActivity.C_TAG_FOR_DEBUG, "-", "PharmacyFragment", ":", Chrono.ElapsedMilliseconds);
+			System.Diagnostics.Debug.WriteLine(debug);
 		}
 
 		public void OnAttendanceStart(DateTimeOffset? start)

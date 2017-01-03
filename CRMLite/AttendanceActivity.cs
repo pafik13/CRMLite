@@ -26,6 +26,9 @@ namespace CRMLite
 	public class AttendanceActivity : V4App.FragmentActivity, ViewPager.IOnPageChangeListener, ILocationListener
 	{
 		public const int C_NUM_PAGES = 4;
+		public const string C_TAG_FOR_DEBUG = "AttendanceActivity";
+
+		//readonly Stopwatch Chrono;
 
 		ViewPager Pager;
 		TextView FragmentTitle;
@@ -95,6 +98,8 @@ namespace CRMLite
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
+			//Chrono = new Stopwatch();
+
 			RequestWindowFeature(WindowFeatures.NoTitle);
 			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
 
@@ -523,7 +528,7 @@ namespace CRMLite
 		 */
 		public string MakeFragmentName(int containerViewId, long id)
 		{
-			return "android:switcher:" + containerViewId + ":" + id;
+			return string.Concat("android:switcher:", containerViewId, ":", id);
 		}
 
 		/**
@@ -563,11 +568,13 @@ namespace CRMLite
 		{
 			readonly string PharmacyUUID;
 			readonly string AttendanceLastUUID;
+			readonly Stopwatch Chrono;
 
 			public AttendancePagerAdapter(V4App.FragmentManager fm, string pharmacyUUID, string attendanceLastUUID) : base(fm)
 			{
 				PharmacyUUID = pharmacyUUID;
 				AttendanceLastUUID = attendanceLastUUID;
+				Chrono = new Stopwatch();
 			}
 
 			public override int Count {
@@ -578,19 +585,32 @@ namespace CRMLite
 
 			public override V4App.Fragment GetItem(int position)
 			{
+				V4App.Fragment result;
+				string name;
+				Chrono.Restart();
 				switch (position) {
 					case 0:
-						return PharmacyFragment.create(PharmacyUUID);
+						result = PharmacyFragment.create(PharmacyUUID);
+						name = "PharmacyFragment";
+						break;
 					case 1:
-						return EmployeeFragment.create(PharmacyUUID);
+						result = EmployeeFragment.create(PharmacyUUID);
+						name = "EmployeeFragment";
+						break;
 					case 2:
-						return InfoFragment.create(PharmacyUUID, AttendanceLastUUID);
+						result = InfoFragment.create(PharmacyUUID, AttendanceLastUUID);
+						name = "InfoFragment";
+						break;
 					case 3:
-						return PhotoFragment.create(PharmacyUUID, AttendanceLastUUID);
+						result = PhotoFragment.create(PharmacyUUID, AttendanceLastUUID);
+						name = "PhotoFragment";
+						break;
 					default:
 						return ScreenSlidePageFragment.create(position, false);
 				}
-
+				System.Diagnostics.Debug.WriteLine(string.Concat(C_TAG_FOR_DEBUG, "-", name, ":",  Chrono.ElapsedMilliseconds));
+				Chrono.Stop();
+				return result;
 			}
 		}
 	}

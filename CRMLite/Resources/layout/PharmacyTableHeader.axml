@@ -3,32 +3,31 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="58dp"
-    android:background="@android:color/white"
-    android:weightSum="100">
+    android:background="@android:color/white">
     <TextView
         android:text="#"
-        android:layout_width="0dp"
+        android:layout_width="36dp"
         android:layout_height="match_parent"
         android:id="@+id/pthNoTV"
-        android:layout_weight="3"
         android:gravity="center"
-        android:textAppearance="@style/headerTextForPharmacy" />
+        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+        android:textColor="#ff757575" />
     <TextView
         android:text="Статус"
-        android:layout_width="0dp"
+        android:layout_width="96dp"
         android:layout_height="match_parent"
         android:id="@+id/pthNameTV"
-        android:layout_weight="7"
         android:gravity="center"
-        android:textAppearance="@style/headerTextForPharmacy" />
+        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+        android:textColor="#ff757575" />
     <TextView
         android:text="Аптека"
-        android:layout_width="0dp"
+        android:layout_width="244dp"
         android:layout_height="match_parent"
         android:id="@+id/pthNameTV"
-        android:layout_weight="19"
         android:gravity="center"
-        android:textAppearance="@style/headerTextForPharmacy" />
+        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+        android:textColor="#ff757575" />
     <TextView
         android:text="Адрес"
         android:layout_width="0dp"
@@ -36,7 +35,8 @@
         android:id="@+id/pthAddressTV"
         android:layout_weight="33"
         android:gravity="center"
-        android:textAppearance="@style/headerTextForPharmacy" />
+        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+        android:textColor="#ff757575" />
     <TextView
         android:text="Посл. визит"
         android:layout_width="0dp"
@@ -44,7 +44,8 @@
         android:id="@+id/pthLastAttendanceDateTV"
         android:layout_weight="9"
         android:gravity="center"
-        android:textAppearance="@style/headerTextForPharmacy" />
+        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+        android:textColor="#ff757575" />
     <TextView
         android:text="След. визит"
         android:layout_width="0dp"
@@ -52,7 +53,8 @@
         android:id="@+id/pthNextAttendanceTV"
         android:layout_weight="9"
         android:gravity="center"
-        android:textAppearance="@style/headerTextForPharmacy" />
+        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+        android:textColor="#ff757575" />
     <TextView
         android:text="Дополнительная информация"
         android:layout_width="0dp"
@@ -60,5 +62,6 @@
         android:id="@+id/pthAddInfoTV"
         android:layout_weight="20"
         android:gravity="center"
-        android:textAppearance="@style/headerTextForPharmacy" />
+        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+        android:textColor="#ff757575" />
 </LinearLayout>

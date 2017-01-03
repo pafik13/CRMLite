@@ -1,6 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 using Android.OS;
 using Android.Views;
@@ -17,6 +19,8 @@ namespace CRMLite
 {
 	public class EmployeeFragment : Fragment
 	{
+		Stopwatch Chrono;
+
 		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";
 
 		Pharmacy Pharmacy;
@@ -36,8 +40,8 @@ namespace CRMLite
 		public override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
-
-			// Create your fragment here
+			Chrono = new Stopwatch();
+			Chrono.Start();
 		}
 
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -93,6 +97,9 @@ namespace CRMLite
 			} else {
 				RecreateAdapter();
 			}
+
+			string debug = string.Concat(AttendanceActivity.C_TAG_FOR_DEBUG, "-", "EmployeeFragment", ":", Chrono.ElapsedMilliseconds);
+			System.Diagnostics.Debug.WriteLine(debug);
 		}
 
 		void RecreateAdapter()

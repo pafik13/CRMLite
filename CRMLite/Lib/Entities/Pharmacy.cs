@@ -51,7 +51,7 @@ namespace CRMLite.Entities
 		/// <value>The legal name.</value>
 		public string LegalName { get; set; }
 
-		public string GetName() { return string.Format("{0}, {1}", Brand, Address); }
+		public string GetName() { return string.Concat(Brand, ", ", Address); }
 
 		/// <summary>
 		/// Ссылка на аптечную сеть. UUID класса Net.

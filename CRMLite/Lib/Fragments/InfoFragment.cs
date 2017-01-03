@@ -18,6 +18,8 @@ namespace CRMLite
 {
 	public class InfoFragment : Fragment, IAttendanceControl
 	{
+		Stopwatch Chrono;
+
 		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";
 		public const string C_ATTENDANCE_LAST_UUID = @"C_ATTENDANCE_LAST_UUID";
 
@@ -76,18 +78,16 @@ namespace CRMLite
 			return fragment;
 		}
 
+ 		// TODO: add savedInstanceStat processe
 		public override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
-
-			// Create your fragment here
+			Chrono = new Stopwatch();
+			Chrono.Start();
 		}
 
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 		{
-			// Use this to return your custom view for this Fragment
-			// return inflater.Inflate(Resource.Layout.YourFragment, container, false);
-
 			base.OnCreateView(inflater, container, savedInstanceState);
 
 			var shared = Activity.GetSharedPreferences(MainActivity.C_MAIN_PREFS, Android.Content.FileCreationMode.Private);
@@ -707,6 +707,9 @@ namespace CRMLite
 			} else if (AttendanceStart == null) {
 				Locker.Visibility = ViewStates.Visible;
 			}
+
+			string debug = string.Concat(AttendanceActivity.C_TAG_FOR_DEBUG, "-", "InfoFragment", ":", Chrono.ElapsedMilliseconds);
+			System.Diagnostics.Debug.WriteLine(debug);
 		}
 
 		public override void OnPause()

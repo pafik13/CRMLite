@@ -68,4 +68,8 @@
 	<string name="repush_for_exit">Нажмите ещё раз для закрытия</string>
 	<string name="time_diff_more_than_hour">Время на планшете отличается от мирового более чем на 1 час</string>
 	
+	<string name="no_brand"><![CDATA[<нет бренда>]]></string>
+	<string name="no_address"><![CDATA[<нет адреса>]]></string>
+	<string name="no_attendance"><![CDATA[<нет визита>]]></string>
+
 </resources>

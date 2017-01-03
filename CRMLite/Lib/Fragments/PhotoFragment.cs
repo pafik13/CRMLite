@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.IO;
 using System.Linq;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 using Android.OS;
 using Android.Views;
@@ -8,18 +11,16 @@ using Android.Widget;
 using Android.Support.V4.App;
 
 using CRMLite.Entities;
-using CRMLite.Dialogs;
-using System;
 using Android.Content;
 using Android.Media;
 using Android.Provider;
-using System.IO;
 using Realms;
 
 namespace CRMLite
 {
 	public class PhotoFragment : Fragment, IAttendanceControl, IMakePhotoAfterAttendance
 	{
+		Stopwatch Chrono;
 
 		public const string C_PHARMACY_UUID = "C_PHARMACY_UUID";
 		public const string C_ATTENDANCE_LAST_UUID = "C_ATTENDANCE_LAST_UUID";
@@ -87,6 +88,8 @@ namespace CRMLite
 		public override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
+			Chrono = new Stopwatch();
+			Chrono.Start();
 
 			var pharmacyUUID = Arguments.GetString(C_PHARMACY_UUID);
 			if (string.IsNullOrEmpty(pharmacyUUID)) return;
@@ -387,6 +390,9 @@ namespace CRMLite
 			} else if (AttendanceStart == null) {
 				Locker.Visibility = ViewStates.Visible;
 			}
+
+			string debug = string.Concat(AttendanceActivity.C_TAG_FOR_DEBUG, "-", "PhotoFragment", ":", Chrono.ElapsedMilliseconds);
+			System.Diagnostics.Debug.WriteLine(debug);
 		}
 
 		public void OnAttendanceStart(DateTimeOffset? start)

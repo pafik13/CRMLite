@@ -4665,6 +4665,15 @@ namespace CRMLite
 			// aapt resource value: 0x7f07008c
 			public const int lorem_ipsum_short = 2131165324;
 			
+			// aapt resource value: 0x7f070092
+			public const int no_address = 2131165330;
+			
+			// aapt resource value: 0x7f070093
+			public const int no_attendance = 2131165331;
+			
+			// aapt resource value: 0x7f070091
+			public const int no_brand = 2131165329;
+			
 			// aapt resource value: 0x7f070086
 			public const int no_internet_connection = 2131165318;
 			
