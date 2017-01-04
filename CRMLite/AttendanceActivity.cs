@@ -22,7 +22,7 @@ using CRMLite.Entities;
 
 namespace CRMLite
 {
-	[Activity(Label = "AttendanceActivity", ScreenOrientation=ScreenOrientation.Landscape, WindowSoftInputMode=SoftInput.AdjustPan)]
+	[Activity(Label = "AttendanceActivity", ScreenOrientation=ScreenOrientation.Landscape, WindowSoftInputMode=SoftInput.StateHidden)]
 	public class AttendanceActivity : V4App.FragmentActivity, ViewPager.IOnPageChangeListener, ILocationListener
 	{
 		public const int C_NUM_PAGES = 4;
@@ -122,7 +122,7 @@ namespace CRMLite
 
 			Pager = FindViewById<ViewPager>(Resource.Id.aaContainerVP);
 			Pager.AddOnPageChangeListener(this);
-			Pager.OffscreenPageLimit = 3;
+			//Pager.OffscreenPageLimit = 3;
 			Pager.Adapter = new AttendancePagerAdapter(SupportFragmentManager, PharmacyUUID, attendanceLastUUID);
 
 			var btnStartStop = FindViewById<Button>(Resource.Id.aaStartOrStopAttendanceB);

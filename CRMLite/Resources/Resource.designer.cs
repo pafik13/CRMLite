@@ -3221,9 +3221,6 @@ namespace CRMLite
 			// aapt resource value: 0x7f0d01ee
 			public const int pfContractsB = 2131558894;
 			
-			// aapt resource value: 0x7f0d01de
-			public const int pfHeaderTR = 2131558878;
-			
 			// aapt resource value: 0x7f0d01fd
 			public const int pfLastAttendanceTV = 2131558909;
 			
@@ -3231,7 +3228,10 @@ namespace CRMLite
 			public const int pfLegalNameET = 2131558888;
 			
 			// aapt resource value: 0x7f0d01dd
-			public const int pfMainTL = 2131558877;
+			public const int pfMainSV = 2131558877;
+			
+			// aapt resource value: 0x7f0d01de
+			public const int pfMainTL = 2131558878;
 			
 			// aapt resource value: 0x7f0d01ea
 			public const int pfNetACTV = 2131558890;
