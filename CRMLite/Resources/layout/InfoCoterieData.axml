@@ -1,49 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="1248dp"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:id="@+id/icdCoterieDataRL">
     <TextView
+        android:id="@+id/icdCoterieDataTV"
         android:text="Фарм-кружок"
-        android:layout_width="match_parent"
+        android:layout_width="1248dp"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:textSize="32sp"
         android:textColor="@android:color/black"
         android:focusable="false"
         android:focusableInTouchMode="false" />
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/icdBrandsTV"
+        android:layout_below="@id/icdCoterieDataTV"
+        android:layout_alignParentLeft="true"
+        android:text="Выберите бренды!"
+        android:gravity="center"
+        android:layout_width="624dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@android:color/white"
-        android:weightSum="100">
-        <TextView
-            android:id="@+id/icdBrandsTV"
-            android:text="Выберите бренды!"
-            android:layout_weight="50"
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:textSize="20sp"
-            android:textColor="@android:color/black"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:minHeight="98dp" />
-        <TextView
-            android:id="@+id/icdEmployeesTV"
-            android:text="Выберите сотрудников!"
-            android:layout_weight="50"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textColor="@android:color/black"
-            android:focusable="false"
-            android:focusableInTouchMode="false" />
-    </LinearLayout>
-</LinearLayout>
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:minHeight="98dp" />
+    <TextView
+        android:minHeight="98dp"
+        android:id="@+id/icdEmployeesTV"
+        android:layout_below="@id/icdCoterieDataTV"
+        android:layout_alignParentRight="true"
+        android:text="Выберите сотрудников!"
+        android:layout_width="624dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+</RelativeLayout>

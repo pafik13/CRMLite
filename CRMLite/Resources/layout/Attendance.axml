@@ -21,7 +21,22 @@
             android:width="150dp"
             android:height="62dp"
             android:textColor="@android:color/white"
-            android:textSize="24dp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:minHeight="62dp"
+            android:layout_marginBottom="2dp" />
+        <Button
+            android:text="ПРОДОЛЖИТЬ ВИЗИТ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/aaStartOrStopAttendanceB"
+            android:id="@+id/aaResumeOrPauseAttendanceB"
+            android:background="@color/Light_Blue_500"
+            android:typeface="monospace"
+            android:width="150dp"
+            android:height="62dp"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:minHeight="62dp"
             android:layout_marginBottom="2dp" />
@@ -33,46 +48,10 @@
             android:id="@+id/aaTitleTV"
             android:gravity="center"
             android:textColor="@color/Light_Blue_500"
-            android:height="64dp"
+            android:height="62dp"
             android:paddingLeft="24dp"
             android:paddingRight="24dp"
             android:layout_centerHorizontal="true" />
-        <ImageView
-            android:src="@drawable/ic_local_shipping_black_48dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/aaDistributorsIV"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="9dp"
-            android:layout_marginRight="18dp"
-            android:visibility="invisible" />
-        <ImageView
-            android:src="@drawable/ic_subscriptions_black_48dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/aaMaterialIV"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="9dp"
-            android:layout_marginRight="18dp"
-            android:visibility="invisible" />
-        <ImageView
-            android:src="@drawable/ic_history_black_48dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/aaHistoryIV"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="9dp"
-            android:layout_marginRight="18dp"
-            android:visibility="invisible" />
-        <ImageView
-            android:src="@drawable/ic_shopping_cart_black_48dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/aaFinanceIV"
-            android:layout_marginRight="18dp"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="9dp"
-            android:visibility="invisible" />
         <ImageView
             android:src="@drawable/ic_description_black_48dp"
             android:layout_width="wrap_content"
@@ -81,8 +60,48 @@
             android:layout_marginTop="7dp"
             android:layout_marginBottom="9dp"
             android:layout_marginRight="18dp"
-            android:layout_alignParentEnd="true"
-            android:visibility="invisible" />
+            android:visibility="gone"
+            android:layout_alignParentRight="true" />
+        <ImageView
+            android:src="@drawable/ic_shopping_cart_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/aaFinanceIV"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginRight="18dp"
+            android:visibility="gone"
+            android:layout_toLeftOf="@id/aaContractsIV" />
+        <ImageView
+            android:src="@drawable/ic_history_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/aaHistoryIV"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginRight="18dp"
+            android:visibility="gone"
+            android:layout_toLeftOf="@id/aaFinanceIV" />
+        <ImageView
+            android:src="@drawable/ic_subscriptions_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/aaMaterialIV"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginRight="18dp"
+            android:visibility="gone"
+            android:layout_toLeftOf="@id/aaHistoryIV" />
+        <ImageView
+            android:src="@drawable/ic_local_shipping_black_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/aaDistributorsIV"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginRight="18dp"
+            android:visibility="gone"
+            android:layout_toLeftOf="@id/aaMaterialIV" />
         <Button
             android:text="ЗАКРЫТЬ"
             android:layout_width="wrap_content"
@@ -94,7 +113,7 @@
             android:width="150dp"
             android:height="62dp"
             android:textColor="@android:color/white"
-            android:textSize="24dp"
+            android:textSize="24sp"
             android:textStyle="bold"
             android:minHeight="62dp"
             android:layout_marginBottom="2dp" />

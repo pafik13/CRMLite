@@ -11,7 +11,8 @@
   <color name="Light_Green_100">#FFDCEDC8</color>
   <color name="Red_100">#FFFFCDD2</color>
   <color name="Yellow_100">#FFFFF9C4</color>
- 
+  <color name="Yellow_500">#FFFFEB3B</color>
+
   <color name="FinanceInfo">#FFFF5722</color>
   <color name="FinanceData">#FF8BC34A</color>
   <color name="SaleData">#FF03A9F4</color>

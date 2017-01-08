@@ -24,9 +24,8 @@ namespace CRMLite
 		public const string C_PHARMACY_UUID = @"C_PHARMACY_UUID";
 
 		Pharmacy Pharmacy;
-		IList<Employee> Employees;
 		List<Position> Positions;
-		LinearLayout EmployeeTable;
+		TableLayout EmployeeTable;
 
 		public static EmployeeFragment create(string pharmacyUUID)
 		{
@@ -47,8 +46,6 @@ namespace CRMLite
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 		{
 			// Use this to return your custom view for this Fragment
-			// return inflater.Inflate(Resource.Layout.YourFragment, container, false);
-
 			base.OnCreateView(inflater, container, savedInstanceState);
 
 			View view = inflater.Inflate(Resource.Layout.EmployeeFragment, container, false);
@@ -58,22 +55,6 @@ namespace CRMLite
 
 			Pharmacy = MainDatabase.GetEntity<Pharmacy>(pharmacyUUID);
 			Positions = MainDatabase.GetItems<Position>();
-
-			EmployeeTable = view.FindViewById<LinearLayout>(Resource.Id.efEmployeeTable);
-
-			var header = Activity.LayoutInflater.Inflate(Resource.Layout.EmployeeEditTableHeader, EmployeeTable, false);
-
-			EmployeeTable.AddView(header);
-
-			view.FindViewById<Button>(Resource.Id.efAddB).Click += (sender, e) => {
-				using (var trans = MainDatabase.BeginTransaction()) {
-					var newEmployee = MainDatabase.CreateEmployee(Pharmacy.UUID);
-					trans.Commit();
-
-					Employees.Add(newEmployee);
-					AddEmployeeToTable(newEmployee);
-				}
-			}; 
 
 			return view;
 
@@ -104,16 +85,35 @@ namespace CRMLite
 
 		void RecreateAdapter()
 		{
-			if (Employees != null && Employees.Count > 0) EmployeeTable.RemoveViews(1, Employees.Count);
-			Employees = MainDatabase.GetPharmacyDatas<Employee>(Pharmacy.UUID);
-			foreach (var employee in Employees) {
-				AddEmployeeToTable(employee);
+			View.FindViewById<Button>(Resource.Id.efAddB).Click += (sender, e) => {
+				using (var trans = MainDatabase.BeginTransaction()) {
+					var newEmployee = MainDatabase.CreateEmployee(Pharmacy.UUID);
+					trans.Commit();
+
+					AddEmployeeToTable(newEmployee);
+				}
+			};
+
+			// Нашли таблицу
+			EmployeeTable = View.FindViewById<TableLayout>(Resource.Id.efEmployeeTable);
+			// Убрали анимацию
+			EmployeeTable.LayoutTransition = null;
+			// Почистили таблицу
+			EmployeeTable.RemoveAllViews();
+			// Добавили шапку
+			Activity.LayoutInflater.Inflate(Resource.Layout.EmployeeEditTableHeader, EmployeeTable, true);
+			// Наполнили таблицу
+			var employees = MainDatabase.GetPharmacyDatas<Employee>(Pharmacy.UUID);
+			for (int e = 0; e < employees.Count; e++) {
+				AddEmployeeToTable(employees[e]);     
 			}
+			// Добавили анимацию
+			EmployeeTable.LayoutTransition = new Android.Animation.LayoutTransition();
 		}
 
 		public void AddEmployeeToTable(Employee employee)
 		{
-			var view = Activity.LayoutInflater.Inflate(Resource.Layout.EmployeeEditTableItem, EmployeeTable, false) as LinearLayout;
+			var view = Activity.LayoutInflater.Inflate(Resource.Layout.EmployeeEditTableItem, EmployeeTable, false);
 
 			view.SetTag(Resource.String.EmployeeUUID, employee.UUID);
 			view.SetTag(Resource.String.IsChanged, false);
@@ -123,7 +123,6 @@ namespace CRMLite
 			name.AfterTextChanged -= ET_AfterTextChanged;
 			name.AfterTextChanged += ET_AfterTextChanged;
 
-
 			/* <Position> */
 			var pos = view.FindViewById<Spinner>(Resource.Id.eetiPositionS);
 			var positionAdapter = new ArrayAdapter(
@@ -131,12 +130,12 @@ namespace CRMLite
 			);
 			positionAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
 			pos.Adapter = positionAdapter;
-			pos.ItemSelected -= Pos_ItemSelected;
-			pos.ItemSelected += Pos_ItemSelected;
-			/* </Position> */
 			if (!string.IsNullOrEmpty(employee.Position)) {
 				pos.SetSelection(Positions.FindIndex(e => string.Compare(e.uuid, employee.Position) == 0));
 			}
+			pos.ItemSelected -= Pos_ItemSelected;
+			pos.ItemSelected += Pos_ItemSelected;
+			/* </Position> */
 
 			var isCustomer = view.FindViewById<CheckBox>(Resource.Id.eetiIsCustomerCB);
 			isCustomer.Checked = employee.IsCustomer;
@@ -169,17 +168,13 @@ namespace CRMLite
 			comment.AfterTextChanged += ET_AfterTextChanged;
 
 			EmployeeTable.AddView(view);
-
-			//var divider = Activity.LayoutInflater.Inflate(Resource.Layout.Divider, EmployeeTable, false);
-
-			//EmployeeTable.AddView(divider);
 		}
 
 		void Pos_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
 		{
 			if (sender is Spinner) {
 				var spinner = ((Spinner)sender);
-				var row = (LinearLayout)spinner.Parent;
+				var row = (TableRow)spinner.Parent;
 				row.SetTag(Resource.String.IsChanged, true);
 				spinner.SetTag(Resource.String.PositionUUID, Positions[spinner.SelectedItemPosition].uuid);
 			}
@@ -188,7 +183,7 @@ namespace CRMLite
 		void ET_AfterTextChanged(object sender, Android.Text.AfterTextChangedEventArgs e)
 		{
 			if (sender is EditText) {
-				var row = (LinearLayout)((EditText)sender).Parent;
+				var row = (TableRow)((EditText)sender).Parent;
 				row.SetTag(Resource.String.IsChanged, true);
 			}
 		}
@@ -196,7 +191,7 @@ namespace CRMLite
 		void CB_CheckedChange(object sender, CompoundButton.CheckedChangeEventArgs e)
 		{
 			if (sender is CheckBox) {
-				var row = (LinearLayout)((CheckBox)sender).Parent.Parent;
+				var row = (TableRow)((CheckBox)sender).Parent.Parent;
 				row.SetTag(Resource.String.IsChanged, true);
 			}
 		}
@@ -206,8 +201,8 @@ namespace CRMLite
 			using (var trans = MainDatabase.BeginTransaction()) {
 				for (int c = 0; c < EmployeeTable.ChildCount; c++) {
 					var row = EmployeeTable.GetChildAt(c);
-					if (row is LinearLayout) {
-						row = (LinearLayout)row;
+					if (row is TableRow) {
+						row = (TableRow)row;
 						var isChanged = (bool)row.GetTag(Resource.String.IsChanged);
 						if (isChanged) {
 							var employeeUUID = (string)row.GetTag(Resource.String.EmployeeUUID);
@@ -226,8 +221,8 @@ namespace CRMLite
 
 								/* BirthDate */
 								string birthDate = row.FindViewById<EditText>(Resource.Id.eetiBirthDateET).Text;
-								DateTimeFormatInfo fmt = new CultureInfo("ru-RU").DateTimeFormat;
 								if (!string.IsNullOrEmpty(birthDate)) {
+									DateTimeFormatInfo fmt = new CultureInfo("ru-RU").DateTimeFormat;
 									DateTimeOffset dtoBirthDate;
 									if (DateTimeOffset.TryParse(birthDate, fmt, DateTimeStyles.AssumeUniversal, out dtoBirthDate)) {
 										employee.BirthDate = dtoBirthDate;
@@ -258,6 +253,11 @@ namespace CRMLite
 		public override void OnStop()
 		{
 			base.OnStop();
+		}
+
+		public override void OnDestroy()
+		{
+			base.OnDestroy();
 		}
 	}
 }

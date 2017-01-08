@@ -379,6 +379,12 @@ namespace CRMLite
 		//	return item;
 		//}
 
+		public static T CreateObject<T>() where T : RealmObject, IEntity, new()
+		{
+			var item = Me.DB.CreateObject<T>();
+			return item;
+		}
+
 		public static T Create<T>() where T : RealmObject, IEntity, new()
 		{
 			var item = Me.DB.CreateObject<T>();
@@ -686,6 +692,38 @@ namespace CRMLite
 				     .ToList();
 		}
 
+		internal static List<RouteItem> GetEarlyPerfomedRouteItems(DateTimeOffset selectedDate)
+		{
+			int capacity = Helper.WeeksInRoute * 20 * 5;
+			var result = new List<RouteItem>(capacity);
+
+			if (Helper.WeeksInRoute < 2) return result;
+
+			var lowDate = selectedDate.AddDays(-7 * Helper.WeeksInRoute + 8).UtcDateTime.Date;
+			var highDate = selectedDate.AddDays(-1).UtcDateTime.Date;
+
+			var pharmaciesUUIDs = new List<string>(capacity);
+			foreach (var item in Me.DB.All<Attendance>()) {
+				if (highDate >= item.When.Date && item.When.Date >= lowDate) {
+					pharmaciesUUIDs.Add(item.Pharmacy);
+				}
+			}
+			//var pharmaciesUUIDs = new List<string>(capacity);
+			//foreach (var item in Me.DB.All<Attendance>().Where(att => att.When.Date >= lowDate).Where(att => highDate >= att.When.Date)) {
+			//	pharmaciesUUIDs.Add(item.Pharmacy);
+			//}
+
+			foreach (var item in Me.DB.All<RouteItem>()) {
+				if (highDate >= item.Date.Date && item.Date.Date >= lowDate) {
+					if (pharmaciesUUIDs.Contains(item.Pharmacy)) {
+						result.Add(item);
+					}
+				}
+			}
+
+			return result;;
+		}
+
 		internal static List<RouteItem> GetRouteItems(DateTimeOffset selectedDate)
 		{
 			var date = selectedDate.UtcDateTime.Date;
@@ -752,7 +790,6 @@ namespace CRMLite
 		{
 			return Me.DB.All<Pharmacy>().ToList();
 		}
-
 
 		public static IList<Pharmacy> GetPharmacies(int count)
 		{

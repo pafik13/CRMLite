@@ -21,6 +21,11 @@
 	<string name="HospitalDataUUID">HospitalDataUUID</string>
 	<string name="EmployeeUUID">EmployeeUUID</string>
 	<string name="ContractDataUUID">ContractDataUUID</string>
+	<string name="DistributionDataUUID">DistributionDataUUID</string>
+	<string name="PromotionDataUUID">PromotionDataUUID</string>
+	<string name="CompetitorDataUUID">CompetitorDataUUID</string>
+	<string name="MessageDataUUID">MessageDataUUID</string>
+	<string name="ResumeDataUUID">ResumeDataUUID</string>
 
 	<string name="ContractUUIDs">ContractUUIDs</string>
 

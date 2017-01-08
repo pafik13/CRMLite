@@ -7,11 +7,11 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:background="@color/Grey_300">
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="1248dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
             <TextView
@@ -23,11 +23,10 @@
                 android:textColor="@android:color/black"
                 android:focusable="false"
                 android:focusableInTouchMode="false" />
-            <LinearLayout
+            <TableLayout
                 android:minWidth="25px"
                 android:minHeight="25px"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
+                android:layout_width="1248dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/ifDistributionTable" />
             <View
@@ -59,31 +58,27 @@
             <LinearLayout
                 android:id="@+id/ifPromotionLL"
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
+                android:layout_width="1248dp"
                 android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:weightSum="100">
+                android:background="@android:color/white">
                 <TextView
                     android:text="Акция"
-                    android:layout_width="0dp"
+                    android:layout_width="368dp"
                     android:layout_height="60dp"
-                    android:layout_weight="30"
                     android:gravity="center"
                     android:textAppearance="@style/rowTextForPharmacy"
                     android:focusable="false"
                     android:focusableInTouchMode="false" />
                 <Spinner
                     android:clickable="false"
-                    android:layout_width="0dp"
+                    android:layout_width="256dp"
                     android:layout_height="match_parent"
-                    android:id="@+id/ifPromotionS"
-                    android:layout_weight="20" />
+                    android:id="@+id/ifPromotionS" />
                 <EditText
                     android:enabled="false"
                     android:textCursorDrawable="@null"
-                    android:layout_width="0dp"
+                    android:layout_width="604dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="50"
                     android:layout_margin="10dp"
                     android:id="@+id/ifPromotionET"
                     android:background="@drawable/bottomline"
@@ -102,15 +97,13 @@
             <LinearLayout
                 android:id="@+id/ifCompetitorLL"
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
+                android:layout_width="1248dp"
                 android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:weightSum="100">
+                android:background="@android:color/white">
                 <TextView
                     android:text="Активность конкурентов"
-                    android:layout_width="0dp"
+                    android:layout_width="368dp"
                     android:layout_height="60dp"
-                    android:layout_weight="30"
                     android:gravity="center"
                     android:textAppearance="@style/rowTextForPharmacy"
                     android:focusable="false"
@@ -118,9 +111,8 @@
                 <RelativeLayout
                     android:minWidth="25px"
                     android:minHeight="25px"
-                    android:layout_width="0dp"
+                    android:layout_width="256dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="20"
                     android:background="@android:color/white">
                     <CheckBox
                         android:enabled="false"
@@ -132,9 +124,8 @@
                 <EditText
                     android:enabled="false"
                     android:textCursorDrawable="@null"
-                    android:layout_width="0dp"
+                    android:layout_width="604dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="50"
                     android:layout_margin="10dp"
                     android:id="@+id/ifCompetitorET"
                     android:background="@drawable/bottomline"
@@ -145,48 +136,47 @@
             </LinearLayout>
             <View
                 android:id="@+id/ifCompetitorDividerV"
-                android:layout_width="match_parent"
+                android:layout_width="1248dp"
                 android:layout_height="12dp" />
         <!--	Сообщения от аптеки	-->
             <LinearLayout
                 android:id="@+id/ifMessageLL"
-                android:layout_width="match_parent"
+                android:layout_width="1248dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
                     android:text="Сообщения от аптеки"
-                    android:layout_width="match_parent"
+                    android:layout_width="1248dp"
                     android:layout_height="wrap_content"
                     android:gravity="left"
                     android:textSize="32sp"
                     android:textColor="@android:color/black"
                     android:focusable="false"
                     android:focusableInTouchMode="false" />
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TableLayout
+                    android:layout_width="1248dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:id="@+id/ifMessageTable"
                     android:animateLayoutChanges="true" />
                 <Button
                     android:text="Добавить сообщение"
-                    android:layout_width="match_parent"
+                    android:layout_width="1248dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/ifMessageAddB" />
             </LinearLayout>
             <View
                 android:id="@+id/ifMessageDividerV"
-                android:layout_width="match_parent"
+                android:layout_width="1248dp"
                 android:layout_height="12dp" />
         <!--	Продажи		-->
             <LinearLayout
                 android:id="@+id/ifSaleLL"
-                android:layout_width="match_parent"
+                android:layout_width="1248dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
                     android:text="Продажи"
-                    android:layout_width="match_parent"
+                    android:layout_width="1248dp"
                     android:layout_height="wrap_content"
                     android:gravity="left"
                     android:textSize="32sp"
@@ -194,30 +184,29 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false" />
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="1248dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:id="@+id/ifSaleTable" />
             </LinearLayout>
             <View
                 android:id="@+id/ifSaleDividerV"
-                android:layout_width="match_parent"
+                android:layout_width="1248dp"
                 android:layout_height="12dp" />
         <!--	Резюме визита	-->
             <LinearLayout
                 android:id="@+id/ifResumeLL"
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
+                android:layout_width="1248dp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:weightSum="100">
                 <TextView
                     android:minHeight="60dp"
                     android:text="Резюме визита"
-                    android:layout_width="0dp"
+                    android:layout_width="368dp"
                     android:layout_height="match_parent"
                     android:id="@+id/ifResumeTV"
-                    android:layout_weight="30"
                     android:gravity="center"
                     android:textAppearance="@style/rowTextForPharmacy"
                     android:focusable="false"
@@ -225,9 +214,8 @@
                 <EditText
                     android:enabled="false"
                     android:textCursorDrawable="@null"
-                    android:layout_width="0dp"
+                    android:layout_width="860dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="70"
                     android:layout_margin="10dp"
                     android:id="@+id/ifResumeET"
                     android:background="@drawable/bottomline"

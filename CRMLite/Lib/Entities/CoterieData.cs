@@ -28,6 +28,11 @@ namespace CRMLite.Entities
 		public SyncResult SyncResult { get; set; }
 
 		public bool IsSynced { get; set; }
+
+		internal string GetComplexKey()
+		{
+			return string.Concat(Employee, ':', Brand);
+		}
 	}
 
 	public class CoterieDataGrouped

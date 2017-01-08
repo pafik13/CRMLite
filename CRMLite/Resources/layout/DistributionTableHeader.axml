@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:background="@android:color/white"
-    android:weightSum="100">
+    android:layout_width="1248dp"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
     <TextView
         android:text="Препарат (SKU)"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="15"
+        android:layout_width="186dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="6dp"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
@@ -17,57 +15,54 @@
         android:focusableInTouchMode="false" />
     <TextView
         android:text="Наличие"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="8"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
         android:focusableInTouchMode="false" />
     <TextView
         android:text="Количество"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="11"
-        android:layout_margin="10dp"
+        android:layout_width="124dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
         android:focusableInTouchMode="false" />
     <TextView
         android:text="Цена"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="11"
-        android:layout_margin="10dp"
+        android:layout_width="124dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
         android:focusableInTouchMode="false" />
     <TextView
         android:text="Выкладка"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="8"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
         android:focusableInTouchMode="false" />
     <TextView
         android:text="POS"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="8"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
         android:focusableInTouchMode="false" />
     <TextView
         android:text="Заказ"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="19"
-        android:layout_margin="10dp"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
@@ -75,12 +70,12 @@
     <TextView
         android:id="@+id/dthCommentTV"
         android:text="Комментарий"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="20"
-        android:layout_margin="10dp"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:gravity="center"
         android:textAppearance="@style/rowTextForPharmacy"
         android:focusable="false"
         android:focusableInTouchMode="false" />
-</LinearLayout>
+</TableRow>

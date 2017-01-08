@@ -30,6 +30,11 @@ namespace CRMLite.Entities
 		public SyncResult SyncResult { get; set; }
 
 		public bool IsSynced { get; set; }
+
+		public string GetComplexKey()
+		{
+			return string.Concat(Employee, ':', Brand, ':', WorkType);
+		}
 	}
 
 	public class PresentationDataKey

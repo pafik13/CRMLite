@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using System.Diagnostics;
+using SDiag = System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
 
@@ -160,7 +160,7 @@ namespace CRMLite
 					return;
 				}
 
-				var w = new Stopwatch();
+				var w = new SDiag.Stopwatch();
 				w.Start();
 				SearchedItems = new List<RouteSearchItem>();
 				var matchFormat = @"Совпадение: {0}";
@@ -199,7 +199,7 @@ namespace CRMLite
 					}
 				}
 				w.Stop();
-				System.Diagnostics.Debug.WriteLine(@"Search: поиск={0}", w.ElapsedMilliseconds);
+				SDiag.Debug.WriteLine(@"Search: поиск={0}", w.ElapsedMilliseconds);
 
 				PharmacyTable.Adapter = new RoutePharmacyAdapter(this, SearchedItems);
 			};
@@ -208,8 +208,8 @@ namespace CRMLite
 
 			FindViewById<Button>(Resource.Id.raSelectDateB).Click += (sender, e) => {
 				DatePickerFragment frag = DatePickerFragment.NewInstance(delegate (DateTime date) {
-					System.Diagnostics.Debug.WriteLine("DatePicker:{0}", date.ToLongDateString());
-					System.Diagnostics.Debug.WriteLine("DatePicker:{0}", new DateTimeOffset(date));
+					SDiag.Debug.WriteLine("DatePicker:{0}", date.ToLongDateString());
+					SDiag.Debug.WriteLine("DatePicker:{0}", new DateTimeOffset(date));
 					SelectedDate = new DateTimeOffset(date, new TimeSpan(0, 0, 0)); ;
 					RefreshTables();
 				});
@@ -221,7 +221,7 @@ namespace CRMLite
 
 			var switcher = FindViewById<ViewSwitcher>(Resource.Id.raSwitchViewVS);
 			FindViewById<ImageView>(Resource.Id.raSwitchIV).Click += (sender, e) => {
-				System.Diagnostics.Debug.WriteLine(@"switcher:{0}; Resource{1}", switcher.CurrentView.Id, Resource.Id.raContainerVP);
+				SDiag.Debug.WriteLine(@"switcher:{0}; Resource{1}", switcher.CurrentView.Id, Resource.Id.raContainerVP);
 				if (switcher.CurrentView.Id != Resource.Id.raContainerVP) {
 					Info.Text = string.Format(
 						@"Период планирования: {0} недели ({1} дней). Номер недели: {2}",
@@ -353,8 +353,12 @@ namespace CRMLite
 				RoutePharmacyAdapter = new RoutePharmacyAdapter(this, RouteSearchItems);
 				PharmacyTable.Adapter = RoutePharmacyAdapter;
 			} else {
-				var routeItemsPharmacies = MainDatabase.GetEarlyRouteItems(SelectedDate).Select(ri => ri.Pharmacy);
+				//var sw = new SDiag.Stopwatch();
+				//sw.Start();
+				var routeItemsPharmacies = MainDatabase.GetEarlyPerfomedRouteItems(SelectedDate).Select(ri => ri.Pharmacy);
 				RouteSearchItems = RouteSearchItemsSource.Where(rsi => !routeItemsPharmacies.Contains(rsi.UUID)).ToList();
+				//sw.Stop();
+				//SDiag.Debug.WriteLine(@"RouteSearchItems (ms): {0}, routeItemsPharmacies (cnt): {1}", sw.ElapsedMilliseconds, routeItemsPharmacies.Count());
 
 				RoutePharmacyAdapter = new RoutePharmacyAdapter(this, RouteSearchItems);
 				PharmacyTable.Adapter = RoutePharmacyAdapter;

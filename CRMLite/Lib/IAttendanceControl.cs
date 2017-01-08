@@ -5,9 +5,13 @@ namespace CRMLite.Entities
 {
 	public interface IAttendanceControl
 	{
-		void OnAttendanceStart(DateTimeOffset? start);
+		void OnAttendanceStart(Attendance current);
 
 		void OnAttendanceStop(Transaction openedTransaction, Attendance current);
+
+		void OnAttendanceResume();
+
+		void OnAttendancePause();
 	}
 }
 

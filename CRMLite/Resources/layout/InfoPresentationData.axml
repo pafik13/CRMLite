@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="1248dp"
     android:layout_height="wrap_content"
     android:orientation="vertical">
     <TextView
         android:text="Презентация"
-        android:layout_width="match_parent"
+        android:layout_width="1248dp"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:textSize="32sp"
@@ -14,13 +14,13 @@
         android:focusableInTouchMode="false" />
     <LinearLayout
         android:id="@+id/ipdPresentationTable"
-        android:layout_width="match_parent"
+        android:layout_width="1248dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:animateLayoutChanges="true" />
     <Button
         android:text="Добавить"
-        android:layout_width="match_parent"
+        android:layout_width="1248dp"
         android:layout_height="wrap_content"
         android:id="@+id/ipdPresentationAddB" />
 </LinearLayout>

@@ -18,7 +18,7 @@ using CRMLite.Dialogs;
 
 namespace CRMLite
 {
-	public class PharmacyFragment : Fragment, IAttendanceControl
+	public class PharmacyFragment : Fragment
 	{
 		Stopwatch Chrono;
 
@@ -65,6 +65,17 @@ namespace CRMLite
 			base.OnCreate(savedInstanceState);
 			Chrono = new Stopwatch();
 			Chrono.Start();
+			Subways = MainDatabase.GetItems<Subway>();
+			Regions = MainDatabase.GetItems<Region>();
+
+			var agentUUID = Activity.GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
+			                        .GetString(SigninDialog.C_AGENT_UUID, string.Empty);
+			try {
+				Agent = MainDatabase.GetItem<Agent>(agentUUID);
+			} catch (Exception ex) {
+				Console.WriteLine(ex.Message);
+				Agent = null;
+			}
 		}
 
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -75,23 +86,11 @@ namespace CRMLite
 			base.OnCreateView(inflater, container, savedInstanceState);
 
 			View view = inflater.Inflate(Resource.Layout.PharmacyFragment, container, false);
-			//Api = new SuggestClient(Secret.DadataApiToken, Secret.DadataApiURL);
-
 
 			var pharmacyUUID = Arguments.GetString(C_PHARMACY_UUID);
 			if (string.IsNullOrEmpty(pharmacyUUID)) return view;
 
 			Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
-
-			var shared = Activity.GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
-
-			var agentUUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
-			try {
-				Agent = MainDatabase.GetItem<Agent>(agentUUID);
-			} catch (Exception ex) {
-				Console.WriteLine(ex.Message);
-				Agent = null;
-			}
 
 			#region State
 			State = view.FindViewById<Spinner>(Resource.Id.pfStateS);
@@ -234,7 +233,6 @@ namespace CRMLite
 			#endregion
 
 			#region Subway
-			Subways = MainDatabase.GetItems<Subway>();
 			Subway.Adapter = new ArrayAdapter<string>(
 				Activity, Android.Resource.Layout.SimpleDropDownItem1Line, Subways.Select(s => s.name).ToArray()
 			);
@@ -250,7 +248,6 @@ namespace CRMLite
 			#endregion
 
 			#region Region
-			Regions = MainDatabase.GetItems<Region>();
 			Region.Adapter = new ArrayAdapter<string>(
 				Activity, Android.Resource.Layout.SimpleDropDownItem1Line, Regions.Select(r => r.name).ToArray()
 			);
@@ -513,30 +510,6 @@ namespace CRMLite
 
 			string debug = string.Concat(AttendanceActivity.C_TAG_FOR_DEBUG, "-", "PharmacyFragment", ":", Chrono.ElapsedMilliseconds);
 			System.Diagnostics.Debug.WriteLine(debug);
-		}
-
-		public void OnAttendanceStart(DateTimeOffset? start)
-		{
-			if (!start.HasValue) {
-				throw new ArgumentNullException(nameof(start));
-			}
-		}
-
-		public void OnAttendanceStop(Transaction openedTransaction, Attendance current)
-		{
-			if (openedTransaction == null) {
-				throw new ArgumentNullException(nameof(openedTransaction));
-			}
-
-			if (current == null) {
-				throw new ArgumentNullException(nameof(current));
-			}
-
-			var pharmacy = MainDatabase.GetEntity<Pharmacy>(Pharmacy.UUID);
-			pharmacy.LastAttendance = current.UUID;
-			pharmacy.LastAttendanceDate = current.When;
-			// TODO: Сделать глобальной настройкой
-			pharmacy.NextAttendanceDate = Agent == null ? current.When.AddDays(14) : current.When.AddDays(Agent.weeksInRout * 7);
 		}
 	}
 }

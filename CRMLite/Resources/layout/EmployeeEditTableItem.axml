@@ -1,38 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="2dp"
     android:minHeight="50dp"
-    android:background="@android:color/white"
-    android:weightSum="100">
+    android:background="@android:color/white">
     <EditText
         android:textCursorDrawable="@null"
-        android:layout_weight="20"
+        android:layout_width="244dp"
         android:id="@+id/eetiNameET"
         android:textSize="16sp"
         android:background="@drawable/bottomline"
         android:textColorHint="@color/Grey_300"
         android:textColor="@android:color/black"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         android:hint="Иванов Иван Иванович"
         android:enabled="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
         android:inputType="textCapWords"
-        android:layout_height="match_parent"
-        android:layout_width="0dp" />
+        android:layout_height="match_parent" />
     <Spinner
-        android:layout_weight="18"
-        android:layout_width="0dp"
+        android:layout_width="224dp"
         android:layout_height="wrap_content"
         android:id="@+id/eetiPositionS" />
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="5">
+        android:layout_width="64dp"
+        android:layout_height="match_parent">
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +38,7 @@
             android:focusableInTouchMode="false" />
     </RelativeLayout>
     <EditText
-        android:layout_weight="7"
+        android:layout_width="80dp"
         android:id="@+id/eetiBirthDateET"
         android:textCursorDrawable="@null"
         android:background="@drawable/bottomline"
@@ -55,13 +50,12 @@
         android:layout_marginBottom="10dp"
         android:hint="ДД.ММ.ГГ"
         android:enabled="true"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_height="match_parent"
-        android:layout_width="0dp" />
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_height="match_parent" />
     <EditText
         android:textCursorDrawable="@null"
-        android:layout_weight="10"
+        android:layout_width="116dp"
         android:id="@+id/eetiPhoneET"
         android:background="@drawable/bottomline"
         android:textColorHint="@color/Grey_300"
@@ -75,11 +69,10 @@
         android:layout_marginRight="6dp"
         android:inputType="phone"
         android:phoneNumber="true"
-        android:layout_width="0dp"
         android:layout_height="match_parent" />
     <EditText
         android:textCursorDrawable="@null"
-        android:layout_weight="15"
+        android:layout_width="180dp"
         android:id="@+id/eetiEmailET"
         android:background="@drawable/bottomline"
         android:textColorHint="@color/Grey_300"
@@ -92,12 +85,10 @@
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
         android:inputType="textEmailAddress"
-        android:layout_width="0dp"
         android:layout_height="match_parent" />
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="5">
+        android:layout_width="64dp"
+        android:layout_height="match_parent">
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -109,7 +100,7 @@
     </RelativeLayout>
     <EditText
         android:textCursorDrawable="@null"
-        android:layout_weight="20"
+        android:layout_width="244dp"
         android:id="@+id/eetiCommentET"
         android:background="@drawable/bottomline"
         android:textColorHint="@color/Grey_300"
@@ -122,8 +113,7 @@
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
         android:inputType="textCapSentences|textMultiLine"
-        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:minLines="2"
         android:maxLines="2" />
-</LinearLayout>
+</TableRow>

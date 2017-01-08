@@ -75,7 +75,7 @@ namespace CRMLite
 		/**
 		 * Factory method for this fragment class. Constructs a new fragment for the given page number.
 		 */
-		public static PhotoFragment create(string pharmacyUUID, string attendanceLastUUID)
+		public static PhotoFragment create(string pharmacyUUID, string attendanceLastUUID, bool isAttendanceRun)
 		{
 			PhotoFragment fragment = new PhotoFragment();
 			Bundle arguments = new Bundle();
@@ -395,9 +395,9 @@ namespace CRMLite
 			System.Diagnostics.Debug.WriteLine(debug);
 		}
 
-		public void OnAttendanceStart(DateTimeOffset? start)
+		public void OnAttendanceStart(Attendance current)
 		{
-			AttendanceStart = start;
+			AttendanceStart = current.When;
 			Arrow.Visibility = ViewStates.Gone;
 			Locker.Visibility = ViewStates.Gone;
 
@@ -462,6 +462,16 @@ namespace CRMLite
 				photoData.Latitude = photo.Latitude;
 				photoData.Longitude = photo.Longitude;
 			}
+		}
+
+		public void OnAttendanceResume()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void OnAttendancePause()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

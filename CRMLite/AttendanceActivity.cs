@@ -27,6 +27,7 @@ namespace CRMLite
 	{
 		public const int C_NUM_PAGES = 4;
 		public const string C_TAG_FOR_DEBUG = "AttendanceActivity";
+		public const double C_MIN_DURATION = -1.0D;
 
 		//readonly Stopwatch Chrono;
 
@@ -50,6 +51,7 @@ namespace CRMLite
 
 		DateTimeOffset? AttendanceStart;
 		Attendance AttendanceLast;
+		Attendance AttendanceNew;
 
 		public void OnPageScrolled(int position, float positionOffset, int positionOffsetPixels)
 		{
@@ -65,16 +67,16 @@ namespace CRMLite
 		{
 			switch (position) {
 				case 0:
-					FragmentTitle.Text = @"АПТЕКА";
+					FragmentTitle.Text = "АПТЕКА";
 					break;
 				case 1:
-					FragmentTitle.Text = @"СОТРУДНИКИ";
+					FragmentTitle.Text = "СОТРУДНИКИ";
 					break;
 				case 2:
-					FragmentTitle.Text = (AttendanceLast == null) || AttendanceStart.HasValue ? 
-						@"СОБИРАЕМАЯ ИНФОРМАЦИЯ" : string.Format(@"ИНФОРМАЦИЯ С ВИЗИТА ОТ {0}", AttendanceLast.When.LocalDateTime);
 					var w = new Stopwatch();
 					w.Start();
+					FragmentTitle.Text = (AttendanceLast == null) || AttendanceStart.HasValue ? 
+						"СОБИРАЕМАЯ ИНФОРМАЦИЯ" : string.Concat("ИНФОРМАЦИЯ С ВИЗИТА ОТ ", AttendanceLast.When.LocalDateTime);
 					var emp = GetFragment(1);
 					if (emp is EmployeeFragment) {
 						((EmployeeFragment)emp).SaveAllEmployees();
@@ -88,10 +90,10 @@ namespace CRMLite
 					break;
 				case 3:
 					FragmentTitle.Text = (AttendanceLast == null) || AttendanceStart.HasValue ?
-						@"ФОТО НА ВИЗИТЕ" : string.Format(@"ФОТО С ВИЗИТА ОТ {0}", AttendanceLast.When.LocalDateTime);
+						"ФОТО НА ВИЗИТЕ" : string.Concat("ФОТО С ВИЗИТА ОТ ", AttendanceLast.When.LocalDateTime);
 					break;
 				default:
-					FragmentTitle.Text = @"СТРАНИЦА " + (position + 1);
+					FragmentTitle.Text = "СТРАНИЦА " + (position + 1);
 					break;;
 			}
 		}
@@ -105,7 +107,7 @@ namespace CRMLite
 
 			base.OnCreate(savedInstanceState);
 
-			SetContentView(Resource.Layout.activity_screen_slide);
+			SetContentView(Resource.Layout.Attendance);
 
 			PharmacyUUID = Intent.GetStringExtra("UUID");
 			if (string.IsNullOrEmpty(PharmacyUUID)) return;
@@ -118,7 +120,7 @@ namespace CRMLite
 			DistributorsList = MainDatabase.GetItems<Distributor>();
 
 			FragmentTitle = FindViewById<TextView>(Resource.Id.aaTitleTV);
-			FragmentTitle.Text = @"АПТЕКА";
+			FragmentTitle.Text = "АПТЕКА";
 
 			Pager = FindViewById<ViewPager>(Resource.Id.aaContainerVP);
 			Pager.AddOnPageChangeListener(this);
@@ -135,6 +137,33 @@ namespace CRMLite
 
 					MakePhotoAfter.Visibility = ViewStates.Gone;
 
+					using (var transaction = MainDatabase.BeginTransaction()) {
+						AttendanceNew = MainDatabase.Create2<Attendance>();
+						AttendanceNew.Pharmacy = PharmacyUUID;
+						AttendanceNew.When = AttendanceStart.Value;
+						AttendanceNew.Duration = C_MIN_DURATION;
+
+						var attOnPause = MainDatabase.CreateObject<AttendanceOnPause>();
+						attOnPause.UUID = AttendanceNew.UUID;
+
+						var pharmacy = MainDatabase.GetEntity<Pharmacy>(PharmacyUUID);
+						pharmacy.LastAttendance = AttendanceNew.UUID;
+						pharmacy.LastAttendanceDate = AttendanceNew.When;
+						pharmacy.NextAttendanceDate = (Helper.WeeksInRoute == 0) ? 
+							AttendanceNew.When.AddDays(14) : AttendanceNew.When.AddDays(Helper.WeeksInRoute * 7);
+
+						transaction.Commit();
+					}
+
+					if (!AttendanceNew.IsManaged) {
+						Toast.MakeText(this, "НОВЫЙ ВИЗИТ НЕ СОЗДАЛСЯ!", ToastLength.Long).Show();
+						return;
+					}
+
+					if (Pager.Adapter is AttendancePagerAdapter) {
+						((AttendancePagerAdapter)Pager.Adapter).AttendanceRun(AttendanceNew.UUID);
+					}
+
 					// Location
 					Locations = new List<Location>();
 
@@ -148,39 +177,39 @@ namespace CRMLite
 					// !Location	
 
 					if (Pager.CurrentItem == 2) {
-						FragmentTitle.Text = @"СОБИРАЕМАЯ ИНФОРМАЦИЯ";
+						FragmentTitle.Text = "СОБИРАЕМАЯ ИНФОРМАЦИЯ";
 					}
 
 					if (Pager.CurrentItem == 3) {
-						FragmentTitle.Text = @"ФОТО НА ВИЗИТЕ";
+						FragmentTitle.Text = "ФОТО НА ВИЗИТЕ";
 					}
 
 					for (int f = 0; f < C_NUM_PAGES; f++) {
 						var fragment = GetFragment(f);
 						if (fragment is IAttendanceControl) {
-							(fragment as IAttendanceControl).OnAttendanceStart(AttendanceStart);
+							(fragment as IAttendanceControl).OnAttendanceStart(AttendanceNew);
 						}
 					}
 
-					Close.Visibility = ViewStates.Invisible;
+					Close.Visibility = ViewStates.Gone;
 
 					Contracts.Visibility = ViewStates.Visible;
 
 					Finance.Visibility = ViewStates.Visible;
-					var financeParams = Finance.LayoutParameters as RelativeLayout.LayoutParams;
-					financeParams.AddRule(LayoutRules.LeftOf, Resource.Id.aaContractsIV);
+					//var financeParams = Finance.LayoutParameters as RelativeLayout.LayoutParams;
+					//financeParams.AddRule(LayoutRules.LeftOf, Resource.Id.aaContractsIV);
 
 					History.Visibility = ViewStates.Visible;
-					var historyParams = History.LayoutParameters as RelativeLayout.LayoutParams;
-					historyParams.AddRule(LayoutRules.LeftOf, Resource.Id.aaFinanceIV);
+					//var historyParams = History.LayoutParameters as RelativeLayout.LayoutParams;
+					//historyParams.AddRule(LayoutRules.LeftOf, Resource.Id.aaFinanceIV);
 
 					Material.Visibility = ViewStates.Visible;
-					var materialParams = Material.LayoutParameters as RelativeLayout.LayoutParams;
-					materialParams.AddRule(LayoutRules.LeftOf, Resource.Id.aaHistoryIV);
+					//var materialParams = Material.LayoutParameters as RelativeLayout.LayoutParams;
+					//materialParams.AddRule(LayoutRules.LeftOf, Resource.Id.aaHistoryIV);
 
 					Distributors.Visibility = ViewStates.Visible;
-					var distributorsParams = Distributors.LayoutParameters as RelativeLayout.LayoutParams;
-					distributorsParams.AddRule(LayoutRules.LeftOf, Resource.Id.aaMaterialIV);
+					//var distributorsParams = Distributors.LayoutParameters as RelativeLayout.LayoutParams;
+					//distributorsParams.AddRule(LayoutRules.LeftOf, Resource.Id.aaMaterialIV);
 
 					var button = sender as Button;
 					button.SetBackgroundResource(Resource.Color.Deep_Orange_500);
@@ -188,7 +217,7 @@ namespace CRMLite
 					return;
 				}
 
-				if ((DateTimeOffset.Now - AttendanceStart.Value).TotalSeconds < 30) return;
+				if ((DateTimeOffset.Now - AttendanceStart.Value).TotalSeconds < 10) return;
 
 				if (CurrentFocus != null) {
 					var imm = (InputMethodManager)GetSystemService(InputMethodService);
@@ -205,27 +234,27 @@ namespace CRMLite
 
 
 				// Оповещаем фрагменты о завершении визита
-				string undonePhotoTypes = string.Empty;
-				for (int f = 0; f < C_NUM_PAGES; f++) {
-					var fragment = GetFragment(f);
-					if (fragment is PhotoFragment) {
-						undonePhotoTypes = (fragment as PhotoFragment).GetUndonePhotoTypes();
-					}
-				}
+				//string undonePhotoTypes = string.Empty;
+				//for (int f = 0; f < C_NUM_PAGES; f++) {
+				//	var fragment = GetFragment(f);
+				//	if (fragment is PhotoFragment) {
+				//		undonePhotoTypes = (fragment as PhotoFragment).GetUndonePhotoTypes();
+				//	}
+				//}
 
-				if (!string.IsNullOrEmpty(undonePhotoTypes)) {
-					new AlertDialog.Builder(this)
-								   .SetTitle(Resource.String.error_caption)
-					               .SetMessage("Необходимо сделать следующие фото:" + System.Environment.NewLine + undonePhotoTypes)
-								   .SetCancelable(false)
-								   .SetPositiveButton(@"OK", (dialog, args) => {
-									   if (dialog is Dialog) {
-										   ((Dialog)dialog).Dismiss();
-									   }
-								   })
-								   .Show();
-					return;
-				}
+				//if (!string.IsNullOrEmpty(undonePhotoTypes)) {
+				//	new AlertDialog.Builder(this)
+				//				   .SetTitle(Resource.String.error_caption)
+				//	               .SetMessage("Необходимо сделать следующие фото:" + System.Environment.NewLine + undonePhotoTypes)
+				//				   .SetCancelable(false)
+				//				   .SetPositiveButton(@"OK", (dialog, args) => {
+				//					   if (dialog is Dialog) {
+				//						   ((Dialog)dialog).Dismiss();
+				//					   }
+				//				   })
+				//				   .Show();
+				//	return;
+				//}
 
 				var lockDialog = LockDialog.Create("Идет сохранение данных...", Resource.Color.Deep_Orange_500);
 				lockDialog.Cancelable = false;
@@ -236,45 +265,45 @@ namespace CRMLite
 					Thread.Sleep(2000); // иначе не успеет показаться диалог
 
 					RunOnUiThread(() => {
-						var transaction = MainDatabase.BeginTransaction();
-						var attendance = MainDatabase.Create2<Attendance>();
-						attendance.Pharmacy = PharmacyUUID;
-						attendance.When = AttendanceStart.Value;
-						attendance.Duration = (DateTimeOffset.Now - AttendanceStart.Value).TotalMilliseconds;
+						 var transaction = MainDatabase.BeginTransaction();
+						// var attendance = MainDatabase.Create2<Attendance>();
+						// attendance.Pharmacy = PharmacyUUID;
+						// attendance.When = AttendanceStart.Value;
+						AttendanceNew.Duration = (DateTimeOffset.Now - AttendanceStart.Value).TotalMilliseconds;
 
-						foreach (var location in Locations) {
-							var gps = MainDatabase.Create2<GPSData>();
-							gps.Attendance = attendance.UUID;
-							gps.Accuracy = location.Accuracy;
-							gps.Altitude = location.Altitude;
-							gps.Bearing = location.Bearing;
-							gps.ElapsedRealtimeNanos = location.ElapsedRealtimeNanos;
-							gps.IsFromMockProvider = location.IsFromMockProvider;
-							gps.Latitude = location.Latitude;
-							gps.Longitude = location.Longitude;
-							gps.Provider = location.Provider;
-							gps.Speed = location.Speed;
-						}
+						// foreach (var location in Locations) {
+						// 	var gps = MainDatabase.Create2<GPSData>();
+						// 	gps.Attendance = attendance.UUID;
+						// 	gps.Accuracy = location.Accuracy;
+						// 	gps.Altitude = location.Altitude;
+						// 	gps.Bearing = location.Bearing;
+						// 	gps.ElapsedRealtimeNanos = location.ElapsedRealtimeNanos;
+						// 	gps.IsFromMockProvider = location.IsFromMockProvider;
+						// 	gps.Latitude = location.Latitude;
+						// 	gps.Longitude = location.Longitude;
+						// 	gps.Provider = location.Provider;
+						// 	gps.Speed = location.Speed;
+						// }
 
-						var distributorUUIDs = (string)Distributors.GetTag(Resource.String.DistributorUUIDs);
+						// var distributorUUIDs = (string)Distributors.GetTag(Resource.String.DistributorUUIDs);
 
-						if (!string.IsNullOrEmpty(distributorUUIDs)) {
-							foreach (var distributor in distributorUUIDs.Split(';')) {
-								var distributorData = MainDatabase.Create2<DistributorData>();
-								distributorData.Attendance = attendance.UUID;
-								distributorData.Distributor = distributor;
-							}	
-						}
+						// if (!string.IsNullOrEmpty(distributorUUIDs)) {
+						// 	foreach (var distributor in distributorUUIDs.Split(';')) {
+						// 		var distributorData = MainDatabase.Create2<DistributorData>();
+						// 		distributorData.Attendance = attendance.UUID;
+						// 		distributorData.Distributor = distributor;
+						// 	}	
+						// }
 
-						// Оповещаем фрагменты о завершении визита
-						for (int f = 0; f < C_NUM_PAGES; f++) {
-							var fragment = GetFragment(f);
-							if (fragment is IAttendanceControl) {
-								(fragment as IAttendanceControl).OnAttendanceStop(transaction, attendance);
-							}
-						}
+						// // Оповещаем фрагменты о завершении визита
+						// for (int f = 0; f < C_NUM_PAGES; f++) {
+						// 	var fragment = GetFragment(f);
+						// 	if (fragment is IAttendanceControl) {
+						// 		(fragment as IAttendanceControl).OnAttendanceStop(transaction, attendance);
+						// 	}
+						// }
 
-						transaction.Commit();
+						 transaction.Commit();
 
 						//if (lockDialog != null) {
 						//	lockDialog.DismissAllowingStateLoss();
@@ -285,13 +314,17 @@ namespace CRMLite
 				}).Start();
 			};
 
+			var btnResumePause = FindViewById<Button>(Resource.Id.aaResumeOrPauseAttendanceB);
+			btnResumePause.Visibility = ViewStates.Gone;
+
+
 			MakePhotoAfter = FindViewById<ImageView>(Resource.Id.aaMakePhotoAfterAttendanceIV);
 
 			// TODO: uncomment
 			if (AttendanceLast != null) {
-				if (AttendanceLast.When.Date == DateTimeOffset.UtcNow.Date) {
-					btnStartStop.Visibility = ViewStates.Gone;
-				}
+				//if (AttendanceLast.When.Date == DateTimeOffset.UtcNow.Date) {
+				//	btnStartStop.Visibility = ViewStates.Gone;
+				//}
 
 				var afterAttPhotos = MainDatabase.GetItems<PhotoAfterAttendance>().Select(paa => paa.photoType).ToArray();
 				if (afterAttPhotos.Count() > 0) {
@@ -567,13 +600,15 @@ namespace CRMLite
 		class AttendancePagerAdapter : V4App.FragmentPagerAdapter
 		{
 			readonly string PharmacyUUID;
-			readonly string AttendanceLastUUID;
 			readonly Stopwatch Chrono;
+			string AttendanceLastOrNewUUID;
+			bool IsAttendanceRunning;
 
-			public AttendancePagerAdapter(V4App.FragmentManager fm, string pharmacyUUID, string attendanceLastUUID) : base(fm)
+			public AttendancePagerAdapter(V4App.FragmentManager fm, string pharmacyUUID, string attLastOrNewUUID) : base(fm)
 			{
 				PharmacyUUID = pharmacyUUID;
-				AttendanceLastUUID = attendanceLastUUID;
+				AttendanceLastOrNewUUID = attLastOrNewUUID;
+				IsAttendanceRunning = false;
 				Chrono = new Stopwatch();
 			}
 
@@ -581,6 +616,14 @@ namespace CRMLite
 				get {
 					return C_NUM_PAGES;
 				}
+			}
+
+			public void AttendanceRun(string attendanceNewUUID = null)
+			{
+				if (!string.IsNullOrEmpty(attendanceNewUUID)) {
+					AttendanceLastOrNewUUID = attendanceNewUUID;
+				}
+				IsAttendanceRunning = true;
 			}
 
 			public override V4App.Fragment GetItem(int position)
@@ -598,11 +641,11 @@ namespace CRMLite
 						name = "EmployeeFragment";
 						break;
 					case 2:
-						result = InfoFragment.create(PharmacyUUID, AttendanceLastUUID);
+						result = InfoFragment.create(PharmacyUUID, AttendanceLastOrNewUUID, IsAttendanceRunning);
 						name = "InfoFragment";
 						break;
 					case 3:
-						result = PhotoFragment.create(PharmacyUUID, AttendanceLastUUID);
+						result = PhotoFragment.create(PharmacyUUID, AttendanceLastOrNewUUID, IsAttendanceRunning);
 						name = "PhotoFragment";
 						break;
 					default:

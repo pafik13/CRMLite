@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:background="@android:color/white"
-    android:weightSum="100">
+    android:layout_width="1248dp"
+    android:layout_height="56dp"
+    android:background="@drawable/bottomline_for_distribution">
     <TextView
         android:text="Text"
-        android:layout_width="0dp"
+        android:layout_width="186dp"
         android:layout_height="match_parent"
-        android:layout_weight="15"
         android:layout_marginLeft="6dp"
         android:gravity="center_vertical"
         android:textAppearance="@style/rowTextForPharmacy"
@@ -17,9 +15,8 @@
         android:focusable="false"
         android:focusableInTouchMode="false" />
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="8">
+        android:layout_width="96dp"
+        android:layout_height="match_parent">
         <CheckBox
             android:enabled="false"
             android:layout_width="wrap_content"
@@ -30,9 +27,8 @@
     <EditText
         android:enabled="false"
         android:textCursorDrawable="@null"
-        android:layout_width="0dp"
+        android:layout_width="124dp"
         android:layout_height="match_parent"
-        android:layout_weight="11"
         android:layout_margin="10dp"
         android:id="@+id/dtiCountET"
         android:background="@drawable/bottomline"
@@ -44,9 +40,8 @@
     <EditText
         android:enabled="false"
         android:textCursorDrawable="@null"
-        android:layout_width="0dp"
+        android:layout_width="124dp"
         android:layout_height="match_parent"
-        android:layout_weight="11"
         android:layout_margin="10dp"
         android:id="@+id/dtiPriceET"
         android:background="@drawable/bottomline"
@@ -56,9 +51,8 @@
         android:inputType="number"
         android:gravity="center" />
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="8">
+        android:layout_width="96dp"
+        android:layout_height="match_parent">
         <CheckBox
             android:enabled="false"
             android:layout_width="wrap_content"
@@ -67,9 +61,8 @@
             android:layout_centerInParent="true" />
     </RelativeLayout>
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="8">
+        android:layout_width="96dp"
+        android:layout_height="match_parent">
         <CheckBox
             android:enabled="false"
             android:layout_width="wrap_content"
@@ -79,9 +72,8 @@
     </RelativeLayout>
     <EditText
         android:textCursorDrawable="@null"
-        android:layout_width="0dp"
+        android:layout_width="220dp"
         android:layout_height="match_parent"
-        android:layout_weight="19"
         android:layout_margin="10dp"
         android:id="@+id/dtiOrderET"
         android:background="@drawable/bottomline"
@@ -91,9 +83,8 @@
         android:inputType="textCapSentences" />
     <EditText
         android:textCursorDrawable="@null"
-        android:layout_width="0dp"
+        android:layout_width="220dp"
         android:layout_height="match_parent"
-        android:layout_weight="20"
         android:layout_margin="10dp"
         android:id="@+id/dtiCommentET"
         android:background="@drawable/bottomline"
@@ -101,4 +92,4 @@
         android:textColor="@android:color/black"
         android:hint="Комментарий"
         android:inputType="textCapSentences" />
-</LinearLayout>
+</TableRow>

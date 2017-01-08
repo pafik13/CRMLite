@@ -1,38 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:minWidth="25px"
-    android:minHeight="64px"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="2dp"
     android:background="@color/Grey_300">
-    <ScrollView
+    <LinearLayout
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:background="@color/Grey_300">
-        <LinearLayout
+        android:layout_height="wrap_content">
+        <TableLayout
             android:minWidth="25px"
             android:minHeight="25px"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:minWidth="25px"
-                android:minHeight="25px"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/efEmployeeTable"
-                android:animateLayoutChanges="true" />
-            <Button
-                android:id="@+id/efAddB"
-                android:layout_below="@id/efEmployeeTable"
-                android:text="Добавить сотрудника"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp" />
-        </LinearLayout>
-    </ScrollView>
-</RelativeLayout>
+            android:layout_height="wrap_content"
+            android:id="@+id/efEmployeeTable" />
+        <Button
+            android:id="@+id/efAddB"
+            android:layout_below="@id/efEmployeeTable"
+            android:text="Добавить сотрудника"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp" />
+    </LinearLayout>
+</ScrollView>

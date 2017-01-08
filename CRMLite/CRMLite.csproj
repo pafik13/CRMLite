@@ -214,9 +214,9 @@
     <Compile Include="Lib\Entities\AttendanceOnPause.cs" />
     <Compile Include="Lib\IMakePhotoAfterAttendance.cs" />
     <Compile Include="Lib\Entities\PhotoComment.cs" />
+    <Compile Include="Lib\Consts.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
@@ -310,7 +310,7 @@
     <AndroidResource Include="Resources\layout\HospitalDialog.axml" />
     <AndroidResource Include="Resources\layout\Sync.axml" />
     <AndroidResource Include="Resources\layout\fragment_screen_slide_page.axml" />
-    <AndroidResource Include="Resources\layout\activity_screen_slide.axml" />
+    <AndroidResource Include="Resources\layout\Attendance.axml" />
     <AndroidResource Include="Resources\layout\PharmacyFragment.axml" />
     <AndroidResource Include="Resources\layout\EmployeeFragment.axml" />
     <AndroidResource Include="Resources\layout\InfoFragment.axml" />
@@ -318,15 +318,8 @@
     <AndroidResource Include="Resources\layout\DistributionTableHeader.axml" />
     <AndroidResource Include="Resources\layout\Divider.axml" />
     <AndroidResource Include="Resources\layout\InfoPresentationItem.axml" />
-    <AndroidResource Include="Resources\layout\InfoCoterieItem.axml" />
     <AndroidResource Include="Resources\layout\InfoMessageItem.axml" />
     <AndroidResource Include="Resources\drawable\bottomline.xml" />
-    <AndroidResource Include="Resources\drawable\ic_add_circle_outline_black_36dp.png" />
-    <AndroidResource Include="Resources\drawable\ic_exit_to_app_black_36dp.png" />
-    <AndroidResource Include="Resources\drawable\ic_keyboard_arrow_left_black_24dp.png" />
-    <AndroidResource Include="Resources\drawable\ic_keyboard_arrow_right_black_24dp.png" />
-    <AndroidResource Include="Resources\drawable\ic_local_library_black_36dp.png" />
-    <AndroidResource Include="Resources\drawable\ic_loop_black_36dp.png" />
     <AndroidResource Include="Resources\drawable\splash_logo.png" />
     <AndroidResource Include="Resources\drawable\splash_screen.xml" />
     <AndroidResource Include="Resources\drawable\Icon.png" />
@@ -335,7 +328,6 @@
     <AndroidResource Include="Resources\layout\PhotoTableItem.axml" />
     <AndroidResource Include="Resources\drawable\bottomline_with_states.xml" />
     <AndroidResource Include="Resources\drawable\bottomline_focused.xml" />
-    <AndroidResource Include="Resources\drawable\ic_visibility_black_36dp.png" />
     <AndroidResource Include="Resources\drawable\rightline.xml" />
     <AndroidResource Include="Resources\layout\History.axml" />
     <AndroidResource Include="Resources\layout\HistoryTableItem.axml" />
@@ -349,11 +341,7 @@
     <AndroidResource Include="Resources\layout\FinanceDialog.axml" />
     <AndroidResource Include="Resources\layout\SaleTableItem.axml" />
     <AndroidResource Include="Resources\layout\SaleTableHeader.axml" />
-    <AndroidResource Include="Resources\drawable\ic_description_black_48dp.png" />
-    <AndroidResource Include="Resources\drawable\ic_history_black_48dp.png" />
-    <AndroidResource Include="Resources\drawable\ic_shopping_cart_black_48dp.png" />
     <AndroidResource Include="Resources\values\Dimens.xml" />
-    <AndroidResource Include="Resources\drawable\ic_shopping_cart_black_36dp.png" />
     <AndroidResource Include="Resources\layout\Contract.axml" />
     <AndroidResource Include="Resources\layout\ContractTableItem.axml" />
     <AndroidResource Include="Resources\layout\FinanceTableSection.axml" />
@@ -362,8 +350,6 @@
     <AndroidResource Include="Resources\layout\FinanceDialogTableItem.axml" />
     <AndroidResource Include="Resources\layout\FinanceDialogTableHeader.axml" />
     <AndroidResource Include="Resources\layout\Material.axml" />
-    <AndroidResource Include="Resources\drawable\ic_list_black_48dp.png" />
-    <AndroidResource Include="Resources\drawable\ic_subscriptions_black_48dp.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_list_black_48dp.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_subscriptions_black_48dp.png" />
     <AndroidResource Include="Resources\drawable-mdpi\ic_list_black_48dp.png" />
@@ -587,6 +573,29 @@
     <AndroidResource Include="Resources\drawable-xhdpi\ic_add_a_photo_black_48dp.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_add_a_photo_black_48dp.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_add_a_photo_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_description_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_history_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_shopping_cart_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_shopping_cart_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_visibility_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_description_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_history_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_shopping_cart_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_shopping_cart_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_visibility_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_visibility_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_history_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_shopping_cart_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_description_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_visibility_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_history_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_shopping_cart_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_description_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_visibility_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_history_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_shopping_cart_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_shopping_cart_black_36dp.png" />
+    <AndroidResource Include="Resources\drawable\bottomline_for_distribution.xml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
