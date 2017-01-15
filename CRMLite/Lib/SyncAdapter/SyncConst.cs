@@ -50,10 +50,12 @@ namespace CRMLite.Lib.Sync
 
 		public const string DrugBrand = "DrugBrand";
 		public const string DrugSKU = "DrugSKU";
+		public const string Pharmacy = "Pharmacy";
+		public const string Attendance = "Attendance";
 
-
-		public static Uri GetURI(string lastPathSegment) { 
-			return Uri.Parse("content://" + AUTHORITY + "/" + lastPathSegment); 
+		public static Uri GetURI(string lastPathSegment)
+		{
+			return Uri.Parse("content://" + AUTHORITY + "/" + lastPathSegment);
 		}
 	}
 }

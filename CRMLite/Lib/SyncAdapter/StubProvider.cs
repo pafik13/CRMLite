@@ -277,6 +277,12 @@ namespace CRMLite.Lib.Sync
 					case SyncConst.DrugBrand:
 						var list7 = DB.All<DrugBrand>().Where(item => item.uuid == uuid);
 						return RemoveItems(DB, list7, uuid);
+					case SyncConst.Pharmacy:
+						var list8 = DB.All<Pharmacy>().Where(item => item.UUID == uuid);
+						return RemoveItems(DB, list8, uuid);
+					case SyncConst.Attendance:
+						var list9 = DB.All<Attendance>().Where(item => item.UUID == uuid);
+						return RemoveItems(DB, list9, uuid);
 					default:
 						Log.Error(TAG, "Unhandled selection:" + selection, "StubProvider.Delete");
 						return -1;

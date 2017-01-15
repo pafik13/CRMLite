@@ -686,6 +686,35 @@ namespace CRMLite
 				     .ToList();
 		}
 
+
+		internal static List<RouteItem> GetEarlyPerfomedRouteItems(DateTimeOffset selectedDate)
+		{
+			int capacity = Helper.WeeksInRoute * 20 * 5;
+			var result = new List<RouteItem>(capacity);
+
+			if (Helper.WeeksInRoute < 2) return result;
+
+			var lowDate = selectedDate.AddDays(-7 * Helper.WeeksInRoute + 8).UtcDateTime.Date;
+			var highDate = selectedDate.AddDays(-1).UtcDateTime.Date;
+
+			var pharmaciesUUIDs = new List<string>(capacity);
+			foreach (var item in Me.DB.All<Attendance>()) {
+				if (highDate >= item.When.Date && item.When.Date >= lowDate) {
+					pharmaciesUUIDs.Add(item.Pharmacy);
+				}
+			}
+
+			foreach (var item in Me.DB.All<RouteItem>()) {
+				if (highDate >= item.Date.Date && item.Date.Date >= lowDate) {
+					if (pharmaciesUUIDs.Contains(item.Pharmacy)) {
+						result.Add(item);
+					}
+				}
+			}
+
+			return result;
+		}
+
 		internal static List<RouteItem> GetRouteItems(DateTimeOffset selectedDate)
 		{
 			var date = selectedDate.UtcDateTime.Date;
@@ -730,17 +759,7 @@ namespace CRMLite
 						result[attendance.Pharmacy][key]++;
 					}
 				} else {
-					HockeyApp.MetricsManager.TrackEvent(
-						"MainDatabase.GetProfileReportData",
-						new Dictionary<string, string> { 
-							{ "UUID", attendance.UUID },
-							{ "Pharmacy", attendance.Pharmacy },
-							{ "date", d.ToLongDateString() },
-							{ "android_id", Helper.AndroidId },
-							{ "agent_uuid", AgentUUID }
-						},
-						new Dictionary<string, double> { { "key", key } }
-					);
+					System.Diagnostics.Debug.WriteLine(string.Concat("GetProfileReportData:KeyNotFound:Pharmacy:", attendance.Pharmacy));
 				}
 			}
 			

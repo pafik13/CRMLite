@@ -17,7 +17,6 @@
     <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
     <ReleaseVersion>0.4</ReleaseVersion>
     <AndroidLinkMode>None</AndroidLinkMode>
-    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,7 +28,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <AndroidKeyStore>True</AndroidKeyStore>
-    <AndroidSigningKeyStore>C:\Users\pavel\AppData\Local\Xamarin\Mono for Android\Keystore\my_first_key\my_first_key.keystore</AndroidSigningKeyStore>
+    <AndroidSigningKeyStore>C:\Users\re1ax\AppData\Local\Xamarin\my_first_key\my_first_key.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>1611981</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>my_first_key</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>1611981</AndroidSigningKeyPass>
