@@ -26,9 +26,14 @@ namespace CRMLite
 	public class AttendanceActivity : V4App.FragmentActivity, ViewPager.IOnPageChangeListener, ILocationListener
 	{
 		public const int C_NUM_PAGES = 4;
+		public const int C_TIMER_MIN = 10;
+		public const int C_TIMER_MS = C_TIMER_MIN * 60 * 1000; // in milliseconds
+
 
 		ViewPager Pager;
 		TextView FragmentTitle;
+		TextView TimerText;
+		Timer Timer;
 		Button Close;
 		ImageView MakePhotoAfter;
 		ImageView Contracts;
@@ -93,6 +98,17 @@ namespace CRMLite
 			}
 		}
 
+		void HandleTimerCallback(object state)
+		{
+			var start = (DateTime)state;
+			var remain = (DateTime.Now - start).TotalMilliseconds - C_TIMER_MS;
+			var interval = TimeSpan.FromMilliseconds(remain);
+			RunOnUiThread(() => {
+				TimerText.Text = string.Concat("Осталось ", interval.Minutes, " мин. ", interval.Seconds, " сек.");
+				if (remain > 0) TimerText.SetTextColor(Android.Graphics.Color.Green);
+			});
+		}
+
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
 			RequestWindowFeature(WindowFeatures.NoTitle);
@@ -115,6 +131,10 @@ namespace CRMLite
 			FragmentTitle = FindViewById<TextView>(Resource.Id.aaTitleTV);
 			FragmentTitle.Text = @"АПТЕКА";
 
+			TimerText = FindViewById<TextView>(Resource.Id.aaTimerTV);
+			TimerText.Text = C_TIMER_MIN.ToString();
+			Timer = new Timer(HandleTimerCallback, DateTime.Now, Timeout.Infinite, 1000);
+			Timer.Change(0, 1000);
 			Pager = FindViewById<ViewPager>(Resource.Id.aaContainerVP);
 			Pager.AddOnPageChangeListener(this);
 			Pager.OffscreenPageLimit = 3;
