@@ -876,6 +876,27 @@ namespace CRMLite
 		{
 			return Me.DB.All<T>().Where(item => item.Attendance == attendanceUUID).ToList();
 		}
+		
+		internal static int? GetCustomizationInt(string key)
+		{
+			var cust = Me.DB.All<Customization>().FirstOrDefault(c => c.type == "int" && c.key == key);
+			if (cust == null) return null;
+			return int.Parse(cust.value);
+		}
+		
+		internal static float? GetCustomizationFloat(string key)
+		{
+			var cust = Me.DB.All<Customization>().FirstOrDefault(c => c.type == "float" && c.key == key);
+			if (cust == null) return null;
+			return float.Parse(cust.value);
+		}
+		
+		internal static string GetCustomizationString(string key)
+		{
+			var cust = Me.DB.All<Customization>().FirstOrDefault(c => c.type == "string" && c.key == key);
+			if (cust == null) return string.Empty;
+			return cust.value;
+		}
 
 		internal static IEnumerable<SaleDataByMonth> GetSaleDatas(string pharmacyUUID, DateTimeOffset[] dates)
 		{
