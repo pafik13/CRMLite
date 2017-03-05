@@ -101,7 +101,7 @@ namespace CRMLite
 		{
 			var start = (DateTime)state;
 			var remain = (DateTime.Now - start).TotalMilliseconds - TimerMS;
-			var interval = TimeSpan.FromMilliseconds(remain);
+			var interval = TimeSpan.FromMilliseconds(remain.Value);
 			RunOnUiThread(() => {
 				if (remain > 0) 
 				{

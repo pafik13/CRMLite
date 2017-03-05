@@ -46,11 +46,13 @@ namespace CRMLite.Lib.Sync
 			var tag = TAG + ":OnPerformSync";
 
 			var DB_PATH = extras.GetString(MainDatabase.C_DB_PATH, string.Empty);
+			var LOC_PATH = extras.GetString(MainDatabase.C_LOC_PATH, string.Empty);
 			var ACCESS_TOKEN = extras.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
 			var HOST_URL = extras.GetString(SigninDialog.C_HOST_URL, string.Empty);
 			//string HOST_URL = "http://sbl-crm-project-pafik13.c9users.io:8080/";
 
 			bool hasBDPath = true;
+			bool hasLocPath = true;
 			bool hasAccessToken = true;
 			bool hasHostURL = true;
 
@@ -59,6 +61,13 @@ namespace CRMLite.Lib.Sync
 				Log.Error(tag, "DB_PATH is NULL");
 			} else {
 				Log.Info(tag, string.Format("DB_PATH: {0}", DB_PATH));
+			}
+
+			if (string.IsNullOrEmpty(LOC_PATH)) {
+				hasLocPath = false;
+				Log.Error(tag, "LOC_PATH is NULL");
+			} else {
+				Log.Info(tag, string.Format("LOC_PATH: {0}", LOC_PATH));
 			}
 
 			if (string.IsNullOrEmpty(ACCESS_TOKEN)) {
@@ -75,7 +84,7 @@ namespace CRMLite.Lib.Sync
 				Log.Info(tag, string.Format("HOST_URL: {0}", HOST_URL));
 			}
 
-			if (hasBDPath && hasAccessToken && hasHostURL) {
+			if (hasBDPath && hasLocPath && hasAccessToken && hasHostURL) {
 				var client = new RestClient(HOST_URL);
 
 				// ПОЛУЧЕНИЕ ДАННЫХ
@@ -193,14 +202,15 @@ namespace CRMLite.Lib.Sync
 					SyncConst.PromotionDatas,
 					SyncConst.ResumeDatas,
 					SyncConst.RouteItems,
-					SyncConst.ExcludeRouteItems
+					SyncConst.ExcludeRouteItems,
+		            SyncConst.GPSLocations
 				};
 
 				foreach (var entities in entitiesArray) {
 					// 1. получить данные
 					Log.Info(tag, string.Format("Start Query, {0}", entities));
 					var entyitiesURI = SyncConst.GetURI(entities);
-					var args = new string[] { DB_PATH };
+					var args = entities == SyncConst.GPSLocations ? new string[] { LOC_PATH } : new string[] { DB_PATH };
 					var cursor = provider.Query(entyitiesURI, EMPTY_STRING_ARRAY, string.Empty, args, string.Empty);
 					if (cursor == null) {
 						Log.Info(tag, string.Format("End Query, cursor is NULL"));

@@ -12,15 +12,20 @@ namespace CRMLite
 	public class MainDatabase
 	{
 		public const string C_DB_PATH = "C_DB_PATH";
+		public const string C_LOC_PATH = "C_LOC_PATH";
 
 		readonly Realm DB;
 		readonly RealmConfiguration Config;
 
+		readonly RealmConfiguration ConfigForLocation;
+
 		internal static string DBPath { get { return Me.DB.Config.DatabasePath; } }
+		internal static string LOCPath { get { return Me.ConfigForLocation.DatabasePath; } }
 
 		ConcurrentDictionary<SyncItem, SyncItem> SyncDictionary;
 
 		ConcurrentDictionary<string, SyncResult> ResultDictionary;
+
 
 		//int QueueMaxSize = 20;
 
@@ -83,9 +88,15 @@ namespace CRMLite
 			new System.IO.FileInfo(dbFileLocation).Directory.Create();
 			//}
 			//Config = new RealmConfiguration(Helper.C_DB_FILE_NAME);
-			Config = new RealmConfiguration(dbFileLocation, false);
+			Config = new RealmConfiguration(dbFileLocation, true);
+			//Realm.DeleteRealm(Config);
 			DB = Realm.GetInstance(Config);
 
+			string locFileLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), username, Helper.C_LOC_FILE_NAME);
+			ConfigForLocation = new RealmConfiguration(locFileLocation, true);
+			//Realm.DeleteRealm(ConfigForLocation);
+			var loc = Realm.GetInstance(ConfigForLocation);
+				
 			SyncDictionary = new ConcurrentDictionary<SyncItem, SyncItem>();
 
 			ResultDictionary = new ConcurrentDictionary<string, SyncResult>();

@@ -16,12 +16,9 @@ namespace CRMLite.Services
 		public event EventHandler<ProviderEnabledEventArgs> ProviderEnabled = delegate { };
 		public event EventHandler<StatusChangedEventArgs> StatusChanged = delegate { };
 
-		public LocationService()
-		{
-		}
-
 		// Set our location manager as the system location service
-		protected LocationManager LocMgr = Application.Context.GetSystemService("location") as LocationManager;
+		protected LocationManager LocMgr;//= Application.Context.GetSystemService(LocationService) as LocationManager;
+			//Application.Context.GetSystemService("location") as LocationManager;
 
 		readonly string logTag = "LocationService";
 		IBinder binder;
@@ -29,6 +26,10 @@ namespace CRMLite.Services
 		public override void OnCreate()
 		{
 			base.OnCreate();
+			if (LocMgr == null) {
+				LocMgr = Application.Context.GetSystemService(LocationService) as LocationManager;
+			}
+			StartLocationUpdates();
 			Log.Debug(logTag, "OnCreate called in the Location Service");
 		}
 
@@ -37,7 +38,7 @@ namespace CRMLite.Services
 		public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
 		{
 			Log.Debug(logTag, "LocationService started");
-
+			base.OnStartCommand(intent, flags, startId);
 			return StartCommandResult.Sticky;
 		}
 
@@ -46,10 +47,11 @@ namespace CRMLite.Services
 		// reuse the same instance of the binder
 		public override IBinder OnBind(Intent intent)
 		{
-			Log.Debug(logTag, "Client now bound to service");
+			return null;
+			//Log.Debug(logTag, "Client now bound to service");
 
-			binder = new LocationServiceBinder(this);
-			return binder;
+			//binder = new LocationServiceBinder(this);
+			//return binder;
 		}
 
 		// Handle location updates from the location manager
@@ -67,7 +69,7 @@ namespace CRMLite.Services
 			Log.Debug(logTag, string.Format("You are about to get location updates via {0}", locationProvider));
 
 			// Get an initial fix on location
-			LocMgr.RequestLocationUpdates(locationProvider, 2000, 0, this);
+			LocMgr.RequestLocationUpdates(locationProvider, 2000, 1, this);
 
 			Log.Debug(logTag, "Now sending location updates");
 		}

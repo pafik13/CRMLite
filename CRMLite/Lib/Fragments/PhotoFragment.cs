@@ -448,13 +448,15 @@ namespace CRMLite
 			}
 
 			foreach (var photo in Photos) {
-				var photoData = MainDatabase.CreateData<PhotoData>(current.UUID);
-				photoData.PhotoType = photo.PhotoType;
-				photoData.Brand = photo.Brand;
-				photoData.Stamp = photo.Stamp;
-				photoData.PhotoPath = photo.PhotoPath;
-				photoData.Latitude = photo.Latitude;
-				photoData.Longitude = photo.Longitude;
+				if (string.IsNullOrEmpty(photo.UUID)) {
+					var photoData = MainDatabase.CreateData<PhotoData>(current.UUID);
+					photoData.PhotoType = photo.PhotoType;
+					photoData.Brand = photo.Brand;
+					photoData.Stamp = photo.Stamp;
+					photoData.PhotoPath = photo.PhotoPath;
+					photoData.Latitude = photo.Latitude;
+					photoData.Longitude = photo.Longitude;
+				}
 			}
 		}
 	}

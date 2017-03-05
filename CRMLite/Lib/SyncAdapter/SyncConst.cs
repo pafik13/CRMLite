@@ -35,6 +35,7 @@ namespace CRMLite.Lib.Sync
 		public const string ResumeDatas = "ResumeDatas";
 		public const string RouteItems = "RouteItems";
 		public const string ExcludeRouteItems = "ExcludeRouteItems";
+		public const string GPSLocations = "GPSLocations";
 
 		public const string SET_SYNCED = "set_synced";
 
@@ -52,6 +53,9 @@ namespace CRMLite.Lib.Sync
 		public const string DrugSKU = "DrugSKU";
 		public const string Pharmacy = "Pharmacy";
 		public const string Attendance = "Attendance";
+		public const string Net = "Net";
+		public const string Category = "Category";
+
 
 		public static Uri GetURI(string lastPathSegment)
 		{

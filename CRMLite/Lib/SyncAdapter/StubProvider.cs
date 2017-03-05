@@ -128,9 +128,13 @@ namespace CRMLite.Lib.Sync
 						type = typeof(ExcludeRouteItem).Name;
 						entities = GetItemsToSync<ExcludeRouteItem>(DB);
 						break;
+					case SyncConst.GPSLocations:
+						type = typeof(GPSLocation).Name;
+						entities = GetItemsToSync<GPSLocation>(DB);
+						break;
 					default:
 						Log.Error(TAG, "Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Query");
-						break ;
+						break;
 				}
 
 				if (entities == null) return cursor;
@@ -217,12 +221,20 @@ namespace CRMLite.Lib.Sync
 						var item7 = JsonConvert.DeserializeObject<DrugBrand>(json);
 						var list7 = DB.All<DrugBrand>().Where(d => d.uuid == item7.uuid);
 						return ManageItem(uri, DB, item7, list7, item7.uuid);
+					case SyncConst.Net:
+						var item8 = JsonConvert.DeserializeObject<Net>(json);
+						var list8 = DB.All<Net>().Where(d => d.uuid == item8.uuid);
+						return ManageItem(uri, DB, item8, list8, item8.uuid);
+					case SyncConst.Category:
+						var item9 = JsonConvert.DeserializeObject<Category>(json);
+						var list9 = DB.All<Category>().Where(d => d.uuid == item9.uuid);
+						return ManageItem(uri, DB, item9, list9, item9.uuid);
 					default:
 						return new Uri.Builder()
-						          .Scheme(uri.Scheme)
-						          .Authority(uri.Authority)
-						          .Path(SyncConst._ERROR)
-						          .Build();
+							          .Scheme(uri.Scheme)
+							          .Authority(uri.Authority)
+							          .Path(SyncConst._ERROR)
+							          .Build();
 				}
 
 			}

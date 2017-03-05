@@ -28,7 +28,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <AndroidKeyStore>True</AndroidKeyStore>
-    <AndroidSigningKeyStore>C:\Users\re1ax\AppData\Local\Xamarin\my_first_key\my_first_key.keystore</AndroidSigningKeyStore>
+    <AndroidSigningKeyStore>C:\Users\pavel\AppData\Local\Xamarin\Mono for Android\Keystore\my_first_key\my_first_key.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>1611981</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>my_first_key</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>1611981</AndroidSigningKeyPass>
@@ -57,9 +57,6 @@
     <Reference Include="Xamarin.Android.Support.Vector.Drawable">
       <HintPath>..\packages\Xamarin.Android.Support.Vector.Drawable.23.4.0.1\lib\MonoAndroid403\Xamarin.Android.Support.Vector.Drawable.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.Android.Support.Animated.Vector.Drawable">
-      <HintPath>..\packages\Xamarin.Android.Support.Animated.Vector.Drawable.23.4.0.1\lib\MonoAndroid403\Xamarin.Android.Support.Animated.Vector.Drawable.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.Android.Support.v7.AppCompat">
       <HintPath>..\packages\Xamarin.Android.Support.v7.AppCompat.23.4.0.1\lib\MonoAndroid403\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
     </Reference>
@@ -80,6 +77,9 @@
     </Reference>
     <Reference Include="HockeySDK">
       <HintPath>..\Components\hockeyappandroid-4.1.0.3\lib\android\HockeySDK.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Animated.Vector.Drawable">
+      <HintPath>..\packages\Xamarin.Android.Support.Animated.Vector.Drawable.23.4.0.1\lib\MonoAndroid403\Xamarin.Android.Support.Animated.Vector.Drawable.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +212,9 @@
     <Compile Include="Lib\Entities\AttendanceOnPause.cs" />
     <Compile Include="Lib\IMakePhotoAfterAttendance.cs" />
     <Compile Include="Lib\Entities\PhotoComment.cs" />
+    <Compile Include="Lib\Entities\Customization.cs" />
+    <Compile Include="Lib\Services\LocatorService.cs" />
+    <Compile Include="Lib\Entities\GPSLocation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

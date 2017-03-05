@@ -475,6 +475,7 @@ namespace CRMLite
 
 			var settingsBundle = new Bundle();
 			settingsBundle.PutString(MainDatabase.C_DB_PATH, MainDatabase.DBPath);
+			settingsBundle.PutString(MainDatabase.C_LOC_PATH, MainDatabase.LOCPath);
 			settingsBundle.PutString(SigninDialog.C_ACCESS_TOKEN, ACCESS_TOKEN);
 			settingsBundle.PutString(SigninDialog.C_HOST_URL, HOST_URL);
 			settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, false);

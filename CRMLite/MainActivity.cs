@@ -22,6 +22,7 @@ using HockeyApp.Android.Metrics;
 using CRMLite.Entities;
 using CRMLite.Adapters;
 using CRMLite.Dialogs;
+using CRMLite.Services;
 
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
 [assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
@@ -223,7 +224,7 @@ namespace CRMLite
 			FilterContent = FindViewById<TextView>(Resource.Id.maFilterTV);
 			AttendanceCount = FindViewById<TextView>(Resource.Id.maAttendanceCountTV);
 
-
+			//App
 			//LoginManager.Register(this, Secret.HockeyappAppId, LoginManager.LoginModeEmailOnly);
 			//LoginManager.VerifyLogin(this, Intent);
 			UpdateManager.Register(this, Secret.HockeyappAppId);
@@ -549,6 +550,13 @@ namespace CRMLite
 			} catch (Exception ex) {
 				SDiag.Debug.WriteLine(ex.Message);
 			}
+
+
+			//StartService(new Intent(this, typeof(Locator)));
+			//StartService(new Intent(this, typeof(BackService)));
+			var locator = new Intent(this, typeof(LocatorService));
+			locator.PutExtra(MainDatabase.C_LOC_PATH, MainDatabase.LOCPath);
+			StartService(locator);
 
 
 			var packageInfo = ApplicationContext.PackageManager.GetPackageInfo(ApplicationContext.PackageName, 0);
