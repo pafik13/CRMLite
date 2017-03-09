@@ -221,7 +221,7 @@ namespace CRMLite.Lib.Sync
 					// 2. синхронизировать
 					Log.Info(tag, string.Format("Start Sync, {0}", entities));
 					var uuids = new List<string>();
-					uuids.Add(DB_PATH);
+					uuids.Add(entities == SyncConst.GPSLocations ? LOC_PATH : DB_PATH);
 					if (cursor != null) {
 						try {
 							if (cursor.Count > 0) {

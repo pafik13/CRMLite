@@ -381,17 +381,20 @@ namespace CRMLite
 										DistributionTable,
 										false)
 							  ) as LinearLayout;
-
-					var item = dictDistrs[SKU.uuid];
+					
 					row.SetTag(Resource.String.DrugSKUUUID, SKU.uuid);
 					row.FindViewById<TextView>(Resource.Id.dtiDrugSKUTV).Text = SKU.name;
-					row.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked = item.IsExistence;
-					row.FindViewById<EditText>(Resource.Id.dtiCountET).Text = item.Count.ToString();
-					row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = item.Price.ToString();
-					row.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked = item.IsPresence;
-					row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked = item.HasPOS;
-					row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text = item.Order;
-					row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text = item.Comment;
+
+					if (dictDistrs.ContainsKey(SKU.uuid)) {
+						var item = dictDistrs[SKU.uuid];
+						row.FindViewById<CheckBox>(Resource.Id.dtiIsExistenceCB).Checked = item.IsExistence;
+						row.FindViewById<EditText>(Resource.Id.dtiCountET).Text = item.Count.ToString();
+						row.FindViewById<EditText>(Resource.Id.dtiPriceET).Text = item.Price.ToString();
+						row.FindViewById<CheckBox>(Resource.Id.dtiIsPresenceCB).Checked = item.IsPresence;
+						row.FindViewById<CheckBox>(Resource.Id.dtiHasPOSCB).Checked = item.HasPOS;
+						row.FindViewById<EditText>(Resource.Id.dtiOrderET).Text = item.Order;
+						row.FindViewById<EditText>(Resource.Id.dtiCommentET).Text = item.Comment;
+					}
 
 					if (HOST_URL.Contains("johnson")) {
 						row.FindViewById<TextView>(Resource.Id.dtiCommentET).Hint = "Приход";

@@ -193,42 +193,61 @@ namespace CRMLite.Lib.Sync
 			var db_path = values.GetAsString("db_path");
 			using (var DB = Realm.GetInstance(db_path)) {
 				switch (uri.LastPathSegment) {
-					case SyncConst.Distributor:
-						var item1 = JsonConvert.DeserializeObject<Distributor>(json);
-						var list1 = DB.All<Distributor>().Where(d => d.uuid == item1.uuid);
-						return ManageItem(uri, DB, item1, list1, item1.uuid);
-					case SyncConst.PhotoType:
-						var item2 = JsonConvert.DeserializeObject<PhotoType>(json);
-						var list2 = DB.All<PhotoType>().Where(d => d.uuid == item2.uuid);
-						return ManageItem(uri, DB, item2, list2, item2.uuid);
-					case SyncConst.DistributionAgreement:
-						var item3 = JsonConvert.DeserializeObject<DistributionAgreement>(json);
-						var list3 = DB.All<DistributionAgreement>().Where(d => d.uuid == item3.uuid);
-						return ManageItem(uri, DB, item3, list3, item3.uuid);
-					case SyncConst.PhotoAgreement:
-						var item4 = JsonConvert.DeserializeObject<PhotoAgreement>(json);
-						var list4 = DB.All<PhotoAgreement>().Where(d => d.uuid == item4.uuid);
-						return ManageItem(uri, DB, item4, list4, item4.uuid);
-					case SyncConst.PhotoAfterAttendance:
-						var item5 = JsonConvert.DeserializeObject<PhotoAfterAttendance>(json);
-						var list5 = DB.All<PhotoAfterAttendance>().Where(d => d.uuid == item5.uuid);
-						return ManageItem(uri, DB, item5, list5, item5.uuid);
-					case SyncConst.DrugSKU:
-						var item6 = JsonConvert.DeserializeObject<DrugSKU>(json);
-						var list6 = DB.All<DrugSKU>().Where(d => d.uuid == item6.uuid);
-						return ManageItem(uri, DB, item6, list6, item6.uuid);
-					case SyncConst.DrugBrand:
-						var item7 = JsonConvert.DeserializeObject<DrugBrand>(json);
-						var list7 = DB.All<DrugBrand>().Where(d => d.uuid == item7.uuid);
-						return ManageItem(uri, DB, item7, list7, item7.uuid);
-					case SyncConst.Net:
-						var item8 = JsonConvert.DeserializeObject<Net>(json);
-						var list8 = DB.All<Net>().Where(d => d.uuid == item8.uuid);
-						return ManageItem(uri, DB, item8, list8, item8.uuid);
-					case SyncConst.Category:
-						var item9 = JsonConvert.DeserializeObject<Category>(json);
-						var list9 = DB.All<Category>().Where(d => d.uuid == item9.uuid);
-						return ManageItem(uri, DB, item9, list9, item9.uuid);
+					case SyncConst.Distributor: {
+							var item = JsonConvert.DeserializeObject<Distributor>(json);
+							var list = DB.All<Distributor>().Where(d => d.uuid == item.uuid);
+							return ManageItem(uri, DB, item, list, item.uuid);
+						}
+					case SyncConst.PhotoType: {
+							var item = JsonConvert.DeserializeObject<PhotoType>(json);
+							var list = DB.All<PhotoType>().Where(d => d.uuid == item.uuid);
+							return ManageItem(uri, DB, item, list, item.uuid);
+						}
+					case SyncConst.DistributionAgreement: {
+							var item = JsonConvert.DeserializeObject<DistributionAgreement>(json);
+							var list = DB.All<DistributionAgreement>().Where(d => d.uuid == item.uuid);
+							return ManageItem(uri, DB, item, list, item.uuid);
+						}
+					case SyncConst.PhotoAgreement: {
+							var item = JsonConvert.DeserializeObject<PhotoAgreement>(json);
+							var list = DB.All<PhotoAgreement>().Where(d => d.uuid == item.uuid);
+							return ManageItem(uri, DB, item, list, item.uuid);
+						}
+					case SyncConst.PhotoAfterAttendance: {
+							var item = JsonConvert.DeserializeObject<PhotoAfterAttendance>(json);
+							var list = DB.All<PhotoAfterAttendance>().Where(d => d.uuid == item.uuid);
+							return ManageItem(uri, DB, item, list, item.uuid);
+						}
+					case SyncConst.DrugSKU: {
+							var item = JsonConvert.DeserializeObject<DrugSKU>(json);
+							var list = DB.All<DrugSKU>().Where(d => d.uuid == item.uuid);
+							return ManageItem(uri, DB, item, list, item.uuid);
+						}
+					case SyncConst.DrugBrand: {
+							var item = JsonConvert.DeserializeObject<DrugBrand>(json);
+							var list = DB.All<DrugBrand>().Where(d => d.uuid == item.uuid);
+							return ManageItem(uri, DB, item, list, item.uuid);
+						}
+					case SyncConst.Net: {
+							var item = JsonConvert.DeserializeObject<Net>(json);
+							var list = DB.All<Net>().Where(d => d.uuid == item.uuid);
+							return ManageItem(uri, DB, item, list, item.uuid);
+						}
+					case SyncConst.Category: {
+							var item = JsonConvert.DeserializeObject<Category>(json);
+							var list = DB.All<Category>().Where(d => d.uuid == item.uuid);
+							return ManageItem(uri, DB, item, list, item.uuid);
+						}
+					case SyncConst.Customization: {
+							var item = JsonConvert.DeserializeObject<Customization>(json);
+							var list = DB.All<Customization>().Where(d => d.uuid == item.uuid);
+							return ManageItem(uri, DB, item, list, item.uuid);
+						}
+					case SyncConst.WorkType: {
+							var item = JsonConvert.DeserializeObject<WorkType>(json);
+							var list = DB.All<WorkType>().Where(d => d.uuid == item.uuid);
+							return ManageItem(uri, DB, item, list, item.uuid);
+						}
 					default:
 						return new Uri.Builder()
 							          .Scheme(uri.Scheme)
@@ -365,6 +384,9 @@ namespace CRMLite.Lib.Sync
 									break;
 								case SyncConst.ExcludeRouteItems:
 									entities = DB.All<ExcludeRouteItem>().ToList<IEntity>();
+									break;
+								case SyncConst.GPSLocations:
+									entities = DB.All<GPSLocation>().ToList<IEntity>();
 									break;
 								default:
 									Log.Error(TAG, "Unhandled selection:" + selection, "StubProvider.Update");

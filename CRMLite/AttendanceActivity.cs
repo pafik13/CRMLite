@@ -136,15 +136,16 @@ namespace CRMLite
 
 			FragmentTitle = FindViewById<TextView>(Resource.Id.aaTitleTV);
 			FragmentTitle.Text = @"АПТЕКА";
-			
-			
+
+			TimerText = FindViewById<TextView>(Resource.Id.aaTimerTV);
 			TimerMin = MainDatabase.GetCustomizationInt(Customizations.AttendanceMinPeriod);
-			
+
 			if (TimerMin.HasValue) {
 				TimerMS = TimerMin * 60 * 1000;
-				TimerText = FindViewById<TextView>(Resource.Id.aaTimerTV);
 				TimerText.Text = TimerText.Text = string.Concat("Осталось ", TimerMin.ToString(), " мин. ", 00, " сек.");
 				Timer = new Timer(HandleTimerCallback, DateTime.Now, Timeout.Infinite, 1000);
+			} else {
+				TimerText.Visibility = ViewStates.Invisible;
 			}
 									
 			Pager = FindViewById<ViewPager>(Resource.Id.aaContainerVP);
@@ -215,7 +216,7 @@ namespace CRMLite
 					return;
 				}
 
-				if ((DateTimeOffset.Now - AttendanceStart.Value).TotalSeconds < 30) return;
+				//if ((DateTimeOffset.Now - AttendanceStart.Value).TotalSeconds < 30) return;
 				
 				if (TimerMin.HasValue) {
 					Toast.MakeText(this, "Не прошло минимально необходимое время визита...", ToastLength.Short).Show();

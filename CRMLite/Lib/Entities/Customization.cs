@@ -19,5 +19,6 @@ namespace CRMLite.Entities
 	public static class Customizations
 	{
 		public const string AttendanceMinPeriod = "AttendanceMinPeriod";
+		public const string IsLocatorEnable = "IsLocatorEnable";
 	}
 }

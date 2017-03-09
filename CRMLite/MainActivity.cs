@@ -551,13 +551,13 @@ namespace CRMLite
 				SDiag.Debug.WriteLine(ex.Message);
 			}
 
-
-			//StartService(new Intent(this, typeof(Locator)));
-			//StartService(new Intent(this, typeof(BackService)));
-			var locator = new Intent(this, typeof(LocatorService));
-			locator.PutExtra(MainDatabase.C_LOC_PATH, MainDatabase.LOCPath);
-			StartService(locator);
-
+			var isLocatorEnable = MainDatabase.GetCustomizationBool(Customizations.IsLocatorEnable);
+			if (isLocatorEnable.HasValue && isLocatorEnable.Value) {
+				var locator = new Intent(this, typeof(LocatorService));
+				locator.PutExtra(MainDatabase.C_LOC_PATH, MainDatabase.LOCPath);
+				locator.PutExtra(SigninDialog.C_AGENT_UUID, agentUUID);
+				StartService(locator);
+			}
 
 			var packageInfo = ApplicationContext.PackageManager.GetPackageInfo(ApplicationContext.PackageName, 0);
 			var version = string.Format("Версия: {0} ({1})", packageInfo.VersionName, packageInfo.VersionCode);

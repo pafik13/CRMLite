@@ -462,10 +462,12 @@ namespace CRMLite.Dialogs
 				return false;
 			}
 
+			string drugWhere = @"where={""isActive"":true}";
+
 			WriteInfo(@"Получение LoadDrugSKUs", 1000);
 			try {
 				//LoadDrugSKUs(client);
-				LoadItems<DrugSKU>(client, 300);
+				LoadItems<DrugSKU>(client, 300, drugWhere);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;
@@ -474,7 +476,7 @@ namespace CRMLite.Dialogs
 			WriteInfo(@"Получение LoadDrugBrands", 1000);
 			try {
 				//LoadDrugBrands(client);
-				LoadItems<DrugBrand>(client, 300);
+				LoadItems<DrugBrand>(client, 300, drugWhere);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;

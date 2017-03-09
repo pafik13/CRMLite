@@ -88,12 +88,12 @@ namespace CRMLite
 			new System.IO.FileInfo(dbFileLocation).Directory.Create();
 			//}
 			//Config = new RealmConfiguration(Helper.C_DB_FILE_NAME);
-			Config = new RealmConfiguration(dbFileLocation, true);
+			Config = new RealmConfiguration(dbFileLocation, false);
 			//Realm.DeleteRealm(Config);
 			DB = Realm.GetInstance(Config);
 
 			string locFileLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), username, Helper.C_LOC_FILE_NAME);
-			ConfigForLocation = new RealmConfiguration(locFileLocation, true);
+			ConfigForLocation = new RealmConfiguration(locFileLocation, false);
 			//Realm.DeleteRealm(ConfigForLocation);
 			var loc = Realm.GetInstance(ConfigForLocation);
 				
@@ -901,7 +901,14 @@ namespace CRMLite
 			if (cust == null) return null;
 			return float.Parse(cust.value);
 		}
-		
+
+		internal static bool? GetCustomizationBool(string key)
+		{
+			var cust = Me.DB.All<Customization>().FirstOrDefault(c => c.type == "bool" && c.key == key);
+			if (cust == null) return null;
+			return bool.Parse(cust.value);
+		}
+
 		internal static string GetCustomizationString(string key)
 		{
 			var cust = Me.DB.All<Customization>().FirstOrDefault(c => c.type == "string" && c.key == key);

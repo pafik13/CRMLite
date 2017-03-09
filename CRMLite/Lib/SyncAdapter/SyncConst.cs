@@ -55,7 +55,8 @@ namespace CRMLite.Lib.Sync
 		public const string Attendance = "Attendance";
 		public const string Net = "Net";
 		public const string Category = "Category";
-
+		public const string Customization = "Customization";
+		public const string WorkType = "WorkType";
 
 		public static Uri GetURI(string lastPathSegment)
 		{
