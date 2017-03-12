@@ -28,7 +28,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <AndroidKeyStore>True</AndroidKeyStore>
-    <AndroidSigningKeyStore>C:\Users\pavel\AppData\Local\Xamarin\Mono for Android\Keystore\my_first_key\my_first_key.keystore</AndroidSigningKeyStore>
+    <AndroidSigningKeyStore>C:\Users\re1ax\AppData\Local\Xamarin\my_first_key\my_first_key.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>1611981</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>my_first_key</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>1611981</AndroidSigningKeyPass>
@@ -206,7 +206,6 @@
     <Compile Include="Lib\Entities\DistributionAgreement.cs" />
     <Compile Include="Lib\Entities\PhotoAgreement.cs" />
     <Compile Include="DistributorRemainActivity.cs" />
-    <Compile Include="Lib\Services\LocationService.cs" />
     <Compile Include="Lib\Receivers\TimeChangedReceiver.cs" />
     <Compile Include="Lib\Entities\PhotoAfterAttendance.cs" />
     <Compile Include="Lib\Entities\AttendanceOnPause.cs" />

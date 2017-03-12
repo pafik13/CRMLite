@@ -75,10 +75,11 @@ namespace CRMLite.Services
 		{
 			Log.Info(TAG, "OnDestroy");
 
-			base.OnDestroy();
 			LocationManager.RemoveUpdates(this);
 			StopForeground(true);
 			Realm.Close();
+
+			base.OnDestroy();
 		}
 
 		public void OnLocationChanged(Location location)

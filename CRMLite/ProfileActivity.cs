@@ -12,6 +12,7 @@ using Android.Views.InputMethods;
 using CRMLite.Dialogs;
 using CRMLite.Adapters;
 using CRMLite.Entities;
+using CRMLite.Services;
 
 namespace CRMLite
 {
@@ -44,57 +45,58 @@ namespace CRMLite
 			};
 
 			FindViewById<Button>(Resource.Id.paExitAppB).Click += (sender, e) => {
-				//int count = 0;
+				int count = 0;
 
-				//count += MainDatabase.CountItemsToSync<Attendance>();
-				//count += MainDatabase.CountItemsToSync<CompetitorData>();
-				//count += MainDatabase.CountItemsToSync<ContractData>();
-				//count += MainDatabase.CountItemsToSync<CoterieData>();
-				//count += MainDatabase.CountItemsToSync<DistributionData>();
-				//count += MainDatabase.CountItemsToSync<Pharmacy>();
-				//count += MainDatabase.CountItemsToSync<Employee>();
+				count += MainDatabase.CountItemsToSync<Attendance>();
+				count += MainDatabase.CountItemsToSync<CompetitorData>();
+				count += MainDatabase.CountItemsToSync<ContractData>();
+				count += MainDatabase.CountItemsToSync<CoterieData>();
+				count += MainDatabase.CountItemsToSync<DistributionData>();
+				count += MainDatabase.CountItemsToSync<Pharmacy>();
+				count += MainDatabase.CountItemsToSync<Employee>();
 
-				//count += MainDatabase.CountItemsToSync<GPSData>();
+				count += MainDatabase.CountItemsToSync<GPSData>();
 
-				//count += MainDatabase.CountItemsToSync<Hospital>();
-				//count += MainDatabase.CountItemsToSync<HospitalData>();
+				count += MainDatabase.CountItemsToSync<Hospital>();
+				count += MainDatabase.CountItemsToSync<HospitalData>();
 
-				////var monthFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByMonth>();
-				////var quarterFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByQuarter>();
-				////var monthSaleDatas = MainDatabase.GetItemsToSync<SaleDataByMonth>();
-				////var quarterSaleDatas = MainDatabase.GetItemsToSync<SaleDataByQuarter>();
+				//var monthFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByMonth>();
+				//var quarterFinanceDatas = MainDatabase.GetItemsToSync<FinanceDataByQuarter>();
+				//var monthSaleDatas = MainDatabase.GetItemsToSync<SaleDataByMonth>();
+				//var quarterSaleDatas = MainDatabase.GetItemsToSync<SaleDataByQuarter>();
 
-				//count += MainDatabase.CountItemsToSync<MessageData>();
+				count += MainDatabase.CountItemsToSync<MessageData>();
 
-				//count += MainDatabase.CountItemsToSync<PresentationData>();
-				//count += MainDatabase.CountItemsToSync<PromotionData>();
-				//count += MainDatabase.CountItemsToSync<ResumeData>();
-				//count += MainDatabase.CountItemsToSync<RouteItem>();
+				count += MainDatabase.CountItemsToSync<PresentationData>();
+				count += MainDatabase.CountItemsToSync<PromotionData>();
+				count += MainDatabase.CountItemsToSync<ResumeData>();
+				count += MainDatabase.CountItemsToSync<RouteItem>();
 
-				//count += MainDatabase.CountItemsToSync<RouteItem>();
+				count += MainDatabase.CountItemsToSync<RouteItem>();
 
-				//count += MainDatabase.CountItemsToSync<PhotoData>();
+				count += MainDatabase.CountItemsToSync<PhotoData>();
 
-				//if (count > 0) {
-				//	new AlertDialog.Builder(this)
-				//	               .SetTitle(Resource.String.warning_caption)
-				//				   .SetMessage("Перед выходом необходимо синхронизировать все данные!!!")
-				//				   .SetCancelable(true)
-				//				   .SetPositiveButton("OK", (caller, arguments) => {
-				//					   if (caller is Dialog) {
-				//						   (caller as Dialog).Dismiss();
-				//					   }
-				//				   })
-				//				   .Show();
-				//} else {
+				if (count > 0) {
+					new AlertDialog.Builder(this)
+					               .SetTitle(Resource.String.warning_caption)
+								   .SetMessage("Перед выходом необходимо синхронизировать все данные!!!")
+								   .SetCancelable(true)
+								   .SetPositiveButton("OK", (caller, arguments) => {
+									   if (caller is Dialog) {
+										   (caller as Dialog).Dismiss();
+									   }
+								   })
+								   .Show();
+				} else {
+					StopService(new Intent(this, typeof(LocatorService)));
 
 					GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
-						.Edit()
-						.PutString(SigninDialog.C_USERNAME, string.Empty)
-						.Commit();
-					MainDatabase.Dispose();
-					Finish();
-				//}
+							.Edit()
+							.PutString(SigninDialog.C_USERNAME, string.Empty)
+							.Commit();
+						MainDatabase.Dispose();
+						Finish();
+				}
 			};
 
 			Content = FindViewById<LinearLayout>(Resource.Id.paAttendanceByWeekLL);

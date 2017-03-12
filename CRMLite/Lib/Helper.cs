@@ -27,7 +27,6 @@ namespace CRMLite
 	{
 		public static bool IsTimeChanged;
 
-		//public const string C_DB_FILE_NAME = @"main.realm";
 		public static string C_DB_FILE_NAME = @"main.realm";
 		public static string C_LOC_FILE_NAME = @"location.realm";
 

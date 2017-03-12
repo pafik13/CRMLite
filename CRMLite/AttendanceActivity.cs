@@ -19,6 +19,7 @@ using V4App = Android.Support.V4.App;
 
 using CRMLite.Dialogs;
 using CRMLite.Entities;
+using CRMLite.Services;
 
 namespace CRMLite
 {
@@ -102,16 +103,18 @@ namespace CRMLite
 			var start = (DateTime)state;
 			var remain = (DateTime.Now - start).TotalMilliseconds - TimerMS;
 			var interval = TimeSpan.FromMilliseconds(remain.Value);
+			var text = string.Empty;
 			RunOnUiThread(() => {
-				if (remain > 0) 
+				if (remain < 0) 
+				{
+					text = string.Concat("Осталось ", Math.Abs(interval.Minutes), " мин. ", Math.Abs(interval.Seconds), " сек.");
+				} else 
 				{
 					TimerMin = null;
 					TimerText.SetTextColor(Android.Graphics.Color.Black);
-					TimerText.Text = string.Concat("Сверх нормы ", interval.Minutes, " мин. ", Math.Abs(interval.Seconds), " сек.");
-				} else 
-				{
-					TimerText.Text = string.Concat("Осталось ", interval.Minutes, " мин. ", Math.Abs(interval.Seconds), " сек.");
+					text = string.Concat("Сверх нормы ", interval.Minutes, " мин. ", interval.Seconds, " сек.");
 				}
+				TimerText.Text = text;
 			});
 		}
 
@@ -141,8 +144,8 @@ namespace CRMLite
 			TimerMin = MainDatabase.GetCustomizationInt(Customizations.AttendanceMinPeriod);
 
 			if (TimerMin.HasValue) {
-				TimerMS = TimerMin * 60 * 1000;
-				TimerText.Text = TimerText.Text = string.Concat("Осталось ", TimerMin.ToString(), " мин. ", 00, " сек.");
+				TimerMS = TimerMin.Value * 60 * 1000;
+				TimerText.Text = TimerText.Text = string.Concat("Осталось ", TimerMin.Value.ToString(), " мин. ", 00, " сек.");
 				Timer = new Timer(HandleTimerCallback, DateTime.Now, Timeout.Infinite, 1000);
 			} else {
 				TimerText.Visibility = ViewStates.Invisible;
@@ -159,6 +162,8 @@ namespace CRMLite
 				if (!IsLocationActive() || !IsInternetActive()) return;
 
 				if (AttendanceStart == null) {
+					StopService(new Intent(this, typeof(LocatorService)));
+
 					AttendanceStart = DateTimeOffset.Now;
 
 					MakePhotoAfter.Visibility = ViewStates.Gone;
@@ -213,16 +218,24 @@ namespace CRMLite
 					var button = sender as Button;
 					button.SetBackgroundResource(Resource.Color.Deep_Orange_500);
 					button.Text = "ЗАКОНЧИТЬ ВИЗИТ";
+
+					if (TimerMin.HasValue) {
+						Timer.Change(100, 1000);
+					}
 					return;
 				}
 
-				//if ((DateTimeOffset.Now - AttendanceStart.Value).TotalSeconds < 30) return;
+				if ((DateTimeOffset.Now - AttendanceStart.Value).TotalSeconds < 30) return;
 				
 				if (TimerMin.HasValue) {
 					Toast.MakeText(this, "Не прошло минимально необходимое время визита...", ToastLength.Short).Show();
 					return;
 				}
-				
+
+				if (TimerMin.HasValue) {
+					Timer.Dispose();
+				}
+
 				if (CurrentFocus != null) {
 					var imm = (InputMethodManager)GetSystemService(InputMethodService);
 					imm.HideSoftInputFromWindow(CurrentFocus.WindowToken, HideSoftInputFlags.None);
@@ -324,6 +337,7 @@ namespace CRMLite
 			if (AttendanceLast != null) {
 				if (AttendanceLast.When.Date == DateTimeOffset.UtcNow.Date) {
 					btnStartStop.Visibility = ViewStates.Gone;
+					TimerText.Visibility = ViewStates.Gone;
 				}
 
 				var afterAttPhotos = MainDatabase.GetItems<PhotoAfterAttendance>().Select(paa => paa.photoType).ToArray();

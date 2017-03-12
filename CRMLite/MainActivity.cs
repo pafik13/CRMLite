@@ -224,7 +224,6 @@ namespace CRMLite
 			FilterContent = FindViewById<TextView>(Resource.Id.maFilterTV);
 			AttendanceCount = FindViewById<TextView>(Resource.Id.maAttendanceCountTV);
 
-			//App
 			//LoginManager.Register(this, Secret.HockeyappAppId, LoginManager.LoginModeEmailOnly);
 			//LoginManager.VerifyLogin(this, Intent);
 			UpdateManager.Register(this, Secret.HockeyappAppId);
@@ -552,11 +551,15 @@ namespace CRMLite
 			}
 
 			var isLocatorEnable = MainDatabase.GetCustomizationBool(Customizations.IsLocatorEnable);
-			if (isLocatorEnable.HasValue && isLocatorEnable.Value) {
-				var locator = new Intent(this, typeof(LocatorService));
-				locator.PutExtra(MainDatabase.C_LOC_PATH, MainDatabase.LOCPath);
-				locator.PutExtra(SigninDialog.C_AGENT_UUID, agentUUID);
-				StartService(locator);
+			if (isLocatorEnable.HasValue) {
+				if (isLocatorEnable.Value) {
+					var locator = new Intent(this, typeof(LocatorService));
+					locator.PutExtra(MainDatabase.C_LOC_PATH, MainDatabase.LOCPath);
+					locator.PutExtra(SigninDialog.C_AGENT_UUID, agentUUID);
+					StartService(locator);
+				} else {
+					StopService(new Intent(this, typeof(LocatorService)));
+				}
 			}
 
 			var packageInfo = ApplicationContext.PackageManager.GetPackageInfo(ApplicationContext.PackageName, 0);

@@ -163,12 +163,12 @@ namespace CRMLite.Lib.Sync
 							.Build();
 			
 			if (item == null) {
-				Log.Error(TAG, string.Format("Cannot insert object:{0}:{1}. Find more than 1 record.", uri.LastPathSegment, uuid));
+				Log.Error(TAG, string.Format("Cannot insert object:{0}:{1}. item is NULL.", uri.LastPathSegment, uuid));
 				return ERROR;
 			}
 
 			if (list.Count() > 1) {
-				Log.Error(TAG, string.Format("Cannot insert object:{0}:{1}. Obj is NULL.", uri.LastPathSegment, uuid));
+				Log.Error(TAG, string.Format("Cannot insert object:{0}:{1}. Find more than 1 record.", uri.LastPathSegment, uuid));
 				return ERROR;
 			}
 

@@ -20,7 +20,7 @@ namespace CRMLite
 {
 	public class PhotoFragment : Fragment, IAttendanceControl, IMakePhotoAfterAttendance
 	{
-
+		public const string TAG = "PhotoFragment";
 		public const string C_PHARMACY_UUID = "C_PHARMACY_UUID";
 		public const string C_ATTENDANCE_LAST_UUID = "C_ATTENDANCE_LAST_UUID";
 
@@ -48,24 +48,27 @@ namespace CRMLite
 		static string AfterAttendancePhotoType;
 
 		List<PhotoData> Photos;
-		List<PhotoComment> PhotoComments;
+		//List<PhotoComment> PhotoComments;
 
 		internal string GetUndonePhotoTypes()
 		{
 			string result = string.Empty;
+			try {
+				foreach (var item in Agreements) {
+					if (item.Value) continue;
 
-			foreach (var item in Agreements) {
-				if (item.Value) continue;
-
-				if (item.Key.Contains(":")) {
-					string[] keys = item.Key.Split(new char[] { ':' });
-					var photoType = MainDatabase.GetItem<PhotoType>(keys[0]);
-					var brand = MainDatabase.GetItem<DrugBrand>(keys[1]);
-					result += string.Format("  - тип '{0}' для бренда '{1}'{2}", photoType.name, brand.name, System.Environment.NewLine);
-				} else {
-					var photoType = MainDatabase.GetItem<PhotoType>(item.Key);
-					result += string.Format("  - тип '{0}'{1}", photoType.name, System.Environment.NewLine);
+					if (item.Key.Contains(":")) {
+						string[] keys = item.Key.Split(new char[] { ':' });
+						var photoType = MainDatabase.GetItem<PhotoType>(keys[0]);
+						var brand = MainDatabase.GetItem<DrugBrand>(keys[1]);
+						result += string.Format("  - тип '{0}' для бренда '{1}'{2}", photoType.name, brand.name, System.Environment.NewLine);
+					} else {
+						var photoType = MainDatabase.GetItem<PhotoType>(item.Key);
+						result += string.Format("  - тип '{0}'{1}", photoType.name, System.Environment.NewLine);
+					}
 				}
+			} catch (Exception ex) {
+				Android.Util.Log.Error(TAG, "GetUndonePhotoTypes. Exception message = '{0}'", ex.Message);
 			}
 
 			return result;

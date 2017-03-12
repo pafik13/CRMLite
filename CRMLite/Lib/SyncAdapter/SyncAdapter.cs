@@ -99,6 +99,7 @@ namespace CRMLite.Lib.Sync
 				   ) {
 					Log.Error(tag, string.Format("NOT Download LifecycleAction"));
 				} else {
+					// TODO: check for null res.Data (exception when at metro -- return 200 with html text)
 					Log.Info(tag, string.Format("Download LifecycleAction: {0}", res.Data.Count));
 
 					foreach (var lc_action in res.Data) {

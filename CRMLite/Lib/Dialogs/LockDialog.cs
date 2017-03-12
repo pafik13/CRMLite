@@ -17,7 +17,6 @@ namespace CRMLite.Dialogs
 
 
 		string Message;
-		int TextColor;
 		int BGColor;
 
 		public static LockDialog Create(string message, int bgColor = -1)
