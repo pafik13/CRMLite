@@ -287,33 +287,42 @@ namespace CRMLite.Lib.Sync
 			string db_path = selectionArgs[0];
 			using (var DB = Realm.GetInstance(db_path)) {
 				switch (selection) {
-					case SyncConst.Distributor:
-						var list1 = DB.All<Distributor>().Where(item => item.uuid == uuid);
-						return RemoveItems(DB, list1, uuid);
-					case SyncConst.PhotoType:
-						var list2 = DB.All<PhotoType>().Where(item => item.uuid == uuid);
-						return RemoveItems(DB, list2, uuid);
-					case SyncConst.DistributionAgreement:
-						var list3 = DB.All<DistributionAgreement>().Where(item => item.uuid == uuid);
-						return RemoveItems(DB, list3, uuid);
-					case SyncConst.PhotoAgreement:
-						var list4 = DB.All<PhotoAgreement>().Where(item => item.uuid == uuid);
-						return RemoveItems(DB, list4, uuid);
-					case SyncConst.PhotoAfterAttendance:
-						var list5 = DB.All<PhotoAfterAttendance>().Where(item => item.uuid == uuid);
-						return RemoveItems(DB, list5, uuid);
-					case SyncConst.DrugSKU:
-						var list6 = DB.All<DrugSKU>().Where(item => item.uuid == uuid);
-						return RemoveItems(DB, list6, uuid);
-					case SyncConst.DrugBrand:
-						var list7 = DB.All<DrugBrand>().Where(item => item.uuid == uuid);
-						return RemoveItems(DB, list7, uuid);
-					case SyncConst.Pharmacy:
-						var list8 = DB.All<Pharmacy>().Where(item => item.UUID == uuid);
-						return RemoveItems(DB, list8, uuid);
-					case SyncConst.Attendance:
-						var list9 = DB.All<Attendance>().Where(item => item.UUID == uuid);
-						return RemoveItems(DB, list9, uuid);
+					case SyncConst.Distributor: {
+							var list = DB.All<Distributor>().Where(item => item.uuid == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.PhotoType: {
+							var list = DB.All<PhotoType>().Where(item => item.uuid == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.DistributionAgreement: {
+							var list = DB.All<DistributionAgreement>().Where(item => item.uuid == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.PhotoAgreement: {
+							var list = DB.All<PhotoAgreement>().Where(item => item.uuid == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.PhotoAfterAttendance: {
+							var list = DB.All<PhotoAfterAttendance>().Where(item => item.uuid == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.DrugSKU: {
+							var list = DB.All<DrugSKU>().Where(item => item.uuid == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.DrugBrand: {
+							var list = DB.All<DrugBrand>().Where(item => item.uuid == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.Pharmacy: {
+							var list = DB.All<Pharmacy>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.Attendance: {
+							var list = DB.All<Attendance>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
 					default:
 						Log.Error(TAG, "Unhandled selection:" + selection, "StubProvider.Delete");
 						return -1;
@@ -389,17 +398,24 @@ namespace CRMLite.Lib.Sync
 									entities = DB.All<GPSLocation>().ToList<IEntity>();
 									break;
 								default:
-									Log.Error(TAG, "Unhandled selection:" + selection, "StubProvider.Update");
+									Log.Error(TAG, "Unhandled selection:{0}; In {1}", selection, "StubProvider.Update");
 									break;
 									
 							}
 							using (var transaction = DB.BeginWrite()) {
 								var items = entities.Where(e => selectionArgs.Contains(e.UUID));
-								foreach (var item in items) {
-									//var item = entities.Single(att => att.UUID == uuid);
-									if (item is ISync) {
-										((ISync)item).IsSynced = true;
+								var isGPS = selection == SyncConst.GPSDatas || selection == SyncConst.GPSLocations;
+								var isSync = (entities.Count > 0) && (entities[0] is ISync);
+								if (isGPS) {
+									foreach (var item in items) {
+										DB.Remove(item as RealmObject);
 									}
+								} else if (isSync) {
+									foreach (var item in items) {
+										(item as ISync).IsSynced = true;
+									}
+								} else {
+									Log.Error(TAG, "UnUpdated/UnDeleted selection:{0}; In {1}", selection, "StubProvider.Update");
 								}
 
 								transaction.Commit();

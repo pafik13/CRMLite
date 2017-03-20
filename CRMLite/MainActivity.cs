@@ -553,9 +553,36 @@ namespace CRMLite
 			var isLocatorEnable = MainDatabase.GetCustomizationBool(Customizations.IsLocatorEnable);
 			if (isLocatorEnable.HasValue) {
 				if (isLocatorEnable.Value) {
+					var isLocatorGPSRequestOn = MainDatabase.GetCustomizationBool(Customizations.IsLocatorGPSRequestOn);
+					var isLocatorNetRequestOn = MainDatabase.GetCustomizationBool(Customizations.IsLocatorNetRequestOn);
+					var locatorGPSRequestPeriod = MainDatabase.GetCustomizationInt(Customizations.LocatorGPSRequestPeriod);
+					var locatorNetRequestPeriod = MainDatabase.GetCustomizationInt(Customizations.LocatorNetRequestPeriod);
+					var locatorIdlePeriod = MainDatabase.GetCustomizationInt(Customizations.LocatorIdlePeriod);
+
 					var locator = new Intent(this, typeof(LocatorService));
 					locator.PutExtra(MainDatabase.C_LOC_PATH, MainDatabase.LOCPath);
 					locator.PutExtra(SigninDialog.C_AGENT_UUID, agentUUID);
+
+					if (isLocatorGPSRequestOn.HasValue) {
+						locator.PutExtra(Customizations.IsLocatorGPSRequestOn, isLocatorGPSRequestOn.Value);
+					}
+
+					if (isLocatorNetRequestOn.HasValue) {
+						locator.PutExtra(Customizations.IsLocatorNetRequestOn, isLocatorNetRequestOn.Value);
+					}
+
+					if (locatorGPSRequestPeriod.HasValue) {
+						locator.PutExtra(Customizations.LocatorGPSRequestPeriod, locatorGPSRequestPeriod.Value);
+					}
+
+					if (locatorNetRequestPeriod.HasValue) {
+						locator.PutExtra(Customizations.LocatorNetRequestPeriod, locatorNetRequestPeriod.Value);
+					}
+
+					if (locatorIdlePeriod.HasValue) {
+						locator.PutExtra(Customizations.LocatorIdlePeriod, locatorIdlePeriod.Value);
+					}
+
 					StartService(locator);
 				} else {
 					StopService(new Intent(this, typeof(LocatorService)));

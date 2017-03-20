@@ -14,18 +14,26 @@ using CRMLite.Entities;
 
 namespace CRMLite.Services
 {
-	[Service(Name = "ru.sbl.crmlite2.LocatorService", Process = ":locator")] //, Process = ":locator", Exported=true
+	[Service(Name = "ru.sbl.crmlite2.LocatorService")] //, Process = ":locator", Exported=true
 	public class LocatorService: Service, ILocationListener
 	{
 		const string TAG = "ru.sbl.crmlite2.LocatorService";
 		const int INTERVAL_SEC = 1000;
+		const int INTERVAL_MIN = 60 * INTERVAL_SEC;
 		const int LOCATION_INTERVAL_NET = 5 * INTERVAL_SEC;
 		const int LOCATION_INTERVAL_GPS = 30 * INTERVAL_SEC;
+		const int IDLE_INTERVAL = 20 * INTERVAL_MIN;
 		const float LOCATION_DISTANCE = 0f;
 
 		LocationManager LocationManager;
 		string LOCPath = string.Empty;
 		string AgentUUID = string.Empty;
+		DateTimeOffset LastCallTime = DateTimeOffset.MinValue;
+		bool IsLocatorNetRequestOn;
+		bool IsLocatorGPSRequestOn;
+		int LocatorNetRequestPeriod;
+		int LocatorGPSRequestPeriod;
+		int LocatorIdlePeriod;
 		Realm Realm;
 
 		public override IBinder OnBind(Intent intent)
@@ -37,12 +45,27 @@ namespace CRMLite.Services
 		{
 			Log.Info(TAG, "OnStartCommand");
 
+			LastCallTime = DateTimeOffset.Now;
 			LOCPath = intent.GetStringExtra(MainDatabase.C_LOC_PATH);
 			AgentUUID = intent.GetStringExtra(SigninDialog.C_AGENT_UUID);
 
 			Log.Info(TAG, "AgentUUID:{0}; LOCPath:{1}", AgentUUID, LOCPath);
 
 			if (string.IsNullOrEmpty(LOCPath)) return StartCommandResult.NotSticky;
+
+			IsLocatorNetRequestOn = intent.GetBooleanExtra(Customizations.IsLocatorNetRequestOn, true);
+			IsLocatorGPSRequestOn = intent.GetBooleanExtra(Customizations.IsLocatorGPSRequestOn, true);
+
+			Log.Info(TAG, "IsLocatorNetRequestOn:{0}; IsLocatorGPSRequestOn:{1}", IsLocatorNetRequestOn, IsLocatorGPSRequestOn);
+			if (!(IsLocatorNetRequestOn || IsLocatorGPSRequestOn)) return StartCommandResult.NotSticky;
+
+			LocatorNetRequestPeriod = intent.GetIntExtra(Customizations.LocatorNetRequestPeriod, LOCATION_INTERVAL_NET);
+			LocatorGPSRequestPeriod = intent.GetIntExtra(Customizations.LocatorGPSRequestPeriod, LOCATION_INTERVAL_GPS);
+			LocatorIdlePeriod = intent.GetIntExtra(Customizations.LocatorIdlePeriod, IDLE_INTERVAL);
+
+			Log.Info(TAG, "LocatorNetRequestPeriod:{0}; LocatorGPSRequestPeriod:{1}; LocatorIdlePeriod:{2}", 
+			         LocatorNetRequestPeriod, LocatorGPSRequestPeriod, LocatorIdlePeriod
+			        );
 
 			Notification notification = new Notification.Builder(this)
 														.SetContentTitle("Местоположение")
@@ -55,15 +78,28 @@ namespace CRMLite.Services
 			LocationManager = (LocationManager)Application.Context.GetSystemService(LocationService);
 
 			if (LocationManager != null) {
-				LocationManager.RequestLocationUpdates(
-					LocationManager.NetworkProvider, LOCATION_INTERVAL_NET, LOCATION_DISTANCE, this
-				);
-				var loc = LocationManager.GetLastKnownLocation(LocationManager.NetworkProvider);
+				if (IsLocatorNetRequestOn) {
+					LocationManager.RequestLocationUpdates(
+						LocationManager.NetworkProvider, LOCATION_INTERVAL_NET, LOCATION_DISTANCE, this
+					);
+					var loc = LocationManager.GetLastKnownLocation(LocationManager.NetworkProvider);
+					if (loc == null) {
+						Log.Info(TAG, "Provider:Network, Location:Null");
+					} else {
+						Log.Info(TAG, "Provider:{0}, Latitude:{1}, Longitude:{2}", loc.Provider, loc.Latitude, loc.Longitude);
+					}
+				}
 
-				LocationManager.RequestLocationUpdates(
-					LocationManager.GpsProvider, LOCATION_INTERVAL_GPS, LOCATION_DISTANCE, this
-				);
-				loc = LocationManager.GetLastKnownLocation(LocationManager.GpsProvider);
+				if (IsLocatorGPSRequestOn) {
+					LocationManager.RequestLocationUpdates(
+						LocationManager.GpsProvider, LOCATION_INTERVAL_GPS, LOCATION_DISTANCE, this
+					);
+					var loc = LocationManager.GetLastKnownLocation(LocationManager.GpsProvider);
+					if (loc == null) {
+						Log.Info(TAG, "Provider:GPS, Location:Null");
+					} else {
+						Log.Info(TAG, "Provider:{0}, Latitude:{1}, Longitude:{2}", loc.Provider, loc.Latitude, loc.Longitude);
+					}				}
 
 				Realm = Realm.GetInstance(LOCPath);
 			}
@@ -86,7 +122,7 @@ namespace CRMLite.Services
 		{
 			Log.Info(TAG, "OnLocationChanged: Provider={0}", location.Provider);
 
-			if (Realm == null) {
+ 			if (Realm == null) {
 				Realm = Realm.GetInstance(LOCPath);
 			}
 
@@ -109,6 +145,10 @@ namespace CRMLite.Services
 			});
 
 			Log.Info(TAG, "OnLocationChanged: GPSLocation={0}", Realm.All<GPSLocation>().Count());
+			if ((DateTimeOffset.Now - LastCallTime).TotalMilliseconds > IDLE_INTERVAL) {
+				StopForeground(true);
+				StopSelf();
+			}
 		}
 
 		public void OnProviderDisabled(string provider)
