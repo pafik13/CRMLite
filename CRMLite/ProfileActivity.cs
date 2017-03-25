@@ -13,6 +13,7 @@ using CRMLite.Dialogs;
 using CRMLite.Adapters;
 using CRMLite.Entities;
 using CRMLite.Services;
+using CRMLite.Lib.Dialogs;
 
 namespace CRMLite
 {
@@ -111,6 +112,19 @@ namespace CRMLite
 				var hView = header.GetChildAt(w + 1);
 				if (hView is TextView) {
 					(hView as TextView).Text = Helper.GetIso8601WeekOfYear(Dates[w].UtcDateTime.Date).ToString();
+					//(hView as TextView).Click += (sender, e) => {
+					//	var tv = sender as TextView;
+					//	var tip = new EasyDialog(this);
+					//	tip.SetContent(new TextView(this) {
+					//		Text = string.Concat("TIP: ", tv.Text), TextSize = 24,
+					//		LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent)
+					//	});
+					//	tip.SetLocationByAttachedView(tv);
+					//	tip.SetMatchParent(false);
+					//	tip.SetAnimationAlphaShow(300, new float[] { 0.0f, 1.0f });
+					//	tip.SetAnimationAlphaHide(300, new float[] { 1.0f, 0.0f });
+					//	tip.Show();
+					//};
 				}
 			}
 			Content.AddView(header, 1);

@@ -14,7 +14,7 @@ using CRMLite.Entities;
 
 namespace CRMLite.Services
 {
-	[Service(Name = "ru.sbl.crmlite2.LocatorService")] //, Process = ":locator", Exported=true
+	[Service(Name = "ru.sbl.crmlite2.LocatorService", Process = ":locator")] //, Process = ":locator", Exported=true
 	public class LocatorService: Service, ILocationListener
 	{
 		const string TAG = "ru.sbl.crmlite2.LocatorService";

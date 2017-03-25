@@ -17,6 +17,7 @@ namespace CRMLite
 		readonly Realm DB;
 		readonly RealmConfiguration Config;
 
+		readonly Realm DBLoc;
 		readonly RealmConfiguration ConfigForLocation;
 
 		internal static string DBPath { get { return Me.DB.Config.DatabasePath; } }
@@ -95,7 +96,7 @@ namespace CRMLite
 			string locFileLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), username, Helper.C_LOC_FILE_NAME);
 			ConfigForLocation = new RealmConfiguration(locFileLocation, false);
 			//Realm.DeleteRealm(ConfigForLocation);
-			var loc = Realm.GetInstance(ConfigForLocation);
+			DBLoc = Realm.GetInstance(ConfigForLocation);
 				
 			SyncDictionary = new ConcurrentDictionary<SyncItem, SyncItem>();
 
@@ -297,7 +298,30 @@ namespace CRMLite
 		{
 			return Me.DB.All<T>().ToList();
 		}
-		
+
+		public static void RemoveAllSyncedEntities<T>() where T : RealmObject, IEntity, ISync
+		{
+			Realm db = null;
+			if (typeof(T) == typeof(GPSLocation)) {
+				db = Me.DBLoc;
+			} else {
+				db = Me.DB;
+			}
+
+			using (var trans = db.BeginWrite()) {
+				db.RemoveRange(db.All<T>().Where(entity => entity.IsSynced) as RealmResults<T>);
+				trans.Commit();
+			}
+		}
+
+		public static int CountSyncedEntities<T>() where T : RealmObject, IEntity, ISync
+		{
+			if (typeof(T) == typeof(GPSLocation)) {
+				return Me.DBLoc.All<T>().Count(entity => entity.IsSynced);
+			}
+			return Me.DB.All<T>().Count(entity => entity.IsSynced);
+		}
+
 		public static List<T> GetItemsToSync<T>() where T : RealmObject, ISync
 		{
 			return Me.DB.All<T>().Where(item => !item.IsSynced).ToList();

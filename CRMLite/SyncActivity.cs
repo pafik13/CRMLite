@@ -81,6 +81,8 @@ namespace CRMLite
 
 			FindViewById<Button>(Resource.Id.saUploadRealmB).Click += UploadRealm_Click;
 
+			FindViewById<Button>(Resource.Id.saClearRealmB).Click += ClearRealm_Click;
+
 			var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
 
 			ACCESS_TOKEN = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
@@ -96,8 +98,47 @@ namespace CRMLite
 			RefreshView();
 		}
 
+		void ClearRealm_Click(object sender, EventArgs e)
+		{
+			var text = string.Empty;
+			var log = string.Empty;
+			int cnt = 0;
+			var nl = System.Environment.NewLine;
+
+			cnt = MainDatabase.CountSyncedEntities<GPSData>();
+			log = string.Concat("GPSData before remove count:", cnt, nl);
+			SDiag.Debug.Write(log);
+			text = string.Concat(text, log);
+			MainDatabase.RemoveAllSyncedEntities<GPSData>();
+			cnt = MainDatabase.CountSyncedEntities<GPSData>();
+			log = string.Concat("GPSData after remove count:", cnt, nl);
+			SDiag.Debug.Write(log);
+			text = string.Concat(text, log);
+
+			cnt = MainDatabase.CountSyncedEntities<GPSLocation>();
+			log = string.Concat("GPSLocation before remove count:", cnt, nl);
+			SDiag.Debug.Write(log);
+			text = string.Concat(text, log);
+			MainDatabase.RemoveAllSyncedEntities<GPSLocation>();
+			cnt = MainDatabase.CountSyncedEntities<GPSLocation>();
+			log = string.Concat("GPSLocation after remove count:", cnt, nl);
+			SDiag.Debug.Write(log);
+			text = string.Concat(text, log);
+
+			// TODO: test this
+			using (var transaction = MainDatabase.BeginTransaction()){
+				var msg = MainDatabase.Create2<Entities.Message>();
+				msg.Text = text;
+				transaction.Commit();
+			}
+
+			SDiag.Debug.Write(text);
+		}
+
 		void UploadRealm_Click(object sender, EventArgs e)
 		{
+			var button = sender as Button;
+			button.Enabled = false;
 			var client = new RestClient(HOST_URL);
 
 			var request = new RestRequest(@"RealmFile/upload", Method.POST);
@@ -119,6 +160,7 @@ namespace CRMLite
 					Toast.MakeText(this, "Не удалось загрузить копию базы!", ToastLength.Short).Show();
 					break;
 			}
+			button.Enabled = true;
 		}
 
 		void UploadPhoto_Click(object sender, EventArgs e)
@@ -255,6 +297,7 @@ namespace CRMLite
 			Count += MainDatabase.CountItemsToSync<ExcludeRouteItem>();
 
 			Count += MainDatabase.CountItemsToSync<GPSData>();
+			//Count += MainDatabase.CountItemsToSync<GPSLocation>();
 
 			Count += MainDatabase.CountItemsToSync<Hospital>();
 			Count += MainDatabase.CountItemsToSync<HospitalData>();
@@ -591,6 +634,7 @@ namespace CRMLite
 					SyncEntities(MainDatabase.GetItemsToSync<Employee>());
 					SyncEntities(MainDatabase.GetItemsToSync<ExcludeRouteItem>());
 					SyncEntities(MainDatabase.GetItemsToSync<GPSData>());
+					//SyncEntities(MainDatabase.GetItemsToSync<GPSLocation>());
 					SyncEntities(MainDatabase.GetItemsToSync<Hospital>());
 					SyncEntities(MainDatabase.GetItemsToSync<HospitalData>());
 					SyncEntities(MainDatabase.GetItemsToSync<Entities.Message>());

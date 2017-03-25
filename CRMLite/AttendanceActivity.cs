@@ -146,7 +146,6 @@ namespace CRMLite
 			if (TimerMin.HasValue) {
 				TimerMS = TimerMin.Value * 60 * 1000;
 				TimerText.Text = TimerText.Text = string.Concat("Осталось ", TimerMin.Value.ToString(), " мин. ", 00, " сек.");
-				Timer = new Timer(HandleTimerCallback, DateTime.Now, Timeout.Infinite, 1000);
 			} else {
 				TimerText.Visibility = ViewStates.Invisible;
 			}
@@ -220,21 +219,18 @@ namespace CRMLite
 					button.Text = "ЗАКОНЧИТЬ ВИЗИТ";
 
 					if (TimerMin.HasValue) {
-						Timer.Change(100, 1000);
+						Timer = new Timer(HandleTimerCallback, DateTime.Now, 100, 1000);
 					}
 					return;
 				}
 
-				if ((DateTimeOffset.Now - AttendanceStart.Value).TotalSeconds < 30) return;
-				
 				if (TimerMin.HasValue) {
 					Toast.MakeText(this, "Не прошло минимально необходимое время визита...", ToastLength.Short).Show();
 					return;
 				}
 
-				if (TimerMin.HasValue) {
-					Timer.Dispose();
-				}
+				if ((DateTimeOffset.Now - AttendanceStart.Value).TotalSeconds < 30) return;
+
 
 				if (CurrentFocus != null) {
 					var imm = (InputMethodManager)GetSystemService(InputMethodService);
@@ -276,6 +272,7 @@ namespace CRMLite
 				var lockDialog = LockDialog.Create("Идет сохранение данных...", Resource.Color.Deep_Orange_500);
 				lockDialog.Cancelable = false;
 				lockDialog.Show(fragmentTransaction, LockDialog.TAG);
+				Timer.Dispose();
 				LocMgr.RemoveUpdates(this);
 
 				new Task(() => {

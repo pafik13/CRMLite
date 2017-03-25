@@ -93,6 +93,17 @@
             android:background="@color/Deep_Orange_500"
             android:paddingRight="10dp"
             android:paddingLeft="10dp" />
+        <Button
+            android:text="ПОЧИСТИТЬ ФАЙЛ БАЗЫ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/saUploadRealmB"
+            android:id="@+id/saClearRealmB"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/row_height"
+            android:background="@color/Deep_Orange_500"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp" />
     </RelativeLayout>
     <TextView
         android:text="ИДЕТ СИНХРОНИЗАЦИЯ ДАННЫХ"

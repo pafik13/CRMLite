@@ -133,7 +133,7 @@ namespace CRMLite.Lib.Sync
 						entities = GetItemsToSync<GPSLocation>(DB);
 						break;
 					default:
-						Log.Error(TAG, "Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Query");
+						Log.Error(TAG, "Unhandled LastPathSegment:{0}; In {1}", uri.LastPathSegment, "StubProvider.Query");
 						break;
 				}
 
@@ -163,12 +163,12 @@ namespace CRMLite.Lib.Sync
 							.Build();
 			
 			if (item == null) {
-				Log.Error(TAG, string.Format("Cannot insert object:{0}:{1}. item is NULL.", uri.LastPathSegment, uuid));
+				Log.Error(TAG, "Cannot insert object:{0}:{1}. item is NULL.", uri.LastPathSegment, uuid);
 				return ERROR;
 			}
 
 			if (list.Count() > 1) {
-				Log.Error(TAG, string.Format("Cannot insert object:{0}:{1}. Find more than 1 record.", uri.LastPathSegment, uuid));
+				Log.Error(TAG, "Cannot insert object:{0}:{1}. Find more than 1 record.", uri.LastPathSegment, uuid);
 				return ERROR;
 			}
 
@@ -182,7 +182,7 @@ namespace CRMLite.Lib.Sync
 				}
 				return OK;
 			} catch (System.Exception ex) {
-				Log.Error(TAG, string.Format("Cannot insert object:{0}:{1}. Exeption: {2}", uri.LastPathSegment, uuid, ex.Message));
+				Log.Error(TAG, "Cannot insert object:{0}:{1}. Exeption: {2}", uri.LastPathSegment, uuid, ex.Message);
 				return ERROR;
 			}
 		}
@@ -265,7 +265,7 @@ namespace CRMLite.Lib.Sync
 			if (list.Count() == 0) return 0;
 
 			if (list.Count() > 1) {
-				Log.Error(TAG, string.Format("Cannot remove object:{0}:{1}. Find more than 1 record.", typeof(T).Name, uuid));
+				Log.Error(TAG, "Cannot remove object:{0}:{1}. Find more than 1 record.", typeof(T).Name, uuid);
 				return -1;
 			}
 
@@ -276,7 +276,7 @@ namespace CRMLite.Lib.Sync
 				}
 				return 1;
 			} catch (System.Exception ex) {
-				Log.Error(TAG, string.Format("Cannot remove object:{0}:{1}. Exeption: {2}", typeof(T).Name, uuid, ex.Message));
+				Log.Error(TAG, "Cannot remove object:{0}:{1}. Exeption: {2}", typeof(T).Name, uuid, ex.Message);
 				return -1;
 			}
 		}
@@ -324,7 +324,7 @@ namespace CRMLite.Lib.Sync
 							return RemoveItems(DB, list, uuid);
 						}
 					default:
-						Log.Error(TAG, "Unhandled selection:" + selection, "StubProvider.Delete");
+						Log.Error(TAG, "Unhandled selection:{0}; In {1}", selection, "StubProvider.Delete");
 						return -1;
 				}
 			}
@@ -423,7 +423,7 @@ namespace CRMLite.Lib.Sync
 						}
 						break;
 					default:
-						Log.Error(TAG, "Unhandled LastPathSegment:" + uri.LastPathSegment, "StubProvider.Update");
+						Log.Error(TAG, "Unhandled LastPathSegment:{0}; In {1}", uri.LastPathSegment, "StubProvider.Update");
 						break;
 				}
 			}

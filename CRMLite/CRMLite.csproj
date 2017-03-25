@@ -214,6 +214,7 @@
     <Compile Include="Lib\Entities\Customization.cs" />
     <Compile Include="Lib\Services\LocatorService.cs" />
     <Compile Include="Lib\Entities\GPSLocation.cs" />
+    <Compile Include="Lib\Dialogs\EasyDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -586,6 +587,12 @@
     <AndroidResource Include="Resources\drawable-xhdpi\ic_add_a_photo_black_48dp.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_add_a_photo_black_48dp.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_add_a_photo_black_48dp.png" />
+    <AndroidResource Include="Resources\layout\EasyDialog.xml" />
+    <AndroidResource Include="Resources\drawable\round_corner_bg.xml" />
+    <AndroidResource Include="Resources\drawable\triangle_bottom.xml" />
+    <AndroidResource Include="Resources\drawable\triangle_left.xml" />
+    <AndroidResource Include="Resources\drawable\triangle_right.xml" />
+    <AndroidResource Include="Resources\drawable\triangle_top.xml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -614,6 +621,7 @@
     <Folder Include="Lib\SyncAdapter\" />
     <Folder Include="Resources\xml\" />
     <Folder Include="Lib\Receivers\" />
+    <Folder Include="Lib\Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets')" />

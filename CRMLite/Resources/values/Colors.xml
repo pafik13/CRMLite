@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <resources>
+  <!-- EasyDialog -->
+  <color name="background_color_black">#BB000000</color> 
 	
   <color name="Grey_300">#FFE0E0E0</color>
   <color name="Grey_500">#FF9E9E9E</color>
