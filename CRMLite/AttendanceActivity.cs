@@ -162,6 +162,7 @@ namespace CRMLite
 
 				if (AttendanceStart == null) {
 					StopService(new Intent(this, typeof(LocatorService)));
+					StopService(new Intent(this, typeof(PhotoUploaderService)));
 
 					AttendanceStart = DateTimeOffset.Now;
 

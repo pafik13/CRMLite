@@ -11,6 +11,7 @@ using Realms;
 using CRMLite.Dialogs;
 
 using CRMLite.Entities;
+using System.Linq;
 
 namespace CRMLite.Services
 {
@@ -99,9 +100,14 @@ namespace CRMLite.Services
 						Log.Info(TAG, "Provider:GPS, Location:Null");
 					} else {
 						Log.Info(TAG, "Provider:{0}, Latitude:{1}, Longitude:{2}", loc.Provider, loc.Latitude, loc.Longitude);
-					}				}
+					}				
+				}
 
-				Realm = Realm.GetInstance(LOCPath);
+				var config = new RealmConfiguration(LOCPath, false) {
+					SchemaVersion = 1
+				};
+
+				Realm = Realm.GetInstance(config);
 			}
 
 			return StartCommandResult.Sticky;
@@ -123,7 +129,11 @@ namespace CRMLite.Services
 			Log.Info(TAG, "OnLocationChanged: Provider={0}", location.Provider);
 
  			if (Realm == null) {
-				Realm = Realm.GetInstance(LOCPath);
+				var config = new RealmConfiguration(LOCPath, false) {
+					SchemaVersion = 1
+				};
+
+				Realm = Realm.GetInstance(config);
 			}
 
 			Realm.Write(() => {

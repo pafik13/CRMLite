@@ -14,6 +14,15 @@
 		public static string HockeyappAppId {
 			get { return "c5a5b39231634cbbbd2068c7a1bd6d1d"; }
 		}
+		
+		public static string AWSSecretKey {
+			get { return "AJ7VnfTi+srwQhIm0200qYOcZF3v2tiQuQQnfVLz"; }
+		}
+
+		public static string AWSAccessKeyId {
+			get { return "AKIAI3HKNL4B2W5BFKJA"; }
+		}
+
 
 		public static bool IsNeedReCreateDB
 		{

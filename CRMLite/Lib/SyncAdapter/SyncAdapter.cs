@@ -204,7 +204,8 @@ namespace CRMLite.Lib.Sync
 					SyncConst.ResumeDatas,
 					SyncConst.RouteItems,
 					SyncConst.ExcludeRouteItems,
-		            SyncConst.GPSLocations
+		            SyncConst.GPSLocations,
+			        SyncConst.PhotoDatas
 				};
 
 				foreach (var entities in entitiesArray) {

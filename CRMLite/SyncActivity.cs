@@ -184,50 +184,6 @@ namespace CRMLite
 				IRestResponse response;
 				//var client = new RestClient("http://sbl-crm-project-pafik13.c9users.io:8080/");
 
-				bool isNeedUploadRealm = false;
-				if (string.IsNullOrEmpty(LAST_UPLOAD_REALM_FILE_DATETIME)) {
-					isNeedUploadRealm = true;
-				} else {
-					try {
-						var date = DateTime.Parse(LAST_UPLOAD_REALM_FILE_DATETIME, null, DateTimeStyles.RoundtripKind);
-						isNeedUploadRealm = (date.Date > DateTime.Now.Date);
-					} catch (Exception exc) {
-						SDiag.Debug.WriteLine("Error : " + exc.Message);
-						isNeedUploadRealm = true;
-					}
-				}
-
-				if (isNeedUploadRealm) {
-					request = new RestRequest(@"RealmFile/upload", Method.POST);
-
-					request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
-					request.AddQueryParameter(@"androidId", Helper.AndroidId);
-					request.AddFile(@"realm", File.ReadAllBytes(MainDatabase.DBPath), Path.GetFileName(MainDatabase.DBPath), string.Empty);
-
-					response = client.Execute(request);
-
-					switch (response.StatusCode) {
-						case HttpStatusCode.OK:
-						case HttpStatusCode.Created:
-							SDiag.Debug.WriteLine("Удалось загрузить копию базы!");
-							string lastUploadRealmFileDatetime = DateTime.Now.ToString("O");
-							GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private).Edit()
-																									 .PutString(C_LAST_UPLOAD_REALM_FILE_DATETIME, lastUploadRealmFileDatetime)
-																									 .Commit();
-							break;
-						default:
-							SDiag.Debug.WriteLine("Не удалось загрузить копию базы!");
-							break;
-					}
-					//RunOnUiThread(() => {
-					//	MainDatabase.Dispose();
-					//	MainDatabase.Username = USERNAME;
-					//	// Thread.Sleep(1000);
-					//	progress.Dismiss();
-					//	RefreshView();
-					//});
-					//return;
-				}
 				using (var trans = MainDatabase.BeginTransaction()) {
 
 					foreach (var photo in MainDatabase.GetItemsToSync<PhotoData>()) {
@@ -243,7 +199,9 @@ namespace CRMLite
 							request.AddQueryParameter(@"Brand", photo.Brand);
 							request.AddQueryParameter(@"Latitude", photo.Latitude.ToString(CultureInfo.CreateSpecificCulture(@"en-GB")));
 							request.AddQueryParameter(@"Longitude", photo.Longitude.ToString(CultureInfo.CreateSpecificCulture(@"en-GB")));
-							request.AddFile(@"photo", File.ReadAllBytes(photo.PhotoPath), Path.GetFileName(photo.PhotoPath), string.Empty);
+							request.AddFile(@"photo", File.ReadAllBytes(photo.PhotoPath), Path.GetFileName(photo.PhotoPath), "image/jpeg");
+
+							SDiag.Debug.WriteLine(File.ReadAllBytes(photo.PhotoPath));
 
 							response = client.Execute(request);
 

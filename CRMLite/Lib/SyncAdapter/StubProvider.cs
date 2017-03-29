@@ -49,7 +49,10 @@ namespace CRMLite.Lib.Sync
 		public override Android.Database.ICursor Query(Uri uri, string[] projection, string selection, string[] selectionArgs, string sortOrder)
 		{
 			string db_path = selectionArgs[0];
-			using (var DB = Realm.GetInstance(db_path)) {
+			var config = new RealmConfiguration(db_path, false) {
+				SchemaVersion = 1
+			};
+			using (var DB = Realm.GetInstance(config)) {
 				var fields = new string[] { "TYPE", "UUID", "JSON" };
 				var cursor = new Android.Database.MatrixCursor(fields);
 
@@ -132,6 +135,10 @@ namespace CRMLite.Lib.Sync
 						type = typeof(GPSLocation).Name;
 						entities = GetItemsToSync<GPSLocation>(DB);
 						break;
+					case SyncConst.PhotoDatas:
+						type = typeof(PhotoData).Name;
+						entities = DB.All<PhotoData>().Where(pd => !pd.IsSynced && !string.IsNullOrEmpty(pd.ETag));
+						break;
 					default:
 						Log.Error(TAG, "Unhandled LastPathSegment:{0}; In {1}", uri.LastPathSegment, "StubProvider.Query");
 						break;
@@ -191,7 +198,10 @@ namespace CRMLite.Lib.Sync
 		{
 			var json = values.GetAsString("json");
 			var db_path = values.GetAsString("db_path");
-			using (var DB = Realm.GetInstance(db_path)) {
+			var config = new RealmConfiguration(db_path, false) {
+				SchemaVersion = 1
+			};
+			using (var DB = Realm.GetInstance(config)) {
 				switch (uri.LastPathSegment) {
 					case SyncConst.Distributor: {
 							var item = JsonConvert.DeserializeObject<Distributor>(json);
@@ -285,7 +295,10 @@ namespace CRMLite.Lib.Sync
 		{
 			string uuid = selectionArgs[1];
 			string db_path = selectionArgs[0];
-			using (var DB = Realm.GetInstance(db_path)) {
+			var config = new RealmConfiguration(db_path, false) {
+				SchemaVersion = 1
+			};
+			using (var DB = Realm.GetInstance(config)) {
 				switch (selection) {
 					case SyncConst.Distributor: {
 							var list = DB.All<Distributor>().Where(item => item.uuid == uuid);
@@ -334,7 +347,10 @@ namespace CRMLite.Lib.Sync
 		public override int Update(Uri uri, ContentValues values, string selection, string[] selectionArgs)
 		{
 			string db_path = selectionArgs[0];
-			using (var DB = Realm.GetInstance(db_path)) {
+			var config = new RealmConfiguration(db_path, false) {
+				SchemaVersion = 1
+			};
+			using (var DB = Realm.GetInstance(config)) {
 				switch (uri.LastPathSegment) {
 					case SyncConst.SET_SYNCED:
 						if (selectionArgs.Length > 1) {
@@ -396,6 +412,9 @@ namespace CRMLite.Lib.Sync
 									break;
 								case SyncConst.GPSLocations:
 									entities = DB.All<GPSLocation>().ToList<IEntity>();
+									break;
+								case SyncConst.PhotoDatas:
+									entities = DB.All<PhotoData>().ToList<IEntity>();
 									break;
 								default:
 									Log.Error(TAG, "Unhandled selection:{0}; In {1}", selection, "StubProvider.Update");

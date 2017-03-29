@@ -146,6 +146,10 @@ namespace CRMLite
 			global::HockeyApp.Resource.Style.HockeyApp_ButtonStyle = global::CRMLite.Resource.Style.HockeyApp_ButtonStyle;
 			global::HockeyApp.Resource.Style.HockeyApp_EditTextStyle = global::CRMLite.Resource.Style.HockeyApp_EditTextStyle;
 			global::HockeyApp.Resource.Style.HockeyApp_SingleLineInputStyle = global::CRMLite.Resource.Style.HockeyApp_SingleLineInputStyle;
+			global::PCLCrypto.Resource.String.ApplicationName = global::CRMLite.Resource.String.ApplicationName;
+			global::PCLCrypto.Resource.String.Hello = global::CRMLite.Resource.String.Hello;
+			global::PCLStorage.Resource.String.ApplicationName = global::CRMLite.Resource.String.ApplicationName;
+			global::PCLStorage.Resource.String.Hello = global::CRMLite.Resource.String.Hello;
 		}
 		
 		public partial class Animation
@@ -4317,92 +4321,98 @@ namespace CRMLite
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f07007c
-			public const int CDBrands = 2131165308;
-			
-			// aapt resource value: 0x7f07007d
-			public const int CDEmployees = 2131165309;
-			
-			// aapt resource value: 0x7f070078
-			public const int CategoryUUID = 2131165304;
-			
-			// aapt resource value: 0x7f07006e
-			public const int ContractDataUUID = 2131165294;
-			
-			// aapt resource value: 0x7f07006f
-			public const int ContractUUIDs = 2131165295;
-			
-			// aapt resource value: 0x7f070067
-			public const int CoterieDataUUID = 2131165287;
-			
-			// aapt resource value: 0x7f070070
-			public const int DistributorUUIDs = 2131165296;
-			
-			// aapt resource value: 0x7f070069
-			public const int DrugSKUUUID = 2131165289;
-			
-			// aapt resource value: 0x7f07006d
-			public const int EmployeeUUID = 2131165293;
-			
-			// aapt resource value: 0x7f07006c
-			public const int HospitalDataUUID = 2131165292;
-			
-			// aapt resource value: 0x7f07006a
-			public const int IsChanged = 2131165290;
-			
-			// aapt resource value: 0x7f07005f
-			public const int IsFilterOn = 2131165279;
-			
-			// aapt resource value: 0x7f070068
-			public const int MessageUUID = 2131165288;
-			
-			// aapt resource value: 0x7f070064
-			public const int NetUUID = 2131165284;
-			
-			// aapt resource value: 0x7f07007a
-			public const int PDBrand = 2131165306;
-			
-			// aapt resource value: 0x7f070079
-			public const int PDEmployee = 2131165305;
-			
-			// aapt resource value: 0x7f07007b
-			public const int PDWorkTypes = 2131165307;
-			
-			// aapt resource value: 0x7f070065
-			public const int PharmacyUUID = 2131165285;
-			
-			// aapt resource value: 0x7f07007f
-			public const int PhotoDataUUID = 2131165311;
+			// aapt resource value: 0x7f070015
+			public const int ApplicationName = 2131165205;
 			
 			// aapt resource value: 0x7f07007e
-			public const int PhotoPath = 2131165310;
+			public const int CDBrands = 2131165310;
 			
-			// aapt resource value: 0x7f070077
-			public const int PlaceUUID = 2131165303;
+			// aapt resource value: 0x7f07007f
+			public const int CDEmployees = 2131165311;
 			
-			// aapt resource value: 0x7f070062
-			public const int Position = 2131165282;
+			// aapt resource value: 0x7f07007a
+			public const int CategoryUUID = 2131165306;
 			
-			// aapt resource value: 0x7f070063
-			public const int PositionUUID = 2131165283;
+			// aapt resource value: 0x7f070070
+			public const int ContractDataUUID = 2131165296;
 			
-			// aapt resource value: 0x7f070066
-			public const int PresentationDataUUID = 2131165286;
+			// aapt resource value: 0x7f070071
+			public const int ContractUUIDs = 2131165297;
 			
-			// aapt resource value: 0x7f070076
-			public const int RegionUUID = 2131165302;
+			// aapt resource value: 0x7f070069
+			public const int CoterieDataUUID = 2131165289;
 			
-			// aapt resource value: 0x7f070061
-			public const int RouteItemOrder = 2131165281;
-			
-			// aapt resource value: 0x7f070060
-			public const int RouteItemUUID = 2131165280;
+			// aapt resource value: 0x7f070072
+			public const int DistributorUUIDs = 2131165298;
 			
 			// aapt resource value: 0x7f07006b
-			public const int SaleDataUUID = 2131165291;
+			public const int DrugSKUUUID = 2131165291;
 			
-			// aapt resource value: 0x7f070075
-			public const int SubwayUUID = 2131165301;
+			// aapt resource value: 0x7f07006f
+			public const int EmployeeUUID = 2131165295;
+			
+			// aapt resource value: 0x7f070014
+			public const int Hello = 2131165204;
+			
+			// aapt resource value: 0x7f07006e
+			public const int HospitalDataUUID = 2131165294;
+			
+			// aapt resource value: 0x7f07006c
+			public const int IsChanged = 2131165292;
+			
+			// aapt resource value: 0x7f070061
+			public const int IsFilterOn = 2131165281;
+			
+			// aapt resource value: 0x7f07006a
+			public const int MessageUUID = 2131165290;
+			
+			// aapt resource value: 0x7f070066
+			public const int NetUUID = 2131165286;
+			
+			// aapt resource value: 0x7f07007c
+			public const int PDBrand = 2131165308;
+			
+			// aapt resource value: 0x7f07007b
+			public const int PDEmployee = 2131165307;
+			
+			// aapt resource value: 0x7f07007d
+			public const int PDWorkTypes = 2131165309;
+			
+			// aapt resource value: 0x7f070067
+			public const int PharmacyUUID = 2131165287;
+			
+			// aapt resource value: 0x7f070081
+			public const int PhotoDataUUID = 2131165313;
+			
+			// aapt resource value: 0x7f070080
+			public const int PhotoPath = 2131165312;
+			
+			// aapt resource value: 0x7f070079
+			public const int PlaceUUID = 2131165305;
+			
+			// aapt resource value: 0x7f070064
+			public const int Position = 2131165284;
+			
+			// aapt resource value: 0x7f070065
+			public const int PositionUUID = 2131165285;
+			
+			// aapt resource value: 0x7f070068
+			public const int PresentationDataUUID = 2131165288;
+			
+			// aapt resource value: 0x7f070078
+			public const int RegionUUID = 2131165304;
+			
+			// aapt resource value: 0x7f070063
+			public const int RouteItemOrder = 2131165283;
+			
+			// aapt resource value: 0x7f070062
+			public const int RouteItemUUID = 2131165282;
+			
+			// aapt resource value: 0x7f07006d
+			public const int SaleDataUUID = 2131165293;
+			
+			// aapt resource value: 0x7f070077
+			public const int SubwayUUID = 2131165303;
 			
 			// aapt resource value: 0x7f070000
 			public const int abc_action_bar_home_description = 2131165184;
@@ -4461,296 +4471,296 @@ namespace CRMLite
 			// aapt resource value: 0x7f070012
 			public const int abc_toolbar_collapse_description = 2131165202;
 			
-			// aapt resource value: 0x7f07005d
-			public const int app_name = 2131165277;
-			
-			// aapt resource value: 0x7f070084
-			public const int cancel_button = 2131165316;
-			
-			// aapt resource value: 0x7f070085
-			public const int check_button = 2131165317;
-			
-			// aapt resource value: 0x7f070083
-			public const int delete_caption = 2131165315;
-			
-			// aapt resource value: 0x7f07005e
-			public const int error_caption = 2131165278;
-			
-			// aapt resource value: 0x7f070071
-			public const int fias_id = 2131165297;
-			
-			// aapt resource value: 0x7f070073
-			public const int geo_lat = 2131165299;
-			
-			// aapt resource value: 0x7f070074
-			public const int geo_lon = 2131165300;
-			
-			// aapt resource value: 0x7f07005c
-			public const int hello = 2131165276;
-			
-			// aapt resource value: 0x7f070015
-			public const int hockeyapp_crash_dialog_app_name_fallback = 2131165205;
-			
-			// aapt resource value: 0x7f070016
-			public const int hockeyapp_crash_dialog_message = 2131165206;
-			
-			// aapt resource value: 0x7f070017
-			public const int hockeyapp_crash_dialog_negative_button = 2131165207;
-			
-			// aapt resource value: 0x7f070018
-			public const int hockeyapp_crash_dialog_neutral_button = 2131165208;
-			
-			// aapt resource value: 0x7f070019
-			public const int hockeyapp_crash_dialog_positive_button = 2131165209;
-			
-			// aapt resource value: 0x7f07001a
-			public const int hockeyapp_crash_dialog_title = 2131165210;
-			
-			// aapt resource value: 0x7f07001b
-			public const int hockeyapp_dialog_error_message = 2131165211;
-			
-			// aapt resource value: 0x7f07001c
-			public const int hockeyapp_dialog_error_title = 2131165212;
-			
-			// aapt resource value: 0x7f07001d
-			public const int hockeyapp_dialog_negative_button = 2131165213;
-			
-			// aapt resource value: 0x7f07001e
-			public const int hockeyapp_dialog_positive_button = 2131165214;
-			
-			// aapt resource value: 0x7f07001f
-			public const int hockeyapp_download_failed_dialog_message = 2131165215;
-			
-			// aapt resource value: 0x7f070020
-			public const int hockeyapp_download_failed_dialog_negative_button = 2131165216;
-			
-			// aapt resource value: 0x7f070021
-			public const int hockeyapp_download_failed_dialog_positive_button = 2131165217;
-			
-			// aapt resource value: 0x7f070022
-			public const int hockeyapp_download_failed_dialog_title = 2131165218;
-			
-			// aapt resource value: 0x7f070023
-			public const int hockeyapp_error_no_network_message = 2131165219;
-			
-			// aapt resource value: 0x7f070024
-			public const int hockeyapp_expiry_info_text = 2131165220;
-			
-			// aapt resource value: 0x7f070025
-			public const int hockeyapp_expiry_info_title = 2131165221;
-			
-			// aapt resource value: 0x7f070026
-			public const int hockeyapp_feedback_attach_file = 2131165222;
-			
-			// aapt resource value: 0x7f070027
-			public const int hockeyapp_feedback_attach_picture = 2131165223;
-			
-			// aapt resource value: 0x7f070028
-			public const int hockeyapp_feedback_attachment_button_text = 2131165224;
-			
-			// aapt resource value: 0x7f070029
-			public const int hockeyapp_feedback_attachment_error = 2131165225;
-			
-			// aapt resource value: 0x7f07002a
-			public const int hockeyapp_feedback_attachment_loading = 2131165226;
-			
-			// aapt resource value: 0x7f07002b
-			public const int hockeyapp_feedback_email_hint = 2131165227;
-			
-			// aapt resource value: 0x7f07002c
-			public const int hockeyapp_feedback_failed_text = 2131165228;
-			
-			// aapt resource value: 0x7f07002d
-			public const int hockeyapp_feedback_failed_title = 2131165229;
-			
-			// aapt resource value: 0x7f07002e
-			public const int hockeyapp_feedback_fetching_feedback_text = 2131165230;
-			
-			// aapt resource value: 0x7f07002f
-			public const int hockeyapp_feedback_generic_error = 2131165231;
-			
-			// aapt resource value: 0x7f070030
-			public const int hockeyapp_feedback_last_updated_text = 2131165232;
-			
-			// aapt resource value: 0x7f070031
-			public const int hockeyapp_feedback_max_attachments_allowed = 2131165233;
-			
-			// aapt resource value: 0x7f070032
-			public const int hockeyapp_feedback_message_hint = 2131165234;
-			
-			// aapt resource value: 0x7f070033
-			public const int hockeyapp_feedback_name_hint = 2131165235;
-			
-			// aapt resource value: 0x7f070034
-			public const int hockeyapp_feedback_refresh_button_text = 2131165236;
-			
-			// aapt resource value: 0x7f070035
-			public const int hockeyapp_feedback_response_button_text = 2131165237;
-			
-			// aapt resource value: 0x7f070036
-			public const int hockeyapp_feedback_select_file = 2131165238;
-			
-			// aapt resource value: 0x7f070037
-			public const int hockeyapp_feedback_select_picture = 2131165239;
-			
-			// aapt resource value: 0x7f070038
-			public const int hockeyapp_feedback_send_button_text = 2131165240;
-			
-			// aapt resource value: 0x7f070039
-			public const int hockeyapp_feedback_send_generic_error = 2131165241;
-			
-			// aapt resource value: 0x7f07003a
-			public const int hockeyapp_feedback_send_network_error = 2131165242;
-			
-			// aapt resource value: 0x7f07003b
-			public const int hockeyapp_feedback_sending_feedback_text = 2131165243;
-			
-			// aapt resource value: 0x7f07003c
-			public const int hockeyapp_feedback_subject_hint = 2131165244;
-			
-			// aapt resource value: 0x7f07003d
-			public const int hockeyapp_feedback_title = 2131165245;
-			
-			// aapt resource value: 0x7f07003e
-			public const int hockeyapp_feedback_validate_email_empty = 2131165246;
-			
-			// aapt resource value: 0x7f07003f
-			public const int hockeyapp_feedback_validate_email_error = 2131165247;
-			
-			// aapt resource value: 0x7f070040
-			public const int hockeyapp_feedback_validate_name_error = 2131165248;
-			
-			// aapt resource value: 0x7f070041
-			public const int hockeyapp_feedback_validate_subject_error = 2131165249;
-			
-			// aapt resource value: 0x7f070042
-			public const int hockeyapp_feedback_validate_text_error = 2131165250;
-			
-			// aapt resource value: 0x7f070043
-			public const int hockeyapp_login_email_hint = 2131165251;
-			
-			// aapt resource value: 0x7f070044
-			public const int hockeyapp_login_headline_text = 2131165252;
-			
-			// aapt resource value: 0x7f070045
-			public const int hockeyapp_login_headline_text_email_only = 2131165253;
-			
-			// aapt resource value: 0x7f070046
-			public const int hockeyapp_login_login_button_text = 2131165254;
-			
-			// aapt resource value: 0x7f070047
-			public const int hockeyapp_login_missing_credentials_toast = 2131165255;
-			
-			// aapt resource value: 0x7f070048
-			public const int hockeyapp_login_password_hint = 2131165256;
-			
-			// aapt resource value: 0x7f070049
-			public const int hockeyapp_paint_dialog_message = 2131165257;
-			
-			// aapt resource value: 0x7f07004a
-			public const int hockeyapp_paint_dialog_negative_button = 2131165258;
-			
-			// aapt resource value: 0x7f07004b
-			public const int hockeyapp_paint_dialog_neutral_button = 2131165259;
-			
-			// aapt resource value: 0x7f07004c
-			public const int hockeyapp_paint_dialog_positive_button = 2131165260;
-			
-			// aapt resource value: 0x7f07004d
-			public const int hockeyapp_paint_indicator_toast = 2131165261;
-			
-			// aapt resource value: 0x7f07004e
-			public const int hockeyapp_paint_menu_clear = 2131165262;
-			
-			// aapt resource value: 0x7f07004f
-			public const int hockeyapp_paint_menu_save = 2131165263;
-			
-			// aapt resource value: 0x7f070050
-			public const int hockeyapp_paint_menu_undo = 2131165264;
-			
-			// aapt resource value: 0x7f070051
-			public const int hockeyapp_permission_dialog_negative_button = 2131165265;
-			
-			// aapt resource value: 0x7f070052
-			public const int hockeyapp_permission_dialog_positive_button = 2131165266;
-			
-			// aapt resource value: 0x7f070053
-			public const int hockeyapp_permission_update_message = 2131165267;
-			
-			// aapt resource value: 0x7f070054
-			public const int hockeyapp_permission_update_title = 2131165268;
-			
-			// aapt resource value: 0x7f070055
-			public const int hockeyapp_update_button = 2131165269;
-			
-			// aapt resource value: 0x7f070056
-			public const int hockeyapp_update_dialog_message = 2131165270;
-			
-			// aapt resource value: 0x7f070057
-			public const int hockeyapp_update_dialog_negative_button = 2131165271;
-			
-			// aapt resource value: 0x7f070058
-			public const int hockeyapp_update_dialog_positive_button = 2131165272;
-			
-			// aapt resource value: 0x7f070059
-			public const int hockeyapp_update_dialog_title = 2131165273;
-			
-			// aapt resource value: 0x7f07005a
-			public const int hockeyapp_update_mandatory_toast = 2131165274;
-			
-			// aapt resource value: 0x7f07005b
-			public const int hockeyapp_update_version_details_label = 2131165275;
-			
-			// aapt resource value: 0x7f070014
-			public const int library_name = 2131165204;
-			
-			// aapt resource value: 0x7f070080
-			public const int lorem_ipsum = 2131165312;
-			
-			// aapt resource value: 0x7f07008d
-			public const int lorem_ipsum_long = 2131165325;
-			
-			// aapt resource value: 0x7f07008c
-			public const int lorem_ipsum_short = 2131165324;
+			// aapt resource value: 0x7f07005f
+			public const int app_name = 2131165279;
 			
 			// aapt resource value: 0x7f070086
-			public const int no_internet_connection = 2131165318;
+			public const int cancel_button = 2131165318;
 			
-			// aapt resource value: 0x7f070088
-			public const int no_internet_provider = 2131165320;
+			// aapt resource value: 0x7f070087
+			public const int check_button = 2131165319;
 			
-			// aapt resource value: 0x7f070089
-			public const int no_location_provider = 2131165321;
+			// aapt resource value: 0x7f070085
+			public const int delete_caption = 2131165317;
 			
-			// aapt resource value: 0x7f07008b
-			public const int ok_button = 2131165323;
+			// aapt resource value: 0x7f070060
+			public const int error_caption = 2131165280;
 			
-			// aapt resource value: 0x7f07008a
-			public const int on_button = 2131165322;
+			// aapt resource value: 0x7f070073
+			public const int fias_id = 2131165299;
 			
-			// aapt resource value: 0x7f070081
-			public const int pharmacy_not_found = 2131165313;
+			// aapt resource value: 0x7f070075
+			public const int geo_lat = 2131165301;
 			
-			// aapt resource value: 0x7f070072
-			public const int qc_geo = 2131165298;
+			// aapt resource value: 0x7f070076
+			public const int geo_lon = 2131165302;
+			
+			// aapt resource value: 0x7f07005e
+			public const int hello = 2131165278;
+			
+			// aapt resource value: 0x7f070017
+			public const int hockeyapp_crash_dialog_app_name_fallback = 2131165207;
+			
+			// aapt resource value: 0x7f070018
+			public const int hockeyapp_crash_dialog_message = 2131165208;
+			
+			// aapt resource value: 0x7f070019
+			public const int hockeyapp_crash_dialog_negative_button = 2131165209;
+			
+			// aapt resource value: 0x7f07001a
+			public const int hockeyapp_crash_dialog_neutral_button = 2131165210;
+			
+			// aapt resource value: 0x7f07001b
+			public const int hockeyapp_crash_dialog_positive_button = 2131165211;
+			
+			// aapt resource value: 0x7f07001c
+			public const int hockeyapp_crash_dialog_title = 2131165212;
+			
+			// aapt resource value: 0x7f07001d
+			public const int hockeyapp_dialog_error_message = 2131165213;
+			
+			// aapt resource value: 0x7f07001e
+			public const int hockeyapp_dialog_error_title = 2131165214;
+			
+			// aapt resource value: 0x7f07001f
+			public const int hockeyapp_dialog_negative_button = 2131165215;
+			
+			// aapt resource value: 0x7f070020
+			public const int hockeyapp_dialog_positive_button = 2131165216;
+			
+			// aapt resource value: 0x7f070021
+			public const int hockeyapp_download_failed_dialog_message = 2131165217;
+			
+			// aapt resource value: 0x7f070022
+			public const int hockeyapp_download_failed_dialog_negative_button = 2131165218;
+			
+			// aapt resource value: 0x7f070023
+			public const int hockeyapp_download_failed_dialog_positive_button = 2131165219;
+			
+			// aapt resource value: 0x7f070024
+			public const int hockeyapp_download_failed_dialog_title = 2131165220;
+			
+			// aapt resource value: 0x7f070025
+			public const int hockeyapp_error_no_network_message = 2131165221;
+			
+			// aapt resource value: 0x7f070026
+			public const int hockeyapp_expiry_info_text = 2131165222;
+			
+			// aapt resource value: 0x7f070027
+			public const int hockeyapp_expiry_info_title = 2131165223;
+			
+			// aapt resource value: 0x7f070028
+			public const int hockeyapp_feedback_attach_file = 2131165224;
+			
+			// aapt resource value: 0x7f070029
+			public const int hockeyapp_feedback_attach_picture = 2131165225;
+			
+			// aapt resource value: 0x7f07002a
+			public const int hockeyapp_feedback_attachment_button_text = 2131165226;
+			
+			// aapt resource value: 0x7f07002b
+			public const int hockeyapp_feedback_attachment_error = 2131165227;
+			
+			// aapt resource value: 0x7f07002c
+			public const int hockeyapp_feedback_attachment_loading = 2131165228;
+			
+			// aapt resource value: 0x7f07002d
+			public const int hockeyapp_feedback_email_hint = 2131165229;
+			
+			// aapt resource value: 0x7f07002e
+			public const int hockeyapp_feedback_failed_text = 2131165230;
+			
+			// aapt resource value: 0x7f07002f
+			public const int hockeyapp_feedback_failed_title = 2131165231;
+			
+			// aapt resource value: 0x7f070030
+			public const int hockeyapp_feedback_fetching_feedback_text = 2131165232;
+			
+			// aapt resource value: 0x7f070031
+			public const int hockeyapp_feedback_generic_error = 2131165233;
+			
+			// aapt resource value: 0x7f070032
+			public const int hockeyapp_feedback_last_updated_text = 2131165234;
+			
+			// aapt resource value: 0x7f070033
+			public const int hockeyapp_feedback_max_attachments_allowed = 2131165235;
+			
+			// aapt resource value: 0x7f070034
+			public const int hockeyapp_feedback_message_hint = 2131165236;
+			
+			// aapt resource value: 0x7f070035
+			public const int hockeyapp_feedback_name_hint = 2131165237;
+			
+			// aapt resource value: 0x7f070036
+			public const int hockeyapp_feedback_refresh_button_text = 2131165238;
+			
+			// aapt resource value: 0x7f070037
+			public const int hockeyapp_feedback_response_button_text = 2131165239;
+			
+			// aapt resource value: 0x7f070038
+			public const int hockeyapp_feedback_select_file = 2131165240;
+			
+			// aapt resource value: 0x7f070039
+			public const int hockeyapp_feedback_select_picture = 2131165241;
+			
+			// aapt resource value: 0x7f07003a
+			public const int hockeyapp_feedback_send_button_text = 2131165242;
+			
+			// aapt resource value: 0x7f07003b
+			public const int hockeyapp_feedback_send_generic_error = 2131165243;
+			
+			// aapt resource value: 0x7f07003c
+			public const int hockeyapp_feedback_send_network_error = 2131165244;
+			
+			// aapt resource value: 0x7f07003d
+			public const int hockeyapp_feedback_sending_feedback_text = 2131165245;
+			
+			// aapt resource value: 0x7f07003e
+			public const int hockeyapp_feedback_subject_hint = 2131165246;
+			
+			// aapt resource value: 0x7f07003f
+			public const int hockeyapp_feedback_title = 2131165247;
+			
+			// aapt resource value: 0x7f070040
+			public const int hockeyapp_feedback_validate_email_empty = 2131165248;
+			
+			// aapt resource value: 0x7f070041
+			public const int hockeyapp_feedback_validate_email_error = 2131165249;
+			
+			// aapt resource value: 0x7f070042
+			public const int hockeyapp_feedback_validate_name_error = 2131165250;
+			
+			// aapt resource value: 0x7f070043
+			public const int hockeyapp_feedback_validate_subject_error = 2131165251;
+			
+			// aapt resource value: 0x7f070044
+			public const int hockeyapp_feedback_validate_text_error = 2131165252;
+			
+			// aapt resource value: 0x7f070045
+			public const int hockeyapp_login_email_hint = 2131165253;
+			
+			// aapt resource value: 0x7f070046
+			public const int hockeyapp_login_headline_text = 2131165254;
+			
+			// aapt resource value: 0x7f070047
+			public const int hockeyapp_login_headline_text_email_only = 2131165255;
+			
+			// aapt resource value: 0x7f070048
+			public const int hockeyapp_login_login_button_text = 2131165256;
+			
+			// aapt resource value: 0x7f070049
+			public const int hockeyapp_login_missing_credentials_toast = 2131165257;
+			
+			// aapt resource value: 0x7f07004a
+			public const int hockeyapp_login_password_hint = 2131165258;
+			
+			// aapt resource value: 0x7f07004b
+			public const int hockeyapp_paint_dialog_message = 2131165259;
+			
+			// aapt resource value: 0x7f07004c
+			public const int hockeyapp_paint_dialog_negative_button = 2131165260;
+			
+			// aapt resource value: 0x7f07004d
+			public const int hockeyapp_paint_dialog_neutral_button = 2131165261;
+			
+			// aapt resource value: 0x7f07004e
+			public const int hockeyapp_paint_dialog_positive_button = 2131165262;
+			
+			// aapt resource value: 0x7f07004f
+			public const int hockeyapp_paint_indicator_toast = 2131165263;
+			
+			// aapt resource value: 0x7f070050
+			public const int hockeyapp_paint_menu_clear = 2131165264;
+			
+			// aapt resource value: 0x7f070051
+			public const int hockeyapp_paint_menu_save = 2131165265;
+			
+			// aapt resource value: 0x7f070052
+			public const int hockeyapp_paint_menu_undo = 2131165266;
+			
+			// aapt resource value: 0x7f070053
+			public const int hockeyapp_permission_dialog_negative_button = 2131165267;
+			
+			// aapt resource value: 0x7f070054
+			public const int hockeyapp_permission_dialog_positive_button = 2131165268;
+			
+			// aapt resource value: 0x7f070055
+			public const int hockeyapp_permission_update_message = 2131165269;
+			
+			// aapt resource value: 0x7f070056
+			public const int hockeyapp_permission_update_title = 2131165270;
+			
+			// aapt resource value: 0x7f070057
+			public const int hockeyapp_update_button = 2131165271;
+			
+			// aapt resource value: 0x7f070058
+			public const int hockeyapp_update_dialog_message = 2131165272;
+			
+			// aapt resource value: 0x7f070059
+			public const int hockeyapp_update_dialog_negative_button = 2131165273;
+			
+			// aapt resource value: 0x7f07005a
+			public const int hockeyapp_update_dialog_positive_button = 2131165274;
+			
+			// aapt resource value: 0x7f07005b
+			public const int hockeyapp_update_dialog_title = 2131165275;
+			
+			// aapt resource value: 0x7f07005c
+			public const int hockeyapp_update_mandatory_toast = 2131165276;
+			
+			// aapt resource value: 0x7f07005d
+			public const int hockeyapp_update_version_details_label = 2131165277;
+			
+			// aapt resource value: 0x7f070016
+			public const int library_name = 2131165206;
+			
+			// aapt resource value: 0x7f070082
+			public const int lorem_ipsum = 2131165314;
 			
 			// aapt resource value: 0x7f07008f
-			public const int repush_for_exit = 2131165327;
+			public const int lorem_ipsum_long = 2131165327;
+			
+			// aapt resource value: 0x7f07008e
+			public const int lorem_ipsum_short = 2131165326;
+			
+			// aapt resource value: 0x7f070088
+			public const int no_internet_connection = 2131165320;
+			
+			// aapt resource value: 0x7f07008a
+			public const int no_internet_provider = 2131165322;
+			
+			// aapt resource value: 0x7f07008b
+			public const int no_location_provider = 2131165323;
+			
+			// aapt resource value: 0x7f07008d
+			public const int ok_button = 2131165325;
+			
+			// aapt resource value: 0x7f07008c
+			public const int on_button = 2131165324;
+			
+			// aapt resource value: 0x7f070083
+			public const int pharmacy_not_found = 2131165315;
+			
+			// aapt resource value: 0x7f070074
+			public const int qc_geo = 2131165300;
+			
+			// aapt resource value: 0x7f070091
+			public const int repush_for_exit = 2131165329;
 			
 			// aapt resource value: 0x7f070013
 			public const int status_bar_notification_info_overflow = 2131165203;
 			
-			// aapt resource value: 0x7f070087
-			public const int time_changed = 2131165319;
+			// aapt resource value: 0x7f070089
+			public const int time_changed = 2131165321;
+			
+			// aapt resource value: 0x7f070092
+			public const int time_diff_more_than_hour = 2131165330;
 			
 			// aapt resource value: 0x7f070090
-			public const int time_diff_more_than_hour = 2131165328;
+			public const int tutorial_rules = 2131165328;
 			
-			// aapt resource value: 0x7f07008e
-			public const int tutorial_rules = 2131165326;
-			
-			// aapt resource value: 0x7f070082
-			public const int warning_caption = 2131165314;
+			// aapt resource value: 0x7f070084
+			public const int warning_caption = 2131165316;
 			
 			static String()
 			{

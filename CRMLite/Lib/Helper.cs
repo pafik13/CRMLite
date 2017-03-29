@@ -27,10 +27,10 @@ namespace CRMLite
 	{
 		public static bool IsTimeChanged;
 
-		public static string C_DB_FILE_NAME = @"main.realm";
-		public static string C_LOC_FILE_NAME = @"location.realm";
+		public static string C_DB_FILE_NAME = "main.realm";
+		public static string C_LOC_FILE_NAME = "location.realm";
 
-		public static string Username = @"";
+		public static string Username = string.Empty;
 
 		public static int WeeksInRoute = 3;
 

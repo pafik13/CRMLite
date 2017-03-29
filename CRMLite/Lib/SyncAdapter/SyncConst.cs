@@ -1,7 +1,5 @@
 ﻿using Android.Net;
 
-using CRMLite.Entities;
-
 namespace CRMLite.Lib.Sync
 {
 	public static class SyncConst
@@ -36,6 +34,8 @@ namespace CRMLite.Lib.Sync
 		public const string RouteItems = "RouteItems";
 		public const string ExcludeRouteItems = "ExcludeRouteItems";
 		public const string GPSLocations = "GPSLocations";
+		public const string PhotoDatas = "PhotoDatas";
+
 
 		public const string SET_SYNCED = "set_synced";
 

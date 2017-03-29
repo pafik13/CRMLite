@@ -26,6 +26,15 @@ namespace CRMLite.Entities
 
 		public string PhotoPath { get; set; }
 
+		#region S3
+        public string ETag  { get; set; }
+
+		public string Location { get; set; }
+
+		public string Key { get; set; }
+
+		public string Bucket { get; set; }
+		#endregion
 
 		#region ISync
 		public string CreatedBy { get; set; }

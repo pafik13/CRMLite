@@ -89,12 +89,58 @@ namespace CRMLite
 			new System.IO.FileInfo(dbFileLocation).Directory.Create();
 			//}
 			//Config = new RealmConfiguration(Helper.C_DB_FILE_NAME);
-			Config = new RealmConfiguration(dbFileLocation, false);
+			Config = new RealmConfiguration(dbFileLocation, false) {
+				SchemaVersion = 1,
+				MigrationCallback = (Migration migration, ulong oldSchemaVersion) => {
+					var newPhotoDatas = migration.NewRealm.All<PhotoData>();
+
+					// Use the dynamic api for oldPeople so we can access
+					// .FirstName and .LastName even though they no longer
+					// exist in the class definition.
+					var oldPhotoDatas = migration.OldRealm.All("PhotoData");
+
+					int count = newPhotoDatas.Count();
+					for (var i = 0; i < count; i++) {
+						var oldPD = oldPhotoDatas.ElementAt(i);
+						var newPD = newPhotoDatas.ElementAt(i);
+
+						if (newPD.IsSynced) {
+							newPD.ETag = "DummyS3ETag";
+							newPD.Bucket = "DummyS3Bucket";
+							newPD.Key = "DummyS3Key";
+							newPD.Location = "DummyS3Location";
+						}
+					}
+				}
+			};
 			//Realm.DeleteRealm(Config);
 			DB = Realm.GetInstance(Config);
 
 			string locFileLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), username, Helper.C_LOC_FILE_NAME);
-			ConfigForLocation = new RealmConfiguration(locFileLocation, false);
+			ConfigForLocation = new RealmConfiguration(locFileLocation, false) {
+				SchemaVersion = 1,
+				MigrationCallback = (Migration migration, ulong oldSchemaVersion) => {
+					var newPhotoDatas = migration.NewRealm.All<PhotoData>();
+
+					// Use the dynamic api for oldPeople so we can access
+					// .FirstName and .LastName even though they no longer
+					// exist in the class definition.
+					var oldPhotoDatas = migration.OldRealm.All("PhotoData");
+
+					int count = newPhotoDatas.Count();
+					for (var i = 0; i < count; i++) {
+						var oldPD = oldPhotoDatas.ElementAt(i);
+						var newPD = newPhotoDatas.ElementAt(i);
+
+						if (newPD.IsSynced) {
+							newPD.ETag = "DummyS3ETag";
+							newPD.Bucket = "DummyS3Bucket";
+							newPD.Key = "DummyS3Key";
+							newPD.Location = "DummyS3Location";
+						}
+					}
+				}
+			};
 			//Realm.DeleteRealm(ConfigForLocation);
 			DBLoc = Realm.GetInstance(ConfigForLocation);
 				
