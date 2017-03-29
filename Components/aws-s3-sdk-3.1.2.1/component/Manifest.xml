@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<component format="1" id="aws-s3-sdk">
+  <name>AWSSDK - Amazon Simple Storage Service</name>
+  <publisher>Amazon Web Services</publisher>
+  <publisher-url>http://aws.amazon.com/mobile/sdk/</publisher-url>
+  <version>3.1.2.1</version>
+  <summary>AWS S3 SDK for Xamarin</summary>
+  <packages>
+    <package id="AWSSDK.Core" version="3.1.1.0" framework="winphone-8.1" />
+    <package id="AWSSDK.S3" version="3.1.2.1" framework="winphone-8.1" />
+    <package id="AWSSDK.Core" version="3.1.1.0" framework="ios-unified" />
+    <package id="AWSSDK.S3" version="3.1.2.1" framework="ios-unified" />
+    <package id="AWSSDK.Core" version="3.1.1.0" framework="android" />
+    <package id="AWSSDK.S3" version="3.1.2.1" framework="android" />
+    <package id="AWSSDK.Core" version="3.1.1.0" framework="winphone-8.0" />
+    <package id="AWSSDK.S3" version="3.1.2.1" framework="winphone-8.0" />
+  </packages>
+  <samples>
+    <sample id="AWSSDK.S3.Sample">
+      <name>S3-Sample</name>
+      <summary>S3-Sample</summary>
+    </sample>
+  </samples>
+</component>

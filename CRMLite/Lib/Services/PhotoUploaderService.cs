@@ -26,7 +26,8 @@ namespace CRMLite.Services
 	{
 		const string TAG = "ru.sbl.crmlite2.PhotoUploaderService";
 		#if DEBUG
-		const string S3BucketName = "sbl-test1";
+		//const string S3BucketName = "sbl-test1";
+		const string S3BucketName = "sbl-crm-frankfurt";
 		#else
 		const string S3BucketName = "sbl-crm-frankfurt";
 		#endif
