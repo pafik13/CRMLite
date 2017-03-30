@@ -25,6 +25,8 @@ namespace CRMLite.Services
 	public class PhotoUploaderService : Service
 	{
 		const string TAG = "ru.sbl.crmlite2.PhotoUploaderService";
+		const int NOTIFICATION_ID = Resource.String.foreground_service_photo_uploader;
+
 		#if DEBUG
 		//const string S3BucketName = "sbl-test1";
 		const string S3BucketName = "sbl-crm-frankfurt";
@@ -40,6 +42,7 @@ namespace CRMLite.Services
 		string AgentUUID = string.Empty;
 		IAmazonS3 S3Client;
 
+		NotificationManager NotificationManager;
 		Task Work;
 
 		public override IBinder OnBind(Intent intent)
@@ -76,39 +79,103 @@ namespace CRMLite.Services
 
 			if (string.IsNullOrEmpty(DBPath)) return StartCommandResult.NotSticky;
 
-			var wifiService = BaseContext.GetSystemService(WifiService);
+			var cm = (Android.Net.ConnectivityManager)Application.Context.GetSystemService(ConnectivityService);
+
+			if (!cm.ActiveNetworkInfo.IsConnectedOrConnecting) return StartCommandResult.NotSticky;
+
+			NotificationManager = (NotificationManager)Application.Context.GetSystemService(NotificationService);
 
 			if (Work == null || Work.IsCanceled || Work.IsCompleted || Work.IsFaulted) {
+
+				var content = Work == null ? "Первый запуск" :
+					string.Format("Статус предыдущего:{0}Id={1}, Status={2}, IsCanceled={3}, IsCompleted={4}, IsFaulted={5}",
+					              System.Environment.NewLine, Work.Id, Work.Status, Work.IsCanceled, Work.IsCompleted, Work.IsFaulted
+								 );
+
+				Notification notification = new Notification.Builder(this)
+															.SetContentTitle("Выгрузка фото")
+				                                            .SetContentText(content)
+				                                            .SetSmallIcon(Android.Resource.Drawable.IcPopupSync)
+															.Build();
+				
+				notification.Flags = notification.Flags & NotificationFlags.ForegroundService;
+
+				StartForeground(NOTIFICATION_ID, notification);
+
+
 				Work = Task.Run(() => {
-					var config = new RealmConfiguration(DBPath, false) {
-						SchemaVersion = 1
-					};
+					try {
+						var bucket = S3BucketName.ToLowerInvariant();
 
-					var realm = Realm.GetInstance(config);
+						var config = new RealmConfiguration(DBPath, false) {
+							SchemaVersion = 1
+						};
+						using (var realm = Realm.GetInstance(config)) {
 
-					var bucket = S3BucketName.ToLowerInvariant();
-					var photoDatas = realm.All<PhotoData>().Where(pd => !pd.IsSynced && string.IsNullOrEmpty(pd.ETag));
-					foreach (var photoData in photoDatas) {
-						var key = string.Concat(photoData.UUID, ".jpg");
-						var response = S3Client.PutObjectAsync(
-							new PutObjectRequest {
-								BucketName = bucket,
-								FilePath = photoData.PhotoPath,
-								Key = key,
-								CannedACL = S3CannedACL.PublicRead,
-								ContentType = S3ContentType
-							}).Result;
-						//Log.Info(TAG, "ETag:{1}", response.ETag);
-						using (var trans = realm.BeginWrite()) {
-							photoData.Bucket = bucket;
-							photoData.ETag = response.ETag;
-							photoData.Key = key;
-							photoData.Location = string.Format("{0}/{1}/{2}", S3EndpointLink, bucket, key);
-							trans.Commit();
+							var photoDatas = realm.All<PhotoData>().Where(pd => !pd.IsSynced && string.IsNullOrEmpty(pd.ETag));
+
+							notification = new Notification.Builder(this)
+														   .SetContentTitle("Выгрузка фото")
+							                               .SetContentText(string.Concat("Кол-во фото: ", photoDatas.Count(), " шт."))
+														   .SetSmallIcon(Android.Resource.Drawable.IcPopupSync)
+														   .Build();
+							
+							NotificationManager.Notify(NOTIFICATION_ID, notification);
+
+							System.Threading.Thread.Sleep(5000);
+
+							foreach (var photoData in photoDatas) {
+								var key = string.Concat(photoData.UUID, ".jpg");
+
+								notification = new Notification.Builder(this)
+															   .SetContentTitle("Выгрузка фото")
+															   .SetContentText(string.Concat("START key = ", key))
+															   .SetSmallIcon(Android.Resource.Drawable.IcPopupSync)
+															   .Build();
+
+								NotificationManager.Notify(NOTIFICATION_ID, notification);
+
+								var response = S3Client.PutObjectAsync(
+									new PutObjectRequest {
+										BucketName = bucket,
+										FilePath = photoData.PhotoPath,
+										Key = key,
+										CannedACL = S3CannedACL.PublicRead,
+										ContentType = S3ContentType
+									}).Result;
+								//Log.Info(TAG, "ETag:{1}", response.ETag);
+								using (var trans = realm.BeginWrite()) {
+									photoData.Bucket = bucket;
+									photoData.ETag = response.ETag;
+									photoData.Key = key;
+									photoData.Location = string.Format("{0}/{1}/{2}", S3EndpointLink, bucket, key);
+									trans.Commit();
+								}
+
+								notification = new Notification.Builder(this)
+															   .SetContentTitle("Выгрузка фото")
+															   .SetContentText(string.Concat("END key = ", key))
+															   .SetSmallIcon(Android.Resource.Drawable.IcPopupSync)
+															   .Build();
+
+								NotificationManager.Notify(NOTIFICATION_ID, notification);
+							}
 						}
-					}
+					} catch (Exception ex) {
+						var exeptionNotification = new Notification.Builder(this)
+						                                           .SetContentTitle("Выгрузка фото")
+						                                           .SetContentText(ex.Message)
+						                                           .SetSmallIcon(Android.Resource.Drawable.IcPopupSync)
+						                                           .Build();
+						exeptionNotification.Flags = exeptionNotification.Flags & NotificationFlags.ForegroundService;
 
-					StopSelf();
+						NotificationManager.Notify(NOTIFICATION_ID, exeptionNotification);
+
+						System.Threading.Thread.Sleep(5000);
+					} finally {
+						StopForeground(true);
+						StopSelf();
+					}
 				});
 			}
 
@@ -118,6 +185,8 @@ namespace CRMLite.Services
 		public override void OnDestroy()
 		{
 			Log.Info(TAG, "OnDestroy");
+			StopForeground(true);
+
 			base.OnDestroy();
 		}
 	}

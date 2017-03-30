@@ -584,13 +584,20 @@ namespace CRMLite
 					}
 
 					StartService(locator);
+				} else {
+					StopService(new Intent(this, typeof(LocatorService)));
+				}
+			}
 
+			var isPhotoUploaderEnable = MainDatabase.GetCustomizationBool(Customizations.IsPhotoUploaderEnable);
+			if (isPhotoUploaderEnable.HasValue) {
+				if (isPhotoUploaderEnable.Value) {
 					var photoUploader = new Intent(this, typeof(PhotoUploaderService));
 					photoUploader.PutExtra(MainDatabase.C_DB_PATH, MainDatabase.DBPath);
 					photoUploader.PutExtra(SigninDialog.C_AGENT_UUID, agentUUID);
 					StartService(photoUploader);
 				} else {
-					StopService(new Intent(this, typeof(LocatorService)));
+					StopService(new Intent(this, typeof(PhotoUploaderService)));
 				}
 			}
 

@@ -3,6 +3,9 @@
 	<string name="hello">Hello World, Click Me!</string>
 	<string name="app_name">CRMLite</string>
 	<string name="error_caption">Ошибка!</string>
+	
+	<string name="foreground_service_locator">foreground_service_locator</string>
+	<string name="foreground_service_photo_uploader">foreground_service_photo_uploader</string>
 
 	<string name="IsFilterOn">IsFilterOn</string>
 	<string name="RouteItemUUID">ContractDataUUID</string>

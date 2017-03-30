@@ -19,6 +19,8 @@ namespace CRMLite.Services
 	public class LocatorService: Service, ILocationListener
 	{
 		const string TAG = "ru.sbl.crmlite2.LocatorService";
+		const int NOTIFICATION_ID = Resource.String.foreground_service_locator;
+
 		const int INTERVAL_SEC = 1000;
 		const int INTERVAL_MIN = 60 * INTERVAL_SEC;
 		const int LOCATION_INTERVAL_NET = 5 * INTERVAL_SEC;
@@ -74,7 +76,7 @@ namespace CRMLite.Services
 														.SetSmallIcon(Android.Resource.Drawable.IcDialogMap)
 														.Build();
 
-			StartForeground((int)NotificationFlags.ForegroundService, notification);
+			StartForeground(NOTIFICATION_ID, notification);
 
 			LocationManager = (LocationManager)Application.Context.GetSystemService(LocationService);
 

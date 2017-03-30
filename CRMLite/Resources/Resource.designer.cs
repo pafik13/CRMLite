@@ -4324,95 +4324,95 @@ namespace CRMLite
 			// aapt resource value: 0x7f070015
 			public const int ApplicationName = 2131165205;
 			
-			// aapt resource value: 0x7f07007e
-			public const int CDBrands = 2131165310;
+			// aapt resource value: 0x7f070080
+			public const int CDBrands = 2131165312;
 			
-			// aapt resource value: 0x7f07007f
-			public const int CDEmployees = 2131165311;
+			// aapt resource value: 0x7f070081
+			public const int CDEmployees = 2131165313;
 			
-			// aapt resource value: 0x7f07007a
-			public const int CategoryUUID = 2131165306;
-			
-			// aapt resource value: 0x7f070070
-			public const int ContractDataUUID = 2131165296;
-			
-			// aapt resource value: 0x7f070071
-			public const int ContractUUIDs = 2131165297;
-			
-			// aapt resource value: 0x7f070069
-			public const int CoterieDataUUID = 2131165289;
+			// aapt resource value: 0x7f07007c
+			public const int CategoryUUID = 2131165308;
 			
 			// aapt resource value: 0x7f070072
-			public const int DistributorUUIDs = 2131165298;
+			public const int ContractDataUUID = 2131165298;
+			
+			// aapt resource value: 0x7f070073
+			public const int ContractUUIDs = 2131165299;
 			
 			// aapt resource value: 0x7f07006b
-			public const int DrugSKUUUID = 2131165291;
+			public const int CoterieDataUUID = 2131165291;
 			
-			// aapt resource value: 0x7f07006f
-			public const int EmployeeUUID = 2131165295;
+			// aapt resource value: 0x7f070074
+			public const int DistributorUUIDs = 2131165300;
+			
+			// aapt resource value: 0x7f07006d
+			public const int DrugSKUUUID = 2131165293;
+			
+			// aapt resource value: 0x7f070071
+			public const int EmployeeUUID = 2131165297;
 			
 			// aapt resource value: 0x7f070014
 			public const int Hello = 2131165204;
 			
+			// aapt resource value: 0x7f070070
+			public const int HospitalDataUUID = 2131165296;
+			
 			// aapt resource value: 0x7f07006e
-			public const int HospitalDataUUID = 2131165294;
-			
-			// aapt resource value: 0x7f07006c
-			public const int IsChanged = 2131165292;
-			
-			// aapt resource value: 0x7f070061
-			public const int IsFilterOn = 2131165281;
-			
-			// aapt resource value: 0x7f07006a
-			public const int MessageUUID = 2131165290;
-			
-			// aapt resource value: 0x7f070066
-			public const int NetUUID = 2131165286;
-			
-			// aapt resource value: 0x7f07007c
-			public const int PDBrand = 2131165308;
-			
-			// aapt resource value: 0x7f07007b
-			public const int PDEmployee = 2131165307;
-			
-			// aapt resource value: 0x7f07007d
-			public const int PDWorkTypes = 2131165309;
-			
-			// aapt resource value: 0x7f070067
-			public const int PharmacyUUID = 2131165287;
-			
-			// aapt resource value: 0x7f070081
-			public const int PhotoDataUUID = 2131165313;
-			
-			// aapt resource value: 0x7f070080
-			public const int PhotoPath = 2131165312;
-			
-			// aapt resource value: 0x7f070079
-			public const int PlaceUUID = 2131165305;
-			
-			// aapt resource value: 0x7f070064
-			public const int Position = 2131165284;
-			
-			// aapt resource value: 0x7f070065
-			public const int PositionUUID = 2131165285;
-			
-			// aapt resource value: 0x7f070068
-			public const int PresentationDataUUID = 2131165288;
-			
-			// aapt resource value: 0x7f070078
-			public const int RegionUUID = 2131165304;
+			public const int IsChanged = 2131165294;
 			
 			// aapt resource value: 0x7f070063
-			public const int RouteItemOrder = 2131165283;
+			public const int IsFilterOn = 2131165283;
 			
-			// aapt resource value: 0x7f070062
-			public const int RouteItemUUID = 2131165282;
+			// aapt resource value: 0x7f07006c
+			public const int MessageUUID = 2131165292;
 			
-			// aapt resource value: 0x7f07006d
-			public const int SaleDataUUID = 2131165293;
+			// aapt resource value: 0x7f070068
+			public const int NetUUID = 2131165288;
 			
-			// aapt resource value: 0x7f070077
-			public const int SubwayUUID = 2131165303;
+			// aapt resource value: 0x7f07007e
+			public const int PDBrand = 2131165310;
+			
+			// aapt resource value: 0x7f07007d
+			public const int PDEmployee = 2131165309;
+			
+			// aapt resource value: 0x7f07007f
+			public const int PDWorkTypes = 2131165311;
+			
+			// aapt resource value: 0x7f070069
+			public const int PharmacyUUID = 2131165289;
+			
+			// aapt resource value: 0x7f070083
+			public const int PhotoDataUUID = 2131165315;
+			
+			// aapt resource value: 0x7f070082
+			public const int PhotoPath = 2131165314;
+			
+			// aapt resource value: 0x7f07007b
+			public const int PlaceUUID = 2131165307;
+			
+			// aapt resource value: 0x7f070066
+			public const int Position = 2131165286;
+			
+			// aapt resource value: 0x7f070067
+			public const int PositionUUID = 2131165287;
+			
+			// aapt resource value: 0x7f07006a
+			public const int PresentationDataUUID = 2131165290;
+			
+			// aapt resource value: 0x7f07007a
+			public const int RegionUUID = 2131165306;
+			
+			// aapt resource value: 0x7f070065
+			public const int RouteItemOrder = 2131165285;
+			
+			// aapt resource value: 0x7f070064
+			public const int RouteItemUUID = 2131165284;
+			
+			// aapt resource value: 0x7f07006f
+			public const int SaleDataUUID = 2131165295;
+			
+			// aapt resource value: 0x7f070079
+			public const int SubwayUUID = 2131165305;
 			
 			// aapt resource value: 0x7f070000
 			public const int abc_action_bar_home_description = 2131165184;
@@ -4474,26 +4474,32 @@ namespace CRMLite
 			// aapt resource value: 0x7f07005f
 			public const int app_name = 2131165279;
 			
-			// aapt resource value: 0x7f070086
-			public const int cancel_button = 2131165318;
+			// aapt resource value: 0x7f070088
+			public const int cancel_button = 2131165320;
+			
+			// aapt resource value: 0x7f070089
+			public const int check_button = 2131165321;
 			
 			// aapt resource value: 0x7f070087
-			public const int check_button = 2131165319;
-			
-			// aapt resource value: 0x7f070085
-			public const int delete_caption = 2131165317;
+			public const int delete_caption = 2131165319;
 			
 			// aapt resource value: 0x7f070060
 			public const int error_caption = 2131165280;
 			
-			// aapt resource value: 0x7f070073
-			public const int fias_id = 2131165299;
-			
 			// aapt resource value: 0x7f070075
-			public const int geo_lat = 2131165301;
+			public const int fias_id = 2131165301;
 			
-			// aapt resource value: 0x7f070076
-			public const int geo_lon = 2131165302;
+			// aapt resource value: 0x7f070061
+			public const int foreground_service_locator = 2131165281;
+			
+			// aapt resource value: 0x7f070062
+			public const int foreground_service_photo_uploader = 2131165282;
+			
+			// aapt resource value: 0x7f070077
+			public const int geo_lat = 2131165303;
+			
+			// aapt resource value: 0x7f070078
+			public const int geo_lon = 2131165304;
 			
 			// aapt resource value: 0x7f07005e
 			public const int hello = 2131165278;
@@ -4714,53 +4720,53 @@ namespace CRMLite
 			// aapt resource value: 0x7f070016
 			public const int library_name = 2131165206;
 			
-			// aapt resource value: 0x7f070082
-			public const int lorem_ipsum = 2131165314;
-			
-			// aapt resource value: 0x7f07008f
-			public const int lorem_ipsum_long = 2131165327;
-			
-			// aapt resource value: 0x7f07008e
-			public const int lorem_ipsum_short = 2131165326;
-			
-			// aapt resource value: 0x7f070088
-			public const int no_internet_connection = 2131165320;
-			
-			// aapt resource value: 0x7f07008a
-			public const int no_internet_provider = 2131165322;
-			
-			// aapt resource value: 0x7f07008b
-			public const int no_location_provider = 2131165323;
-			
-			// aapt resource value: 0x7f07008d
-			public const int ok_button = 2131165325;
-			
-			// aapt resource value: 0x7f07008c
-			public const int on_button = 2131165324;
-			
-			// aapt resource value: 0x7f070083
-			public const int pharmacy_not_found = 2131165315;
-			
-			// aapt resource value: 0x7f070074
-			public const int qc_geo = 2131165300;
+			// aapt resource value: 0x7f070084
+			public const int lorem_ipsum = 2131165316;
 			
 			// aapt resource value: 0x7f070091
-			public const int repush_for_exit = 2131165329;
+			public const int lorem_ipsum_long = 2131165329;
+			
+			// aapt resource value: 0x7f070090
+			public const int lorem_ipsum_short = 2131165328;
+			
+			// aapt resource value: 0x7f07008a
+			public const int no_internet_connection = 2131165322;
+			
+			// aapt resource value: 0x7f07008c
+			public const int no_internet_provider = 2131165324;
+			
+			// aapt resource value: 0x7f07008d
+			public const int no_location_provider = 2131165325;
+			
+			// aapt resource value: 0x7f07008f
+			public const int ok_button = 2131165327;
+			
+			// aapt resource value: 0x7f07008e
+			public const int on_button = 2131165326;
+			
+			// aapt resource value: 0x7f070085
+			public const int pharmacy_not_found = 2131165317;
+			
+			// aapt resource value: 0x7f070076
+			public const int qc_geo = 2131165302;
+			
+			// aapt resource value: 0x7f070093
+			public const int repush_for_exit = 2131165331;
 			
 			// aapt resource value: 0x7f070013
 			public const int status_bar_notification_info_overflow = 2131165203;
 			
-			// aapt resource value: 0x7f070089
-			public const int time_changed = 2131165321;
+			// aapt resource value: 0x7f07008b
+			public const int time_changed = 2131165323;
+			
+			// aapt resource value: 0x7f070094
+			public const int time_diff_more_than_hour = 2131165332;
 			
 			// aapt resource value: 0x7f070092
-			public const int time_diff_more_than_hour = 2131165330;
+			public const int tutorial_rules = 2131165330;
 			
-			// aapt resource value: 0x7f070090
-			public const int tutorial_rules = 2131165328;
-			
-			// aapt resource value: 0x7f070084
-			public const int warning_caption = 2131165316;
+			// aapt resource value: 0x7f070086
+			public const int warning_caption = 2131165318;
 			
 			static String()
 			{

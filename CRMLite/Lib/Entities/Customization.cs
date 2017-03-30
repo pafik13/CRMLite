@@ -32,5 +32,8 @@ namespace CRMLite.Entities
 		public const string LocatorIdlePeriod = "LocatorIdlePeriod";
 		#endregion
 
+		#region PhotoUploader customizations
+		public const string IsPhotoUploaderEnable = "IsPhotoUploaderEnable";
+		#endregion
 	}
 }
