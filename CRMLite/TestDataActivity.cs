@@ -16,6 +16,7 @@ using Android.Content;
 using Android.Accounts;
 using CRMLite.Dialogs;
 using CRMLite.Lib.Dialogs;
+using CRMLite.Services;
 
 namespace CRMLite
 {
@@ -116,16 +117,16 @@ namespace CRMLite
 
 		void CustomAction_Click(object sender, EventArgs e)
 		{
-			var tip = new EasyDialog(this);
-			tip.SetContent(new TextView(this) { 
-				Text = "SUPER PUPER TIP", TextSize = 24, 
-				LayoutParameters = new Android.Views.ViewGroup.LayoutParams(Android.Views.ViewGroup.LayoutParams.WrapContent, Android.Views.ViewGroup.LayoutParams.WrapContent)
-			});
-			tip.SetLocationByAttachedView(sender as Android.Views.View);
-			tip.SetMatchParent(false);
-			tip.SetAnimationAlphaShow(300, new float[] { 0.0f, 1.0f });
-			tip.SetAnimationAlphaHide(300, new float[] { 1.0f, 0.0f }); 
-			tip.Show();
+			//var tip = new EasyDialog(this);
+			//tip.SetContent(new TextView(this) { 
+			//	Text = "SUPER PUPER TIP", TextSize = 24, 
+			//	LayoutParameters = new Android.Views.ViewGroup.LayoutParams(Android.Views.ViewGroup.LayoutParams.WrapContent, Android.Views.ViewGroup.LayoutParams.WrapContent)
+			//});
+			//tip.SetLocationByAttachedView(sender as Android.Views.View);
+			//tip.SetMatchParent(false);
+			//tip.SetAnimationAlphaShow(300, new float[] { 0.0f, 1.0f });
+			//tip.SetAnimationAlphaHide(300, new float[] { 1.0f, 0.0f }); 
+			//tip.Show();
 
 			//new Thread(() => {
 			//	var DB = Realms.Realm.GetInstance(MainDatabase.DBPath);
@@ -167,10 +168,10 @@ namespace CRMLite
 			//;
 			//ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, settingsBundle, SyncConst.SYNC_INTERVAL);
 
-			//var intent = new Intent(Intent.ActionGetContent);
-			//intent.SetType("*/*");
-			//intent.AddCategory(Intent.CategoryOpenable);
-			//StartActivityForResult(intent, PICKFILE_REQUEST_CODE);
+			var intent = new Intent(Intent.ActionGetContent);
+			intent.SetType("*/*");
+			intent.AddCategory(Intent.CategoryOpenable);
+			StartActivityForResult(intent, PICKFILE_REQUEST_CODE);
 
 
 			//if (File.Exists(MainDatabase.DBPath)) {
@@ -214,6 +215,9 @@ namespace CRMLite
 						if (!File.Exists(newPath)) File.Copy(dbFileLoc, newPath, true);
 
 						if (File.Exists(newPath)) {
+							StopService(new Intent(this, typeof(LocatorService)));
+							StopService(new Intent(this, typeof(PhotoUploaderService)));
+
 							SDiag.Debug.WriteLine(newPath + " is Exists!");
 							MainDatabase.Dispose();
 							Helper.C_DB_FILE_NAME = Path.GetFileName(dbFileLoc);

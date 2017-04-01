@@ -273,7 +273,9 @@ namespace CRMLite
 				var lockDialog = LockDialog.Create("Идет сохранение данных...", Resource.Color.Deep_Orange_500);
 				lockDialog.Cancelable = false;
 				lockDialog.Show(fragmentTransaction, LockDialog.TAG);
-				Timer.Dispose();
+				if (TimerMin.HasValue) {
+					Timer.Dispose();
+				}
 				LocMgr.RemoveUpdates(this);
 
 				new Task(() => {
