@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using SD = System.Diagnostics;
 
 using Android.OS;
 using Android.Net;
@@ -67,15 +67,15 @@ namespace CRMLite
 		{
 			switch (position) {
 				case 0:
-					FragmentTitle.Text = @"АПТЕКА";
+					FragmentTitle.Text = "АПТЕКА";
 					break;
 				case 1:
-					FragmentTitle.Text = @"СОТРУДНИКИ";
+					FragmentTitle.Text = "СОТРУДНИКИ";
 					break;
 				case 2:
 					FragmentTitle.Text = (AttendanceLast == null) || AttendanceStart.HasValue ? 
-						@"СОБИРАЕМАЯ ИНФОРМАЦИЯ" : string.Format(@"ИНФОРМАЦИЯ С ВИЗИТА ОТ {0}", AttendanceLast.When.LocalDateTime);
-					var w = new Stopwatch();
+						"СОБИРАЕМАЯ ИНФОРМАЦИЯ" : string.Concat("ИНФОРМАЦИЯ С ВИЗИТА ОТ ", AttendanceLast.When.LocalDateTime);
+					var w = new SD.Stopwatch();
 					w.Start();
 					var emp = GetFragment(1);
 					if (emp is EmployeeFragment) {
@@ -86,14 +86,14 @@ namespace CRMLite
 						((InfoFragment)info).RefreshEmployees();
 					}
 					w.Stop();
-					Console.WriteLine("OnPageSelected: {0}", w.ElapsedMilliseconds);
+					SD.Debug.WriteLine("OnPageSelected: {0}", w.ElapsedMilliseconds);
 					break;
 				case 3:
 					FragmentTitle.Text = (AttendanceLast == null) || AttendanceStart.HasValue ?
-						@"ФОТО НА ВИЗИТЕ" : string.Format(@"ФОТО С ВИЗИТА ОТ {0}", AttendanceLast.When.LocalDateTime);
+						"ФОТО НА ВИЗИТЕ" : string.Concat("ФОТО С ВИЗИТА ОТ ", AttendanceLast.When.LocalDateTime);
 					break;
 				default:
-					FragmentTitle.Text = @"СТРАНИЦА " + (position + 1);
+					FragmentTitle.Text = string.Concat("СТРАНИЦА ", (position + 1));
 					break;;
 			}
 		}
@@ -138,7 +138,7 @@ namespace CRMLite
 			DistributorsList = MainDatabase.GetItems<Distributor>();
 
 			FragmentTitle = FindViewById<TextView>(Resource.Id.aaTitleTV);
-			FragmentTitle.Text = @"АПТЕКА";
+			FragmentTitle.Text = "АПТЕКА";
 
 			TimerText = FindViewById<TextView>(Resource.Id.aaTimerTV);
 			TimerMin = MainDatabase.GetCustomizationInt(Customizations.AttendanceMinPeriod);
@@ -158,7 +158,13 @@ namespace CRMLite
 			var btnStartStop = FindViewById<Button>(Resource.Id.aaStartOrStopAttendanceB);
 			btnStartStop.Click += (sender, e) =>
 			{
-				if (!IsLocationActive() || !IsInternetActive()) return;
+				var btn = sender as Button;
+				btn.Enabled = false;
+
+				if (!IsLocationActive() || !IsInternetActive()) {
+					btn.Enabled = true;
+					return;
+				}
 
 				if (AttendanceStart == null) {
 					StopService(new Intent(this, typeof(LocatorService)));
@@ -176,7 +182,7 @@ namespace CRMLite
 					locationCriteria.Accuracy = Accuracy.Coarse;
 					locationCriteria.PowerRequirement = Power.Medium;
 					string locationProvider = LocMgr.GetBestProvider(locationCriteria, true);
-					System.Diagnostics.Debug.Print("Starting location updates with " + locationProvider);
+					SD.Debug.WriteLine("Starting location updates with " + locationProvider);
 					LocMgr.RequestLocationUpdates(locationProvider, 5000, 1, this);
 					// !Location	
 
@@ -222,15 +228,21 @@ namespace CRMLite
 					if (TimerMin.HasValue) {
 						Timer = new Timer(HandleTimerCallback, DateTime.Now, 100, 1000);
 					}
+
+					btn.Enabled = true;
 					return;
 				}
 
 				if (TimerMin.HasValue) {
 					Toast.MakeText(this, "Не прошло минимально необходимое время визита...", ToastLength.Short).Show();
+					btn.Enabled = true;
 					return;
 				}
 
-				if ((DateTimeOffset.Now - AttendanceStart.Value).TotalSeconds < 30) return;
+				if ((DateTimeOffset.Now - AttendanceStart.Value).TotalSeconds < 30) {
+					btn.Enabled = true;
+					return;
+				}
 
 
 				if (CurrentFocus != null) {
@@ -267,6 +279,7 @@ namespace CRMLite
 									   }
 								   })
 								   .Show();
+					btn.Enabled = true;
 					return;
 				}
 
@@ -322,9 +335,8 @@ namespace CRMLite
 
 						transaction.Commit();
 
-						//if (lockDialog != null) {
-						//	lockDialog.DismissAllowingStateLoss();
-						//}
+						// Try to collect unused objects
+						GC.Collect();
 
 						Finish();
 					});
@@ -473,7 +485,7 @@ namespace CRMLite
 		{
 			View decorView = Window.DecorView;
 			var uiOptions = (int)decorView.SystemUiVisibility;
-			var newUiOptions = (int)uiOptions;
+			var newUiOptions = uiOptions;
 
 			newUiOptions |= (int)SystemUiFlags.LayoutStable;
 			newUiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
@@ -597,15 +609,15 @@ namespace CRMLite
 
 		public void OnProviderDisabled(string provider)
 		{
-			System.Diagnostics.Debug.Print(provider + " disabled by user");
+			SD.Debug.WriteLine(provider + " disabled by user");
 		}
 		public void OnProviderEnabled(string provider)
 		{
-			System.Diagnostics.Debug.Print(provider + " enabled by user");
+			SD.Debug.WriteLine(provider + " enabled by user");
 		}
 		public void OnStatusChanged(string provider, Availability status, Bundle extras)
 		{
-			System.Diagnostics.Debug.Print(provider + " availability has changed to " + status);
+			SD.Debug.WriteLine(provider + " availability has changed to " + status);
 		}
 
 		/**

@@ -258,6 +258,26 @@ namespace CRMLite.Lib.Sync
 							var list = DB.All<WorkType>().Where(d => d.uuid == item.uuid);
 							return ManageItem(uri, DB, item, list, item.uuid);
 						}
+					case SyncConst.Pharmacy: {
+							var item = JsonConvert.DeserializeObject<Pharmacy>(json);
+							var list = DB.All<Pharmacy>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.Attendance: {
+							var item = JsonConvert.DeserializeObject<Attendance>(json);
+							var list = DB.All<Attendance>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.Employee: {
+							var item = JsonConvert.DeserializeObject<Employee>(json);
+							var list = DB.All<Employee>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.RouteItem: {
+							var item = JsonConvert.DeserializeObject<RouteItem>(json);
+							var list = DB.All<RouteItem>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
 					default:
 						return new Uri.Builder()
 							          .Scheme(uri.Scheme)
@@ -334,6 +354,14 @@ namespace CRMLite.Lib.Sync
 						}
 					case SyncConst.Attendance: {
 							var list = DB.All<Attendance>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.Employee: {
+							var list = DB.All<Employee>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.RouteItem: {
+							var list = DB.All<RouteItem>().Where(item => item.UUID == uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					default:

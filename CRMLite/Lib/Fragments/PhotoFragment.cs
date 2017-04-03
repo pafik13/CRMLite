@@ -8,7 +8,6 @@ using Android.Widget;
 using Android.Support.V4.App;
 
 using CRMLite.Entities;
-using CRMLite.Dialogs;
 using System;
 using Android.Content;
 using Android.Media;
@@ -322,7 +321,7 @@ namespace CRMLite
 				string key = string.Empty;
 				if (photoType.isNeedBrand) {
 					photo.Brand = Brands[Brand.SelectedItemPosition - 1].uuid;
-					key = string.Format("{0}:{1}", photo.PhotoType, photo.Brand); ;
+					key = string.Format("{0}:{1}", photo.PhotoType, photo.Brand);
 				} else {
 					key = photo.PhotoType;
 				}

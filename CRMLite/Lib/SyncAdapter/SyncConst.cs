@@ -58,6 +58,9 @@ namespace CRMLite.Lib.Sync
 		public const string Customization = "Customization";
 		public const string WorkType = "WorkType";
 
+		public const string Employee = "Employee";
+		public const string RouteItem = "RouteItem";
+
 		public static Uri GetURI(string lastPathSegment)
 		{
 			return Uri.Parse("content://" + AUTHORITY + "/" + lastPathSegment);
