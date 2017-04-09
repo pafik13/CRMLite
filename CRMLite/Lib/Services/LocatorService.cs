@@ -83,7 +83,7 @@ namespace CRMLite.Services
 			if (LocationManager != null) {
 				if (IsLocatorNetRequestOn) {
 					LocationManager.RequestLocationUpdates(
-						LocationManager.NetworkProvider, LOCATION_INTERVAL_NET, LOCATION_DISTANCE, this
+						LocationManager.NetworkProvider, LocatorNetRequestPeriod, LOCATION_DISTANCE, this
 					);
 					var loc = LocationManager.GetLastKnownLocation(LocationManager.NetworkProvider);
 					if (loc == null) {
@@ -95,7 +95,7 @@ namespace CRMLite.Services
 
 				if (IsLocatorGPSRequestOn) {
 					LocationManager.RequestLocationUpdates(
-						LocationManager.GpsProvider, LOCATION_INTERVAL_GPS, LOCATION_DISTANCE, this
+						LocationManager.GpsProvider, LocatorGPSRequestPeriod, LOCATION_DISTANCE, this
 					);
 					var loc = LocationManager.GetLastKnownLocation(LocationManager.GpsProvider);
 					if (loc == null) {
@@ -157,7 +157,7 @@ namespace CRMLite.Services
 			});
 
 			Log.Info(TAG, "OnLocationChanged: GPSLocation={0}", Realm.All<GPSLocation>().Count());
-			if ((DateTimeOffset.Now - LastCallTime).TotalMilliseconds > IDLE_INTERVAL) {
+			if ((DateTimeOffset.Now - LastCallTime).TotalMilliseconds > LocatorIdlePeriod) {
 				StopForeground(true);
 				StopSelf();
 			}

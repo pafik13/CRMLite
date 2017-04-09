@@ -278,6 +278,91 @@ namespace CRMLite.Lib.Sync
 							var list = DB.All<RouteItem>().Where(d => d.UUID == item.UUID);
 							return ManageItem(uri, DB, item, list, item.UUID);
 						}
+					case SyncConst.ContractData: {
+							var item = JsonConvert.DeserializeObject<ContractData>(json);
+							var list = DB.All<ContractData>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.CoterieData: {
+							var item = JsonConvert.DeserializeObject<CoterieData>(json);
+							var list = DB.All<CoterieData>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.DistributionData: {
+							var item = JsonConvert.DeserializeObject<DistributionData>(json);
+							var list = DB.All<DistributionData>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.DistributorData: {
+							var item = JsonConvert.DeserializeObject<DistributorData>(json);
+							var list = DB.All<DistributorData>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.ExcludeRouteItem: {
+							var item = JsonConvert.DeserializeObject<ExcludeRouteItem>(json);
+							var list = DB.All<ExcludeRouteItem>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.FinanceDataByMonth: {
+							var item = JsonConvert.DeserializeObject<FinanceDataByMonth>(json);
+							var list = DB.All<FinanceDataByMonth>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.Hospital: {
+							var item = JsonConvert.DeserializeObject<Hospital>(json);
+							var list = DB.All<Hospital>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.HospitalData: {
+							var item = JsonConvert.DeserializeObject<HospitalData>(json);
+							var list = DB.All<HospitalData>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.Message: {
+							var item = JsonConvert.DeserializeObject<Message>(json);
+							var list = DB.All<Message>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.MessageData: {
+							var item = JsonConvert.DeserializeObject<MessageData>(json);
+							var list = DB.All<MessageData>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.PhotoComment: {
+							var item = JsonConvert.DeserializeObject<PhotoComment>(json);
+							var list = DB.All<PhotoComment>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.PhotoData: {
+							var item = JsonConvert.DeserializeObject<PhotoData>(json);
+							var list = DB.All<PhotoData>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.PresentationData: {
+							var item = JsonConvert.DeserializeObject<PresentationData>(json);
+							var list = DB.All<PresentationData>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.PromotionData: {
+							var item = JsonConvert.DeserializeObject<PromotionData>(json);
+							var list = DB.All<PromotionData>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.ResumeData: {
+							var item = JsonConvert.DeserializeObject<ResumeData>(json);
+							var list = DB.All<ResumeData>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.SaleDataByMonth: {
+							var item = JsonConvert.DeserializeObject<SaleDataByMonth>(json);
+							var list = DB.All<SaleDataByMonth>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
+					case SyncConst.SaleDataByQuarter: {
+							var item = JsonConvert.DeserializeObject<SaleDataByQuarter>(json);
+							var list = DB.All<SaleDataByQuarter>().Where(d => d.UUID == item.UUID);
+							return ManageItem(uri, DB, item, list, item.UUID);
+						}
 					default:
 						return new Uri.Builder()
 							          .Scheme(uri.Scheme)
@@ -362,6 +447,74 @@ namespace CRMLite.Lib.Sync
 						}
 					case SyncConst.RouteItem: {
 							var list = DB.All<RouteItem>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.ContractData: {
+							var list = DB.All<ContractData>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.CoterieData: {
+							var list = DB.All<CoterieData>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.DistributionData: {
+							var list = DB.All<DistributionData>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.DistributorData: {
+							var list = DB.All<DistributorData>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.ExcludeRouteItem: {
+							var list = DB.All<ExcludeRouteItem>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.FinanceDataByMonth: {
+							var list = DB.All<FinanceDataByMonth>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.Hospital: {
+							var list = DB.All<Hospital>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.HospitalData: {
+							var list = DB.All<HospitalData>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.Message: {
+							var list = DB.All<Message>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.MessageData: {
+							var list = DB.All<MessageData>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.PhotoComment: {
+							var list = DB.All<PhotoComment>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.PhotoData: {
+							var list = DB.All<PhotoData>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.PresentationData: {
+							var list = DB.All<PresentationData>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.PromotionData: {
+							var list = DB.All<PromotionData>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.ResumeData: {
+							var list = DB.All<ResumeData>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.SaleDataByMonth: {
+							var list = DB.All<SaleDataByMonth>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.SaleDataByQuarter: {
+							var list = DB.All<SaleDataByQuarter>().Where(item => item.UUID == uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					default:

@@ -57,9 +57,25 @@ namespace CRMLite.Lib.Sync
 		public const string Category = "Category";
 		public const string Customization = "Customization";
 		public const string WorkType = "WorkType";
-
 		public const string Employee = "Employee";
 		public const string RouteItem = "RouteItem";
+		public const string ContractData = "ContractData";
+		public const string CoterieData = "CoterieData";
+		public const string DistributionData = "DistributionData";
+		public const string DistributorData = "DistributorData";
+		public const string ExcludeRouteItem = "ExcludeRouteItem";
+		public const string FinanceDataByMonth = "FinanceDataByMonth";
+		public const string Hospital = "Hospital";
+		public const string HospitalData = "HospitalData";
+		public const string Message = "Message";
+		public const string MessageData = "MessageData";
+		public const string PhotoComment = "PhotoComment";
+		public const string PhotoData = "PhotoData";
+		public const string PresentationData = "PresentationData";
+		public const string PromotionData = "PromotionData";
+		public const string ResumeData = "ResumeData";
+		public const string SaleDataByMonth = "SaleDataByMonth";
+		public const string SaleDataByQuarter = "SaleDataByQuarter";
 
 		public static Uri GetURI(string lastPathSegment)
 		{
