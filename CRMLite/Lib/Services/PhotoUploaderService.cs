@@ -21,6 +21,9 @@ using CRMLite.Entities;
 
 namespace CRMLite.Services
 {
+	// https://developer.xamarin.com/api/type/Android.App.Service/
+	// TODO: OnLowMemory() This is called when the overall system is running low on memory, and actively running processes should trim their memory usage.
+	// TODO: OnTrimMemory(TrimMemory) Called when the operating system has determined that it is a good time for a process to trim unneeded memory from its process.
 	[Service(Name = "ru.sbl.crmlite2.PhotoUploaderService", Process = ":photoUploader")] //, Process = ":photoUploader"
 	public class PhotoUploaderService : Service
 	{
@@ -28,8 +31,7 @@ namespace CRMLite.Services
 		const int NOTIFICATION_ID = Resource.String.foreground_service_photo_uploader;
 
 		#if DEBUG
-		//const string S3BucketName = "sbl-test1";
-		const string S3BucketName = "sbl-crm-frankfurt";
+		const string S3BucketName = "sbl-test1";
 		#else
 		const string S3BucketName = "sbl-crm-frankfurt";
 		#endif
@@ -83,6 +85,11 @@ namespace CRMLite.Services
 
 			if (!cm.ActiveNetworkInfo.IsConnectedOrConnecting) return StartCommandResult.NotSticky;
 
+			// Register the crash manager before Initializing the trace writer
+			CrashManager.Register(Context, Secret.HockeyappAppId);
+			
+			throw Exception;
+			
 			NotificationManager = (NotificationManager)Application.Context.GetSystemService(NotificationService);
 
 			if (Work == null || Work.IsCanceled || Work.IsCompleted || Work.IsFaulted) {
@@ -110,9 +117,9 @@ namespace CRMLite.Services
 						var config = new RealmConfiguration(DBPath, false) {
 							SchemaVersion = 1
 						};
-						using (var realm = Realm.GetInstance(config)) {
+						using (var db = Realm.GetInstance(config)) {
 
-							var photoDatas = realm.All<PhotoData>().Where(pd => !pd.IsSynced && string.IsNullOrEmpty(pd.ETag));
+							var photoDatas = db.All<PhotoData>().Where(pd => !pd.IsSynced && string.IsNullOrEmpty(pd.ETag));
 
 							notification = new Notification.Builder(this)
 														   .SetContentTitle("Выгрузка фото")
@@ -144,7 +151,7 @@ namespace CRMLite.Services
 										ContentType = S3ContentType
 									}).Result;
 								//Log.Info(TAG, "ETag:{1}", response.ETag);
-								using (var trans = realm.BeginWrite()) {
+								using (var trans = db.BeginWrite()) {
 									photoData.Bucket = bucket;
 									photoData.ETag = response.ETag;
 									photoData.Key = key;

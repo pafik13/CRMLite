@@ -15,6 +15,9 @@ using System.Linq;
 
 namespace CRMLite.Services
 {
+	// https://developer.xamarin.com/api/type/Android.App.Service/
+	// TODO: OnLowMemory() This is called when the overall system is running low on memory, and actively running processes should trim their memory usage.
+	// TODO: OnTrimMemory(TrimMemory) Called when the operating system has determined that it is a good time for a process to trim unneeded memory from its process.
 	[Service(Name = "ru.sbl.crmlite2.LocatorService", Process = ":locator")] //, Process = ":locator", Exported=true
 	public class LocatorService: Service, ILocationListener
 	{
@@ -37,8 +40,9 @@ namespace CRMLite.Services
 		int LocatorNetRequestPeriod;
 		int LocatorGPSRequestPeriod;
 		int LocatorIdlePeriod;
-		Realm Realm;
-
+		
+		RealmConfiguration DBConfig;
+		
 		public override IBinder OnBind(Intent intent)
 		{
 			return null;
@@ -55,7 +59,12 @@ namespace CRMLite.Services
 			Log.Info(TAG, "AgentUUID:{0}; LOCPath:{1}", AgentUUID, LOCPath);
 
 			if (string.IsNullOrEmpty(LOCPath)) return StartCommandResult.NotSticky;
-
+			
+			// Register the crash manager before Initializing the trace writer
+			CrashManager.Register(Context, Secret.HockeyappAppId);
+			
+			throw Exception;
+			
 			IsLocatorNetRequestOn = intent.GetBooleanExtra(Customizations.IsLocatorNetRequestOn, true);
 			IsLocatorGPSRequestOn = intent.GetBooleanExtra(Customizations.IsLocatorGPSRequestOn, true);
 
@@ -105,11 +114,9 @@ namespace CRMLite.Services
 					}				
 				}
 
-				var config = new RealmConfiguration(LOCPath, false) {
+				DBConfig = new RealmConfiguration(LOCPath, false) {
 					SchemaVersion = 1
 				};
-
-				Realm = Realm.GetInstance(config);
 			}
 
 			return StartCommandResult.Sticky;
@@ -121,7 +128,6 @@ namespace CRMLite.Services
 
 			LocationManager.RemoveUpdates(this);
 			StopForeground(true);
-			Realm.Close();
 
 			base.OnDestroy();
 		}
@@ -130,33 +136,34 @@ namespace CRMLite.Services
 		{
 			Log.Info(TAG, "OnLocationChanged: Provider={0}", location.Provider);
 
- 			if (Realm == null) {
-				var config = new RealmConfiguration(LOCPath, false) {
+ 			if (DBConfig == null) {
+				var DBConfig = new RealmConfiguration(LOCPath, false) {
 					SchemaVersion = 1
 				};
+			}
+			
+			using(var db = Realm.GetInstance(DBConfig)) {
+				db.Write(() => {
+					var loc = db.CreateObject<GPSLocation>();
+					loc.CreatedAt = DateTimeOffset.Now;
+					loc.UpdatedAt = DateTimeOffset.Now;
+					loc.CreatedBy = AgentUUID;
+					loc.UUID = Guid.NewGuid().ToString();
+					loc.Accuracy = location.Accuracy;
+					loc.Altitude = location.Altitude;
+					loc.Bearing = location.Bearing;
+					loc.ElapsedRealtimeNanos = location.ElapsedRealtimeNanos;
+					loc.IsFromMockProvider = location.IsFromMockProvider;
+					loc.Latitude = location.Latitude;
+					loc.Longitude = location.Longitude;
+					loc.Provider = location.Provider;
+					loc.Speed = location.Speed;
+					loc.Time = location.Time;
+				});
 
-				Realm = Realm.GetInstance(config);
+				Log.Info(TAG, "OnLocationChanged: GPSLocation={0}", db.All<GPSLocation>().Count());
 			}
 
-			Realm.Write(() => {
-				var loc = Realm.CreateObject<GPSLocation>();
-				loc.CreatedAt = DateTimeOffset.Now;
-				loc.UpdatedAt = DateTimeOffset.Now;
-				loc.CreatedBy = AgentUUID;
-				loc.UUID = Guid.NewGuid().ToString();
-				loc.Accuracy = location.Accuracy;
-				loc.Altitude = location.Altitude;
-				loc.Bearing = location.Bearing;
-				loc.ElapsedRealtimeNanos = location.ElapsedRealtimeNanos;
-				loc.IsFromMockProvider = location.IsFromMockProvider;
-				loc.Latitude = location.Latitude;
-				loc.Longitude = location.Longitude;
-				loc.Provider = location.Provider;
-				loc.Speed = location.Speed;
-				loc.Time = location.Time;
-			});
-
-			Log.Info(TAG, "OnLocationChanged: GPSLocation={0}", Realm.All<GPSLocation>().Count());
 			if ((DateTimeOffset.Now - LastCallTime).TotalMilliseconds > LocatorIdlePeriod) {
 				StopForeground(true);
 				StopSelf();
