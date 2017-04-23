@@ -6,13 +6,13 @@ using Android.Content;
 using Android.OS;
 using Android.Locations;
 
+using HockeyApp.Android;
+
 using Realms;
 
 using CRMLite.Dialogs;
-
 using CRMLite.Entities;
-using System.Linq;
-
+ 
 namespace CRMLite.Services
 {
 	// https://developer.xamarin.com/api/type/Android.App.Service/
@@ -59,12 +59,10 @@ namespace CRMLite.Services
 			Log.Info(TAG, "AgentUUID:{0}; LOCPath:{1}", AgentUUID, LOCPath);
 
 			if (string.IsNullOrEmpty(LOCPath)) return StartCommandResult.NotSticky;
-			
+
 			// Register the crash manager before Initializing the trace writer
-			CrashManager.Register(Context, Secret.HockeyappAppId);
-			
-			throw Exception;
-			
+			CrashManager.Register(BaseContext, Secret.HockeyappAppId);
+
 			IsLocatorNetRequestOn = intent.GetBooleanExtra(Customizations.IsLocatorNetRequestOn, true);
 			IsLocatorGPSRequestOn = intent.GetBooleanExtra(Customizations.IsLocatorGPSRequestOn, true);
 
@@ -137,7 +135,7 @@ namespace CRMLite.Services
 			Log.Info(TAG, "OnLocationChanged: Provider={0}", location.Provider);
 
  			if (DBConfig == null) {
-				var DBConfig = new RealmConfiguration(LOCPath, false) {
+				DBConfig = new RealmConfiguration(LOCPath, false) {
 					SchemaVersion = 1
 				};
 			}

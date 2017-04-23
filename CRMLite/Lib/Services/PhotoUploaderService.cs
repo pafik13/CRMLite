@@ -2,8 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-using SD = System.Diagnostics;
-
 using Android.OS;
 using Android.App;
 using Android.Util;
@@ -13,9 +11,9 @@ using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
 
-using Realms;
+using HockeyApp.Android;
 
-using CRMLite;
+using Realms;
 using CRMLite.Dialogs;
 using CRMLite.Entities;
 
@@ -86,10 +84,8 @@ namespace CRMLite.Services
 			if (!cm.ActiveNetworkInfo.IsConnectedOrConnecting) return StartCommandResult.NotSticky;
 
 			// Register the crash manager before Initializing the trace writer
-			CrashManager.Register(Context, Secret.HockeyappAppId);
-			
-			throw Exception;
-			
+			CrashManager.Register(BaseContext, Secret.HockeyappAppId);
+
 			NotificationManager = (NotificationManager)Application.Context.GetSystemService(NotificationService);
 
 			if (Work == null || Work.IsCanceled || Work.IsCompleted || Work.IsFaulted) {
