@@ -48,6 +48,31 @@ namespace CRMLite
 		Dictionary<string, SearchItem> SearchItems;
 		ImageView Filter;
 
+		public class MyCrashManagerListener : CrashManagerListener
+		{
+			public override string Description {
+				get {
+					return string.Concat( "AndroidId: ", Helper.AndroidId
+					                    , System.Environment.NewLine
+					                    , "AgentUUID: ", MainDatabase.AgentUUID
+					                    );
+				}
+			}
+
+			public override string UserID {
+				get {
+					return Helper.AndroidId;
+				}
+			}
+
+			public override string Contact {
+				get {
+					return MainDatabase.AgentUUID;
+				}
+			}
+		}
+
+
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
@@ -56,8 +81,8 @@ namespace CRMLite
 			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
 
 			// Register the crash manager before Initializing the trace writer
-			CrashManager.Register(this, Secret.HockeyappAppId);
-
+			CrashManager.Register(this, Secret.HockeyappAppId, new MyCrashManagerListener());
+			 
 			// Register to with the Update Manager
 			UpdateManager.Register(this, Secret.HockeyappAppId);
 

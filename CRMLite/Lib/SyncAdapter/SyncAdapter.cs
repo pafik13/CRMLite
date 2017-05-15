@@ -12,6 +12,7 @@ using RestSharp;
 
 using CRMLite.Dialogs;
 using CRMLite.Entities;
+using HockeyApp.Android;
 
 namespace CRMLite.Lib.Sync
 {
@@ -31,7 +32,6 @@ namespace CRMLite.Lib.Sync
 			ContentResolver = context.ContentResolver;
 			NotificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
 			CrashManager.Register(Context, Secret.HockeyappAppId);
- 			// throw Exception;
 		}
 
 		// For Android 3.0 compat
@@ -41,7 +41,6 @@ namespace CRMLite.Lib.Sync
 			ContentResolver = context.ContentResolver;
 			NotificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
 			CrashManager.Register(Context, Secret.HockeyappAppId);
- 			// throw Exception;
 		}
 
 		public override void OnPerformSync(Account account, Bundle extras, string authority, ContentProviderClient provider, Android.Content.SyncResult syncResult)
@@ -64,31 +63,29 @@ namespace CRMLite.Lib.Sync
 				hasBDPath = false;
 				Log.Error(tag, "DB_PATH is NULL");
 			} else {
-				Log.Info(tag, string.Format("DB_PATH: {0}", DB_PATH));
+				Log.Info(tag, string.Concat("DB_PATH: ", DB_PATH));
 			}
 
 			if (string.IsNullOrEmpty(LOC_PATH)) {
 				hasLocPath = false;
 				Log.Error(tag, "LOC_PATH is NULL");
 			} else {
-				Log.Info(tag, string.Format("LOC_PATH: {0}", LOC_PATH));
+				Log.Info(tag, string.Concat("LOC_PATH: ", LOC_PATH));
 			}
 
 			if (string.IsNullOrEmpty(ACCESS_TOKEN)) {
 				hasAccessToken = false;
 				Log.Error(tag, "ACCESS_TOKEN is NULL");
 			} else {
-				Log.Info(tag, string.Format("ACCESS_TOKEN: {0}", ACCESS_TOKEN));
+				Log.Info(tag, string.Concat("ACCESS_TOKEN: ", ACCESS_TOKEN));
 			}
 
 			if (string.IsNullOrEmpty(HOST_URL)) {
 				hasHostURL = false;
 				Log.Error(tag, "HOST_URL is NULL");
 			} else {
-				Log.Info(tag, string.Format("HOST_URL: {0}", HOST_URL));
+				Log.Info(tag, string.Concat("HOST_URL: ", HOST_URL));
 			}
-			
-			// throw Exception;
 			
 			if (hasBDPath && hasLocPath && hasAccessToken && hasHostURL) {
 				var client = new RestClient(HOST_URL);

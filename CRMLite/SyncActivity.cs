@@ -140,7 +140,13 @@ namespace CRMLite
 
 		void UploadEmployees_Click(object sender, EventArgs e)
 		{
-			var employees = MainDatabase.GetList<Employee>();
+			var employees = new List<Employee>();
+
+			var pharmacies = MainDatabase.GetPharmacies();
+			for (int p = 0; p < pharmacies.Count; p++) {
+				employees.AddRange(MainDatabase.GetEmployees(pharmacies[p].UUID));
+			}
+
 			if (employees != null) {
 				var client = new RestClient(HOST_URL);
 
@@ -148,8 +154,8 @@ namespace CRMLite
 					if (employees.Count > 0) {
 						SyncEntities(employees);
 					}
-				} catch (System.Exception ex) {
-					Log.Error(tag, ex.Message);
+				} catch (Exception ex) {
+					Android.Util.Log.Error("CRMLite:SyncActivity", ex.Message);
 				}
 			}
 		}

@@ -76,14 +76,14 @@
             android:layout_below="@id/saSyncB"
             android:layout_centerInParent="true" />
         <Button
-            android:text="ЗАГРУЗИТЬ ФОТО"
+            android:text="ВЫГРУЗИТЬ ФОТО"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/saSyncPhotosCount"
             android:id="@+id/saUploadPhotoB"
             android:layout_centerHorizontal="true" />
         <Button
-            android:text="[ДОЛГО] - ВЫГРУЗИТЬ ФАЙЛ БАЗЫ"
+            android:text="[ТОЛЬКО ПО ЗАПРОСУ] - ВЫГРУЗИТЬ ФАЙЛ БАЗЫ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/saUploadPhotoB"
@@ -94,11 +94,22 @@
             android:paddingRight="10dp"
             android:paddingLeft="10dp" />
         <Button
-            android:text="ПОЧИСТИТЬ ФАЙЛ БАЗЫ"
+            android:text="[ТОЛЬКО ПО ЗАПРОСУ] - ПОЧИСТИТЬ ФАЙЛ БАЗЫ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/saUploadRealmB"
             android:id="@+id/saClearRealmB"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/row_height"
+            android:background="@color/Deep_Orange_500"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp" />
+        <Button
+            android:text="[ТОЛЬКО ПО ЗАПРОСУ] - ВЫГРУЗИТЬ ВСЕХ СОТРУДНИКОВ АПТЕК"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/saClearRealmB"
+            android:id="@+id/saUploadEmployeesB"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/row_height"
             android:background="@color/Deep_Orange_500"
