@@ -30,6 +30,8 @@ namespace CRMLite.Lib.Sync
 		{
 			ContentResolver = context.ContentResolver;
 			NotificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
+			CrashManager.Register(Context, Secret.HockeyappAppId);
+ 			// throw Exception;
 		}
 
 		// For Android 3.0 compat
@@ -38,6 +40,8 @@ namespace CRMLite.Lib.Sync
 		{
 			ContentResolver = context.ContentResolver;
 			NotificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
+			CrashManager.Register(Context, Secret.HockeyappAppId);
+ 			// throw Exception;
 		}
 
 		public override void OnPerformSync(Account account, Bundle extras, string authority, ContentProviderClient provider, Android.Content.SyncResult syncResult)
@@ -83,7 +87,9 @@ namespace CRMLite.Lib.Sync
 			} else {
 				Log.Info(tag, string.Format("HOST_URL: {0}", HOST_URL));
 			}
-
+			
+			// throw Exception;
+			
 			if (hasBDPath && hasLocPath && hasAccessToken && hasHostURL) {
 				var client = new RestClient(HOST_URL);
 

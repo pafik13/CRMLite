@@ -83,6 +83,9 @@ namespace CRMLite
 
 			FindViewById<Button>(Resource.Id.saClearRealmB).Click += ClearRealm_Click;
 
+			FindViewById<Button>(Resource.Id.saUploadEmployeesB).Click += UploadEmployees_Click;
+
+			
 			var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
 
 			ACCESS_TOKEN = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
@@ -135,6 +138,22 @@ namespace CRMLite
 			SDiag.Debug.Write(text);
 		}
 
+		void UploadEmployees_Click(object sender, EventArgs e)
+		{
+			var employees = MainDatabase.GetList<Employee>();
+			if (employees != null) {
+				var client = new RestClient(HOST_URL);
+
+				try {
+					if (employees.Count > 0) {
+						SyncEntities(employees);
+					}
+				} catch (System.Exception ex) {
+					Log.Error(tag, ex.Message);
+				}
+			}
+		}
+		
 		void UploadRealm_Click(object sender, EventArgs e)
 		{
 			var button = sender as Button;

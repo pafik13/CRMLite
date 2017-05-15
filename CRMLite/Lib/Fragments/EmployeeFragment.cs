@@ -207,7 +207,8 @@ namespace CRMLite
 							if (!string.IsNullOrEmpty(employeeUUID)) {
 								var employee = MainDatabase.GetEntity<Employee>(employeeUUID);
 								employee.UpdatedAt = DateTimeOffset.Now;
-
+								employee.IsSynced = false;
+								
 								employee.Name = row.FindViewById<EditText>(Resource.Id.eetiNameET).Text;
 
 								var positionUUID = (string)row.FindViewById<Spinner>(Resource.Id.eetiPositionS).GetTag(Resource.String.PositionUUID);
