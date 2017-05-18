@@ -31,7 +31,7 @@ namespace CRMLite.Lib.Sync
 		{
 			ContentResolver = context.ContentResolver;
 			NotificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
-			CrashManager.Register(Context, Secret.HockeyappAppId);
+			CrashManager.Register(Context, Secret.HockeyappAppId, new MyCrashManagerListener { ContextHolder = new System.WeakReference<Context>(Context) });
 		}
 
 		// For Android 3.0 compat
@@ -40,7 +40,7 @@ namespace CRMLite.Lib.Sync
 		{
 			ContentResolver = context.ContentResolver;
 			NotificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
-			CrashManager.Register(Context, Secret.HockeyappAppId);
+			CrashManager.Register(Context, Secret.HockeyappAppId, new MyCrashManagerListener { ContextHolder = new System.WeakReference<Context>(Context) });
 		}
 
 		public override void OnPerformSync(Account account, Bundle extras, string authority, ContentProviderClient provider, Android.Content.SyncResult syncResult)

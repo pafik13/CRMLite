@@ -29,6 +29,46 @@ using CRMLite.Services;
 
 namespace CRMLite
 {
+	public class MyCrashManagerListener : CrashManagerListener
+	{
+		public WeakReference<Context> ContextHolder { get; set; }
+
+		public override string Description {
+			get {
+				var result = string.Empty;
+				var androidId = string.Empty;
+				var agentUUID = string.Empty;
+				Context context;
+				if ((ContextHolder != null) && ContextHolder.TryGetTarget(out context)) {
+					androidId = Helper.GetAndroidId(context);
+
+					agentUUID = context.GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
+									   .GetString(SigninDialog.C_AGENT_UUID, string.Empty);
+				} else {
+					androidId = Helper.AndroidId;
+
+					agentUUID = MainDatabase.AgentUUID;
+				}
+
+				result = string.Concat("AndroidId: ", androidId, System.Environment.NewLine, "AgentUUID: ", agentUUID);
+
+				return result;
+			}
+		}
+
+		public override string UserID {
+			get {
+				return Helper.AndroidId;
+			}
+		}
+
+		public override string Contact {
+			get {
+				return MainDatabase.AgentUUID;
+			}
+		}
+	}
+
 	[Activity(Label = "Main", ScreenOrientation = ScreenOrientation.Landscape)]
 	public class MainActivity : Activity
 	{
@@ -48,31 +88,6 @@ namespace CRMLite
 		Dictionary<string, SearchItem> SearchItems;
 		ImageView Filter;
 
-		public class MyCrashManagerListener : CrashManagerListener
-		{
-			public override string Description {
-				get {
-					return string.Concat( "AndroidId: ", Helper.AndroidId
-					                    , System.Environment.NewLine
-					                    , "AgentUUID: ", MainDatabase.AgentUUID
-					                    );
-				}
-			}
-
-			public override string UserID {
-				get {
-					return Helper.AndroidId;
-				}
-			}
-
-			public override string Contact {
-				get {
-					return MainDatabase.AgentUUID;
-				}
-			}
-		}
-
-
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
@@ -81,7 +96,7 @@ namespace CRMLite
 			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
 
 			// Register the crash manager before Initializing the trace writer
-			CrashManager.Register(this, Secret.HockeyappAppId, new MyCrashManagerListener());
+			CrashManager.Register(this, Secret.HockeyappAppId, new MyCrashManagerListener { ContextHolder = new WeakReference<Context>(this)});
 			 
 			// Register to with the Update Manager
 			UpdateManager.Register(this, Secret.HockeyappAppId);
@@ -511,7 +526,7 @@ namespace CRMLite
 			string username = savedInstanceState.GetString("username"); 
 			MainDatabase.Username = username; 
 			Helper.Username = username;
-			SelectedPharmacyUUID = savedInstanceState.GetString("selectedpharmacyuuid");;
+			SelectedPharmacyUUID = savedInstanceState.GetString("selectedpharmacyuuid");
 			base.OnRestoreInstanceState(savedInstanceState); 
 		}
 
