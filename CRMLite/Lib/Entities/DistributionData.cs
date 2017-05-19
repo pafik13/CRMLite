@@ -39,6 +39,8 @@ namespace CRMLite.Entities
 		public SyncResult SyncResult { get; set; }
 
 		public bool IsSynced { get; set; }
+
+		public bool isDummyBool { get; set; }
 	}
 }
 

@@ -97,5 +97,7 @@ namespace CRMLite.Entities
 		/// User.
 		/// </summary>
     	public string user { get; set; }
+
+		public bool isDummyBool { get; set; }
 	}
 }
