@@ -107,10 +107,10 @@ namespace CRMLite.Lib.Sync
 				if ((res == null) || (res.Data == null) || ( 
 					(res.StatusCode != HttpStatusCode.OK) && (res.StatusCode != HttpStatusCode.Created))
 				   ){
-					Log.Error(tag, string.Format("NOT Download LifecycleAction"));
+					Log.Error(tag, "NOT Download LifecycleAction");
 				} else {
 					// TODO: check for null res.Data (exception when at metro -- return 200 with html text)
-					Log.Info(tag, string.Format("Download LifecycleAction: {0}", res.Data.Count));
+					Log.Info(tag, string.Concat("Download LifecycleAction: ", res.Data.Count));
 
 					foreach (var lc_action in res.Data) {
 						bool canClear = false;
@@ -127,8 +127,8 @@ namespace CRMLite.Lib.Sync
 								switch (resModel.StatusCode) {
 									case HttpStatusCode.OK:
 									case HttpStatusCode.Created:
-										Log.Info(tag, string.Format("Downloaded Model by path:{0}", pathModel));
-										Log.Info(tag, string.Format("Downloaded Model={0}", resModel.Content));
+										Log.Info(tag, string.Concat("Downloaded Model by path: ", pathModel));
+										Log.Info(tag, string.Concat("Downloaded Model=", resModel.Content));
 										var values = new ContentValues();
 										values.Put("db_path", DB_PATH);
 										values.Put("model", lc_action.model);

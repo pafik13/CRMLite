@@ -113,7 +113,7 @@ namespace CRMLite.Services
 				}
 
 				DBConfig = new RealmConfiguration(LOCPath, false) {
-					SchemaVersion = 1
+					SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 				};
 			}
 
@@ -136,7 +136,7 @@ namespace CRMLite.Services
 
  			if (DBConfig == null) {
 				DBConfig = new RealmConfiguration(LOCPath, false) {
-					SchemaVersion = 1
+					SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 				};
 			}
 			

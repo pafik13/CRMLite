@@ -61,7 +61,6 @@ namespace CRMLite
 						SchemaVersion = C_DB_CURRENT_VERSION,
 						MigrationCallback = MigrationCallback_LocDB
 					};
-					//Realm.DeleteRealm(ConfigForLocation)
 					Realm.GetInstance(config);
 
 				})
@@ -85,9 +84,8 @@ namespace CRMLite
 						SchemaVersion = C_DB_CURRENT_VERSION,
 						MigrationCallback = MigrationCallback_MainDB
 					};
-					//Realm.DeleteRealm(ConfigForLocation)
 					Realm.GetInstance(config);
-;
+
 				})
 			    .ContinueWith(task => {
 					RunOnUiThread(() => {
@@ -106,13 +104,9 @@ namespace CRMLite
 		{
 			int count = 0;
 
-			//var progressDialog = new ProgressDialog(this);
-			//progressDialog.SetTitle("Начинается обновление базы данных");
-			//progressDialog.SetMessage("База данных будет обновлена...")
 			RunOnUiThread(() => {
 				ProgressDialog = ProgressDialog.Show(this, "Начинается обновление базы данных", "База данных будет обновлена...", true);
 			});
-
 
 			if (oldSchemaVersion < 1) {
 				RunOnUiThread(() => {
@@ -137,7 +131,7 @@ namespace CRMLite
 				}
 			}
 
-			if (oldSchemaVersion < C_DB_CURRENT_VERSION) {
+			if (oldSchemaVersion < 2) {
 				RunOnUiThread(() => {
 					ProgressDialog.SetTitle("База данных обновляется до версии 2");
 					ProgressDialog.SetMessage("Обновляются объекты <Agent>");
@@ -162,18 +156,7 @@ namespace CRMLite
 			if (oldSchemaVersion < 1) {
 			}
 
-			if (oldSchemaVersion < C_DB_CURRENT_VERSION) {
-				//RunOnUiThread(() => {
-				//	ProgressDialog.SetTitle("ГЕОБаза обновляется до версии 2");
-				//	ProgressDialog.SetMessage("Обновляется <Agent>");
-				//});
-
-				//for (int i = 0; i < 100; i++) {
-				//	RunOnUiThread(() => {
-				//		ProgressDialog.Progress = i * 10 / 100;
-				//	});
-				//	System.Threading.Thread.Sleep(100);
-				//}
+			if (oldSchemaVersion < 2) {
 			}
 		}
 	}

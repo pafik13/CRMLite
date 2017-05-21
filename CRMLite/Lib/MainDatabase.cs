@@ -82,26 +82,29 @@ namespace CRMLite
 
 		protected MainDatabase(string username)
 		{
-			//string dbFileLocation = System.IO.Path.Combine(Helper.AppDir, username, @"realm", Helper.C_DB_FILE_NAME);
 
-			//if (!System.IO.File.Exists(dbFileLocation)) {
-			string dbFileLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), username, Helper.C_DB_FILE_NAME);
-			new System.IO.FileInfo(dbFileLocation).Directory.Create();
-			//}
-			//Config = new RealmConfiguration(Helper.C_DB_FILE_NAME);
+			string dbFileLocation = System.IO.Path.Combine(
+				Environment.GetFolderPath(Environment.SpecialFolder.Personal), 
+				username, 
+				Helper.C_DB_FILE_NAME
+			);
 			Config = new RealmConfiguration(dbFileLocation, false) {
-				SchemaVersion = 6
+				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
-			//Realm.DeleteRealm(Config);
 			DB = Realm.GetInstance(Config);
 
-			string locFileLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), username, Helper.C_LOC_FILE_NAME);
+
+			string locFileLocation = System.IO.Path.Combine(
+				Environment.GetFolderPath(Environment.SpecialFolder.Personal), 
+				username, 
+				Helper.C_LOC_FILE_NAME
+			);
 			ConfigForLocation = new RealmConfiguration(locFileLocation, false) {
-				SchemaVersion = 2
+				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
-			//Realm.DeleteRealm(ConfigForLocation);
 			DBLoc = Realm.GetInstance(ConfigForLocation);
 				
+
 			SyncDictionary = new ConcurrentDictionary<SyncItem, SyncItem>();
 
 			ResultDictionary = new ConcurrentDictionary<string, SyncResult>();

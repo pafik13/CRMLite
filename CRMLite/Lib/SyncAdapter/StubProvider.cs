@@ -50,7 +50,7 @@ namespace CRMLite.Lib.Sync
 		{
 			string db_path = selectionArgs[0];
 			var config = new RealmConfiguration(db_path, false) {
-				SchemaVersion = 1
+				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
 			using (var DB = Realm.GetInstance(config)) {
 				var fields = new string[] { "TYPE", "UUID", "JSON" };
@@ -199,7 +199,7 @@ namespace CRMLite.Lib.Sync
 			var json = values.GetAsString("json");
 			var db_path = values.GetAsString("db_path");
 			var config = new RealmConfiguration(db_path, false) {
-				SchemaVersion = 1
+				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
 			using (var DB = Realm.GetInstance(config)) {
 				switch (uri.LastPathSegment) {
@@ -363,6 +363,11 @@ namespace CRMLite.Lib.Sync
 							var list = DB.All<SaleDataByQuarter>().Where(d => d.UUID == item.UUID);
 							return ManageItem(uri, DB, item, list, item.UUID);
 						}
+					case SyncConst.Agent: {
+							var item = JsonConvert.DeserializeObject<Agent>(json);
+							var list = DB.All<Agent>().Where(a => a.uuid == item.uuid);
+							return ManageItem(uri, DB, item, list, item.uuid);
+						}
 					default:
 						return new Uri.Builder()
 							          .Scheme(uri.Scheme)
@@ -401,7 +406,7 @@ namespace CRMLite.Lib.Sync
 			string uuid = selectionArgs[1];
 			string db_path = selectionArgs[0];
 			var config = new RealmConfiguration(db_path, false) {
-				SchemaVersion = 1
+				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
 			using (var DB = Realm.GetInstance(config)) {
 				switch (selection) {
@@ -529,7 +534,7 @@ namespace CRMLite.Lib.Sync
 		{
 			string db_path = selectionArgs[0];
 			var config = new RealmConfiguration(db_path, false) {
-				SchemaVersion = 1
+				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
 			using (var DB = Realm.GetInstance(config)) {
 				switch (uri.LastPathSegment) {
