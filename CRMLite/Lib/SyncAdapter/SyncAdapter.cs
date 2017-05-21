@@ -48,11 +48,18 @@ namespace CRMLite.Lib.Sync
 			// Data transfer code here
 			var tag = TAG + ":OnPerformSync";
 
-			var DB_PATH = extras.GetString(MainDatabase.C_DB_PATH, string.Empty);
-			var LOC_PATH = extras.GetString(MainDatabase.C_LOC_PATH, string.Empty);
-			var ACCESS_TOKEN = extras.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
-			var HOST_URL = extras.GetString(SigninDialog.C_HOST_URL, string.Empty);
-			//string HOST_URL = "http://sbl-crm-project-pafik13.c9users.io:8080/";
+			var DB_PATH = string.Empty;
+			var LOC_PATH = string.Empty;
+			var ACCESS_TOKEN = string.Empty;
+			var HOST_URL = string.Empty;
+
+			if (extras != null) {
+				DB_PATH = extras.GetString(MainDatabase.C_DB_PATH, string.Empty);
+				LOC_PATH = extras.GetString(MainDatabase.C_LOC_PATH, string.Empty);
+				ACCESS_TOKEN = extras.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
+				HOST_URL = extras.GetString(SigninDialog.C_HOST_URL, string.Empty);
+				//string HOST_URL = "http://sbl-crm-project-pafik13.c9users.io:8080/";
+			}
 
 			bool hasBDPath = true;
 			bool hasLocPath = true;
@@ -97,9 +104,9 @@ namespace CRMLite.Lib.Sync
 
 				var res = client.Execute<List<LifecycleAction>>(req);
 
-				if ((res.StatusCode != HttpStatusCode.OK)
-				  && (res.StatusCode != HttpStatusCode.Created)
-				   ) {
+				if ((res == null) || (res.Data == null) || ( 
+					(res.StatusCode != HttpStatusCode.OK) && (res.StatusCode != HttpStatusCode.Created))
+				   ){
 					Log.Error(tag, string.Format("NOT Download LifecycleAction"));
 				} else {
 					// TODO: check for null res.Data (exception when at metro -- return 200 with html text)

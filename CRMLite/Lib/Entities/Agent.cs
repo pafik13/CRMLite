@@ -3,6 +3,11 @@ using Realms;
 
 namespace CRMLite.Entities
 {
+	public enum MaterialType
+	{
+		mtNone, mtDoctorsOnly, mtPharmaciesOnly, mtBoth
+	}
+
 	/// <summary>
 	/// Представитель/сотрудник.
 	/// </summary>
@@ -39,11 +44,11 @@ namespace CRMLite.Entities
 		/// Пол представителя/сотрудника.
 		/// </summary>
 		/// <value>The sex.</value>
-		public string Sex { get; set; }
+		public string sex { get; set; }
 
-		public void SetSex(Sex newSex) { Sex = newSex.ToString("G"); }
+		public void SetSex(Sex newSex) { sex = newSex.ToString("G"); }
 
-		public Sex GetSex() { return (Sex)Enum.Parse(typeof(Sex), Sex, true); }
+		public Sex GetSex() { return (Sex)Enum.Parse(typeof(Sex), sex, true); }
 
 		/// <summary>
 		/// Дата приема на работу представителя/сотрудника.
@@ -98,6 +103,14 @@ namespace CRMLite.Entities
 		/// </summary>
     	public string user { get; set; }
 
-		public bool isDummyBool { get; set; }
+		/// <summary>
+		/// Тип использования материалов.
+		/// </summary>
+		/// <value>The sex.</value>
+		public string materialType { get; set; }
+
+		public void SetMaterialType(Sex newMaterialType) { materialType = newMaterialType.ToString("G"); }
+
+		public MaterialType GetMaterialType() { return (MaterialType)Enum.Parse(typeof(MaterialType), materialType, true); }
 	}
 }
