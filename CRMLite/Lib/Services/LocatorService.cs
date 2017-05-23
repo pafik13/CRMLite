@@ -12,7 +12,8 @@ using Realms;
 
 using CRMLite.Dialogs;
 using CRMLite.Entities;
- 
+using System.Threading.Tasks;
+
 namespace CRMLite.Services
 {
 	// https://developer.xamarin.com/api/type/Android.App.Service/
@@ -117,6 +118,12 @@ namespace CRMLite.Services
 				};
 			}
 
+			Task.Delay(LocatorIdlePeriod)
+			    .ContinueWith((Task task) => {
+					StopForeground(true);
+					StopSelf();
+				});
+
 			return StartCommandResult.Sticky;
 		}
 
@@ -160,11 +167,6 @@ namespace CRMLite.Services
 				});
 
 				Log.Info(TAG, "OnLocationChanged: GPSLocation={0}", db.All<GPSLocation>().Count());
-			}
-
-			if ((DateTimeOffset.Now - LastCallTime).TotalMilliseconds > LocatorIdlePeriod) {
-				StopForeground(true);
-				StopSelf();
 			}
 		}
 
