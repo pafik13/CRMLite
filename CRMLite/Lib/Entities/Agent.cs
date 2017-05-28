@@ -106,10 +106,10 @@ namespace CRMLite.Entities
 		/// <summary>
 		/// Тип использования материалов.
 		/// </summary>
-		/// <value>The sex.</value>
+		/// <value>The material type.</value>
 		public string materialType { get; set; }
 
-		public void SetMaterialType(Sex newMaterialType) { materialType = newMaterialType.ToString("G"); }
+		public void SetMaterialType(MaterialType newMaterialType) { materialType = newMaterialType.ToString("G"); }
 
 		public MaterialType GetMaterialType() { return (MaterialType)Enum.Parse(typeof(MaterialType), materialType, true); }
 	}
