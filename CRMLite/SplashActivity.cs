@@ -46,8 +46,8 @@ namespace CRMLite
 				return;
 			}
 
-			//Task.Factory
-			//    .StartNew(() => {
+			Task.Factory
+			   .StartNew(() => {
 
 					string locFileLocation = System.IO.Path.Combine(
 						System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
@@ -63,14 +63,14 @@ namespace CRMLite
 					};
 					Realm.GetInstance(config);
 
-				//})
-			  //  .ContinueWith(task => {
-					//if (task.IsFaulted || task.IsCanceled) {
-					//	RunOnUiThread(() => {
-					//		Toast.MakeText(this, "Не удалось обновить ГЕОБАЗУ.", ToastLength.Long).Show();
-					//	});
-					//	throw new Exception();
-					//}
+				})
+			   .ContinueWith(task => {
+					if (task.IsFaulted || task.IsCanceled) {
+						RunOnUiThread(() => {
+							Toast.MakeText(this, "Не удалось обновить ГЕОБАЗУ.", ToastLength.Long).Show();
+						});
+						throw new Exception();
+					}
 
 					string dbFileLocation = System.IO.Path.Combine(
 						System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
@@ -86,17 +86,17 @@ namespace CRMLite
 					};
 					Realm.GetInstance(config);
 
-				//})
-			 //   .ContinueWith(task => {
-					//RunOnUiThread(() => {
-					//	if (task.IsFaulted || task.IsCanceled) {
-					//		Toast.MakeText(this, "Обновление баз не удалось. Напишите адмистратору!", ToastLength.Long).Show();
-					//		Finish();
-					//	} else {
-					//		StartActivity(new Intent(this, typeof(MainActivity)));
-					//	}
-					//});
-				//});
+				})
+			   .ContinueWith(task => {
+					RunOnUiThread(() => {
+						if (task.IsFaulted || task.IsCanceled) {
+							Toast.MakeText(this, "Обновление баз не удалось. Напишите адмистратору!", ToastLength.Long).Show();
+							Finish();
+						} else {
+							StartActivity(new Intent(this, typeof(MainActivity)));
+						}
+					});
+				});
 		}
 
 

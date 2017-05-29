@@ -534,9 +534,6 @@ namespace CRMLite
 		{
 			base.OnResume();
 
-			//Start Tracking usage in this activit
-			Tracking.StartUsage(this);
-
 			var shared = GetSharedPreferences(C_MAIN_PREFS, FileCreationMode.Private);
 
 			Helper.CheckIfTimeChangedAndShowDialog(this);
@@ -772,8 +769,6 @@ namespace CRMLite
 
 		protected override void OnPause()
 		{
-			//Stop Tracking usage in this activity
-			Tracking.StopUsage(this);
 			UpdateManager.Unregister();
 			base.OnPause();
 		}
@@ -781,8 +776,6 @@ namespace CRMLite
 		protected override void OnStop()
 		{
 			base.OnStop();
-			// TODO: сделать ветку автоматической синхронизации
-			// SaveToFileAllCache;
 			UpdateManager.Unregister();
 		}
 
