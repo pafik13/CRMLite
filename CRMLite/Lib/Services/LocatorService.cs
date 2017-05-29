@@ -113,7 +113,7 @@ namespace CRMLite.Services
 					}				
 				}
 
-				DBConfig = new RealmConfiguration(LOCPath, false) {
+				DBConfig = new RealmConfiguration(LOCPath) {
 					SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 				};
 			}
@@ -142,7 +142,7 @@ namespace CRMLite.Services
 			Log.Info(TAG, "OnLocationChanged: Provider={0}", location.Provider);
 
  			if (DBConfig == null) {
-				DBConfig = new RealmConfiguration(LOCPath, false) {
+				DBConfig = new RealmConfiguration(LOCPath) {
 					SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 				};
 			}
@@ -166,7 +166,7 @@ namespace CRMLite.Services
 					loc.Time = location.Time;
 				});
 
-				Log.Info(TAG, "OnLocationChanged: GPSLocation={0}", db.All<GPSLocation>().Count());
+				Log.Info(TAG, "OnLocationChanged: GPSLocation={0}", db.All<GPSLocation>().AsRealmCollection().Count);
 			}
 		}
 

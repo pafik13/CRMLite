@@ -110,7 +110,7 @@ namespace CRMLite.Services
 					try {
 						var bucket = S3BucketName.ToLowerInvariant();
 
-						var config = new RealmConfiguration(DBPath, false) {
+						var config = new RealmConfiguration(DBPath) {
 							SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 						};
 						using (var db = Realm.GetInstance(config)) {

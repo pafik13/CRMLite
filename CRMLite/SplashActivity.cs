@@ -19,7 +19,7 @@ namespace CRMLite
 	[Activity(Label = "CRMLite", Theme = "@style/MyTheme.Splash", Icon = "@mipmap/icon", MainLauncher = true, NoHistory = true)]
 	public class SplashActivity : Activity
 	{
-		public const int C_DB_CURRENT_VERSION = 2;
+		public const int C_DB_CURRENT_VERSION = 7;
 		ProgressDialog ProgressDialog;
 
 		protected override void OnCreate (Bundle savedInstanceState)
@@ -46,8 +46,8 @@ namespace CRMLite
 				return;
 			}
 
-			Task.Factory
-			    .StartNew(() => {
+			//Task.Factory
+			//    .StartNew(() => {
 
 					string locFileLocation = System.IO.Path.Combine(
 						System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
@@ -57,20 +57,20 @@ namespace CRMLite
 
 					new System.IO.FileInfo(locFileLocation).Directory.Create();
 
-					var config = new RealmConfiguration(locFileLocation, false) {
+					var config = new RealmConfiguration(locFileLocation) {
 						SchemaVersion = C_DB_CURRENT_VERSION,
 						MigrationCallback = MigrationCallback_LocDB
 					};
 					Realm.GetInstance(config);
 
-				})
-			    .ContinueWith(task => {
-					if (task.IsFaulted || task.IsCanceled) {
-						RunOnUiThread(() => {
-							Toast.MakeText(this, "Не удалось обновить ГЕОБАЗУ.", ToastLength.Long).Show();
-						});
-						throw new Exception();
-					}
+				//})
+			  //  .ContinueWith(task => {
+					//if (task.IsFaulted || task.IsCanceled) {
+					//	RunOnUiThread(() => {
+					//		Toast.MakeText(this, "Не удалось обновить ГЕОБАЗУ.", ToastLength.Long).Show();
+					//	});
+					//	throw new Exception();
+					//}
 
 					string dbFileLocation = System.IO.Path.Combine(
 						System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
@@ -80,23 +80,23 @@ namespace CRMLite
 
 					new System.IO.FileInfo(dbFileLocation).Directory.Create();
 
-					var config = new RealmConfiguration(dbFileLocation, false) {
+					config = new RealmConfiguration(dbFileLocation) {
 						SchemaVersion = C_DB_CURRENT_VERSION,
 						MigrationCallback = MigrationCallback_MainDB
 					};
 					Realm.GetInstance(config);
 
-				})
-			    .ContinueWith(task => {
-					RunOnUiThread(() => {
-						if (task.IsFaulted || task.IsCanceled) {
-							Toast.MakeText(this, "Обновление баз не удалось. Напишите адмистратору!", ToastLength.Long).Show();
-							Finish();
-						} else {
-							StartActivity(new Intent(this, typeof(MainActivity)));
-						}
-					});
-				});
+				//})
+			 //   .ContinueWith(task => {
+					//RunOnUiThread(() => {
+					//	if (task.IsFaulted || task.IsCanceled) {
+					//		Toast.MakeText(this, "Обновление баз не удалось. Напишите адмистратору!", ToastLength.Long).Show();
+					//		Finish();
+					//	} else {
+					//		StartActivity(new Intent(this, typeof(MainActivity)));
+					//	}
+					//});
+				//});
 		}
 
 
@@ -145,6 +145,30 @@ namespace CRMLite
 					newA.materialType = MaterialType.mtPharmaciesOnly.ToString();
 				}
 			}
+
+			if (oldSchemaVersion < 7) {
+				RunOnUiThread(() => {
+					ProgressDialog.SetTitle("База данных обновляется до версии 5");
+					ProgressDialog.SetMessage("Обновляются объекты <Material>");
+				});
+
+				var newMaterials = migration.NewRealm.All<Material>();
+				var materialFiles = migration.NewRealm.All<MaterialFile>();
+
+				count = newMaterials.Count();
+				for (var i = 0; i < count; i++) {
+					var newM = newMaterials.ElementAt(i);
+					var mfile = materialFiles.SingleOrDefault(mf => mf.material == newM.uuid);
+					if (mfile != null) {
+						//newM.fileName = mfile.fileName;
+						//newM.s3ETag = mfile.s3ETag;
+						newM.s3Location = mfile.s3Location;
+						//newM.s3Key = mfile.s3Key;
+						//newM.s3Bucket = mfile.s3Bucket;
+						newM.type = MaterialType.mtPharmaciesOnly.ToString("G");
+					}
+				}
+			}
 		}
 
 		protected void MigrationCallback_LocDB(Migration migration, ulong oldSchemaVersion)
@@ -157,6 +181,9 @@ namespace CRMLite
 			}
 
 			if (oldSchemaVersion < 2) {
+			}
+
+			if (oldSchemaVersion < 7) {
 			}
 		}
 	}

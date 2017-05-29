@@ -88,7 +88,7 @@ namespace CRMLite
 				username, 
 				Helper.C_DB_FILE_NAME
 			);
-			Config = new RealmConfiguration(dbFileLocation, false) {
+			Config = new RealmConfiguration(dbFileLocation) {
 				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
 			DB = Realm.GetInstance(Config);
@@ -99,7 +99,7 @@ namespace CRMLite
 				username, 
 				Helper.C_LOC_FILE_NAME
 			);
-			ConfigForLocation = new RealmConfiguration(locFileLocation, false) {
+			ConfigForLocation = new RealmConfiguration(locFileLocation) {
 				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
 			DBLoc = Realm.GetInstance(ConfigForLocation);
@@ -316,7 +316,7 @@ namespace CRMLite
 			}
 
 			using (var trans = db.BeginWrite()) {
-				db.RemoveRange(db.All<T>().Where(entity => entity.IsSynced) as RealmResults<T>);
+				db.RemoveRange(db.All<T>().Where(entity => entity.IsSynced));
 				trans.Commit();
 			}
 		}

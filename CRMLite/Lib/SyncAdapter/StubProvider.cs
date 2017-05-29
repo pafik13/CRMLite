@@ -49,7 +49,7 @@ namespace CRMLite.Lib.Sync
 		public override Android.Database.ICursor Query(Uri uri, string[] projection, string selection, string[] selectionArgs, string sortOrder)
 		{
 			string db_path = selectionArgs[0];
-			var config = new RealmConfiguration(db_path, false) {
+			var config = new RealmConfiguration(db_path) {
 				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
 			using (var DB = Realm.GetInstance(config)) {
@@ -198,7 +198,7 @@ namespace CRMLite.Lib.Sync
 		{
 			var json = values.GetAsString("json");
 			var db_path = values.GetAsString("db_path");
-			var config = new RealmConfiguration(db_path, false) {
+			var config = new RealmConfiguration(db_path) {
 				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
 			using (var DB = Realm.GetInstance(config)) {
@@ -405,7 +405,7 @@ namespace CRMLite.Lib.Sync
 		{
 			string uuid = selectionArgs[1];
 			string db_path = selectionArgs[0];
-			var config = new RealmConfiguration(db_path, false) {
+			var config = new RealmConfiguration(db_path) {
 				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
 			using (var DB = Realm.GetInstance(config)) {
@@ -533,7 +533,7 @@ namespace CRMLite.Lib.Sync
 		public override int Update(Uri uri, ContentValues values, string selection, string[] selectionArgs)
 		{
 			string db_path = selectionArgs[0];
-			var config = new RealmConfiguration(db_path, false) {
+			var config = new RealmConfiguration(db_path) {
 				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
 			using (var DB = Realm.GetInstance(config)) {
