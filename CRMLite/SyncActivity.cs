@@ -32,25 +32,16 @@ namespace CRMLite
 	[Activity(Label = "SyncActivity", ScreenOrientation = ScreenOrientation.Landscape)]
 	public class SyncActivity : Activity
 	{
-		const string C_LAST_UPLOAD_REALM_FILE_DATETIME = "C_LAST_UPLOAD_REALM_FILE_DATETIME";
-
 		TextView Locker;
 		string ACCESS_TOKEN;
 		CancellationTokenSource CancelSource;
 		CancellationToken CancelToken;
 
-		CancellationTokenSource CSForLibraryFiles;
-		CancellationToken CTForLibraryFiles;
-
 		public string HOST_URL { get; private set; }
 		public string USERNAME { get; private set; }
 		public string AGENT_UUID { get; private set; }
-
-		public string LAST_UPLOAD_REALM_FILE_DATETIME { get; private set; }
-
-		public List<WorkType> WorkTypes { get; private set; }
-
-		public List<MaterialFile> MaterialFiles { get; private set; }
+		
+		public List<Material> Materials { get; private set; }
 		public List<LibraryFile> LibraryFiles { get; private set; }
 
 		public int Count { get; private set; }
@@ -94,11 +85,22 @@ namespace CRMLite
 			//HOST_URL = @"http://sbl-crm-project-pafik13.c9users.io:8080/";
 			AGENT_UUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
 
-			MaterialFiles = new List<MaterialFile>();
-			WorkTypes = new List<WorkType>();
+			Materials = new List<Material>();
 			LibraryFiles = new List<LibraryFile>();
 
 			RefreshView();
+			
+			#if DEBUG
+			var loggingConfig = AWSConfigs.LoggingConfig;
+			loggingConfig.LogMetrics = true;
+			loggingConfig.LogResponses = ResponseLoggingOption.Always;
+			loggingConfig.LogMetricsFormat = LogMetricsFormatOption.JSON;
+			loggingConfig.LogTo = LoggingOptions.SystemDiagnostics;
+			#endif
+
+			AWSConfigsS3.UseSignatureVersion4 = true;
+
+			S3Client = new AmazonS3Client(Secret.AWSAccessKeyId, Secret.AWSSecretKey);
 		}
 
 		void ClearRealm_Click(object sender, EventArgs e)
@@ -193,9 +195,7 @@ namespace CRMLite
 			if (CancelSource != null && CancelToken.CanBeCanceled) {
 				CancelSource.Cancel();
 			}
-			if (CSForLibraryFiles != null && CTForLibraryFiles.CanBeCanceled) {
-				CSForLibraryFiles.Cancel();
-			}
+			
 			var progress = ProgressDialog.Show(this, string.Empty, @"Выгрузка фото");
 
 			new Task(() => {
@@ -264,9 +264,6 @@ namespace CRMLite
 		}
 
 		void RefreshView(){
-			//var pharmacies = MainDatabase.GetItemsToSync<Pharmacy>();
-			LAST_UPLOAD_REALM_FILE_DATETIME = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private).GetString(C_LAST_UPLOAD_REALM_FILE_DATETIME, string.Empty);
-
 			Count = 0;
 
 			Count += MainDatabase.CountItemsToSync<Attendance>();
@@ -287,8 +284,7 @@ namespace CRMLite
 
 			Count += MainDatabase.CountItemsToSync<Entities.Message>();			
 			Count += MainDatabase.CountItemsToSync<MessageData>();
-			//var photoDatas = MainDatabase.GetItemsToSync<PhotoData>();
-
+			
 			Count += MainDatabase.CountItemsToSync<PresentationData>();
 			Count += MainDatabase.CountItemsToSync<PromotionData>();
 			Count += MainDatabase.CountItemsToSync<ResumeData>();
@@ -298,8 +294,20 @@ namespace CRMLite
 			var toSyncCount = FindViewById<TextView>(Resource.Id.saSyncEntitiesCount);
 			toSyncCount.Text = string.Format("Необходимо синхронизировать {0} объектов", Count);
 
+			var agentMaterialType = MainDatabase.GetItem<Agent>(agentUUID).GetMaterialType();
+			
+			if (agentMaterialType != MaterialType.mtNone) {
+				foreach (var material in MainDatabase.GetItems<Material>()) {
+					if (material.GetType().In(MaterialType.mtBoth, agentMaterialType)) {						
+						var materialFileInfo = new FileInfo(material.GetLocalPath());
+						if (materialFileInfo.Exists && materialFileInfo.Length > 0) continue;
+						Materials.Add(material);
+					}
+				}
+			}
+			
 			var toUpdateCount = FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount);
-			toUpdateCount.Text = string.Format("Необходимо обновить {0} объектов", 0);
+			toUpdateCount.Text = string.Format("Необходимо обновить {0} объектов", Materials.Count);
 
 			var photoCount = FindViewById<TextView>(Resource.Id.saSyncPhotosCount);
 			photoCount.Text = string.Format("Необходимо выгрузить {0} фото", MainDatabase.CountItemsToSync<PhotoData>());
@@ -307,70 +315,7 @@ namespace CRMLite
 
 			CancelSource = new CancellationTokenSource();
 			CancelToken = CancelSource.Token;
-			CheckMaterialFiles();
-
-			CSForLibraryFiles = new CancellationTokenSource();
-			CTForLibraryFiles = CSForLibraryFiles.Token;
 			CheckLibraryFiles();
-		}
-
-		async void CheckMaterialFiles()
-		{
-			var client = new RestClient(HOST_URL);
-			//var client = new RestClient("http://sbl-crm-project-pafik13.c9users.io:8080/");
-			var request = new RestRequest("/MaterialFile?type=for_pharmacy&populate=false", Method.GET);
-
-			var response = await client.ExecuteGetTaskAsync<List<MaterialFile>>(request);
-
-			if (!CancelToken.IsCancellationRequested) {
-				switch (response.StatusCode) {
-					case HttpStatusCode.OK:
-					case HttpStatusCode.Created:
-						SDiag.Debug.WriteLine("MaterialFile: {0}", response.Data.Count);
-						MaterialFiles.Clear();
-						foreach (var item in response.Data) {
-							if (!MainDatabase.IsSavedBefore<MaterialFile>(item.uuid)) {
-								if (!string.IsNullOrEmpty(item.s3Location)) {
-									MaterialFiles.Add(item);
-								}
-							}
-						}
-
-						RunOnUiThread(() => {
-							int count = MaterialFiles.Count + WorkTypes.Count + LibraryFiles.Count;
-							FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount).Text = string.Format("Необходимо обновить {0} объектов", count);
-						});
-						break;
-				}
-				SDiag.Debug.WriteLine(response.StatusDescription);
-			}
-
-			request = new RestRequest("/WorkType?populate=false", Method.GET);
-
-			var responseWTs = await client.ExecuteGetTaskAsync<List<WorkType>>(request);
-
-			if (!CancelToken.IsCancellationRequested) {
-				switch (responseWTs.StatusCode) {
-					case HttpStatusCode.OK:
-					case HttpStatusCode.Created:
-						SDiag.Debug.WriteLine("WorkType: {0}", responseWTs.Data.Count);
-						WorkTypes.Clear();
-						foreach (var item in responseWTs.Data) {
-							if (!MainDatabase.IsSavedBefore<WorkType>(item.uuid)) {
-								if (!string.IsNullOrEmpty(item.name)) {
-									WorkTypes.Add(item);
-								}
-							}
-						}
-
-						RunOnUiThread(() => {
-							int count = MaterialFiles.Count + WorkTypes.Count + LibraryFiles.Count;
-							FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount).Text = string.Format("Необходимо обновить {0} объектов", count);
-						});
-						break;
-				}
-				SDiag.Debug.WriteLine(response.StatusDescription);
-			}
 		}
 
 		async void CheckLibraryFiles()
@@ -381,7 +326,7 @@ namespace CRMLite
 
 			var response = await client.ExecuteGetTaskAsync<List<LibraryFile>>(request);
 
-			if (!CTForLibraryFiles.IsCancellationRequested) {
+			if (!CancelToken.IsCancellationRequested) {
 				switch (response.StatusCode) {
 					case HttpStatusCode.OK:
 					case HttpStatusCode.Created:
@@ -396,7 +341,7 @@ namespace CRMLite
 						}
 
 						RunOnUiThread(() => {
-							int count = MaterialFiles.Count + WorkTypes.Count + LibraryFiles.Count;
+							int count = Materials.Count + LibraryFiles.Count;
 							FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount).Text = string.Format("Необходимо обновить {0} объектов", count);
 						});
 						break;
@@ -540,7 +485,7 @@ namespace CRMLite
 			}
 
 
-			if (Count > 0 || MaterialFiles.Count > 0 || WorkTypes.Count > 0) {
+			if (Count > 0 || Materials.Count > 0 || LibraryFiles.Count > 0) {
 				var progress = ProgressDialog.Show(this, string.Empty, @"Синхронизация");
 
 				new Task(() => {
@@ -550,46 +495,22 @@ namespace CRMLite
 					MainDatabase.Username = USERNAME;
 
 					// Обновление материалов
-					foreach (var materialFile in MaterialFiles) {
-						if (!MainDatabase.IsSavedBefore<Material>(materialFile.material)) {
-							var client = new RestClient(HOST_URL);
-							string pathURL = string.Format(@"Material/{0}?populate=false", materialFile.material);
-							var request = new RestRequest(pathURL, Method.GET);
-
-							var response = client.Execute<Material>(request);
-
-							switch (response.StatusCode) {
-								case HttpStatusCode.OK:
-								case HttpStatusCode.Created:
-									SDiag.Debug.WriteLine("Material: {0}", response.Data);
-									MainDatabase.SaveItem(response.Data);
-									SDiag.Debug.WriteLine(response.StatusDescription);
-									break;
-								default:
-									SDiag.Debug.WriteLine(response.StatusDescription);
-									continue;
-							}
+					foreach (var material in Materials) {
+	
+						// Create a GetObject request
+						var request = new GetObjectRequest
+						{
+							BucketName = material.s3Bucket,
+							Key = material.s3Key
+						};
+						 
+						// Issue request and remember to dispose of the response
+						using (var response = S3Client.GetObject(request))
+						{
+							// Save object to local file
+							response.WriteResponseStreamToFile(material.GetLocalPath());
 						}
-
-						// 79 Characters (72 without spaces)
-						ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
-						using (var wclient = new WebClient()) {
-							string path = new Java.IO.File(Helper.MaterialDir, materialFile.fileName).ToString();
-							try {
-								wclient.DownloadFile(materialFile.s3Location, path);
-								MainDatabase.SaveItem(materialFile);
-							} catch (Exception exc) {
-								// TODO: Add log info to HockeyApp
-								SDiag.Debug.WriteLine("Was exception: {0}", exc.Message);
-							}
-						}
-					}
-
-					// Обновление материалов
-					foreach (var workType in WorkTypes) {
-						if (!MainDatabase.IsSavedBefore<WorkType>(workType.uuid)) {
-							MainDatabase.SaveItem(workType);
-						}
+						
 					}
 
 					// Обновление файлов в библотеке

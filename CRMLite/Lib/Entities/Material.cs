@@ -27,9 +27,9 @@ namespace CRMLite
 		/// <value>The material type.</value>
 		public string type { get; set; }
 
-		public void SetMaterialType(MaterialType newMaterialType) { type = newMaterialType.ToString("G"); }
+		public void SetType(MaterialType newMaterialType) { type = newMaterialType.ToString("G"); }
 
-		public MaterialType GetMaterialType() { return (MaterialType)Enum.Parse(typeof(MaterialType), type, true); }
+		public MaterialType GetType() { return type.ToEnum(MaterialType.mtNone) }
 
 		/// <summary>
 		/// Получение расположения файла на планшете.

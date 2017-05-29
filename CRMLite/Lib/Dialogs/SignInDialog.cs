@@ -592,7 +592,26 @@ namespace CRMLite.Dialogs
 			//	WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 			//	return false;
 			//}
-
+			
+			WriteInfo(@"Очистка LifeCycleActions", 1000);
+			try {
+				SD.Debug.WriteLine("Clear LifeCycleActions");
+				string path = string.Format("{0}/clearAll?access_token={1}", typeof(LifeCycleAction).Name, access_token);
+				var request = new RestRequest(path, Method.DELETE);
+				var response = client.Execute<List<LifeCycleAction>>(request);
+				if (response.StatusCode == HttpStatusCode.OK) {
+					if (response.Data == null) {
+						SD.Debug.WriteLine("LoadEntities: Data=NULL");
+					} else {
+						SD.Debug.WriteLine("LoadEntities: Data.Count={0}", response.Data.Count);
+					}
+				}
+				SD.Debug.WriteLine("Clear LifeCycleActions: Done");
+			} catch (Exception ex) {
+				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
+				return false;
+			}
+			
 			return true;
 		}
 
@@ -660,111 +679,6 @@ namespace CRMLite.Dialogs
 			});
 		}
 
-
-		void LoadListedHospitals(RestClient client)
-		{
-			var request = new RestRequest(@"ListedHospital?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<ListedHospital>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(string.Format(@"Получено ListedHospital {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}
-		}
-
-		void LoadMaterials(RestClient client)
-		{
-			var request = new RestRequest(@"Material?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<Material>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(string.Format(@"Получено Material {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}
-		}
-
-		void LoadWorkTypes(RestClient client)
-		{
-			var request = new RestRequest(@"WorkType?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<WorkType>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(string.Format(@"Получено WorkType {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}
-		}
-
-		void LoadContracts(RestClient client)
-		{
-			var request = new RestRequest(@"Contract?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<Contract>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(string.Format(@"Получено Contract {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}
-		}
-
-		void LoadPhotoTypes(RestClient client)
-		{
-			var request = new RestRequest(@"PhotoType?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<PhotoType>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(string.Format(@"Получено PhotoType {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}
-		}
-
-		void LoadMessageTypes(RestClient client)
-		{
-			var request = new RestRequest(@"MessageType?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<MessageType>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(string.Format(@"Получено MessageType {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}
-		}
-
-		void LoadPromotions(RestClient client)
-		{
-			var request = new RestRequest(@"Promotion?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<Promotion>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(string.Format(@"Получено Promotion {0}", response.Data.Count));
-				MainDatabase.SaveItems(response.Data);
-			}
-		}
-
-		void LoadDrugSKUs(RestClient client)
-		{
-			var request = new RestRequest(@"DrugSKU?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<DrugSKU>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SaveDrugSKUs(response.Data);
-			}
-		}
-
-		void LoadDrugBrands(RestClient client)
-		{
-			var request = new RestRequest(@"DrugBrand?limit=300&populate=false", Method.GET);
-			var response = client.Execute<List<DrugBrand>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SaveDrugBrands(response.Data);
-			}
-		}
-
-		void LoadPositions(RestClient client)
-		{
-			var request = new RestRequest(@"Position?limit=300", Method.GET);
-			var response = client.Execute<List<Position>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(response.Data.Count);
-				using (var trans = MainDatabase.BeginTransaction()) {
-					MainDatabase.DeleteAll<Position>(trans);
-					MainDatabase.SaveItems(trans, response.Data);
-					trans.Commit();
-				}
-			}
-		}
-
 		void LoadItems<T>(RestClient client, int limit, string customQueryParams = "") where T: Realms.RealmObject
 		{
 			SD.Debug.WriteLine("LoadItems: typeof={0}", typeof(T));
@@ -808,55 +722,6 @@ namespace CRMLite.Dialogs
 			}
 			SD.Debug.WriteLine("LoadEntities: Done");
 		}
-
-		void LoadNets(RestClient client)
-		{
-			var request = new RestRequest(@"Net?limit=300", Method.GET);
-			var response = client.Execute<List<Net>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SaveNets(response.Data);
-			}
-		}
-
-		void LoadSubways(RestClient client)
-		{
-			var request = new RestRequest(@"Subway?limit=300", Method.GET);
-			var response = client.Execute<List<Subway>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SaveSubways(response.Data);
-			}
-		}
-
-		void LoadRegions(RestClient client)
-		{
-			var request = new RestRequest(@"Region?limit=300", Method.GET);
-			var response = client.Execute<List<Region>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SaveRegions(response.Data);
-			}
-		}
-
-		void LoadPlaces(RestClient client)
-		{
-			var request = new RestRequest(@"Place?limit=300", Method.GET);
-			var response = client.Execute<List<Place>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SavePlaces(response.Data);
-			}
-		}
-
-		void LoadCategories(RestClient client)
-		{
-			var request = new RestRequest(@"Category?limit=300", Method.GET);
-			var response = client.Execute<List<Category>>(request);
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-				SD.Debug.WriteLine(response.Data.Count);
-				MainDatabase.SaveCategories(response.Data);
-			}
-		}
+		
 	}
 }

@@ -368,6 +368,11 @@ namespace CRMLite.Lib.Sync
 							var list = DB.All<Agent>().Where(a => a.uuid == item.uuid);
 							return ManageItem(uri, DB, item, list, item.uuid);
 						}
+					case SyncConst.Material: {
+							var item = JsonConvert.DeserializeObject<Material>(json);
+							var list = DB.All<Material>().Where(a => a.uuid == item.uuid);
+							return ManageItem(uri, DB, item, list, item.uuid);
+						}
 					default:
 						return new Uri.Builder()
 							          .Scheme(uri.Scheme)
@@ -520,6 +525,14 @@ namespace CRMLite.Lib.Sync
 						}
 					case SyncConst.SaleDataByQuarter: {
 							var list = DB.All<SaleDataByQuarter>().Where(item => item.UUID == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.WorkType: {
+							var list = DB.All<WorkType>().Where(item => item.uuid == uuid);
+							return RemoveItems(DB, list, uuid);
+						}
+					case SyncConst.Material: {
+							var list = DB.All<Material>().Where(item => item.uuid == uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					default:

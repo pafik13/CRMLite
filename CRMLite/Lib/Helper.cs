@@ -23,6 +23,27 @@ namespace CRMLite
 		wmOnlyRoute, wmRouteAndRecommendations, wmOnlyRecommendations
 	}
 
+	public static class Extensions
+	{
+		// https://stackoverflow.com/questions/5320592/value-is-in-enum-list
+		public static bool In<T>(this T val, params T[] values) where T : struct
+		{
+			return values.Contains(val);
+		}
+		
+		// https://stackoverflow.com/questions/16100/how-should-i-convert-a-string-to-an-enum-in-c
+		public static T ToEnum<T>(this string value, T defaultValue) where T : struct
+		{
+			if (string.IsNullOrEmpty(value))
+			{
+				return defaultValue;
+			}
+
+			T result;
+			return Enum.TryParse<T>(value, true, out result) ? result : defaultValue;
+		}
+	}
+	
 	public static class Helper
 	{
 		public static bool IsTimeChanged;

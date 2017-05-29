@@ -111,6 +111,6 @@ namespace CRMLite.Entities
 
 		public void SetMaterialType(MaterialType newMaterialType) { materialType = newMaterialType.ToString("G"); }
 
-		public MaterialType GetMaterialType() { return (MaterialType)Enum.Parse(typeof(MaterialType), materialType, true); }
+		public MaterialType GetMaterialType() { return materialType.ToEnum(MaterialType.mtNone); }
 	}
 }

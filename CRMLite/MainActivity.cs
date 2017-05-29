@@ -97,16 +97,12 @@ namespace CRMLite
 
 			// Register the crash manager before Initializing the trace writer
 			CrashManager.Register(this, Secret.HockeyappAppId, new MyCrashManagerListener { ContextHolder = new WeakReference<Context>(this)});
-			 
+			HockeyLog.LogLevel = 2;
+			
 			// Register to with the Update Manager
 			UpdateManager.Register(this, Secret.HockeyappAppId);
 
-			HockeyLog.LogLevel = 2;
-
-			// Register user metics
-			MetricsManager.Register(Application, Secret.HockeyappAppId);
-			MetricsManager.EnableUserMetrics();
-
+			
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
 
