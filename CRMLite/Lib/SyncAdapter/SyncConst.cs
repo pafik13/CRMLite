@@ -77,6 +77,7 @@ namespace CRMLite.Lib.Sync
 		public const string SaleDataByMonth = "SaleDataByMonth";
 		public const string SaleDataByQuarter = "SaleDataByQuarter";
 		public const string Agent = "Agent";
+		public const string Material = "Material";
 
 		public static Uri GetURI(string lastPathSegment)
 		{

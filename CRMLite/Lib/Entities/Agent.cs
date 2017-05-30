@@ -99,7 +99,7 @@ namespace CRMLite.Entities
 		public WorkMode GetWorkMode() { return (WorkMode)Enum.Parse(typeof(WorkMode), workMode, true); }
 
 		/// <summary>
-		/// User.
+		/// Индентификатор User.
 		/// </summary>
     	public string user { get; set; }
 
@@ -108,9 +108,11 @@ namespace CRMLite.Entities
 		/// </summary>
 		/// <value>The material type.</value>
 		public string materialType { get; set; }
+   
+		public MaterialType MaterialType {
+			get { return materialType.ToEnum(MaterialType.mtNone); }
+			set { materialType = value.ToString("G"); }
+		}
 
-		public void SetMaterialType(MaterialType newMaterialType) { materialType = newMaterialType.ToString("G"); }
-
-		public MaterialType GetMaterialType() { return materialType.ToEnum(MaterialType.mtNone); }
 	}
 }

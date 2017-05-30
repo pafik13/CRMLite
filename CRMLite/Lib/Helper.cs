@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 using System.Net;
 using System.Net.Cache;
@@ -15,7 +16,7 @@ using Android.Provider;
 using RestSharp;
 
 using CRMLite.Receivers;
-
+ 
 namespace CRMLite
 {
 	public enum WorkMode
@@ -40,7 +41,7 @@ namespace CRMLite
 			}
 
 			T result;
-			return Enum.TryParse<T>(value, true, out result) ? result : defaultValue;
+			return Enum.TryParse(value, true, out result) ? result : defaultValue;
 		}
 	}
 	

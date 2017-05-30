@@ -23,6 +23,10 @@ using Realms;
 
 using Newtonsoft.Json;
 
+using Amazon;
+using Amazon.S3;
+using Amazon.S3.Model;
+
 using CRMLite.Dialogs;
 using CRMLite.Entities;
 using CRMLite.Lib.Sync;
@@ -40,7 +44,9 @@ namespace CRMLite
 		public string HOST_URL { get; private set; }
 		public string USERNAME { get; private set; }
 		public string AGENT_UUID { get; private set; }
-		
+
+		IAmazonS3 S3Client;
+
 		public List<Material> Materials { get; private set; }
 		public List<LibraryFile> LibraryFiles { get; private set; }
 
@@ -294,11 +300,11 @@ namespace CRMLite
 			var toSyncCount = FindViewById<TextView>(Resource.Id.saSyncEntitiesCount);
 			toSyncCount.Text = string.Format("Необходимо синхронизировать {0} объектов", Count);
 
-			var agentMaterialType = MainDatabase.GetItem<Agent>(agentUUID).GetMaterialType();
+			var agentMaterialType = MainDatabase.GetItem<Agent>(AGENT_UUID).MaterialType;
 			
 			if (agentMaterialType != MaterialType.mtNone) {
 				foreach (var material in MainDatabase.GetItems<Material>()) {
-					if (material.GetType().In(MaterialType.mtBoth, agentMaterialType)) {						
+					if (material.Type.In(MaterialType.mtBoth, agentMaterialType)) {						
 						var materialFileInfo = new FileInfo(material.GetLocalPath());
 						if (materialFileInfo.Exists && materialFileInfo.Length > 0) continue;
 						Materials.Add(material);
@@ -503,12 +509,12 @@ namespace CRMLite
 							BucketName = material.s3Bucket,
 							Key = material.s3Key
 						};
-						 
-						// Issue request and remember to dispose of the response
-						using (var response = S3Client.GetObject(request))
+
+						// Issue request and remember to dispose of the respons
+						using (var response = S3Client.GetObjectAsync(request).Result)
 						{
 							// Save object to local file
-							response.WriteResponseStreamToFile(material.GetLocalPath());
+							response.WriteResponseStreamToFileAsync(material.GetLocalPath(), false);
 						}
 						
 					}

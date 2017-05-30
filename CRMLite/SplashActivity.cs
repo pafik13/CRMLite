@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using Android.OS;
 using Android.App;
@@ -8,10 +10,12 @@ using Android.Views;
 using Android.Widget;
 using Android.Content;
 
+using HockeyApp.Android;
+using HockeyApp.Android.Metrics;
+
 using Realms;
 
 using CRMLite.Entities;
-using HockeyApp.Android;
 
 namespace CRMLite
 {
@@ -47,8 +51,8 @@ namespace CRMLite
 			                                                                           .PutString(MainActivity.C_DUMMY, string.Empty)
 			                                                                           .Commit();
 
-			Username = mainSharedPreferences.GetString(Dialogs.SigninDialog.C_Username, string.Empty);
-			AgentUUID = mainSharedPreferences.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
+			Username = mainSharedPreferences.GetString(Dialogs.SigninDialog.C_USERNAME, string.Empty);
+			AgentUUID = mainSharedPreferences.GetString(Dialogs.SigninDialog.C_AGENT_UUID, string.Empty);
 			
 			if (string.IsNullOrEmpty(Username)) {
 				StartActivity(new Intent(this, typeof(MainActivity)));
@@ -58,13 +62,13 @@ namespace CRMLite
 			Task.Factory
 			   .StartNew(() => {
 
-					string locFileLocation = System.IO.Path.Combine(
+					string locFileLocation = Path.Combine(
 						System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
 						Username,
 						Helper.C_LOC_FILE_NAME
 					);
 
-					new System.IO.FileInfo(locFileLocation).Directory.Create();
+					new FileInfo(locFileLocation).Directory.Create();
 
 					var config = new RealmConfiguration(locFileLocation) {
 						SchemaVersion = C_DB_CURRENT_VERSION,
@@ -81,15 +85,15 @@ namespace CRMLite
 						throw new Exception();
 					}
 
-					string dbFileLocation = System.IO.Path.Combine(
+					string dbFileLocation = Path.Combine(
 						System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
 						Username,
 						Helper.C_DB_FILE_NAME
 					);
 
-					new System.IO.FileInfo(dbFileLocation).Directory.Create();
+					new FileInfo(dbFileLocation).Directory.Create();
 
-					config = new RealmConfiguration(dbFileLocation) {
+					var config = new RealmConfiguration(dbFileLocation) {
 						SchemaVersion = C_DB_CURRENT_VERSION,
 						MigrationCallback = MigrationCallback_MainDB
 					};
@@ -199,7 +203,7 @@ namespace CRMLite
 				ProgressDialog = ProgressDialog.Show(this, "Начинается обновление ГЕОБазы", "ГЕОБаза будет обновлена...", true);
 			});
 			
-			var dbFileInfo = new FileInfo(migration.NewRealm.Config.DatabasePath );
+			var dbFileInfo = new FileInfo(migration.NewRealm.Config.DatabasePath);
 			HockeyApp.MetricsManager.TrackEvent(
 				"SplashActivity.MigrationCallback_LocDB",
 				new Dictionary<string, string> {

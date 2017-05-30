@@ -1,23 +1,18 @@
 ﻿using System;
 using SD = System.Diagnostics;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Net;
 using System.Threading;
 
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using Android.Views.Animations;
 using Android.Widget;
 
 using RestSharp;
-using RestSharp.Serializers;
-using RestSharp.Authenticators;
 
 using CRMLite.Entities;
 
@@ -596,15 +591,11 @@ namespace CRMLite.Dialogs
 			WriteInfo(@"Очистка LifeCycleActions", 1000);
 			try {
 				SD.Debug.WriteLine("Clear LifeCycleActions");
-				string path = string.Format("{0}/clearAll?access_token={1}", typeof(LifeCycleAction).Name, access_token);
+				string path = string.Format("{0}/clearAll?access_token={1}", "LifeCycleAction", access_token);
 				var request = new RestRequest(path, Method.DELETE);
-				var response = client.Execute<List<LifeCycleAction>>(request);
+				response = client.Execute(request);
 				if (response.StatusCode == HttpStatusCode.OK) {
-					if (response.Data == null) {
-						SD.Debug.WriteLine("LoadEntities: Data=NULL");
-					} else {
-						SD.Debug.WriteLine("LoadEntities: Data.Count={0}", response.Data.Count);
-					}
+					SD.Debug.WriteLine("Clear LifeCycleActions: HttpStatusCode.OK");
 				}
 				SD.Debug.WriteLine("Clear LifeCycleActions: Done");
 			} catch (Exception ex) {

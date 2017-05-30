@@ -19,6 +19,8 @@ namespace CRMLite
 
 		public string s3Location { get; set; }
 
+		public string s3Key { get; set; }
+
 		public string s3Bucket { get; set; }
 
 		/// <summary>
@@ -27,9 +29,10 @@ namespace CRMLite
 		/// <value>The material type.</value>
 		public string type { get; set; }
 
-		public void SetType(MaterialType newMaterialType) { type = newMaterialType.ToString("G"); }
-
-		public MaterialType GetType() { return type.ToEnum(MaterialType.mtNone) }
+		public MaterialType Type {
+			get { return type.ToEnum(MaterialType.mtNone); }
+			set { type = value.ToString("G"); }
+		}
 
 		/// <summary>
 		/// Получение расположения файла на планшете.

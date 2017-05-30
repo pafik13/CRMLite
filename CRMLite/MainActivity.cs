@@ -17,7 +17,6 @@ using Android.Views.InputMethods;
 
 using HockeyApp.Android;
 using HockeyApp.Android.Utils;
-using HockeyApp.Android.Metrics;
 
 using CRMLite.Entities;
 using CRMLite.Adapters;
@@ -354,7 +353,7 @@ namespace CRMLite
 				var orderMapState = new Dictionary<string, int> {
 					{ PharmacyState.psActive.ToString("G"), 0 },
 					{ PharmacyState.psReserve.ToString("G"), 1 },
-					{ PharmacyState.psClose.ToString("G"), 2 },
+					{ PharmacyState.psClose.ToString("G"), 2 }
 				};
 
 				// TODO: optimize work with route
