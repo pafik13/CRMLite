@@ -28,6 +28,8 @@ namespace CRMLite
 	{
 		public const int C_NUM_PAGES = 4;
 
+		string AgentUUID { get; set; }
+
 		ViewPager Pager;
 		TextView FragmentTitle;
 		TextView TimerText;
@@ -129,6 +131,9 @@ namespace CRMLite
 
 			PharmacyUUID = Intent.GetStringExtra("UUID");
 			if (string.IsNullOrEmpty(PharmacyUUID)) return;
+
+			var mainSharedPreferences = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
+			AgentUUID = mainSharedPreferences.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
 
 			AttendanceLast = MainDatabase.GetAttendaces(PharmacyUUID).OrderByDescending(i => i.When).FirstOrDefault();
 			var attendanceLastUUID = AttendanceLast == null ? string.Empty : AttendanceLast.UUID;
@@ -412,14 +417,12 @@ namespace CRMLite
 				if (Materials.Count == 0) return;
 
 				var materialItems = new List<MaterialItem>();
-				var materialFiles = MainDatabase.GetItems<MaterialFile>();
-				foreach (var mf in materialFiles) {
-					var file = new Java.IO.File(Helper.MaterialDir, mf.fileName);
-					if (file.Exists()) {
-						var found = Materials.FirstOrDefault(m => m.uuid == mf.material);
-						if (found != null) {
-							materialItems.Add(new MaterialItem(found.name, file));
-						}
+				var materials = MainDatabase.GetMaterials(MainDatabase.GetItem<Agent>(AgentUUID).MaterialType);
+
+				foreach (var material in materials) {
+					var file = material.GetJavaFile();
+					if (file.Exists() && file.Length() > 0) {
+						materialItems.Add(new MaterialItem(material.name, file));
 					}
 				}
 

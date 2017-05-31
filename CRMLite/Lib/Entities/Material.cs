@@ -40,7 +40,16 @@ namespace CRMLite
 		/// <value>Get material local path.</value>
 		public string GetLocalPath()
 		{
-			return new Java.IO.File(Helper.MaterialDir, fileName).ToString();
+			return GetJavaFile().ToString();
+		}
+
+		/// <summary>
+		/// Получение java-файл объекта.
+		/// </summary>
+		/// <value>Get material local path.</value>
+		public Java.IO.File GetJavaFile()
+		{
+			return new Java.IO.File(Helper.MaterialDir, fileName);
 		}
 	}
 }

@@ -583,8 +583,7 @@ namespace CRMLite
 			}
 
 			var isLocatorEnable = MainDatabase.GetCustomizationBool(Customizations.IsLocatorEnable);
-			if (false) {
-			//if (isLocatorEnable.HasValue) {
+			if (isLocatorEnable.HasValue) {
 				if (isLocatorEnable.Value) {
 					var isLocatorGPSRequestOn = MainDatabase.GetCustomizationBool(Customizations.IsLocatorGPSRequestOn);
 					var isLocatorNetRequestOn = MainDatabase.GetCustomizationBool(Customizations.IsLocatorNetRequestOn);

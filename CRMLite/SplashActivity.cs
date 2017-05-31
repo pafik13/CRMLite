@@ -23,7 +23,7 @@ namespace CRMLite
 	[Activity(Label = "CRMLite", Theme = "@style/MyTheme.Splash", Icon = "@mipmap/icon", MainLauncher = true, NoHistory = true)]
 	public class SplashActivity : Activity
 	{
-		public const int C_DB_CURRENT_VERSION = 8;
+		public const int C_DB_CURRENT_VERSION = 3;
 		ProgressDialog ProgressDialog;
 		string Username;
 		string AgentUUID;

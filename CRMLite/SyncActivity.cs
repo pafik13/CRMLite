@@ -47,8 +47,9 @@ namespace CRMLite
 
 		IAmazonS3 S3Client;
 
-		public List<Material> Materials { get; private set; }
+		List<string> MaterialUUIDs = new List<string>();
 		public List<LibraryFile> LibraryFiles { get; private set; }
+
 
 		public int Count { get; private set; }
 
@@ -91,7 +92,6 @@ namespace CRMLite
 			//HOST_URL = @"http://sbl-crm-project-pafik13.c9users.io:8080/";
 			AGENT_UUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
 
-			Materials = new List<Material>();
 			LibraryFiles = new List<LibraryFile>();
 
 			RefreshView();
@@ -305,11 +305,11 @@ namespace CRMLite
 			foreach (var material in materials) {
 				var materialFileInfo = new FileInfo(material.GetLocalPath());
 				if (materialFileInfo.Exists && materialFileInfo.Length > 0) continue;
-				Materials.Add(material);
+				MaterialUUIDs.Add(string.Copy(material.uuid));
 			}
 
 			var toUpdateCount = FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount);
-			toUpdateCount.Text = string.Format("Необходимо обновить {0} объектов", Materials.Count);
+			toUpdateCount.Text = string.Format("Необходимо обновить {0} объектов", MaterialUUIDs.Count);
 
 			var photoCount = FindViewById<TextView>(Resource.Id.saSyncPhotosCount);
 			photoCount.Text = string.Format("Необходимо выгрузить {0} фото", MainDatabase.CountItemsToSync<PhotoData>());
@@ -343,7 +343,7 @@ namespace CRMLite
 						}
 
 						RunOnUiThread(() => {
-							int count = Materials.Count + LibraryFiles.Count;
+							int count = MaterialUUIDs.Count + LibraryFiles.Count;
 							FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount).Text = string.Format("Необходимо обновить {0} объектов", count);
 						});
 						break;
@@ -487,7 +487,7 @@ namespace CRMLite
 			}
 
 
-			if (Count > 0 || Materials.Count > 0 || LibraryFiles.Count > 0) {
+			if (Count > 0 || MaterialUUIDs.Count > 0 || LibraryFiles.Count > 0) {
 				var progress = ProgressDialog.Show(this, string.Empty, @"Синхронизация");
 
 				new Task(() => {
@@ -497,8 +497,10 @@ namespace CRMLite
 					MainDatabase.Username = USERNAME;
 
 					// Обновление материалов
-					foreach (var material in Materials) {
-	
+					foreach (var materialUUID in MaterialUUIDs) {
+
+						var material = MainDatabase.GetItem<Material>(materialUUID);
+
 						// Create a GetObject request
 						var request = new GetObjectRequest
 						{
@@ -506,14 +508,16 @@ namespace CRMLite
 							Key = material.s3Key
 						};
 
-						// Issue request and remember to dispose of the respons
-						using (var response = S3Client.GetObjectAsync(request).Result)
-						{
-							// Save object to local file
-							response.WriteResponseStreamToFileAsync(material.GetLocalPath(), false);
+				        using (var response = S3Client.GetObjectAsync(request).Result)
+						using (Stream input = response.ResponseStream)
+						using (Stream output = File.OpenWrite(material.GetLocalPath())) {
+							input.CopyTo(output);
 						}
 						
 					}
+
+					MaterialUUIDs.Clear();
+					MaterialUUIDs.Capacity = 5;
 
 					// Обновление файлов в библотеке
 					foreach (var libraryFile in LibraryFiles) {
