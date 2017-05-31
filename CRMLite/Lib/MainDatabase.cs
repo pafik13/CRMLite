@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Collections.Concurrent;
 
+using SD = System.Diagnostics;
+
 using Realms;
 
 using CRMLite.Entities;
@@ -715,6 +717,42 @@ namespace CRMLite
 			return Me.DB.All<Pharmacy>().Single(item => item.UUID == UUID);
 		}
 
+
+		internal static List<Material> GetMaterials(MaterialType materialType)
+		{
+			var result = new List<Material>();
+
+			switch (materialType) {
+				case MaterialType.mtNone:
+					break;
+				case MaterialType.mtPharmaciesOnly:
+					foreach (var material in Me.DB.All<Material>()) {
+						SD.Debug.WriteLine(material.name, material.uuid);
+						if (material.Type.In(MaterialType.mtBoth, MaterialType.mtPharmaciesOnly)) {
+							result.Add(material);
+						}
+					}
+					break;
+				case MaterialType.mtDoctorsOnly:
+					foreach (var material in Me.DB.All<Material>()) {
+						if (material.Type.In(MaterialType.mtBoth, MaterialType.mtDoctorsOnly)) {
+							result.Add(material);
+						}
+					}
+					break;
+				case MaterialType.mtBoth:
+					foreach (var material in Me.DB.All<Material>()) {
+						if (material.Type == MaterialType.mtNone) continue;
+
+						result.Add(material);
+					}
+					break;
+			}
+
+			return result;
+		}
+
+
 		internal static List<RouteItem> GetEarlyRouteItems(DateTimeOffset selectedDate)
 		{
 			if (Helper.WeeksInRoute < 2) return new List<RouteItem>();
@@ -727,7 +765,6 @@ namespace CRMLite
 					 .Where(ri => highDate >= ri.Date.Date && ri.Date.Date >= lowDate)
 				     .ToList();
 		}
-
 
 		internal static List<RouteItem> GetEarlyPerfomedRouteItems(DateTimeOffset selectedDate)
 		{

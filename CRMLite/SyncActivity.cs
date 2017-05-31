@@ -106,7 +106,7 @@ namespace CRMLite
 
 			AWSConfigsS3.UseSignatureVersion4 = true;
 
-			S3Client = new AmazonS3Client(Secret.AWSAccessKeyId, Secret.AWSSecretKey);
+			S3Client = new AmazonS3Client(Secret.AWSAccessKeyId, Secret.AWSSecretKey, RegionEndpoint.EUCentral1);
 		}
 
 		void ClearRealm_Click(object sender, EventArgs e)
@@ -300,18 +300,14 @@ namespace CRMLite
 			var toSyncCount = FindViewById<TextView>(Resource.Id.saSyncEntitiesCount);
 			toSyncCount.Text = string.Format("Необходимо синхронизировать {0} объектов", Count);
 
-			var agentMaterialType = MainDatabase.GetItem<Agent>(AGENT_UUID).MaterialType;
-			
-			if (agentMaterialType != MaterialType.mtNone) {
-				foreach (var material in MainDatabase.GetItems<Material>()) {
-					if (material.Type.In(MaterialType.mtBoth, agentMaterialType)) {						
-						var materialFileInfo = new FileInfo(material.GetLocalPath());
-						if (materialFileInfo.Exists && materialFileInfo.Length > 0) continue;
-						Materials.Add(material);
-					}
-				}
+
+			var materials = MainDatabase.GetMaterials(MainDatabase.GetItem<Agent>(AGENT_UUID).MaterialType);
+			foreach (var material in materials) {
+				var materialFileInfo = new FileInfo(material.GetLocalPath());
+				if (materialFileInfo.Exists && materialFileInfo.Length > 0) continue;
+				Materials.Add(material);
 			}
-			
+
 			var toUpdateCount = FindViewById<TextView>(Resource.Id.saUpdateEntitiesCount);
 			toUpdateCount.Text = string.Format("Необходимо обновить {0} объектов", Materials.Count);
 
