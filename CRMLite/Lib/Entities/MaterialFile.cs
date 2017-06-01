@@ -1,10 +1,7 @@
-﻿using System;
-
-using Realms;
+﻿using Realms;
 
 namespace CRMLite
 {
-	[Preserve(AllMembers = true)]
 	public class MaterialFile: RealmObject, IEntiryFromServer
 	{
 		[PrimaryKey]

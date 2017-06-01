@@ -3,7 +3,6 @@
 namespace CRMLite.Entities
 {
 	// PausedAtts
-	[Preserve(AllMembers = true)]
 	public class AttendanceOnPause : RealmObject, IEntity
 	{
 		/// <summary>
