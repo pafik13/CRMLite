@@ -6,6 +6,7 @@ using CRMLite.Entities;
  
 namespace CRMLite
 {
+	[Preserve(AllMembers = true)]
 	public class Material: RealmObject, IEntiryFromServer
 	{
 		[PrimaryKey]

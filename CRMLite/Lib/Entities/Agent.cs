@@ -11,6 +11,7 @@ namespace CRMLite.Entities
 	/// <summary>
 	/// Представитель/сотрудник.
 	/// </summary>
+	[Preserve(AllMembers = true)]
 	public class Agent : RealmObject, IEntiryFromServer
     {
 		/// <summary>
