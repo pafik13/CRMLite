@@ -70,5 +70,6 @@
 	<string name="tutorial_rules">После регистрации пользователю начисляется условное количество баллов. Вы можете потратить их на доступные в данный момент акции в приложении кафе и ресторанах.</string>
 	<string name="repush_for_exit">Нажмите ещё раз для закрытия</string>
 	<string name="time_diff_more_than_hour">Время на планшете отличается от мирового более чем на 1 час</string>
+	<string name="pharmacy_add_disabled">Добавление аптек отключено. Обратитесь к менеджеру.</string>
 	
 </resources>

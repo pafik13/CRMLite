@@ -57,7 +57,6 @@
                         android:layout_gravity="center_vertical"
                         style="@style/fcs_block1" />
                 </TableRow>
-            <!-- Ссылка на аптечную сеть. UUID класса Net -->
                 <TableRow
                     android:id="@+id/pfRowState">
                     <TextView
@@ -94,7 +93,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Например, 36и6"
-                        android:enabled="true"
+                        android:enabled="false"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapWords"
                         android:layout_height="match_parent"
@@ -120,7 +119,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Например, Аптека №6"
-                        android:enabled="true"
+                        android:enabled="false"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapSentences"
                         android:layout_height="match_parent"
@@ -146,13 +145,12 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Например, ООО 'АПТЕКА'"
-                        android:enabled="true"
+                        android:enabled="false"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapCharacters"
                         android:layout_height="match_parent"
                         android:layout_width="match_parent" />
                 </TableRow>
-            <!-- Ссылка на аптечную сеть. UUID класса Net -->
                 <TableRow
                     android:id="@+id/pfRowNet">
                     <TextView
@@ -170,6 +168,7 @@
                         android:layout_width="match_parent"
                         android:layout_marginRight="24dp">
                         <AutoCompleteTextView
+                            android:enabled="false"
                             android:layout_height="match_parent"
                             android:layout_width="match_parent"
                             android:dropDownWidth="@dimen/drop_down_width"
@@ -187,6 +186,7 @@
                             android:id="@+id/pfNetB"
                             android:layout_height="match_parent"
                             android:layout_width="wrap_content"
+                            android:enabled="false"
                             android:text="..." />
                     </LinearLayout>
                 </TableRow>
@@ -250,7 +250,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Фактический адрес"
-                        android:enabled="true"
+                        android:enabled="false"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapSentences"
                         android:layout_height="match_parent"
@@ -277,7 +277,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Метро"
-                        android:enabled="true"
+                        android:enabled="false"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapSentences"
                         android:layout_height="match_parent"
@@ -304,7 +304,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Район"
-                        android:enabled="true"
+                        android:enabled="false"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapSentences"
                         android:layout_height="match_parent"
@@ -357,7 +357,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Например, в магазине"
-                        android:enabled="true"
+                        android:enabled="false"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapSentences"
                         android:layout_height="match_parent"

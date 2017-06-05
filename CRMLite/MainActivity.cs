@@ -118,7 +118,14 @@ namespace CRMLite
 
 			var add = FindViewById<ImageView>(Resource.Id.maAdd);
 			add.Click += (sender, e) => {
-				StartActivity(new Intent(this, typeof(PharmacyActivity)));
+				var isPharmacyAddEnable = MainDatabase.GetCustomizationBool(Customizations.IsPharmacyAddEnable);
+				if (isPharmacyAddEnable.HasValue) {
+					if (isPharmacyAddEnable.Value) {
+						StartActivity(new Intent(this, typeof(PharmacyActivity)));
+					}
+				} else {
+					Toast.MakeText(this, Resource.String.pharmacy_add_disabled, ToastLength.Long).Show();
+				}
 			};
 
 			var sync = FindViewById<ImageView>(Resource.Id.maSync);

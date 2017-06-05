@@ -4747,6 +4747,9 @@ namespace CRMLite
 			// aapt resource value: 0x7f07008e
 			public const int on_button = 2131165326;
 			
+			// aapt resource value: 0x7f070095
+			public const int pharmacy_add_disabled = 2131165333;
+			
 			// aapt resource value: 0x7f070085
 			public const int pharmacy_not_found = 2131165317;
 			

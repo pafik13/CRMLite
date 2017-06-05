@@ -106,7 +106,6 @@
                         android:layout_gravity="center_vertical"
                         style="@style/fcs_block1" />
                 </TableRow>
-            <!-- Ссылка на аптечную сеть. UUID класса Net -->
                 <TableRow
                     android:id="@+id/paRowState">
                     <TextView
@@ -143,7 +142,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Например, 36и6"
-                        android:enabled="true"
+                        android:enabled="false"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapWords"
                         android:layout_height="match_parent"
@@ -169,7 +168,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Например, Аптека №6"
-                        android:enabled="true"
+                        android:enabled="false"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapSentences"
                         android:layout_height="match_parent"
@@ -195,13 +194,12 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Например, ООО 'АПТЕКА'"
-                        android:enabled="true"
+                        android:enabled="false"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapCharacters"
                         android:layout_height="match_parent"
                         android:layout_width="match_parent" />
                 </TableRow>
-            <!-- Ссылка на аптечную сеть. UUID класса Net -->
                 <TableRow
                     android:id="@+id/paRowNet">
                     <TextView
@@ -219,6 +217,7 @@
                         android:layout_width="match_parent"
                         android:layout_marginRight="24dp">
                         <AutoCompleteTextView
+                            android:enabled="false"
                             android:layout_height="match_parent"
                             android:layout_width="match_parent"
                             android:dropDownWidth="@dimen/drop_down_width"
@@ -236,6 +235,7 @@
                             android:id="@+id/paNetB"
                             android:layout_height="match_parent"
                             android:layout_width="wrap_content"
+                            android:enabled="false"
                             android:text="..." />
                     </LinearLayout>
                 </TableRow>
@@ -289,6 +289,7 @@
                         android:layout_height="@dimen/row_height"
                         android:layout_width="match_parent" />
                     <AutoCompleteTextView
+                        android:enabled="false"
                         android:dropDownWidth="650dp"
                         android:textCursorDrawable="@null"
                         android:layout_column="1"
@@ -299,7 +300,6 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Фактический адрес"
-                        android:enabled="true"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapSentences"
                         android:layout_height="match_parent"
@@ -316,6 +316,7 @@
                         android:layout_height="@dimen/row_height"
                         android:layout_width="match_parent" />
                     <AutoCompleteTextView
+                        android:enabled="false"
                         android:dropDownWidth="450dp"
                         android:textCursorDrawable="@null"
                         android:layout_column="1"
@@ -326,7 +327,6 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Метро"
-                        android:enabled="true"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapSentences"
                         android:layout_height="match_parent"
@@ -353,7 +353,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Район"
-                        android:enabled="true"
+                        android:enabled="false"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapSentences"
                         android:layout_height="match_parent"
@@ -379,7 +379,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="+7-495-777-77-77"
-                        android:phoneNumber="true"
+                        android:phoneNumber="false"
                         android:layout_marginRight="24dp"
                         android:inputType="phone"
                         android:layout_height="match_parent"
@@ -406,13 +406,12 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:hint="Например, в магазине"
-                        android:enabled="true"
+                        android:enabled="false"
                         android:layout_marginRight="24dp"
                         android:inputType="textCapSentences"
                         android:layout_height="match_parent"
                         android:layout_width="match_parent" />
                 </TableRow>
-            <!-- Ссылка на аптечную сеть. UUID класса Net -->
                 <TableRow
                     android:id="@+id/paRowCategory">
                     <TextView
