@@ -387,6 +387,37 @@ namespace CRMLite
 				CancelSource.Cancel();
 			}
 
+			var apps = PackageManager.GetInstalledPackages(PackageInfoFlags.MetaData);
+			var properties = new Dictionary<string, string>();
+			properties.Add("android_id", Helper.AndroidId);
+			properties.Add("agent_uuid", MainDatabase.AgentUUID);
+			//var dirs = new Dictionary<string, string>();
+			int systemAppsCount = 0;
+			foreach (var app in apps) {
+				//var src = app.ApplicationInfo.SourceDir;
+				//int index = src.IndexOf('/', src.IndexOf('/', 2) + 1);
+				//var subdir = src.Substring(0, index);
+				//if (!dirs.ContainsKey(subdir)) dirs.Add(subdir, subdir); 
+				if (!app.ApplicationInfo.SourceDir.StartsWith("/data/app/", StringComparison.InvariantCulture)) {
+					systemAppsCount++;
+					continue;
+				}
+				if (properties.ContainsKey(app.PackageName)) continue;
+				properties.Add( app.PackageName
+				               , string.Concat("VersionName:", app.VersionName, "; VersionCode:", app.VersionCode)
+				              );
+			}
+			HockeyApp.MetricsManager.TrackEvent(
+				"SyncActivity.Sync_Click.Apps",
+				properties,
+				new Dictionary<string, double> { 
+					{ "system.apps.count", systemAppsCount },
+					{ "custom.apps.count", properties.Count },
+				}
+			);
+
+			return;
+
 			if (IsTokenExpired(ACCESS_TOKEN)) {
 
 				var input = new EditText(this);
