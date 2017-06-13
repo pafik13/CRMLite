@@ -30,6 +30,7 @@ using Amazon.S3.Model;
 using CRMLite.Dialogs;
 using CRMLite.Entities;
 using CRMLite.Lib.Sync;
+using System.Linq;
 
 namespace CRMLite
 {
@@ -416,7 +417,7 @@ namespace CRMLite
 				}
 			);
 
-			return;
+			// return;
 
 			if (IsTokenExpired(ACCESS_TOKEN)) {
 
@@ -574,8 +575,6 @@ namespace CRMLite
 					SyncEntities(MainDatabase.GetItemsToSync<DistributorData>());
 					SyncEntities(MainDatabase.GetItemsToSync<Employee>());
 					SyncEntities(MainDatabase.GetItemsToSync<ExcludeRouteItem>());
-					SyncEntities(MainDatabase.GetItemsToSync<GPSData>());
-					//SyncEntities(MainDatabase.GetItemsToSync<GPSLocation>());
 					SyncEntities(MainDatabase.GetItemsToSync<Hospital>());
 					SyncEntities(MainDatabase.GetItemsToSync<HospitalData>());
 					SyncEntities(MainDatabase.GetItemsToSync<Entities.Message>());
@@ -586,7 +585,12 @@ namespace CRMLite
 					SyncEntities(MainDatabase.GetItemsToSync<ResumeData>());
 					SyncEntities(MainDatabase.GetItemsToSync<RouteItem>());
 
+					var mainDBPath = string.Copy(MainDatabase.DBPath);
+					var geoDBPath = string.Copy(MainDatabase.LOCPath);
+
 					MainDatabase.Dispose();
+
+					SyncGPS(mainDBPath, geoDBPath);
 
 					RunOnUiThread(() => {
 						MainDatabase.Username = USERNAME;
@@ -626,6 +630,79 @@ namespace CRMLite
 					SDiag.Debug.WriteLine(response.StatusDescription);
 				}
 				trans.Commit();
+			}
+		}
+
+		void SyncGPS(string mainDBPath, string geoDBPath)
+		{
+			var client = new RestClient(HOST_URL);
+
+			{
+				var config = new RealmConfiguration(mainDBPath) {
+					SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
+				};
+				using (var db = Realm.GetInstance(config)) {
+					var gpsDatas = db.All<GPSData>();
+					var forDelete = new List<GPSData>();
+
+					foreach (var item in gpsDatas) {
+						if (item.IsSynced) {
+							forDelete.Add(item);
+							continue;
+						}
+
+						var request = new RestRequest(typeof(GPSData).Name, Method.POST);
+						request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
+						request.JsonSerializer = new NewtonsoftJsonSerializer();
+						request.AddJsonBody(item);
+						var response = client.Execute(request);
+						switch (response.StatusCode) {
+							case HttpStatusCode.OK:
+							case HttpStatusCode.Created:
+								forDelete.Add(item);
+								break;
+						}
+						SDiag.Debug.WriteLine(response.StatusDescription);
+					}
+
+					db.Write(() => {
+						db.RemoveRange(forDelete.AsQueryable());
+					});
+				}
+			}
+
+			{
+				var config = new RealmConfiguration(geoDBPath) {
+					SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
+				};
+				using (var db = Realm.GetInstance(config)) {
+					var gpsLocations = db.All<GPSLocation>();
+					var forDelete = new List<GPSLocation>();
+
+					foreach (var item in gpsLocations) {
+						if (item.IsSynced) {
+							forDelete.Add(item);
+							continue;
+						}
+
+						var request = new RestRequest(typeof(GPSLocation).Name, Method.POST);
+						request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
+						request.JsonSerializer = new NewtonsoftJsonSerializer();
+						request.AddJsonBody(item);
+						var response = client.Execute(request);
+						switch (response.StatusCode) {
+							case HttpStatusCode.OK:
+							case HttpStatusCode.Created:
+								forDelete.Add(item);
+								break;
+						}
+						SDiag.Debug.WriteLine(response.StatusDescription);
+					}
+
+					db.Write(() => {
+						db.RemoveRange(forDelete.AsQueryable());
+					});
+				}
 			}
 		}
 
