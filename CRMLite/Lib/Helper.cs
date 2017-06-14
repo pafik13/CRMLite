@@ -223,29 +223,30 @@ namespace CRMLite
 				var dialogBtn = dialog.GetButton((int)DialogButtonType.Positive);
 				dialogBtn.Click += (sender, args) => {
 					// Don't dismiss dialog
-					if (Math.Abs((GetNistTime() - DateTime.Now).TotalHours) < 1.1d) {
+					if (Math.Abs((GetServerTime() - DateTime.Now).TotalHours) < 1.1d) {
 						IsTimeChanged = false;
 						shared.Edit()
 							  .PutBoolean(TimeChangedReceiver.C_IS_TIME_CHANGED, false)
 							  .Commit();
 						dialog.Dismiss();
 					} else {
-						Toast.MakeText(context, Resource.String.time_diff_more_than_hour, ToastLength.Short).Show();
+						Toast.MakeText(context, Resource.String.time_diff_more_than_hour, ToastLength.Long).Show();
 					}
 				};
 			}
 		}
 
-		public static DateTime GetNistTime(RestClient restClient = null, RestRequest restRequest = null)
+		public static DateTime GetServerTime(RestClient restClient = null, RestRequest restRequest = null)
 		{
 			var sw = new Stopwatch();
 			sw.Start();
 
 			DateTime dateTime = DateTime.MinValue;
 
-			var client = restClient ?? new RestClient("http://nist.time.gov/");
+			var client = restClient ?? new RestClient("http://front-sblcrm.rhcloud.com/");
+			client.Timeout = 10 * 1000;
 			client.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
-			var request = restRequest ?? new RestRequest("actualtime.cgi", Method.GET);
+			var request = restRequest ?? new RestRequest("time", Method.GET);
 			var response = client.Execute(request);
 			if (response.StatusCode == HttpStatusCode.OK) {
 				Debug.WriteLine(response.Content);
@@ -253,7 +254,7 @@ namespace CRMLite
 				w.Start();
 				//StreamReader stream = new StreamReader(response.GetResponseStream());
 				string time = Regex.Match(response.Content, @"(?<=\btime="")[^""]*").Value;
-				double milliseconds = Convert.ToInt64(time) / 1000.0;
+				double milliseconds = (time.Length > 14) ? Convert.ToInt64(time) / 1000.0 : Convert.ToInt64(time) / 1.0;
 				dateTime = new DateTime(1970, 1, 1).AddMilliseconds(milliseconds).ToLocalTime();
 				w.Stop();
 				Debug.WriteLine(time);

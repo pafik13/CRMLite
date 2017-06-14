@@ -665,9 +665,13 @@ namespace CRMLite
 						SDiag.Debug.WriteLine(response.StatusDescription);
 					}
 
-					db.Write(() => {
-						db.RemoveRange(forDelete.AsQueryable());
-					});
+					using (var transaction = db.BeginWrite()) {
+						foreach (var item in forDelete) {
+							db.Remove(item);
+						}
+
+						transaction.Commit();
+					}
 				}
 			}
 
@@ -699,9 +703,13 @@ namespace CRMLite
 						SDiag.Debug.WriteLine(response.StatusDescription);
 					}
 
-					db.Write(() => {
-						db.RemoveRange(forDelete.AsQueryable());
-					});
+					using (var transaction = db.BeginWrite()) {
+						foreach (var item in forDelete) {
+							db.Remove(item);
+						}
+
+						transaction.Commit();
+					}
 				}
 			}
 		}
