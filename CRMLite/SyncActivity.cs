@@ -30,7 +30,6 @@ using Amazon.S3.Model;
 using CRMLite.Dialogs;
 using CRMLite.Entities;
 using CRMLite.Lib.Sync;
-using System.Linq;
 
 namespace CRMLite
 {
@@ -388,37 +387,6 @@ namespace CRMLite
 				CancelSource.Cancel();
 			}
 
-			var apps = PackageManager.GetInstalledPackages(PackageInfoFlags.MetaData);
-			var properties = new Dictionary<string, string>();
-			properties.Add("android_id", Helper.AndroidId);
-			properties.Add("agent_uuid", MainDatabase.AgentUUID);
-			//var dirs = new Dictionary<string, string>();
-			int systemAppsCount = 0;
-			foreach (var app in apps) {
-				//var src = app.ApplicationInfo.SourceDir;
-				//int index = src.IndexOf('/', src.IndexOf('/', 2) + 1);
-				//var subdir = src.Substring(0, index);
-				//if (!dirs.ContainsKey(subdir)) dirs.Add(subdir, subdir); 
-				if (!app.ApplicationInfo.SourceDir.StartsWith("/data/app/", StringComparison.InvariantCulture)) {
-					systemAppsCount++;
-					continue;
-				}
-				if (properties.ContainsKey(app.PackageName)) continue;
-				properties.Add( app.PackageName
-				               , string.Concat("VersionName:", app.VersionName, "; VersionCode:", app.VersionCode)
-				              );
-			}
-			HockeyApp.MetricsManager.TrackEvent(
-				"SyncActivity.Sync_Click.Apps",
-				properties,
-				new Dictionary<string, double> { 
-					{ "system.apps.count", systemAppsCount },
-					{ "custom.apps.count", properties.Count },
-				}
-			);
-
-			// return;
-
 			if (IsTokenExpired(ACCESS_TOKEN)) {
 
 				var input = new EditText(this);
@@ -575,6 +543,8 @@ namespace CRMLite
 					SyncEntities(MainDatabase.GetItemsToSync<DistributorData>());
 					SyncEntities(MainDatabase.GetItemsToSync<Employee>());
 					SyncEntities(MainDatabase.GetItemsToSync<ExcludeRouteItem>());
+					SyncEntities(MainDatabase.GetItemsToSync<GPSData>());
+					//SyncEntities(MainDatabase.GetItemsToSync<GPSLocation>());
 					SyncEntities(MainDatabase.GetItemsToSync<Hospital>());
 					SyncEntities(MainDatabase.GetItemsToSync<HospitalData>());
 					SyncEntities(MainDatabase.GetItemsToSync<Entities.Message>());
@@ -585,12 +555,7 @@ namespace CRMLite
 					SyncEntities(MainDatabase.GetItemsToSync<ResumeData>());
 					SyncEntities(MainDatabase.GetItemsToSync<RouteItem>());
 
-					var mainDBPath = string.Copy(MainDatabase.DBPath);
-					var geoDBPath = string.Copy(MainDatabase.LOCPath);
-
 					MainDatabase.Dispose();
-
-					SyncGPS(mainDBPath, geoDBPath);
 
 					RunOnUiThread(() => {
 						MainDatabase.Username = USERNAME;
@@ -630,87 +595,6 @@ namespace CRMLite
 					SDiag.Debug.WriteLine(response.StatusDescription);
 				}
 				trans.Commit();
-			}
-		}
-
-		void SyncGPS(string mainDBPath, string geoDBPath)
-		{
-			var client = new RestClient(HOST_URL);
-
-			{
-				var config = new RealmConfiguration(mainDBPath) {
-					SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
-				};
-				using (var db = Realm.GetInstance(config)) {
-					var gpsDatas = db.All<GPSData>();
-					var forDelete = new List<GPSData>();
-
-					foreach (var item in gpsDatas) {
-						if (item.IsSynced) {
-							forDelete.Add(item);
-							continue;
-						}
-
-						var request = new RestRequest(typeof(GPSData).Name, Method.POST);
-						request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
-						request.JsonSerializer = new NewtonsoftJsonSerializer();
-						request.AddJsonBody(item);
-						var response = client.Execute(request);
-						switch (response.StatusCode) {
-							case HttpStatusCode.OK:
-							case HttpStatusCode.Created:
-								forDelete.Add(item);
-								break;
-						}
-						SDiag.Debug.WriteLine(response.StatusDescription);
-					}
-
-					using (var transaction = db.BeginWrite()) {
-						foreach (var item in forDelete) {
-							db.Remove(item);
-						}
-
-						transaction.Commit();
-					}
-				}
-			}
-
-			{
-				var config = new RealmConfiguration(geoDBPath) {
-					SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
-				};
-				using (var db = Realm.GetInstance(config)) {
-					var gpsLocations = db.All<GPSLocation>();
-					var forDelete = new List<GPSLocation>();
-
-					foreach (var item in gpsLocations) {
-						if (item.IsSynced) {
-							forDelete.Add(item);
-							continue;
-						}
-
-						var request = new RestRequest(typeof(GPSLocation).Name, Method.POST);
-						request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
-						request.JsonSerializer = new NewtonsoftJsonSerializer();
-						request.AddJsonBody(item);
-						var response = client.Execute(request);
-						switch (response.StatusCode) {
-							case HttpStatusCode.OK:
-							case HttpStatusCode.Created:
-								forDelete.Add(item);
-								break;
-						}
-						SDiag.Debug.WriteLine(response.StatusDescription);
-					}
-
-					using (var transaction = db.BeginWrite()) {
-						foreach (var item in forDelete) {
-							db.Remove(item);
-						}
-
-						transaction.Commit();
-					}
-				}
 			}
 		}
 
