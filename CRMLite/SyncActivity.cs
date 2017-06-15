@@ -451,15 +451,10 @@ namespace CRMLite
 			settingsBundle.PutString(MainDatabase.C_LOC_PATH, MainDatabase.LOCPath);
 			settingsBundle.PutString(SigninDialog.C_ACCESS_TOKEN, ACCESS_TOKEN);
 			settingsBundle.PutString(SigninDialog.C_HOST_URL, HOST_URL);
-			settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, false);
-			settingsBundle.PutBoolean(ContentResolver.SyncExtrasDoNotRetry, false);
-			settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, false);
 
 			ContentResolver.SetIsSyncable(account, SyncConst.AUTHORITY, 1);
-			ContentResolver.SetSyncAutomatically(account, SyncConst.AUTHORITY, true);
 
 			ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, settingsBundle, SyncConst.SYNC_INTERVAL);
-
 			// End - Register Account and Set periodic sync
 
 

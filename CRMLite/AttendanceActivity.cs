@@ -427,7 +427,9 @@ namespace CRMLite
 				}
 
 				if (materialItems.Count == 0) return;
-
+				
+				materialItems.Sort((x, y) => x.name.CompareTo(y.name));
+				
 				new AlertDialog.Builder(this)
 				               .SetTitle("Выберите материал для показа:")
 				               .SetCancelable(true)

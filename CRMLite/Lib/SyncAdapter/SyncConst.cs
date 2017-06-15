@@ -12,7 +12,7 @@ namespace CRMLite.Lib.Sync
 
 		// Sync interval constants
 		public const long SECONDS_PER_MINUTE = 60L;
-		public const long SYNC_INTERVAL_IN_MINUTES = 5L;
+		public const long SYNC_INTERVAL_IN_MINUTES = 60L;
 		public const long SYNC_INTERVAL = SYNC_INTERVAL_IN_MINUTES * SECONDS_PER_MINUTE;
 
 		public const string Attendancies = "Attendancies";
