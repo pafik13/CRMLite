@@ -36,5 +36,14 @@ namespace CRMLite.Entities
 		#region PhotoUploader customizations
 		public const string IsPhotoUploaderEnable = "IsPhotoUploaderEnable";
 		#endregion
+		
+		
+		#region Reserved UUIDs customizations
+		public const string InternshipUUID = "InternshipUUID";
+		public const string SickleaveUUID = "SickleaveUUID";
+		public const string FullDayTrainingUUID = "FullDayTrainingUUID";
+		public const string HalfDayTrainingUUID = "HalfDayTrainingUUID";
+		public const string WorkleaveUUID = "WorkleaveUUID";
+		#endregion
 	}
 }
