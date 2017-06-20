@@ -4483,6 +4483,9 @@ namespace CRMLite
 			// aapt resource value: 0x7f070089
 			public const int check_button = 2131165321;
 			
+			// aapt resource value: 0x7f070097
+			public const int content_authority = 2131165335;
+			
 			// aapt resource value: 0x7f070087
 			public const int delete_caption = 2131165319;
 			
@@ -4761,6 +4764,9 @@ namespace CRMLite
 			
 			// aapt resource value: 0x7f070013
 			public const int status_bar_notification_info_overflow = 2131165203;
+			
+			// aapt resource value: 0x7f070096
+			public const int sync_account_type = 2131165334;
 			
 			// aapt resource value: 0x7f07008b
 			public const int time_changed = 2131165323;

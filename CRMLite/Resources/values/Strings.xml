@@ -72,4 +72,6 @@
 	<string name="time_diff_more_than_hour">Время на планшете отличается от мирового более чем на 1 час</string>
 	<string name="pharmacy_add_disabled">Добавление аптек отключено. Обратитесь к менеджеру.</string>
 	
+	<string name="sync_account_type">ru.sbl.crmlite2</string>
+	<string name="content_authority">ru.sbl.crmlite2.provider</string>
 </resources>

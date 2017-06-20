@@ -13,10 +13,9 @@ using CRMLite.Entities;
 
 namespace CRMLite.Lib.Sync
 {
+	//[ContentProvider(new[] { "@string/content_authority" }, Name="crmlite.lib.sync.StubProvider", Exported=false, Syncable=true)]
 	public class StubProvider : ContentProvider
 	{
-		public const string AUTHORITY = "ru.sbl.crmlite2.provider";
-
 		const string TAG = "CRMLite.Lib.Sync:StubProvider";
 
 		NewtonsoftJsonSerializer Serializer;

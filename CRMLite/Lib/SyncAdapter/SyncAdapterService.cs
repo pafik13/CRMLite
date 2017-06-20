@@ -2,8 +2,6 @@
 using Android.App;
 using Android.Content;
 
-using Realms;
-
 namespace CRMLite.Lib.Sync
 {
 	[Service(Name = "ru.sbl.crmlite2.SyncAdapterService", Exported = true, Process = ":sync")] //, Process = ":sync"

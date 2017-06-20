@@ -148,12 +148,12 @@ namespace CRMLite
 			TimerText = FindViewById<TextView>(Resource.Id.aaTimerTV);
 			TimerMin = MainDatabase.GetCustomizationInt(Customizations.AttendanceMinPeriod);
 
-			if (TimerMin.HasValue) {
-				TimerMS = TimerMin.Value * 60 * 1000;
-				TimerText.Text = TimerText.Text = string.Concat("Осталось ", TimerMin.Value.ToString(), " мин. ", 00, " сек.");
-			} else {
+			//if (TimerMin.HasValue) {
+			//	TimerMS = TimerMin.Value * 60 * 1000;
+			//	TimerText.Text = TimerText.Text = string.Concat("Осталось ", TimerMin.Value.ToString(), " мин. ", 00, " сек.");
+			//} else {
 				TimerText.Visibility = ViewStates.Invisible;
-			}
+			//}
 									
 			Pager = FindViewById<ViewPager>(Resource.Id.aaContainerVP);
 			Pager.AddOnPageChangeListener(this);
@@ -230,19 +230,19 @@ namespace CRMLite
 					button.SetBackgroundResource(Resource.Color.Deep_Orange_500);
 					button.Text = "ЗАКОНЧИТЬ ВИЗИТ";
 
-					if (TimerMin.HasValue) {
-						Timer = new Timer(HandleTimerCallback, DateTime.Now, 100, 1000);
-					}
+					//if (TimerMin.HasValue) {
+					//	Timer = new Timer(HandleTimerCallback, DateTime.Now, 100, 1000);
+					//}
 
 					btn.Enabled = true;
 					return;
 				}
 
-				if (TimerMin.HasValue) {
-					Toast.MakeText(this, "Не прошло минимально необходимое время визита...", ToastLength.Short).Show();
-					btn.Enabled = true;
-					return;
-				}
+				//if (TimerMin.HasValue) {
+				//	Toast.MakeText(this, "Не прошло минимально необходимое время визита...", ToastLength.Short).Show();
+				//	btn.Enabled = true;
+				//	return;
+				//}
 
 				if ((DateTimeOffset.Now - AttendanceStart.Value).TotalSeconds < 30) {
 					btn.Enabled = true;
@@ -291,9 +291,9 @@ namespace CRMLite
 				var lockDialog = LockDialog.Create("Идет сохранение данных...", Resource.Color.Deep_Orange_500);
 				lockDialog.Cancelable = false;
 				lockDialog.Show(fragmentTransaction, LockDialog.TAG);
-				if (TimerMin.HasValue) {
-					Timer.Dispose();
-				}
+				//if (TimerMin.HasValue) {
+				//	Timer.Dispose();
+				//}
 				LocMgr.RemoveUpdates(this);
 
 				new Task(() => {
@@ -428,7 +428,7 @@ namespace CRMLite
 
 				if (materialItems.Count == 0) return;
 				
-				materialItems.Sort((x, y) => x.name.CompareTo(y.name));
+				materialItems.Sort((x, y) => x.MaterialName.CompareTo(y.MaterialName));
 				
 				new AlertDialog.Builder(this)
 				               .SetTitle("Выберите материал для показа:")

@@ -367,6 +367,8 @@ namespace CRMLite
 
 		public Account CreateSyncAccount(Context context)
 		{
+			//Java.Lang.JavaSystem.SetProperty("AccountManagerService", "VERBOSE");
+
 			var newAccount = new Account(SyncConst.ACCOUNT, SyncConst.ACCOUNT_TYPE);
 
 			var accountManager = (AccountManager)context.GetSystemService(AccountService);
@@ -453,10 +455,13 @@ namespace CRMLite
 			settingsBundle.PutString(SigninDialog.C_HOST_URL, HOST_URL);
 
 			ContentResolver.SetIsSyncable(account, SyncConst.AUTHORITY, 1);
+			ContentResolver.SetSyncAutomatically(account, SyncConst.AUTHORITY, true);
 
 			ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, settingsBundle, SyncConst.SYNC_INTERVAL);
+
 			// End - Register Account and Set periodic sync
 
+			return;
 
 			try {
 				var dbFileInfo = new FileInfo(MainDatabase.DBPath);
