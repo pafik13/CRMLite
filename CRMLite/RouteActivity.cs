@@ -33,7 +33,7 @@ namespace CRMLite
 		Dictionary<string, string> ExtraRouteItems; 
 		Dictionary<string, bool> ERIIndicator; 
 
-		Spiner ExtraRouteItemsS;
+		ImageButton ExtraRouteItemsIB;
 		
 		ListView PharmacyTable;
 		RoutePharmacyAdapter RoutePharmacyAdapter;
@@ -85,38 +85,37 @@ namespace CRMLite
 				Finish();
 			};
 			
-			var ExtraRouteItems = new Dictionary<string, string>();
+			ExtraRouteItems = new Dictionary<string, string>();
 			var internshipUUID = MainDatabase.GetCustomizationString(Customizations.InternshipUUID);
-			if (internshipUUID.HasValue) {
-				ExtraRouteItems.Add(internshipUUID.Value, "СТАЖИРОВКА")
+			if (!string.IsNullOrEmpty(internshipUUID)) {
+				ExtraRouteItems.Add(internshipUUID, "СТАЖИРОВКА");
 			}
+
 			var sickleaveUUID = MainDatabase.GetCustomizationString(Customizations.SickleaveUUID);
-			if (sickleaveUUID) {
-				ExtraRouteItems.Add(sickleaveUUID.Value, "БОЛЬНИЧНЫЙ")
+			if (!string.IsNullOrEmpty(sickleaveUUID)) {
+				ExtraRouteItems.Add(sickleaveUUID, "БОЛЬНИЧНЫЙ");
 			}
+
 			var fullDayTrainingUUID = MainDatabase.GetCustomizationString(Customizations.FullDayTrainingUUID);
-			if (fullDayTrainingUUID.HasValue) {
-				ExtraRouteItems.Add(fullDayTrainingUUID.Value, "ТРЕНИНГ (полный день)")
+		    if (!string.IsNullOrEmpty(fullDayTrainingUUID)) {
+				ExtraRouteItems.Add(fullDayTrainingUUID, "ТРЕНИНГ (полный день)");
 			}
+			    
 			var halfDayTrainingUUID = MainDatabase.GetCustomizationString(Customizations.HalfDayTrainingUUID);
-			if (halfDayTrainingUUID.HasValue) {
-				ExtraRouteItems.Add(halfDayTrainingUUID.Value, "ТРЕНИНГ (половина дня)")
+		    if (!string.IsNullOrEmpty(halfDayTrainingUUID)) {
+				ExtraRouteItems.Add(halfDayTrainingUUID, "ТРЕНИНГ (половина дня)");
 			}
+
 			var workleaveUUID = MainDatabase.GetCustomizationString(Customizations.WorkleaveUUID);
-			if (workleaveUUID.HasValue) {
-				ExtraRouteItems.Add(workleaveUUID.Value, "ОТПУСК")
+		    if (!string.IsNullOrEmpty(workleaveUUID)) {
+				ExtraRouteItems.Add(workleaveUUID, "ОТПУСК");
 			}
 			
-			ExtraRouteItemsS = FindViewById<Spinner>(Resource.Id.raExtraRouteItemsS);
-			if (ExtraRouteItems.Count > 0) {
-				ExtraRouteItemsS.Visibility = ViewStates.Visibible;
-				var extraRouteItemsAdapter = new ArrayAdapter(
-					Context, Android.Resource.Layout.SimpleSpinnerItem, ExtraRouteItems.Values.ToArray()
-				);
-				ExtraRouteItemsS.Adapter = extraRouteItemsAdapter;
-				ExtraRouteItemsS.ItemSelected -= ExtraRouteItems_ItemSelected;
-				ExtraRouteItemsS.ItemSelected += ExtraRouteItems_ItemSelected;				
-			}
+			ExtraRouteItemsIB = FindViewById<ImageButton>(Resource.Id.raExtraRouteItemsIB);
+			//if (ExtraRouteItems.Count > 0) {
+				ExtraRouteItemsIB.Visibility = ViewStates.Visible;
+				ExtraRouteItemsIB.Click += ExtraRouteItemsIB_Click;			
+			//}
 
 			PharmacyTable = FindViewById<ListView>(Resource.Id.raPharmacyTable);
 			PharmacyTable.ItemClick += (sender, e) => {
@@ -275,39 +274,54 @@ namespace CRMLite
 			};
 		}
 
+		void ExtraRouteItemsIB_Click(object sender, EventArgs e)
+		{
+			new AlertDialog.Builder(this)
+						   .SetTitle("Выберите вид деятельности:")
+						   .SetCancelable(true)
+						   .SetItems(
+				               ExtraRouteItems.Values.ToArray(),
+							   (caller, arguments) => {
+								   var row = LayoutInflater.Inflate(Resource.Layout.RouteItem, RouteTable, false);
+								   row.SetTag(Resource.String.Position, -1);
+
+								   var uuid = ExtraRouteItems.Keys.ElementAt(arguments.Which);
+								   var text = ExtraRouteItems[uuid];
+
+								   if (ERIIndicator.ContainsKey(uuid)) {
+									   Toast.MakeText(this, Resource.String.dup_extra_route_item, ToastLength.Short).Show();
+									   return;
+								   } else {
+									   ERIIndicator.Add(uuid, true);
+								   }
+
+								   //TODO: rename var
+								   using (var trans = MainDatabase.BeginTransaction()) {
+									   var newRouteItem = MainDatabase.Create2<RouteItem>();
+									   newRouteItem.Pharmacy = uuid;
+									   newRouteItem.Order = RouteTable.ChildCount;
+									   newRouteItem.Date = SelectedDate;
+									   trans.Commit();
+									   row.SetTag(Resource.String.RouteItemUUID, newRouteItem.UUID);
+								   }
+								   row.SetTag(Resource.String.PharmacyUUID, uuid);
+
+								   row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text = text;
+								   row.SetTag(Resource.String.RouteItemOrder, RouteTable.ChildCount);
+								   row.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (RouteTable.ChildCount + 1).ToString();
+
+								   row.FindViewById<ImageView>(Resource.Id.riDeleteIV).Click += RowDelete_Click;
+								   row.LongClick += Row_LongClick;
+								   row.Drag += Row_Drag;
+
+								   RouteTable.AddView(row);					
+							   })
+						   .Show();
+		}
+
 		void ExtraRouteItems_ItemSelected(object sender, EventArgs e)
 		{
-			var row = LayoutInflater.Inflate(Resource.Layout.RouteItem, RouteTable, false);
-			row.SetTag(Resource.String.Position, -1);
-			
-			var uuid = ExtraRouteItems.Keys[e.Position];
-			var text = ExtraRouteItems[uuid];
 
-			if (ERIIndicator.ContainsKey(uuid)) {
-				Toast.MakeText(this, Resource.String.dup_extra_route_item, ToastLength.Short).Show();
-				return;
-			}
-			
-			//TODO: rename vars
-			using (var trans = MainDatabase.BeginTransaction()) {
-				var newRouteItem = MainDatabase.Create2<RouteItem>();
-				newRouteItem.Pharmacy = uuid;
-				newRouteItem.Order = RouteTable.ChildCount;
-				newRouteItem.Date = SelectedDate;
-				trans.Commit();
-				row.SetTag(Resource.String.RouteItemUUID, newRouteItem.UUID);
-			}
-			row.SetTag(Resource.String.PharmacyUUID, uuid);
-
-			row.FindViewById<TextView>(Resource.Id.riPharmacyTV).Text = text;
-			row.SetTag(Resource.String.RouteItemOrder, RouteTable.ChildCount);
-			row.FindViewById<TextView>(Resource.Id.riOrderTV).Text = (RouteTable.ChildCount + 1).ToString();
-
-			row.FindViewById<ImageView>(Resource.Id.riDeleteIV).Click += RowDelete_Click;
-			row.LongClick += Row_LongClick;
-			row.Drag += Row_Drag;
-
-			RouteTable.AddView(row);
 		}
 		
 		void RowDelete_Click(object sender, EventArgs e)
@@ -429,10 +443,10 @@ namespace CRMLite
 				//var sw = new SDiag.Stopwatch();
 				//sw.Start();
 				var routeItemsPharmacies = MainDatabase.GetEarlyPerfomedRouteItems(SelectedDate).Select(ri => ri.Pharmacy);
-				var ERIIndicator = new Dictionary<string, string>();
-				foreach (var ri in routeItemsPharmacies) {
-					if (ExtraRouteItems.Contains(ri.Pharmacy)){
-						ERIIndicator.Add(ri.Pharmacy, true);
+				ERIIndicator = new Dictionary<string, bool>();
+				foreach (var uuid in routeItemsPharmacies) {
+						if (ExtraRouteItems.ContainsKey(uuid)){
+						ERIIndicator.Add(uuid, true);
 					}
 				}
 								
