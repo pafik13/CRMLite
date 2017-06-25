@@ -96,14 +96,14 @@ namespace CRMLite
 				ExtraRouteItems.Add(sickleaveUUID, "БОЛЬНИЧНЫЙ");
 			}
 
-			var fullDayTrainingUUID = MainDatabase.GetCustomizationString(Customizations.FullDayTrainingUUID);
-		    if (!string.IsNullOrEmpty(fullDayTrainingUUID)) {
-				ExtraRouteItems.Add(fullDayTrainingUUID, "ТРЕНИНГ (полный день)");
+			var trainingFullUUID = MainDatabase.GetCustomizationString(Customizations.TrainingFullUUID);
+		    if (!string.IsNullOrEmpty(trainingFullUUID)) {
+				ExtraRouteItems.Add(trainingFullUUID, "ТРЕНИНГ (полный день)");
 			}
 			    
-			var halfDayTrainingUUID = MainDatabase.GetCustomizationString(Customizations.HalfDayTrainingUUID);
-		    if (!string.IsNullOrEmpty(halfDayTrainingUUID)) {
-				ExtraRouteItems.Add(halfDayTrainingUUID, "ТРЕНИНГ (половина дня)");
+			var trainingHalfUUID = MainDatabase.GetCustomizationString(Customizations.TrainingHalfUUID);
+		    if (!string.IsNullOrEmpty(trainingHalfUUID)) {
+				ExtraRouteItems.Add(trainingHalfUUID, "ТРЕНИНГ (половина дня)");
 			}
 
 			var workleaveUUID = MainDatabase.GetCustomizationString(Customizations.WorkleaveUUID);
@@ -435,6 +435,7 @@ namespace CRMLite
 		{
 			FindViewById<Button>(Resource.Id.raSelectDateB).Text = SelectedDate.Date.ToLongDateString();
 
+			ERIIndicator = new Dictionary<string, bool>();
 			if (SelectedDate.Date <= DateTimeOffset.Now.Date) {
 				RouteSearchItems = new List<RouteSearchItem>();
 				RoutePharmacyAdapter = new RoutePharmacyAdapter(this, RouteSearchItems);
@@ -443,7 +444,6 @@ namespace CRMLite
 				//var sw = new SDiag.Stopwatch();
 				//sw.Start();
 				var routeItemsPharmacies = MainDatabase.GetEarlyPerfomedRouteItems(SelectedDate).Select(ri => ri.Pharmacy);
-				ERIIndicator = new Dictionary<string, bool>();
 				foreach (var uuid in routeItemsPharmacies) {
 						if (ExtraRouteItems.ContainsKey(uuid)){
 						ERIIndicator.Add(uuid, true);

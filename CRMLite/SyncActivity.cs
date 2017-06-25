@@ -457,9 +457,21 @@ namespace CRMLite
 			ContentResolver.SetIsSyncable(account, SyncConst.AUTHORITY, 1);
 			ContentResolver.SetSyncAutomatically(account, SyncConst.AUTHORITY, true);
 
-			ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, settingsBundle, SyncConst.SYNC_INTERVAL);
+			//ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, settingsBundle, SyncConst.SYNC_INTERVAL);
 
 			// End - Register Account and Set periodic sync
+
+
+			// Pass the settings flags by inserting them in a bundle
+			//settingsBundle = new Bundle();
+			settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, true);
+			settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, true);
+
+			/*
+			 * Request the sync for the default account, authority, and
+			 * manual sync settings
+			 */
+			ContentResolver.RequestSync(account, SyncConst.AUTHORITY, settingsBundle);
 
 			return;
 
