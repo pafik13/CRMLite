@@ -15,8 +15,6 @@ namespace CRMLite.Lib.Sync
 {
 	public class StubProvider : ContentProvider
 	{
-		public const string AUTHORITY = "ru.sbl.crmlite2.provider";
-
 		const string TAG = "CRMLite.Lib.Sync:StubProvider";
 
 		NewtonsoftJsonSerializer Serializer;

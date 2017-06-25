@@ -54,9 +54,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
-    <Reference Include="RestSharp">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\MonoAndroid10\RestSharp.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.Android.Support.v4">
       <HintPath>..\packages\Xamarin.Android.Support.v4.23.4.0.1\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
     </Reference>
@@ -118,6 +115,9 @@
     </Reference>
     <Reference Include="Realm.Sync">
       <HintPath>..\packages\Realm.1.4.0\lib\netstandard1.4\Realm.Sync.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\MonoAndroid10\RestSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -632,6 +632,11 @@
     <AndroidResource Include="Resources\drawable\triangle_left.xml" />
     <AndroidResource Include="Resources\drawable\triangle_right.xml" />
     <AndroidResource Include="Resources\drawable\triangle_top.xml" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_more_vert_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_more_vert_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_more_vert_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_more_vert_black_48dp.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_more_vert_black_48dp.png" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

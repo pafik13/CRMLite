@@ -121,33 +121,38 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="50">
-                <LinearLayout
+                <RelativeLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@drawable/bottomline">
                     <TextView
+                        android:id="@+id/raSelectDateTV"
                         android:layout_margin="6dp"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="Маршрут на"
                         android:textSize="20sp"
                         android:textColor="@android:color/black"
-                        android:gravity="center" />
-                <!--                <DatePicker
-	                    android:layout_width="wrap_content"
-	                    android:layout_height="match_parent"
-	                    android:id="@+id/raDateDP" />-->
+                        android:gravity="center"
+                        android:layout_alignParentStart="true" />
                     <Button
                         android:text="Button"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:id="@+id/raSelectDateB" />
-                    <Spinner
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/spinner1" />
-                </LinearLayout>
+                        android:id="@+id/raSelectDateB"
+                        android:layout_toRightOf="@id/raSelectDateTV" />
+                    <ImageButton xmlns:tools="http://schemas.android.com/tools"
+                        android:src="@drawable/ic_more_vert_black_48dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:id="@+id/raExtraRouteItemsIB"
+                        android:layout_alignParentEnd="true"
+                        tools:visibility="invisible"
+                        android:layout_marginBottom="2dp"
+                        android:layout_alignParentStart="false"
+                        android:background="@color/white_bg" />
+                </RelativeLayout>
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
