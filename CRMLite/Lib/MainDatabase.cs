@@ -93,6 +93,7 @@ namespace CRMLite
 			Config = new RealmConfiguration(dbFileLocation) {
 				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
+			new System.IO.FileInfo(dbFileLocation).Directory.Create();
 			DB = Realm.GetInstance(Config);
 
 
@@ -104,6 +105,7 @@ namespace CRMLite
 			ConfigForLocation = new RealmConfiguration(locFileLocation) {
 				SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
 			};
+			new System.IO.FileInfo(locFileLocation).Directory.Create();
 			DBLoc = Realm.GetInstance(ConfigForLocation);
 				
 

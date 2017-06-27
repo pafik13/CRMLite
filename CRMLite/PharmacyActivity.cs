@@ -53,6 +53,12 @@ namespace CRMLite
 			// Create your application here
 			SetContentView(Resource.Layout.Pharmacy);
 
+			var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
+
+			var hostURL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
+			var isMillor = hostURL.Contains("milor");
+			var agentUUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
+
 			FindViewById<Button>(Resource.Id.paCloseB).Click += (s, e) => {
 				Finish();
 			};
@@ -213,6 +219,7 @@ namespace CRMLite
 							   })
 							   .Show();
 			};
+			netChoiceButton.Enabled = isMillor;
 			#endregion
 
 			ContractsNames = FindViewById<AutoCompleteTextView>(Resource.Id.paContractsACTV);
@@ -221,12 +228,16 @@ namespace CRMLite
 
 			Address = FindViewById<AutoCompleteTextView>(Resource.Id.paAddressACTV);
 			Address.SetTag(Resource.String.IsChanged, false);
+			Address.Enabled = isMillor;
 
 			Subway = FindViewById<AutoCompleteTextView>(Resource.Id.paSubwayACTV);
+			Subway.Enabled = isMillor;
 
 			Region = FindViewById<AutoCompleteTextView>(Resource.Id.paRegionACTV);
+			Region.Enabled = isMillor;
 
 			Place = FindViewById<AutoCompleteTextView>(Resource.Id.paPlaceACTV);
+			Place.Enabled = isMillor;
 
 			//Category = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryACTV);
 
@@ -238,13 +249,19 @@ namespace CRMLite
 			var categoryAdapter = new ArrayAdapter(this, Android.Resource.Layout.SimpleSpinnerItem, Categories.Select(cat => cat.name).ToArray());
 			categoryAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
 			Category.Adapter = categoryAdapter;
+			Category.Enabled = isMillor;
 			#endregion
+
+			var brand = FindViewById<EditText>(Resource.Id.paBrandET);
+			brand.Enabled = isMillor;
+			var numberName = FindViewById<EditText>(Resource.Id.paNumberNameET);
+			numberName.Enabled = isMillor;
+			var legalName = FindViewById<EditText>(Resource.Id.paLegalNameET);
+			legalName.Enabled = isMillor;
 
 			var pharmacyUUID = Intent.GetStringExtra("UUID");
 			if (string.IsNullOrEmpty(pharmacyUUID))
 			{
-				var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
-				var agentUUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
 				try {
 					var agent = MainDatabase.GetItem<Agent>(agentUUID);
 					Address.Text = agent.city;
@@ -267,9 +284,9 @@ namespace CRMLite
 			FindViewById<TextView>(Resource.Id.paUUIDTV).Text = Pharmacy.UUID;
 
 			State.SetSelection((int)Pharmacy.GetState());
-			FindViewById<EditText>(Resource.Id.paBrandET).Text = Pharmacy.Brand;
-			FindViewById<EditText>(Resource.Id.paNumberNameET).Text = Pharmacy.NumberName;
-			FindViewById<EditText>(Resource.Id.paLegalNameET).Text = Pharmacy.LegalName;
+			brand.Text = Pharmacy.Brand;
+			numberName.Text = Pharmacy.NumberName;
+			legalName.Text = Pharmacy.LegalName;
 
 			//NetName.Text = string.IsNullOrEmpty(Pharmacy.Net) ?
 			//	string.Empty : MainDatabase.GetNet(Pharmacy.Net).name;
@@ -294,8 +311,10 @@ namespace CRMLite
 
 			Region.Text = string.IsNullOrEmpty(Pharmacy.Region) ?
 				string.Empty : MainDatabase.GetItem<Region>(Pharmacy.Region).name;
-
-			FindViewById<EditText>(Resource.Id.paPhoneET).Text = Pharmacy.Phone;
+			
+			var phone = FindViewById<EditText>(Resource.Id.paPhoneET);
+			phone.Text = Pharmacy.Phone;
+			phone.Enabled = isMillor;
 
 			Place.Text = string.IsNullOrEmpty(Pharmacy.Place) ?
 				string.Empty : MainDatabase.GetItem<Place>(Pharmacy.Place).name;

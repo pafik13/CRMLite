@@ -116,15 +116,23 @@ namespace CRMLite
 				StartActivity(new Intent(this, typeof(ProfileActivity)));
 			};
 
+			var isMillor = GetSharedPreferences(C_MAIN_PREFS, FileCreationMode.Private)
+				.GetString(SigninDialog.C_HOST_URL, string.Empty)
+				.Contains("milor");
+			
 			var add = FindViewById<ImageView>(Resource.Id.maAdd);
 			add.Click += (sender, e) => {
-				var isPharmacyAddEnable = MainDatabase.GetCustomizationBool(Customizations.IsPharmacyAddEnable);
-				if (isPharmacyAddEnable.HasValue) {
-					if (isPharmacyAddEnable.Value) {
-						StartActivity(new Intent(this, typeof(PharmacyActivity)));
-					}
+				if (isMillor) {
+					StartActivity(new Intent(this, typeof(PharmacyActivity)));
 				} else {
-					Toast.MakeText(this, Resource.String.pharmacy_add_disabled, ToastLength.Long).Show();
+					var isPharmacyAddEnable = MainDatabase.GetCustomizationBool(Customizations.IsPharmacyAddEnable);
+					if (isPharmacyAddEnable.HasValue) {
+						if (isPharmacyAddEnable.Value) {
+							StartActivity(new Intent(this, typeof(PharmacyActivity)));
+						}
+					} else {
+						Toast.MakeText(this, Resource.String.pharmacy_add_disabled, ToastLength.Long).Show();
+					}
 				}
 			};
 
@@ -590,8 +598,7 @@ namespace CRMLite
 			}
 
 			var isLocatorEnable = MainDatabase.GetCustomizationBool(Customizations.IsLocatorEnable);
-			//if (isLocatorEnable.HasValue) {
-			if (false) {
+			if (isLocatorEnable.HasValue) {
 				if (isLocatorEnable.Value) {
 					var isLocatorGPSRequestOn = MainDatabase.GetCustomizationBool(Customizations.IsLocatorGPSRequestOn);
 					var isLocatorNetRequestOn = MainDatabase.GetCustomizationBool(Customizations.IsLocatorNetRequestOn);

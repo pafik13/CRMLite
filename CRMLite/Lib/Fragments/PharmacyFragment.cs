@@ -73,6 +73,10 @@ namespace CRMLite
 			View view = inflater.Inflate(Resource.Layout.PharmacyFragment, container, false);
 
 			//Api = new SuggestClient(Secret.DadataApiToken, Secret.DadataApiURL);
+			var shared = Activity.GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
+			var hostURL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
+			var isMillor = hostURL.Contains("milor");
+			var agentUUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
 
 
 			var pharmacyUUID = Arguments.GetString(C_PHARMACY_UUID);
@@ -80,9 +84,6 @@ namespace CRMLite
 
 			Pharmacy = MainDatabase.GetPharmacy(pharmacyUUID);
 
-			var shared = Activity.GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
-
-			var agentUUID = shared.GetString(SigninDialog.C_AGENT_UUID, string.Empty);
 			try {
 				Agent = MainDatabase.GetItem<Agent>(agentUUID);
 			} catch (Exception ex) {
@@ -112,6 +113,7 @@ namespace CRMLite
 						   })
 						   .Show();
 			};
+			netChoiceButton.Enabled = isMillor;
 			#endregion
 
 			ContractsNames = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfContractsACTV);
@@ -120,12 +122,16 @@ namespace CRMLite
 
 			Address = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfAddressACTV);
 			Address.SetTag(Resource.String.IsChanged, false);
+			Address.Enabled = isMillor;
 
 			Subway = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfSubwayACTV);
+			Subway.Enabled = isMillor;
 
 			Region = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfRegionACTV);
+			Region.Enabled = isMillor;
 
 			Place = view.FindViewById<AutoCompleteTextView>(Resource.Id.pfPlaceACTV);
+			Place.Enabled = isMillor;
 
 			//Category = FindViewById<AutoCompleteTextView>(Resource.Id.paCategoryACTV);
 
@@ -137,14 +143,21 @@ namespace CRMLite
 			var categoryAdapter = new ArrayAdapter(Activity, Android.Resource.Layout.SimpleSpinnerItem, Categories.Select(cat => cat.name).ToArray());
 			categoryAdapter.SetDropDownViewResource(Resource.Layout.SpinnerItem);
 			Category.Adapter = categoryAdapter;
+			Category.Enabled = isMillor;
 			#endregion
 
 			view.FindViewById<TextView>(Resource.Id.pfUUIDTV).Text = Pharmacy.UUID;
 
 			State.SetSelection((int)Pharmacy.GetState());
-			view.FindViewById<EditText>(Resource.Id.pfBrandET).Text = Pharmacy.Brand;
-			view.FindViewById<EditText>(Resource.Id.pfNumberNameET).Text = Pharmacy.NumberName;
-			view.FindViewById<EditText>(Resource.Id.pfLegalNameET).Text = Pharmacy.LegalName;
+			var brand = view.FindViewById<EditText>(Resource.Id.pfBrandET);
+			brand.Text = Pharmacy.Brand;
+			brand.Enabled = isMillor;
+			var numberName = view.FindViewById<EditText>(Resource.Id.pfNumberNameET);
+			numberName.Text = Pharmacy.NumberName;
+			numberName.Enabled = isMillor;
+			var legalName = view.FindViewById<EditText>(Resource.Id.pfLegalNameET);
+			legalName.Text = Pharmacy.LegalName;
+			legalName.Enabled = isMillor;
 
 			//NetName.Text = string.IsNullOrEmpty(Pharmacy.Net) ?
 			//	string.Empty : MainDatabase.GetNet(Pharmacy.Net).name;
