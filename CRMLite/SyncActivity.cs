@@ -566,7 +566,9 @@ namespace CRMLite
 					SyncEntities(MainDatabase.GetItemsToSync<PromotionData>());
 					SyncEntities(MainDatabase.GetItemsToSync<ResumeData>());
 					SyncEntities(MainDatabase.GetItemsToSync<RouteItem>());
-
+					
+					ProcessLifecycles();
+					
 					MainDatabase.Dispose();
 
 					RunOnUiThread(() => {
@@ -610,6 +612,461 @@ namespace CRMLite
 			}
 		}
 
+		void ProcessLifecycles()
+		{
+			var client = new RestClient(HOST_URL); 
+			var path = typeof(LifecycleAction).Name + "/byjwt";
+			var req = new RestRequest(path, Method.GET);
+			req.AddQueryParameter(@"access_token", ACCESS_TOKEN);
+
+			var res = client.Execute<List<LifecycleAction>>(req);
+
+			if ((res == null) || (res.Data == null) || ( 
+				(res.StatusCode != HttpStatusCode.OK) && (res.StatusCode != HttpStatusCode.Created))
+			   ){
+				//Log.Error(tag, "NOT Download LifecycleAction");
+			} else {
+				//Log.Info(tag, string.Concat("Download LifecycleAction: ", res.Data.Count));
+
+				foreach (var lc_action in res.Data) {
+					bool canClear = false;
+					NotificationCompat.Builder ncbuilder;
+					switch (lc_action.action) {
+						case "create":
+						case "update":
+							var pathModel = string.Format("{0}/{1}?populate=false", lc_action.model, lc_action.uuid);
+							var reqModel = new RestRequest(pathModel, Method.GET);
+							reqModel.AddQueryParameter(@"access_token", ACCESS_TOKEN);
+
+							var resModel = client.Execute(reqModel);
+							switch (resModel.StatusCode) {
+								case HttpStatusCode.OK:
+								case HttpStatusCode.Created:
+									//Log.Info(tag, string.Concat("Downloaded Model by path: ", pathModel));
+									//Log.Info(tag, string.Concat("Downloaded Model=", resModel.Content));
+									
+									if (UpsertEntity(lc_action.model, lc_action.uuid, resModel.Content))
+									{
+										canClear = true;
+										ncbuilder = new NotificationCompat.Builder(this)
+																		  .SetSmallIcon(Resource.Mipmap.Icon)
+																		  .SetContentTitle("Было добавление/обновление объекта")
+																		  .SetContentText(string.Format("object:{0}:{1}", lc_action.model, lc_action.uuid));
+										NotificationManager.Notify("SBL-CRM", UPSERT++, ncbuilder.Build());								
+									}
+									else 
+									{
+										//Log.Error(tag, string.Format("NOT Inserted object:{0}:{1}", lc_action.model, lc_action.uuid));
+									}
+									break;
+								default:
+									Log.Error(tag, string.Format("NOT Downloaded Model by path:{0}", pathModel));
+									break;
+							}
+							break;
+
+						case "delete":
+							if (DeleteEntity(lc_action.model, lc_action.uuid)) {
+								//Log.Error(tag, string.Format("NOT Deleted object:{0}:{1}", lc_action.model, lc_action.uuid));
+								break;
+							}
+							canClear = true;
+							ncbuilder = new NotificationCompat.Builder(Context)
+															  .SetSmallIcon(Resource.Mipmap.Icon)
+															  .SetContentTitle("Было удаление объекта")
+															  .SetContentText(string.Format("object:{0}:{1}", lc_action.model, lc_action.uuid));
+							NotificationManager.Notify("SBL-CRM", DELETE++, ncbuilder.Build());
+							break;
+						default:
+							Log.Error(tag, string.Format("Unhandled action: {0}", lc_action.action));
+							break;
+					}
+
+					if (canClear) {
+						var pathClear = typeof(LifecycleAction).Name + "/clear";
+						var reqClear = new RestRequest(pathClear, Method.DELETE);
+						reqClear.AddQueryParameter(@"access_token", ACCESS_TOKEN);
+						reqClear.AddQueryParameter(@"model", lc_action.model);
+						reqClear.AddQueryParameter(@"uuid", lc_action.uuid);
+
+						var resClear = client.Execute(reqClear);
+						if ((resClear.StatusCode != HttpStatusCode.OK) && (resClear.StatusCode != HttpStatusCode.Created))
+						{
+							//Log.Error(tag, string.Format("NOT Cleared object:{0}:{1}", lc_action.model, lc_action.uuid));
+						}
+					}
+				}
+			}
+		}
+		
+		int ManageItem<T>(Uri uri, Realm db, T item, IQueryable<T> list, string uuid) where T: RealmObject
+		{
+			
+			if (item == null) {
+				Log.Error(TAG, "Cannot insert object:{0}:{1}. item is NULL.", uri.LastPathSegment, uuid);
+				return ERROR;
+			}
+
+			if (list.Count() > 1) {
+				Log.Error(TAG, "Cannot insert object:{0}:{1}. Find more than 1 record.", uri.LastPathSegment, uuid);
+				return list.Count();
+			}
+
+			try {
+				using (var transaction = db.BeginWrite()) {
+					if (list.Count() == 1) {
+						db.Remove(list.First());
+					}
+					db.Manage(item);
+					transaction.Commit();
+				}
+				return 1;
+			} catch (System.Exception ex) {
+				Log.Error(TAG, "Cannot insert object:{0}:{1}. Exeption: {2}", uri.LastPathSegment, uuid, ex.Message);
+				return -1;
+			}
+		}
+		
+		bool UpsertEntity(model, uuid, json)
+		{
+			switch (model) {
+				case SyncConst.Distributor: {
+						var item = JsonConvert.DeserializeObject<Distributor>(json);
+						var list = DB.All<Distributor>().Where(d => d.uuid == item.uuid);
+						return ManageItem(uri, DB, item, list, item.uuid);
+					}
+				case SyncConst.PhotoType: {
+						var item = JsonConvert.DeserializeObject<PhotoType>(json);
+						var list = DB.All<PhotoType>().Where(d => d.uuid == item.uuid);
+						return ManageItem(uri, DB, item, list, item.uuid);
+					}
+				case SyncConst.DistributionAgreement: {
+						var item = JsonConvert.DeserializeObject<DistributionAgreement>(json);
+						var list = DB.All<DistributionAgreement>().Where(d => d.uuid == item.uuid);
+						return ManageItem(uri, DB, item, list, item.uuid);
+					}
+				case SyncConst.PhotoAgreement: {
+						var item = JsonConvert.DeserializeObject<PhotoAgreement>(json);
+						var list = DB.All<PhotoAgreement>().Where(d => d.uuid == item.uuid);
+						return ManageItem(uri, DB, item, list, item.uuid);
+					}
+				case SyncConst.PhotoAfterAttendance: {
+						var item = JsonConvert.DeserializeObject<PhotoAfterAttendance>(json);
+						var list = DB.All<PhotoAfterAttendance>().Where(d => d.uuid == item.uuid);
+						return ManageItem(uri, DB, item, list, item.uuid);
+					}
+				case SyncConst.DrugSKU: {
+						var item = JsonConvert.DeserializeObject<DrugSKU>(json);
+						var list = DB.All<DrugSKU>().Where(d => d.uuid == item.uuid);
+						return ManageItem(uri, DB, item, list, item.uuid);
+					}
+				case SyncConst.DrugBrand: {
+						var item = JsonConvert.DeserializeObject<DrugBrand>(json);
+						var list = DB.All<DrugBrand>().Where(d => d.uuid == item.uuid);
+						return ManageItem(uri, DB, item, list, item.uuid);
+					}
+				case SyncConst.Net: {
+						var item = JsonConvert.DeserializeObject<Net>(json);
+						var list = DB.All<Net>().Where(d => d.uuid == item.uuid);
+						return ManageItem(uri, DB, item, list, item.uuid);
+					}
+				case SyncConst.Category: {
+						var item = JsonConvert.DeserializeObject<Category>(json);
+						var list = DB.All<Category>().Where(d => d.uuid == item.uuid);
+						return ManageItem(uri, DB, item, list, item.uuid);
+					}
+				case SyncConst.Customization: {
+						var item = JsonConvert.DeserializeObject<Customization>(json);
+						var list = DB.All<Customization>().Where(d => d.uuid == item.uuid);
+						return ManageItem(uri, DB, item, list, item.uuid);
+					}
+				case SyncConst.WorkType: {
+						var item = JsonConvert.DeserializeObject<WorkType>(json);
+						var list = DB.All<WorkType>().Where(d => d.uuid == item.uuid);
+						return ManageItem(uri, DB, item, list, item.uuid);
+					}
+				case SyncConst.Pharmacy: {
+						var item = JsonConvert.DeserializeObject<Pharmacy>(json);
+						var list = DB.All<Pharmacy>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.Attendance: {
+						var item = JsonConvert.DeserializeObject<Attendance>(json);
+						var list = DB.All<Attendance>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.Employee: {
+						var item = JsonConvert.DeserializeObject<Employee>(json);
+						var list = DB.All<Employee>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.RouteItem: {
+						var item = JsonConvert.DeserializeObject<RouteItem>(json);
+						var list = DB.All<RouteItem>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.ContractData: {
+						var item = JsonConvert.DeserializeObject<ContractData>(json);
+						var list = DB.All<ContractData>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.CoterieData: {
+						var item = JsonConvert.DeserializeObject<CoterieData>(json);
+						var list = DB.All<CoterieData>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.DistributionData: {
+						var item = JsonConvert.DeserializeObject<DistributionData>(json);
+						var list = DB.All<DistributionData>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.DistributorData: {
+						var item = JsonConvert.DeserializeObject<DistributorData>(json);
+						var list = DB.All<DistributorData>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.ExcludeRouteItem: {
+						var item = JsonConvert.DeserializeObject<ExcludeRouteItem>(json);
+						var list = DB.All<ExcludeRouteItem>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.FinanceDataByMonth: {
+						var item = JsonConvert.DeserializeObject<FinanceDataByMonth>(json);
+						var list = DB.All<FinanceDataByMonth>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.Hospital: {
+						var item = JsonConvert.DeserializeObject<Hospital>(json);
+						var list = DB.All<Hospital>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.HospitalData: {
+						var item = JsonConvert.DeserializeObject<HospitalData>(json);
+						var list = DB.All<HospitalData>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.Message: {
+						var item = JsonConvert.DeserializeObject<Message>(json);
+						var list = DB.All<Message>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.MessageData: {
+						var item = JsonConvert.DeserializeObject<MessageData>(json);
+						var list = DB.All<MessageData>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.PhotoComment: {
+						var item = JsonConvert.DeserializeObject<PhotoComment>(json);
+						var list = DB.All<PhotoComment>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.PhotoData: {
+						var item = JsonConvert.DeserializeObject<PhotoData>(json);
+						var list = DB.All<PhotoData>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.PresentationData: {
+						var item = JsonConvert.DeserializeObject<PresentationData>(json);
+						var list = DB.All<PresentationData>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.PromotionData: {
+						var item = JsonConvert.DeserializeObject<PromotionData>(json);
+						var list = DB.All<PromotionData>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.ResumeData: {
+						var item = JsonConvert.DeserializeObject<ResumeData>(json);
+						var list = DB.All<ResumeData>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.SaleDataByMonth: {
+						var item = JsonConvert.DeserializeObject<SaleDataByMonth>(json);
+						var list = DB.All<SaleDataByMonth>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.SaleDataByQuarter: {
+						var item = JsonConvert.DeserializeObject<SaleDataByQuarter>(json);
+						var list = DB.All<SaleDataByQuarter>().Where(d => d.UUID == item.UUID);
+						return ManageItem(uri, DB, item, list, item.UUID);
+					}
+				case SyncConst.Agent: {
+						var item = JsonConvert.DeserializeObject<Agent>(json);
+						var list = DB.All<Agent>().Where(a => a.uuid == item.uuid);
+						return ManageItem(uri, DB, item, list, item.uuid);
+					}
+				case SyncConst.Material: {
+						var item = JsonConvert.DeserializeObject<Material>(json);
+						var list = DB.All<Material>().Where(a => a.uuid == item.uuid);
+						return ManageItem(uri, DB, item, list, item.uuid);
+					}
+				default:
+					return new Uri.Builder()
+								  .Scheme(uri.Scheme)
+								  .Authority(uri.Authority)
+								  .Path(SyncConst._ERROR)
+								  .Build();
+			}
+		}
+		
+		int RemoveItems<T>(Realm db, IQueryable<T> list, string uuid) where T : RealmObject
+		{
+			if (list.Count() == 0) return 0;
+
+			if (list.Count() > 1) {
+				Log.Error(TAG, "Cannot remove object:{0}:{1}. Find more than 1 record.", typeof(T).Name, uuid);
+				return -1;
+			}
+
+			try {
+				using (var transaction = db.BeginWrite()) {
+					db.Remove(list.First());
+					transaction.Commit();
+				}
+				return 1;
+			} catch (System.Exception ex) {
+				Log.Error(TAG, "Cannot remove object:{0}:{1}. Exeption: {2}", typeof(T).Name, uuid, ex.Message);
+				return -1;
+			}
+		}
+
+		bool DeleteEntity(model, uuid)
+		{
+			try {
+				switch (model) {
+					case SyncConst.Distributor: {
+							var item = MainDatabase.GetItem<Distributor>(uuid);
+							MainDatabase.Remove(item);
+							return true;
+						}
+					case SyncConst.PhotoType: {
+							var item = MainDatabase.GetItem<PhotoType>(uuid);
+							MainDatabase.Remove(item);
+							return true;
+						}
+					case SyncConst.DistributionAgreement: {
+							var item = MainDatabase.GetItem<DistributionAgreement>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.PhotoAgreement: {
+							var item = MainDatabase.GetItem<PhotoAgreement>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.PhotoAfterAttendance: {
+							var item = MainDatabase.GetItem<PhotoAfterAttendance>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.DrugSKU: {
+							var item = MainDatabase.GetItem<DrugSKU>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.DrugBrand: {
+							var item = MainDatabase.GetItem<DrugBrand>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.Pharmacy: {
+							var item = MainDatabase.GetEntity<Pharmacy>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.Attendance: {
+							var item = MainDatabase.GetEntity<Attendance>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.Employee: {
+							var item = MainDatabase.GetEntity<Employee>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.RouteItem: {
+							var item = MainDatabase.GetEntity<RouteItem>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.ContractData: {
+							var item = MainDatabase.GetEntity<ContractData>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.CoterieData: {
+							var item = MainDatabase.GetEntity<CoterieData>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.DistributionData: {
+							var item = MainDatabase.GetEntity<DistributionData>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.DistributorData: {
+							var item = MainDatabase.GetEntity<DistributorData>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.ExcludeRouteItem: {
+							var item = MainDatabase.GetEntity<ExcludeRouteItem>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.FinanceDataByMonth: {
+							var item = MainDatabase.GetEntity<FinanceDataByMonth>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.Hospital: {
+							var item = MainDatabase.GetEntity<Hospital>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.HospitalData: {
+							var item = MainDatabase.GetEntity<HospitalData>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.Message: {
+							var item = MainDatabase.GetEntity<Message>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.MessageData: {
+							var item = MainDatabase.GetEntity<MessageData>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.PhotoComment: {
+							var item = MainDatabase.GetEntity<PhotoComment>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.PhotoData: {
+							var item = MainDatabase.GetEntity<PhotoData>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.PresentationData: {
+							var item = MainDatabase.GetEntity<PresentationData>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.PromotionData: {
+							var item = MainDatabase.GetEntity<PromotionData>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.ResumeData: {
+							var item = MainDatabase.GetEntity<ResumeData>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.SaleDataByMonth: {
+							var item = MainDatabase.GetEntity<SaleDataByMonth>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.SaleDataByQuarter: {
+							var item = MainDatabase.GetEntity<SaleDataByQuarter>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.WorkType: {
+							var item = MainDatabase.GetItem<WorkType>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					case SyncConst.Material: {
+							var item = MainDatabase.GetItem<Material>(uuid);
+							MainDatabase.Remove(item);
+							return true;						}
+					default:
+						Log.Error(TAG, "Unhandled selection:{0}; In {1}", selection, "StubProvider.Delete");
+						return -1;
+				}
+			}
+			} catch (System.Exception ex) {
+				//Log.Error(TAG, "Cannot insert object:{0}:{1}. Exeption: {2}", uri.LastPathSegment, uuid, ex.Message);
+				return false;
+			}
+		}
+		
 		protected override void OnPause()
 		{
 			base.OnPause();

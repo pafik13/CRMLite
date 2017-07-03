@@ -379,9 +379,7 @@ namespace CRMLite.Lib.Sync
 							          .Path(SyncConst._ERROR)
 							          .Build();
 				}
-
 			}
-
 		}
 
 		int RemoveItems<T>(Realm db, IQueryable<T> list, string uuid) where T : RealmObject
@@ -415,123 +413,123 @@ namespace CRMLite.Lib.Sync
 			using (var DB = Realm.GetInstance(config)) {
 				switch (selection) {
 					case SyncConst.Distributor: {
-							var list = DB.All<Distributor>().Where(item => item.uuid == uuid);
+							var list = DB.All<Distributor>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.PhotoType: {
-							var list = DB.All<PhotoType>().Where(item => item.uuid == uuid);
+							var list = DB.All<PhotoType>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.DistributionAgreement: {
-							var list = DB.All<DistributionAgreement>().Where(item => item.uuid == uuid);
+							var list = DB.All<DistributionAgreement>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.PhotoAgreement: {
-							var list = DB.All<PhotoAgreement>().Where(item => item.uuid == uuid);
+							var list = DB.All<PhotoAgreement>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.PhotoAfterAttendance: {
-							var list = DB.All<PhotoAfterAttendance>().Where(item => item.uuid == uuid);
+							var list = DB.All<PhotoAfterAttendance>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.DrugSKU: {
-							var list = DB.All<DrugSKU>().Where(item => item.uuid == uuid);
+							var list = DB.All<DrugSKU>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.DrugBrand: {
-							var list = DB.All<DrugBrand>().Where(item => item.uuid == uuid);
+							var list = DB.All<DrugBrand>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.Pharmacy: {
-							var list = DB.All<Pharmacy>().Where(item => item.UUID == uuid);
+							var list = DB.All<Pharmacy>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.Attendance: {
-							var list = DB.All<Attendance>().Where(item => item.UUID == uuid);
+							var list = DB.All<Attendance>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.Employee: {
-							var list = DB.All<Employee>().Where(item => item.UUID == uuid);
+							var list = DB.All<Employee>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.RouteItem: {
-							var list = DB.All<RouteItem>().Where(item => item.UUID == uuid);
+							var list = DB.All<RouteItem>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.ContractData: {
-							var list = DB.All<ContractData>().Where(item => item.UUID == uuid);
+							var list = DB.All<ContractData>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.CoterieData: {
-							var list = DB.All<CoterieData>().Where(item => item.UUID == uuid);
+							var list = DB.All<CoterieData>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.DistributionData: {
-							var list = DB.All<DistributionData>().Where(item => item.UUID == uuid);
+							var list = DB.All<DistributionData>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.DistributorData: {
-							var list = DB.All<DistributorData>().Where(item => item.UUID == uuid);
+							var list = DB.All<DistributorData>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.ExcludeRouteItem: {
-							var list = DB.All<ExcludeRouteItem>().Where(item => item.UUID == uuid);
+							var list = DB.All<ExcludeRouteItem>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.FinanceDataByMonth: {
-							var list = DB.All<FinanceDataByMonth>().Where(item => item.UUID == uuid);
+							var list = DB.All<FinanceDataByMonth>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.Hospital: {
-							var list = DB.All<Hospital>().Where(item => item.UUID == uuid);
+							var list = DB.All<Hospital>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.HospitalData: {
-							var list = DB.All<HospitalData>().Where(item => item.UUID == uuid);
+							var list = DB.All<HospitalData>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.Message: {
-							var list = DB.All<Message>().Where(item => item.UUID == uuid);
+							var list = DB.All<Message>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.MessageData: {
-							var list = DB.All<MessageData>().Where(item => item.UUID == uuid);
+							var list = DB.All<MessageData>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.PhotoComment: {
-							var list = DB.All<PhotoComment>().Where(item => item.UUID == uuid);
+							var list = DB.All<PhotoComment>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.PhotoData: {
-							var list = DB.All<PhotoData>().Where(item => item.UUID == uuid);
+							var list = DB.All<PhotoData>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.PresentationData: {
-							var list = DB.All<PresentationData>().Where(item => item.UUID == uuid);
+							var list = DB.All<PresentationData>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.PromotionData: {
-							var list = DB.All<PromotionData>().Where(item => item.UUID == uuid);
+							var list = DB.All<PromotionData>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.ResumeData: {
-							var list = DB.All<ResumeData>().Where(item => item.UUID == uuid);
+							var list = DB.All<ResumeData>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.SaleDataByMonth: {
-							var list = DB.All<SaleDataByMonth>().Where(item => item.UUID == uuid);
+							var list = DB.All<SaleDataByMonth>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.SaleDataByQuarter: {
-							var list = DB.All<SaleDataByQuarter>().Where(item => item.UUID == uuid);
+							var list = DB.All<SaleDataByQuarter>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.WorkType: {
-							var list = DB.All<WorkType>().Where(item => item.uuid == uuid);
+							var list = DB.All<WorkType>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					case SyncConst.Material: {
-							var list = DB.All<Material>().Where(item => item.uuid == uuid);
+							var list = DB.All<Material>()(uuid);
 							return RemoveItems(DB, list, uuid);
 						}
 					default:

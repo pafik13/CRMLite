@@ -67,12 +67,21 @@ namespace CRMLite.Entities
 		  });
 		  
 		var cust = {
-			name: "UUID для отражения в маршруте тренировки на половину дня",
-			key: 'HalfDayTrainingUUID',
+			name: 'UUID для отражения в маршруте дня в отпуске',
+			key: 'WorkleaveUUID',
 			type: 'string',
-			value : '54524149-4e49-4000-0000-4e4748414c46'
+			value : '574f524b-4c45-4000-0000-415645303030'
 		}
-
+		
+		$.post( "Customization", cust)
+		 .done(function( data ) {
+			 if (typeof data === 'object') {
+				alert( "Object Loaded: " + JSON.stringify(data) );
+			 } else {
+				alert( "Data Loaded: " + data ); 
+			 }
+		});
+		
 		CREATE OR REPLACE FUNCTION public.f_const_ri_workleave()
 		  RETURNS uuid
 		  LANGUAGE sql
