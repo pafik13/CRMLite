@@ -24,6 +24,7 @@ namespace CRMLite
 
 		internal static string DBPath { get { return Me.DB.Config.DatabasePath; } }
 		internal static string LOCPath { get { return Me.ConfigForLocation.DatabasePath; } }
+		internal static RealmConfiguration LocationDB { get { return Me.ConfigForLocation; } }
 
 		ConcurrentDictionary<SyncItem, SyncItem> SyncDictionary;
 

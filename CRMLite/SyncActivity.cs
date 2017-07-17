@@ -557,6 +557,35 @@ namespace CRMLite
 
 					MainDatabase.Dispose();
 
+					using (var db = Realm.GetInstance(MainDatabase.LocationDB)) 
+					{
+						var client = new RestClient(HOST_URL);
+						string entityPath = typeof(GPSLocation).Name;
+						var forDelete = new List<GPSLocation>();
+						foreach (var loc in db.All<GPSLocation>()) {
+							var request = new RestRequest(entityPath, Method.POST);
+							request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
+							request.JsonSerializer = new NewtonsoftJsonSerializer();
+							request.AddJsonBody(loc);
+							var response = client.Execute(request);
+							switch (response.StatusCode) {
+								case HttpStatusCode.OK:
+								case HttpStatusCode.Created:
+									forDelete.Add(loc);
+									break;
+							}
+						}
+
+						using (var transaction = db.BeginWrite()) 
+						{
+							foreach (var item in forDelete) {
+								db.Remove(item);
+							}
+							transaction.Commit();
+						}
+					}
+
+
 					RunOnUiThread(() => {
 						MainDatabase.Username = USERNAME;
 						// Thread.Sleep(1000);
