@@ -555,13 +555,19 @@ namespace CRMLite
 					SyncEntities(MainDatabase.GetItemsToSync<ResumeData>());
 					SyncEntities(MainDatabase.GetItemsToSync<RouteItem>());
 
+					var locDBPath = string.Copy(MainDatabase.LocationDB.DatabasePath);
+
 					MainDatabase.Dispose();
 
-					using (var db = Realm.GetInstance(MainDatabase.LocationDB)) 
+					var locDBConfig = new RealmConfiguration(locDBPath) {
+						SchemaVersion = SplashActivity.C_DB_CURRENT_VERSION
+					};
+					using (var db = Realm.GetInstance(locDBConfig)) 
 					{
 						var client = new RestClient(HOST_URL);
 						string entityPath = typeof(GPSLocation).Name;
 						var forDelete = new List<GPSLocation>();
+						int count = 0;
 						foreach (var loc in db.All<GPSLocation>()) {
 							var request = new RestRequest(entityPath, Method.POST);
 							request.AddQueryParameter(@"access_token", ACCESS_TOKEN);
@@ -572,16 +578,19 @@ namespace CRMLite
 								case HttpStatusCode.OK:
 								case HttpStatusCode.Created:
 									forDelete.Add(loc);
+									count++;
 									break;
 							}
+							if (count > 3) break;
 						}
 
-						using (var transaction = db.BeginWrite()) 
-						{
-							foreach (var item in forDelete) {
-								db.Remove(item);
+						if (count > 0) {
+							using (var transaction = db.BeginWrite()) {
+								foreach (var item in forDelete) {
+									db.Remove(item);
+								}
+								transaction.Commit();
 							}
-							transaction.Commit();
 						}
 					}
 
