@@ -303,8 +303,8 @@ namespace CRMLite
 
 			var materials = MainDatabase.GetMaterials(MainDatabase.GetItem<Agent>(AGENT_UUID).MaterialType);
 			foreach (var material in materials) {
-				var materialFileInfo = new FileInfo(material.GetLocalPath());
-				if (materialFileInfo.Exists && materialFileInfo.Length > 0) continue;
+				var file = material.GetJavaFile();
+				if (file.Exists() && file.Length() > 0) continue;
 				MaterialUUIDs.Add(string.Copy(material.uuid));
 			}
 
@@ -581,7 +581,7 @@ namespace CRMLite
 									count++;
 									break;
 							}
-							if (count > 3) break;
+							if (count > 80) break;
 						}
 
 						if (count > 0) {

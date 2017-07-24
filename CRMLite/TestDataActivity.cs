@@ -150,16 +150,20 @@ namespace CRMLite
 			//var settingsBundle = new Bundle();
 			////settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, true);
 			////settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, true);
-			//var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
+			var shared = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private);
 
-			//var ACCESS_TOKEN = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
-			//var HOST_URL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
+			var ACCESS_TOKEN = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
+			var HOST_URL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
+			var client = new RestClient(HOST_URL);
+			var where = "where={\"type\":[\"mtPharmaciesOnly\",\"mtDoctorsOnly\",\"mtBoth\"]}";
+			LoadItems<Material>(client, 300, where);
+
 
 			//settingsBundle.PutString(SigninDialog.C_ACCESS_TOKEN, ACCESS_TOKEN);
 			//settingsBundle.PutString(SigninDialog.C_HOST_URL, HOST_URL);
 			//settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, false);
 			//settingsBundle.PutBoolean(ContentResolver.SyncExtrasDoNotRetry, false);
-   //     	settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, false);
+			//     	settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, false);
 			////ContentResolver.RequestSync(account, SyncConst.AUTHORITY, settingsBundle);
 
 			////ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, Bundle.Empty, SyncConst.SYNC_INTERVAL)
@@ -168,10 +172,10 @@ namespace CRMLite
 			//;
 			//ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, settingsBundle, SyncConst.SYNC_INTERVAL);
 
-			var intent = new Intent(Intent.ActionGetContent);
-			intent.SetType("*/*");
-			intent.AddCategory(Intent.CategoryOpenable);
-			StartActivityForResult(intent, PICKFILE_REQUEST_CODE);
+			//var intent = new Intent(Intent.ActionGetContent);
+			//intent.SetType("*/*");
+			//intent.AddCategory(Intent.CategoryOpenable);
+			//StartActivityForResult(intent, PICKFILE_REQUEST_CODE);
 
 
 			//if (File.Exists(MainDatabase.DBPath)) {
@@ -189,6 +193,29 @@ namespace CRMLite
 			//	}
 			//}
 		}
+
+		void LoadItems<T>(RestClient client, int limit, string customQueryParams = "") where T : Realms.RealmObject
+		{
+			SDiag.Debug.WriteLine("LoadItems: typeof={0}", typeof(T));
+			string className = typeof(T).Name;
+			string path = string.Format("{0}?limit={1}&populate=false&{2}", className, limit, customQueryParams);
+			var request = new RestRequest(path, Method.GET);
+			var response = client.Execute<List<T>>(request);
+			using (var trans = MainDatabase.BeginTransaction()) {
+				MainDatabase.DeleteAll<T>(trans);
+				if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+					if (response.Data == null) {
+						SDiag.Debug.WriteLine("LoadItems: Data=NULL");
+					} else {
+						SDiag.Debug.WriteLine("LoadItems: Data.Count={0}", response.Data.Count);
+						MainDatabase.SaveItems(trans, response.Data);
+					}
+				}
+				trans.Commit();
+			}
+			SDiag.Debug.WriteLine("LoadItems: Done");
+		}
+
 
 		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
 		{

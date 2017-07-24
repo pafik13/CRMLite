@@ -525,7 +525,8 @@ namespace CRMLite.Dialogs
 			WriteInfo(@"Получение LoadMaterials", 1000);
 			try {
 				//LoadMaterials(client);
-				LoadItems<Material>(client, 300);
+				var where = @"where={""type"":[""mtPharmaciesOnly"",""mtDoctorsOnly"",""mtBoth""]}";
+				LoadItems<Material>(client, 300, where);
 			} catch (Exception ex) {
 				WriteWarning(string.Format(@"Error: {0}", ex.Message), 2000);
 				return false;

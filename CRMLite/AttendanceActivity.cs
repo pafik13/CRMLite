@@ -428,7 +428,7 @@ namespace CRMLite
 
 				if (materialItems.Count == 0) return;
 
-				materialItems.Sort((x, y) => x.MaterialName.CompareTo(y.MaterialName));
+				materialItems.Sort((x, y) => string.Compare(x.MaterialName, y.MaterialName, StringComparison.CurrentCulture));
 				
 				new AlertDialog.Builder(this)
 				               .SetTitle("Выберите материал для показа:")
