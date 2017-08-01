@@ -441,9 +441,16 @@ namespace CRMLite
 				ExtraRouteItemsIB.Visibility = ViewStates.Visible;
 
 				//var sw = new SDiag.Stopwatch();
-				//sw.Start();
-				var routeItemsPharmacies = MainDatabase.GetEarlyPerfomedRouteItems(SelectedDate).Select(ri => ri.Pharmacy);
-				RouteSearchItems = RouteSearchItemsSource.Where(rsi => !routeItemsPharmacies.Contains(rsi.UUID)).ToList();
+				//sw.Start()
+				var isMillor = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
+					.GetString(Dialogs.SigninDialog.C_HOST_URL, string.Empty)
+					.Contains("milor"); ;
+				if (isMillor) {
+					var routeItemsPharmacies = MainDatabase.GetEarlyPerfomedRouteItems(SelectedDate).Select(ri => ri.Pharmacy);
+					RouteSearchItems = RouteSearchItemsSource.Where(rsi => !routeItemsPharmacies.Contains(rsi.UUID)).ToList();
+				} else {
+					RouteSearchItems = RouteSearchItemsSource;
+				}
 				//sw.Stop();
 				//SDiag.Debug.WriteLine(@"RouteSearchItems (ms): {0}, routeItemsPharmacies (cnt): {1}", sw.ElapsedMilliseconds, routeItemsPharmacies.Count());
 
