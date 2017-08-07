@@ -348,7 +348,17 @@ namespace CRMLite
 				trans.Commit();
 			}
 
-			if (pos != -1) adapter.SwitchVisibility(pos);
+//			if (pos != -1) {
+//				var temp = string.Copy(SearchEditor.Text);
+//				SearchEditor.Text = string.Empty;
+//				adapter.SwitchVisibility(pos);
+//				SearchEditor.Text = temp;
+//			}
+			if (pos != -1) {
+				if (pos > -1) && (pos < RouteSearchItems.Length) {
+					RouteSearchItems[pos].IsVisible = true;
+				}
+			}
 		}
 
 		void Row_LongClick(object sender, View.LongClickEventArgs e)

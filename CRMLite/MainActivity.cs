@@ -540,6 +540,29 @@ namespace CRMLite
 			base.OnRestoreInstanceState(savedInstanceState); 
 		}
 
+		public Account GetSyncAccount(Context context)
+		{
+			//var newAccount = new Account(SyncConst.ACCOUNT, SyncConst.ACCOUNT_TYPE);
+
+			var accountManager = (AccountManager)context.GetSystemService(AccountService);
+			
+			var accounts = accountManager.GetAccountsByType(SyncConst.ACCOUNT_TYPE);
+			
+			foreach(var acc in accounts){
+				if (acc.name == SyncConst.ACCOUNT) return acc;
+			}
+			
+			
+//			var tag = "CRMLite:MainActivity:CreateSyncAccount";
+//			if (accountManager.AddAccountExplicitly(newAccount, null, null)) {
+//				Android.Util.Log.Info(tag, "AddAccountExplicitly");
+//			} else {
+//				Android.Util.Log.Info(tag, "NOT AddAccountExplicitly");
+//			}
+
+			return null;
+		}
+		
 		protected override void OnResume()
 		{
 			base.OnResume();
@@ -648,6 +671,23 @@ namespace CRMLite
 				}
 			}
 
+
+			// Find account and Request manual sync
+			var account = GetSyncAccount(this);
+			if (account != null) {
+				var settingsBundle = new Bundle();
+				settingsBundle.PutString(MainDatabase.C_DB_PATH, MainDatabase.DBPath);
+				settingsBundle.PutString(MainDatabase.C_LOC_PATH, MainDatabase.LOCPath);
+				settingsBundle.PutString(SigninDialog.C_ACCESS_TOKEN, ACCESS_TOKEN);
+				settingsBundle.PutString(SigninDialog.C_HOST_URL, HOST_URL);
+				settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, false);
+				settingsBundle.PutBoolean(ContentResolver.SyncExtrasDoNotRetry, false);
+				settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, true);
+
+				ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, settingsBundle);				
+			}
+
+			
 			var packageInfo = ApplicationContext.PackageManager.GetPackageInfo(ApplicationContext.PackageName, 0);
 			var version = string.Format("Версия: {0} ({1})", packageInfo.VersionName, packageInfo.VersionCode);
 			FindViewById<TextView>(Resource.Id.maVersionTV).Text = version;
