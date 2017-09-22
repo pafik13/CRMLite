@@ -130,13 +130,12 @@ namespace CRMLite
 					item = SearchedItems[e.Position];
 				}
 
-				//TODO: rename vars
-				using (var trans = MainDatabase.BeginTransaction()) {
+				using (var transaction = MainDatabase.BeginTransaction()) {
 					var newRouteItem = MainDatabase.Create2<RouteItem>();
 					newRouteItem.Pharmacy = item.UUID;
 					newRouteItem.Order = RouteTable.ChildCount;
 					newRouteItem.Date = SelectedDate;
-					trans.Commit();
+					transaction.Commit();
 					row.SetTag(Resource.String.RouteItemUUID, newRouteItem.UUID);
 				}
 				row.SetTag(Resource.String.PharmacyUUID, item.UUID);
@@ -184,6 +183,10 @@ namespace CRMLite
 			SearchEditor = FindViewById<EditText>(Resource.Id.raSearchET);
 
 			SearchEditor.AfterTextChanged += (sender, e) => {
+				if (PharmacyTable == null) || (RouteSearchItems == null) {
+					return;
+				}
+				
 				var text = e.Editable.ToString();
 
 				if (string.IsNullOrEmpty(text)) {
@@ -201,35 +204,28 @@ namespace CRMLite
 				var culture = CultureInfo.GetCultureInfo("ru-RU");
 				// 2 поиск
 				foreach (var item in RouteSearchItems) {
-					if (item.IsVisible) {
-						//item.Subway = null;
-						if (culture.CompareInfo.IndexOf(item.Subway, text, CompareOptions.IgnoreCase) >= 0) {
-							item.Match = string.Format(matchFormat, @"метро=" + item.Subway);
-							SearchedItems.Add(item);
-							//if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
-							continue;
-						}
+					if (culture.CompareInfo.IndexOf(item.Subway, text, CompareOptions.IgnoreCase) >= 0) {
+						item.Match = string.Format(matchFormat, @"метро=" + item.Subway);
+						SearchedItems.Add(item);
+						continue;
+					}
 
-						if (culture.CompareInfo.IndexOf(item.Region, text, CompareOptions.IgnoreCase) >= 0) {
-							item.Match = string.Format(matchFormat, @"район=" + item.Region);
-							SearchedItems.Add(item);
-							//if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
-							continue;
-						}
+					if (culture.CompareInfo.IndexOf(item.Region, text, CompareOptions.IgnoreCase) >= 0) {
+						item.Match = string.Format(matchFormat, @"район=" + item.Region);
+						SearchedItems.Add(item);
+						continue;
+					}
 
-						if (culture.CompareInfo.IndexOf(item.Brand, text, CompareOptions.IgnoreCase) >= 0) {
-							item.Match = string.Format(matchFormat, @"бренд=" + item.Brand);
-							SearchedItems.Add(item);
-							//if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
-							continue;
-						}
+					if (culture.CompareInfo.IndexOf(item.Brand, text, CompareOptions.IgnoreCase) >= 0) {
+						item.Match = string.Format(matchFormat, @"бренд=" + item.Brand);
+						SearchedItems.Add(item);
+						continue;
+					}
 
-						if (culture.CompareInfo.IndexOf(item.Address, text, CompareOptions.IgnoreCase) >= 0) {
-							item.Match = string.Format(matchFormat, @"адрес");
-							SearchedItems.Add(item);
-							//if (SearchedItems.Count > C_ITEMS_IN_RESULT) break;
-							continue;
-						}
+					if (culture.CompareInfo.IndexOf(item.Address, text, CompareOptions.IgnoreCase) >= 0) {
+						item.Match = string.Format(matchFormat, @"адрес");
+						SearchedItems.Add(item);
+						continue;
 					}
 				}
 				w.Stop();
@@ -292,13 +288,12 @@ namespace CRMLite
 
 								   ERIIndicator.Add(uuid, true);
 
-								   //TODO: rename var
-								   using (var trans = MainDatabase.BeginTransaction()) {
+								   using (var transaction = MainDatabase.BeginTransaction()) {
 									   var newRouteItem = MainDatabase.Create2<RouteItem>();
 									   newRouteItem.Pharmacy = uuid;
 									   newRouteItem.Order = RouteTable.ChildCount;
 									   newRouteItem.Date = SelectedDate;
-									   trans.Commit();
+									   transaction.Commit();
 									   row.SetTag(Resource.String.RouteItemUUID, newRouteItem.UUID);
 								   }
 								   row.SetTag(Resource.String.PharmacyUUID, uuid);
@@ -328,9 +323,10 @@ namespace CRMLite
 			if (ERIIndicator.ContainsKey(routeItemUUID)) {
 				ERIIndicator.Remove(routeItemUUID);
 			}
-
-			int pos = (int)rowForDelete.GetTag(Resource.String.Position);
-			int order = (int)rowForDelete.GetTag(Resource.String.RouteItemOrder);
+			
+			var pharmacyUUID = (string)rowForDelete.GetTag(Resource.String.PharmacyUUID);
+			var pos = RouteSearchItems.FindIndex(rsi => string.Compare(rsi.UUID, pharmacyUUID) == 0);
+			var order = (int)rowForDelete.GetTag(Resource.String.RouteItemOrder);
 
 			RouteTable.RemoveView(rowForDelete);
 
@@ -347,18 +343,9 @@ namespace CRMLite
 				}
 				trans.Commit();
 			}
-
-//			if (pos != -1) {
-//				var temp = string.Copy(SearchEditor.Text);
-//				SearchEditor.Text = string.Empty;
-//				adapter.SwitchVisibility(pos);
-//				SearchEditor.Text = temp;
-//			}
-			if (pos != -1) {
-				if (pos > -1) && (pos < RouteSearchItems.Length) {
-					RouteSearchItems[pos].IsVisible = true;
-				}
-			}
+			
+			RouteSearchItems[pos].IsVisible = true;
+			RoutePharmacyAdapter.NotifyDataSetChanged();
 		}
 
 		void Row_LongClick(object sender, View.LongClickEventArgs e)
@@ -367,9 +354,8 @@ namespace CRMLite
 				var view = sender as LinearLayout;
 				var order = (int)view.GetTag(Resource.String.RouteItemOrder);
 
-				//var data = ClipData.NewPlainText(@"data", @"my_data");
 				var data = ClipData.NewPlainText(@"RouteItemOrder", order.ToString());
-				//var shadow = new MyShadowBuilder(view);
+				
 				var shadow = new View.DragShadowBuilder(view);
 				view.StartDrag(data, shadow, null, 0);
 			}
@@ -416,8 +402,6 @@ namespace CRMLite
 								}
 								trans.Commit();
 							}
-							//dragedView.SetTag(Resource.String.RouteItemOrder, index);
-							//view.SetTag(Resource.String.RouteItemOrder, clipedIndex);
 						}
 						view.Visibility = ViewStates.Visible;
 						e.Handled = true;
@@ -449,9 +433,11 @@ namespace CRMLite
 				ExtraRouteItemsIB.Visibility = ViewStates.Invisible;
 			} else {
 				ExtraRouteItemsIB.Visibility = ViewStates.Visible;
-
-				//var sw = new SDiag.Stopwatch();
-				//sw.Start()
+				
+				#IFDEF DEBUG
+					var sw = new SDiag.Stopwatch();
+					sw.Start()
+				#ENDIF
 				var isMillor = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
 					.GetString(Dialogs.SigninDialog.C_HOST_URL, string.Empty)
 					.Contains("milor"); ;
@@ -461,14 +447,16 @@ namespace CRMLite
 				} else {
 					RouteSearchItems = RouteSearchItemsSource;
 				}
-				//sw.Stop();
-				//SDiag.Debug.WriteLine(@"RouteSearchItems (ms): {0}, routeItemsPharmacies (cnt): {1}", sw.ElapsedMilliseconds, routeItemsPharmacies.Count());
+				#IFDEF DEBUG
+					sw.Stop();
+					SDiag.Debug.WriteLine(@"RouteSearchItems (ms): {0}", sw.ElapsedMilliseconds);
+				#ENDIF
 
 				RoutePharmacyAdapter = new RoutePharmacyAdapter(this, RouteSearchItems);
 				PharmacyTable.Adapter = RoutePharmacyAdapter;
 
 				for (int i = 0; i < RouteSearchItems.Count; i++) {
-					RoutePharmacyAdapter.ChangeVisibility(i, true);
+					RouteSearchItems[i].IsVisible = true;
 				}
 			}
 
@@ -489,10 +477,9 @@ namespace CRMLite
 
 				int position = RouteSearchItems.FindIndex(rsi => string.Compare(rsi.UUID, item.Pharmacy) == 0);
 				if (position != -1) {
-					RoutePharmacyAdapter.ChangeVisibility(position, false);
+					RouteSearchItems[position].IsVisible = false;
 				}
 
-				row.SetTag(Resource.String.Position, position);
 				row.SetTag(Resource.String.RouteItemUUID, item.UUID);
 				row.SetTag(Resource.String.PharmacyUUID, item.Pharmacy);
 
@@ -513,6 +500,8 @@ namespace CRMLite
 
 				RouteTable.AddView(row);
 			}
+			
+			RoutePharmacyAdapter.NotifyDataSetChanged();
 		}
 
 		protected override void OnPause()
