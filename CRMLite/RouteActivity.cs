@@ -24,6 +24,7 @@ namespace CRMLite
 	{
 		// public const int C_ITEMS_IN_RESULT = 10;
 		// public const int C_FRAGMENTS_COUNT = 5;
+		IList<string> PharmacyStates;
 
 		DateTimeOffset SelectedDate;
 
@@ -36,7 +37,6 @@ namespace CRMLite
 		ImageButton ExtraRouteItemsIB;
 		
 		ListView PharmacyTable;
-		RoutePharmacyAdapter RoutePharmacyAdapter;
 		LinearLayout RouteTable;
 
 		ViewSwitcher SearchSwitcher;
@@ -84,6 +84,8 @@ namespace CRMLite
 				MainDatabase.Dispose();
 				Finish();
 			};
+
+			PharmacyStates = MainDatabase.GetStates();
 
 			ExtraRouteItems = new Dictionary<string, string>();
 			var internshipUUID = MainDatabase.GetCustomizationString(Customizations.InternshipUUID);
@@ -161,7 +163,9 @@ namespace CRMLite
 						string.IsNullOrEmpty(item.Subway) ? string.Empty : MainDatabase.GetItem<Subway>(item.Subway).name,
 						string.IsNullOrEmpty(item.Region) ? string.Empty : MainDatabase.GetItem<Region>(item.Region).name,
 						string.IsNullOrEmpty(item.Brand) ? string.Empty : item.Brand,
-						string.IsNullOrEmpty(item.Address) ? string.Empty : item.Address
+						string.IsNullOrEmpty(item.Address) ? string.Empty : item.Address,
+						item.State
+						//PharmacyStates[(int)item.GetState()]
 					)
 				);
 			}
@@ -183,7 +187,7 @@ namespace CRMLite
 			SearchEditor = FindViewById<EditText>(Resource.Id.raSearchET);
 
 			SearchEditor.AfterTextChanged += (sender, e) => {
-				if (PharmacyTable == null) || (RouteSearchItems == null) {
+				if ((PharmacyTable == null) || (RouteSearchItems == null)) {
 					return;
 				}
 				
@@ -343,9 +347,11 @@ namespace CRMLite
 				}
 				trans.Commit();
 			}
-			
-			RouteSearchItems[pos].IsVisible = true;
-			RoutePharmacyAdapter.NotifyDataSetChanged();
+
+			if (pos != -1) {
+				RouteSearchItems[pos].IsVisible = true;
+				adapter.NotifyDataSetChanged();
+			}
 		}
 
 		void Row_LongClick(object sender, View.LongClickEventArgs e)
@@ -428,32 +434,30 @@ namespace CRMLite
 			ERIIndicator = new Dictionary<string, bool>();
 			if (SelectedDate.Date <= DateTimeOffset.Now.Date) {
 				RouteSearchItems = new List<RouteSearchItem>();
-				RoutePharmacyAdapter = new RoutePharmacyAdapter(this, RouteSearchItems);
-				PharmacyTable.Adapter = RoutePharmacyAdapter;
+				PharmacyTable.Adapter = new RoutePharmacyAdapter(this, RouteSearchItems);
 				ExtraRouteItemsIB.Visibility = ViewStates.Invisible;
 			} else {
 				ExtraRouteItemsIB.Visibility = ViewStates.Visible;
-				
-				#IFDEF DEBUG
+
+				#if DEBUG
 					var sw = new SDiag.Stopwatch();
-					sw.Start()
-				#ENDIF
+					sw.Start();
+				#endif
 				var isMillor = GetSharedPreferences(MainActivity.C_MAIN_PREFS, FileCreationMode.Private)
 					.GetString(Dialogs.SigninDialog.C_HOST_URL, string.Empty)
-					.Contains("milor"); ;
+					.Contains("milor");
 				if (isMillor) {
 					var routeItemsPharmacies = MainDatabase.GetEarlyPerfomedRouteItems(SelectedDate).Select(ri => ri.Pharmacy);
 					RouteSearchItems = RouteSearchItemsSource.Where(rsi => !routeItemsPharmacies.Contains(rsi.UUID)).ToList();
 				} else {
 					RouteSearchItems = RouteSearchItemsSource;
 				}
-				#IFDEF DEBUG
-					sw.Stop();
+				#if DEBUG
+				    sw.Stop();
 					SDiag.Debug.WriteLine(@"RouteSearchItems (ms): {0}", sw.ElapsedMilliseconds);
-				#ENDIF
+				#endif
 
-				RoutePharmacyAdapter = new RoutePharmacyAdapter(this, RouteSearchItems);
-				PharmacyTable.Adapter = RoutePharmacyAdapter;
+				PharmacyTable.Adapter = new RoutePharmacyAdapter(this, RouteSearchItems);
 
 				for (int i = 0; i < RouteSearchItems.Count; i++) {
 					RouteSearchItems[i].IsVisible = true;
@@ -501,7 +505,7 @@ namespace CRMLite
 				RouteTable.AddView(row);
 			}
 			
-			RoutePharmacyAdapter.NotifyDataSetChanged();
+			((RoutePharmacyAdapter)PharmacyTable.Adapter).NotifyDataSetChanged();
 		}
 
 		protected override void OnPause()

@@ -8,10 +8,11 @@
 		public string Region { private set; get; }
 		public string Brand { private set; get; }
 		public string Address { private set; get; }
+		public string State { private set; get; }
 		public string Match { set; get; }
 		public bool IsVisible { set; get; }
 
-		public RouteSearchItem(string uuid, string name, string subway, string region, string brand, string address)
+		public RouteSearchItem(string uuid, string name, string subway, string region, string brand, string address, string state)
 		{
 			UUID = uuid;
 			Name = name;
@@ -19,6 +20,7 @@
 			Region = region;
 			Brand = brand;
 			Address = address;
+			State = state;
 			IsVisible = true;
 		}
 	}

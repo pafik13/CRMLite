@@ -22,6 +22,8 @@ using CRMLite.Entities;
 using CRMLite.Adapters;
 using CRMLite.Dialogs;
 using CRMLite.Services;
+using Android.Accounts;
+using CRMLite.Lib.Sync;
 
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
 [assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
@@ -542,23 +544,13 @@ namespace CRMLite
 
 		public Account GetSyncAccount(Context context)
 		{
-			//var newAccount = new Account(SyncConst.ACCOUNT, SyncConst.ACCOUNT_TYPE);
-
 			var accountManager = (AccountManager)context.GetSystemService(AccountService);
 			
 			var accounts = accountManager.GetAccountsByType(SyncConst.ACCOUNT_TYPE);
 			
 			foreach(var acc in accounts){
-				if (acc.name == SyncConst.ACCOUNT) return acc;
+				if (acc.Name == SyncConst.ACCOUNT) return acc;
 			}
-			
-			
-//			var tag = "CRMLite:MainActivity:CreateSyncAccount";
-//			if (accountManager.AddAccountExplicitly(newAccount, null, null)) {
-//				Android.Util.Log.Info(tag, "AddAccountExplicitly");
-//			} else {
-//				Android.Util.Log.Info(tag, "NOT AddAccountExplicitly");
-//			}
 
 			return null;
 		}
@@ -675,16 +667,20 @@ namespace CRMLite
 			// Find account and Request manual sync
 			var account = GetSyncAccount(this);
 			if (account != null) {
-				var settingsBundle = new Bundle();
-				settingsBundle.PutString(MainDatabase.C_DB_PATH, MainDatabase.DBPath);
-				settingsBundle.PutString(MainDatabase.C_LOC_PATH, MainDatabase.LOCPath);
-				settingsBundle.PutString(SigninDialog.C_ACCESS_TOKEN, ACCESS_TOKEN);
-				settingsBundle.PutString(SigninDialog.C_HOST_URL, HOST_URL);
-				settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, false);
-				settingsBundle.PutBoolean(ContentResolver.SyncExtrasDoNotRetry, false);
-				settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, true);
+				var accessToken = shared.GetString(SigninDialog.C_ACCESS_TOKEN, string.Empty);
+				var hostURL = shared.GetString(SigninDialog.C_HOST_URL, string.Empty);
+				if (!string.IsNullOrEmpty(accessToken) && !string.IsNullOrEmpty(hostURL)) {
+					var settingsBundle = new Bundle();
+					settingsBundle.PutString(MainDatabase.C_DB_PATH, MainDatabase.DBPath);
+					settingsBundle.PutString(MainDatabase.C_LOC_PATH, MainDatabase.LOCPath);
+					settingsBundle.PutString(SigninDialog.C_ACCESS_TOKEN, accessToken);
+					settingsBundle.PutString(SigninDialog.C_HOST_URL, hostURL);
+					settingsBundle.PutBoolean(ContentResolver.SyncExtrasExpedited, false);
+					settingsBundle.PutBoolean(ContentResolver.SyncExtrasDoNotRetry, false);
+					settingsBundle.PutBoolean(ContentResolver.SyncExtrasManual, true);
 
-				ContentResolver.AddPeriodicSync(account, SyncConst.AUTHORITY, settingsBundle);				
+					ContentResolver.RequestSync(account, SyncConst.AUTHORITY, settingsBundle);
+				}
 			}
 
 			

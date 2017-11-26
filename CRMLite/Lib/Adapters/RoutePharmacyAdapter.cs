@@ -14,11 +14,12 @@ namespace CRMLite.Adapters
 	{
 		readonly Activity Context;
 		readonly IList<RouteSearchItem> RouteSearchItems;
-
+		readonly IList<string> PharmacyStates;
 		public RoutePharmacyAdapter(Activity context, IList<RouteSearchItem> routeSearchItems)
 		{
 			Context = context;
 			RouteSearchItems = routeSearchItems;
+			PharmacyStates = MainDatabase.GetStates();
 		}
 
 		public override RouteSearchItem this[int position] {
@@ -54,13 +55,30 @@ namespace CRMLite.Adapters
 
 				view.FindViewById<TextView>(Resource.Id.sriPharmacyTV).Text = item.Name;
 
+				var stateTV = view.FindViewById<TextView>(Resource.Id.sriPharmacyStateTV);
+				var state = item.State.ToEnum(PharmacyState.psClose);
+				switch (state) {
+					case PharmacyState.psActive:
+						stateTV.Text = PharmacyStates[(int)PharmacyState.psActive];
+						stateTV.SetTextAppearance(Context, Resource.Style.pharmacyStateActive);
+						break;
+					case PharmacyState.psReserve:
+						stateTV.Text = PharmacyStates[(int)PharmacyState.psReserve];
+						stateTV.SetTextAppearance(Context, Resource.Style.pharmacyStateReserve);
+						break;
+					case PharmacyState.psClose:
+						stateTV.Text = PharmacyStates[(int)PharmacyState.psClose];
+						stateTV.SetTextAppearance(Context, Resource.Style.pharmacyStateClose);
+						break;
+				}
+
 				if (string.IsNullOrEmpty(item.Match)) {
 					view.FindViewById<TextView>(Resource.Id.sriMatchTV).Visibility = ViewStates.Gone;
 				} else {
 					view.FindViewById<TextView>(Resource.Id.sriMatchTV).Text = item.Match;
 				}
 
-				//Finally return the view
+				//Finally, return the view
 				return view;
 			}
 
